@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mapa real 3x3 Westfield Glories</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        background: #111;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      body {
+        display: grid;
+        place-items: center;
+        padding: 0;
+      }
+
+      main {
+        width: 100vw;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        background: #e8e3d7;
+      }
+
+      img {
+        display: block;
+        width: 100vw;
+        height: 100vh;
+        object-fit: contain;
+      }
+
+      @media (max-width: 760px) {
+        img {
+          width: 100vw;
+          height: 100svh;
+          object-fit: contain;
+          object-position: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <img
+        src="./assets/mapa-real-circuito.png"
+        alt="Mapa real de calles con circuito peatonal 3x3 Glories"
+      />
+    </main>
+  </body>
+</html>

@@ -1,0 +1,658 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Mapa 3x3 Westfield Glories</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIINfQy0iOnNG0O14FAfkqH3f8FzG5Yt2bM="
+      crossorigin=""
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: #050505;
+        color: #fff7ef;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      .experience-shell {
+        min-height: 100vh;
+        position: relative;
+        overflow: hidden;
+      }
+
+      #map {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        background: #e8e3d7;
+      }
+
+      .experience-shell::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        pointer-events: none;
+        background:
+          linear-gradient(90deg, rgba(5, 5, 5, 0.84), rgba(5, 5, 5, 0.28) 36%, rgba(5, 5, 5, 0.03) 64%, rgba(5, 5, 5, 0.42)),
+          linear-gradient(0deg, rgba(5, 5, 5, 0.42), transparent 28%, rgba(5, 5, 5, 0.1));
+      }
+
+      .hero-panel {
+        position: relative;
+        z-index: 4;
+        width: min(440px, calc(100vw - 32px));
+        margin: 24px;
+        padding: 28px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 8px;
+        background: rgba(7, 8, 10, 0.72);
+        backdrop-filter: blur(18px);
+        box-shadow: 0 24px 90px rgba(0, 0, 0, 0.44);
+      }
+
+      .kicker {
+        color: #ff375f;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        margin-bottom: 16px;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(42px, 7vw, 82px);
+        line-height: 0.9;
+        letter-spacing: 0;
+        max-width: 360px;
+      }
+
+      p {
+        margin: 16px 0 0;
+        color: rgba(255, 247, 239, 0.74);
+        font-size: 16px;
+        line-height: 1.55;
+      }
+
+      .route-status {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1px;
+        overflow: hidden;
+        margin: 24px 0 0;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.12);
+      }
+
+      .route-status div,
+      .scoreboard div {
+        background: rgba(255, 255, 255, 0.075);
+        padding: 14px;
+      }
+
+      .route-status span,
+      .scoreboard span {
+        display: block;
+        color: rgba(255, 247, 239, 0.48);
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.13em;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+      }
+
+      .route-status strong,
+      .scoreboard strong {
+        display: block;
+        color: #fff7ef;
+        font-size: 17px;
+        line-height: 1.15;
+      }
+
+      .mode-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        margin-top: 16px;
+      }
+
+      .mode-grid button,
+      .action-row button,
+      .action-row a {
+        min-height: 48px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 8px;
+        color: #fff7ef;
+        background: rgba(255, 255, 255, 0.08);
+        cursor: pointer;
+        text-decoration: none;
+        transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+      }
+
+      .mode-grid button {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 10px 12px;
+        font: inherit;
+        text-align: left;
+      }
+
+      .mode-grid button span {
+        font-size: 13px;
+        color: rgba(255, 247, 239, 0.72);
+      }
+
+      .mode-grid button strong {
+        color: #fff7ef;
+        font-size: 13px;
+      }
+
+      .mode-grid button.active,
+      .mode-grid button:hover,
+      .action-row button:hover,
+      .action-row a:hover {
+        transform: translateY(-1px);
+        border-color: rgba(255, 55, 95, 0.74);
+        background: rgba(255, 55, 95, 0.16);
+      }
+
+      .route-note {
+        min-height: 50px;
+        font-size: 14px;
+      }
+
+      .action-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-top: 18px;
+      }
+
+      .action-row button,
+      .action-row a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 12px;
+        font: inherit;
+        font-size: 14px;
+        font-weight: 800;
+      }
+
+      .scoreboard {
+        position: absolute;
+        z-index: 4;
+        right: 24px;
+        bottom: 24px;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(116px, 1fr));
+        gap: 1px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(18px);
+        box-shadow: 0 24px 90px rgba(0, 0, 0, 0.38);
+      }
+
+      .venue-marker {
+        width: 52px;
+        height: 52px;
+        padding: 0;
+        border: 2px solid rgba(255, 255, 255, 0.86);
+        border-radius: 50% 50% 50% 8px;
+        color: #fff;
+        background: #ff1f4f;
+        box-shadow: 0 14px 38px rgba(255, 31, 79, 0.42), 0 0 0 8px rgba(255, 31, 79, 0.14);
+        transform: rotate(-45deg);
+      }
+
+      .venue-marker span {
+        display: grid;
+        place-items: center;
+        width: 100%;
+        height: 100%;
+        transform: rotate(45deg);
+        font-size: 10px;
+        font-weight: 900;
+      }
+
+      .venue-marker-nau {
+        background: #f5b841;
+        box-shadow: 0 14px 38px rgba(245, 184, 65, 0.34), 0 0 0 8px rgba(245, 184, 65, 0.13);
+      }
+
+      .venue-marker-rambleta {
+        background: #21c7a8;
+        box-shadow: 0 14px 38px rgba(33, 199, 168, 0.32), 0 0 0 8px rgba(33, 199, 168, 0.13);
+      }
+
+      .moving-player {
+        position: relative;
+        width: 38px;
+        height: 58px;
+        pointer-events: none;
+      }
+
+      .player-shadow {
+        position: absolute;
+        left: 8px;
+        bottom: -2px;
+        width: 26px;
+        height: 10px;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.42);
+        filter: blur(4px);
+      }
+
+      .player-body {
+        position: absolute;
+        inset: 0;
+        animation: player-bob 0.62s ease-in-out infinite alternate;
+      }
+
+      .player-head,
+      .player-torso,
+      .player-leg,
+      .player-ball {
+        position: absolute;
+        display: block;
+      }
+
+      .player-head {
+        left: 13px;
+        top: 2px;
+        width: 13px;
+        height: 13px;
+        border-radius: 50%;
+        background: #fff7ef;
+        box-shadow: 0 0 0 3px rgba(255, 55, 95, 0.22);
+      }
+
+      .player-torso {
+        left: 10px;
+        top: 17px;
+        width: 18px;
+        height: 24px;
+        border-radius: 9px 9px 5px 5px;
+        background: linear-gradient(180deg, #ff375f, #a8072d);
+      }
+
+      .player-leg {
+        top: 39px;
+        width: 7px;
+        height: 18px;
+        border-radius: 5px;
+        background: #fff7ef;
+        transform-origin: top center;
+      }
+
+      .player-leg.left {
+        left: 12px;
+        animation: leg-left 0.62s ease-in-out infinite alternate;
+      }
+
+      .player-leg.right {
+        left: 22px;
+        animation: leg-right 0.62s ease-in-out infinite alternate;
+      }
+
+      .player-ball {
+        right: 0;
+        top: 31px;
+        width: 13px;
+        height: 13px;
+        border-radius: 50%;
+        background: #f5b841;
+        box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.16), 0 8px 18px rgba(0, 0, 0, 0.28);
+        animation: ball-bounce 0.62s ease-in-out infinite alternate;
+      }
+
+      .leaflet-popup-content-wrapper {
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 8px;
+        color: #fff7ef;
+        background: rgba(7, 8, 10, 0.94);
+        box-shadow: 0 20px 70px rgba(0, 0, 0, 0.44);
+      }
+
+      .leaflet-popup-content p {
+        margin: 4px 0 0;
+        color: rgba(255, 247, 239, 0.68);
+        font-size: 13px;
+      }
+
+      .leaflet-popup-tip {
+        background: rgba(7, 8, 10, 0.94);
+      }
+
+      @keyframes player-bob {
+        from { transform: translateY(0); }
+        to { transform: translateY(-4px); }
+      }
+
+      @keyframes leg-left {
+        from { transform: rotate(18deg); }
+        to { transform: rotate(-16deg); }
+      }
+
+      @keyframes leg-right {
+        from { transform: rotate(-16deg); }
+        to { transform: rotate(18deg); }
+      }
+
+      @keyframes ball-bounce {
+        from { transform: translateY(-9px); }
+        to { transform: translateY(4px); }
+      }
+
+      @media (max-width: 760px) {
+        .experience-shell {
+          min-height: 100svh;
+        }
+
+        .experience-shell::after {
+          background:
+            linear-gradient(0deg, rgba(5, 5, 5, 0.78), rgba(5, 5, 5, 0.38) 45%, rgba(5, 5, 5, 0.08)),
+            linear-gradient(90deg, rgba(5, 5, 5, 0.24), transparent);
+        }
+
+        .hero-panel {
+          width: min(360px, calc(100vw - 24px));
+          margin: 12px;
+          padding: 16px;
+        }
+
+        h1 {
+          font-size: clamp(36px, 11vw, 50px);
+          max-width: 260px;
+        }
+
+        p {
+          font-size: 14px;
+        }
+
+        .route-status {
+          margin-top: 16px;
+        }
+
+        .mode-grid {
+          gap: 6px;
+          margin-top: 10px;
+        }
+
+        .mode-grid button,
+        .action-row button,
+        .action-row a {
+          min-height: 42px;
+        }
+
+        .route-note {
+          min-height: 36px;
+        }
+
+        .scoreboard {
+          left: 12px;
+          right: 12px;
+          bottom: 12px;
+          grid-template-columns: repeat(3, 1fr);
+        }
+
+        .scoreboard div {
+          padding: 12px 9px;
+        }
+
+        .scoreboard strong {
+          font-size: 13px;
+        }
+
+        .scoreboard span {
+          font-size: 9px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="experience-shell">
+      <div id="map"></div>
+
+      <section class="hero-panel" aria-label="3x3 Westfield Glories">
+        <div class="kicker">CB Grup Barna x Time Chamber</div>
+        <h1>Asi se vive el 3x3</h1>
+        <p>Llegas. Caminas. Entras en la energia de Glories. Y juegas.</p>
+
+        <div class="route-status">
+          <div>
+            <span>Ruta activa</span>
+            <strong id="route-label">Caminando</strong>
+          </div>
+          <div>
+            <span>Tiempo</span>
+            <strong id="route-time">10 min</strong>
+          </div>
+        </div>
+
+        <div class="mode-grid" aria-label="Opciones de transporte">
+          <button type="button" class="active" data-mode="walk"><span>Caminando</span><strong>10 min</strong></button>
+          <button type="button" data-mode="metro"><span>Metro</span><strong>L1</strong></button>
+          <button type="button" data-mode="bus"><span>Bus</span><strong>Diagonal</strong></button>
+          <button type="button" data-mode="parking"><span>Parking 2h</span><strong>Gratis</strong></button>
+        </div>
+
+        <p class="route-note" id="route-note">Circuito real a pie: 786 m por calles reales hasta la pista.</p>
+
+        <div class="action-row">
+          <button type="button" id="locate">Mi ubicacion</button>
+          <a href="https://www.google.com/maps/dir/?api=1&destination=41.404,2.191" target="_blank" rel="noreferrer">Abrir ruta</a>
+        </div>
+      </section>
+
+      <aside class="scoreboard" aria-label="Informacion del evento">
+        <div><span>Parking</span><strong>2h gratis</strong></div>
+        <div><span>Formato</span><strong>3x3 urbano</strong></div>
+        <div><span>Zona</span><strong>Glories</strong></div>
+      </aside>
+    </main>
+
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+    <script>
+      const venues = [
+        { id: "glories", name: "Westfield Glories", tag: "Inicio", detail: "Parking gratis 2h, punto de llegada y zona de encuentro.", coords: [2.191, 41.404] },
+        { id: "nau", name: "La Nau", tag: "3x3", detail: "Zona urbana de juego, ambiente, musica y competicion.", coords: [2.188, 41.406] },
+        { id: "rambleta", name: "Rambleta del Clot", tag: "Pista", detail: "Conexion con pabellon cubierto y entorno del club.", coords: [2.187, 41.408] }
+      ];
+
+      const realWalkRoute = [[2.190911,41.403936],[2.190832,41.403997],[2.190803,41.40399],[2.190791,41.403987],[2.190734,41.403976],[2.19064,41.403954],[2.190579,41.403999],[2.190519,41.403983],[2.190267,41.403918],[2.189917,41.403829],[2.189132,41.403628],[2.189117,41.403654],[2.189102,41.403692],[2.189074,41.403755],[2.189067,41.403768],[2.189063,41.403779],[2.189056,41.403795],[2.189041,41.403832],[2.189025,41.403875],[2.189017,41.403894],[2.189012,41.403909],[2.188989,41.403961],[2.188978,41.403987],[2.188968,41.404011],[2.188959,41.404028],[2.188704,41.403967],[2.188656,41.403961],[2.188641,41.403964],[2.188576,41.404011],[2.188545,41.404033],[2.188532,41.404042],[2.188522,41.404049],[2.188491,41.404072],[2.188477,41.404081],[2.188386,41.40415],[2.188351,41.404181],[2.188288,41.404235],[2.188273,41.404248],[2.188259,41.404258],[2.188207,41.4043],[2.188197,41.404307],[2.188091,41.404387],[2.188041,41.404426],[2.188023,41.404441],[2.187994,41.404462],[2.187957,41.404492],[2.187944,41.4045],[2.187579,41.404758],[2.187188,41.405054],[2.187179,41.405077],[2.187155,41.405136],[2.187153,41.405288],[2.187149,41.405523],[2.187153,41.405578],[2.187151,41.405629],[2.187153,41.405652],[2.187215,41.405768],[2.187263,41.405864],[2.187411,41.406164],[2.187601,41.406548],[2.187696,41.406741],[2.187721,41.40679],[2.187736,41.406821],[2.187795,41.406941],[2.18774,41.40697],[2.187149,41.407272],[2.18715,41.407309],[2.187151,41.407394],[2.187074,41.407394],[2.187029,41.407394],[2.186995,41.407394],[2.186993,41.408]];
+
+      const routes = {
+        walk: realWalkRoute,
+        metro: [[2.1865, 41.403], [2.1882, 41.4037], [2.191, 41.404], [2.188, 41.406], [2.187, 41.408]],
+        bus: [[2.193, 41.4028], [2.1916, 41.404], [2.19, 41.405], [2.188, 41.406], [2.187, 41.408]],
+        parking: [[2.191, 41.404], [2.1914, 41.4043], [2.1904, 41.4049], [2.1892, 41.4055], [2.188, 41.406], [2.187, 41.408]]
+      };
+
+      const copy = {
+        walk: { label: "Caminando", time: "10 min", note: "Circuito real a pie: 786 m por calles reales hasta la pista." },
+        metro: { label: "Metro", time: "L1", note: "Bajas en Glories y entras directo en ambiente de 3x3." },
+        bus: { label: "Bus", time: "Diagonal", note: "Ruta pensada para familias y equipos que vienen en grupo." },
+        parking: { label: "Parking 2h", time: "Gratis", note: "Aparcas, cruzas el centro y estas jugando en minutos." }
+      };
+
+      const toLatLng = ([lng, lat]) => [lat, lng];
+      const toLatLngs = (points) => points.map(toLatLng);
+
+      const map = L.map("map", {
+        center: [41.4057, 2.1892],
+        zoom: 14,
+        zoomControl: false,
+        scrollWheelZoom: true
+      });
+
+      L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png", {
+        attribution: "&copy; OpenStreetMap &copy; CARTO",
+        subdomains: "abcd",
+        maxZoom: 20
+      }).addTo(map);
+
+      L.control.zoom({ position: "bottomright" }).addTo(map);
+
+      const glow = L.polyline(toLatLngs(routes.walk), {
+        color: "#ff1f4f",
+        weight: 14,
+        opacity: 0.22,
+        lineCap: "round",
+        lineJoin: "round"
+      }).addTo(map);
+
+      const line = L.polyline(toLatLngs(routes.walk), {
+        color: "#ff375f",
+        weight: 4,
+        opacity: 0.95,
+        lineCap: "round",
+        lineJoin: "round"
+      }).addTo(map);
+
+      venues.forEach((point) => {
+        L.marker(toLatLng(point.coords), {
+          icon: L.divIcon({
+            className: "venue-icon",
+            html: `<button type="button" class="venue-marker venue-marker-${point.id}" aria-label="${point.name}"><span>${point.tag}</span></button>`,
+            iconSize: [52, 52],
+            iconAnchor: [26, 52],
+            popupAnchor: [0, -42]
+          })
+        })
+          .bindPopup(`<strong>${point.name}</strong><p>${point.detail}</p>`, { closeButton: false })
+          .addTo(map);
+      });
+
+      const player = L.marker(toLatLng(routes.walk[0]), {
+        icon: L.divIcon({
+          className: "player-icon",
+          html: `<div class="moving-player"><span class="player-shadow"></span><span class="player-body"><span class="player-head"></span><span class="player-torso"></span><span class="player-leg left"></span><span class="player-leg right"></span><span class="player-ball"></span></span></div>`,
+          iconSize: [38, 58],
+          iconAnchor: [19, 58]
+        }),
+        interactive: false
+      }).addTo(map);
+
+      function padding() {
+        const mobileLeft = Math.max(120, Math.min(390, window.innerWidth - 140));
+        return window.innerWidth < 760
+          ? { paddingTopLeft: [mobileLeft, 140], paddingBottomRight: [24, 128] }
+          : { paddingTopLeft: [420, 150], paddingBottomRight: [90, 96] };
+      }
+
+      function fit(path) {
+        map.fitBounds(L.latLngBounds(toLatLngs(path)), { ...padding(), maxZoom: 14, animate: true });
+      }
+
+      function distance(a, b) {
+        const x = (b[0] - a[0]) * Math.cos(((a[1] + b[1]) / 2) * (Math.PI / 180));
+        const y = b[1] - a[1];
+        return Math.sqrt(x * x + y * y);
+      }
+
+      function pointOnPath(path, progress) {
+        const segments = path.slice(1).map((point, index) => ({
+          from: path[index],
+          to: point,
+          distance: distance(path[index], point)
+        }));
+        const total = segments.reduce((sum, segment) => sum + segment.distance, 0);
+        let walked = progress * total;
+
+        for (const segment of segments) {
+          if (walked <= segment.distance) {
+            const amount = segment.distance === 0 ? 0 : walked / segment.distance;
+            return [
+              segment.from[0] + (segment.to[0] - segment.from[0]) * amount,
+              segment.from[1] + (segment.to[1] - segment.from[1]) * amount
+            ];
+          }
+          walked -= segment.distance;
+        }
+
+        return path[path.length - 1];
+      }
+
+      let mode = "walk";
+      let animationId = null;
+
+      function animate() {
+        if (animationId) cancelAnimationFrame(animationId);
+        const start = performance.now();
+        const duration = mode === "walk" ? 7600 : 6200;
+
+        function frame(now) {
+          const progress = ((now - start) % duration) / duration;
+          player.setLatLng(toLatLng(pointOnPath(routes[mode], progress)));
+          animationId = requestAnimationFrame(frame);
+        }
+
+        animationId = requestAnimationFrame(frame);
+      }
+
+      function setMode(nextMode) {
+        mode = nextMode;
+        glow.setLatLngs(toLatLngs(routes[mode]));
+        line.setLatLngs(toLatLngs(routes[mode]));
+        document.getElementById("route-label").textContent = copy[mode].label;
+        document.getElementById("route-time").textContent = copy[mode].time;
+        document.getElementById("route-note").textContent = copy[mode].note;
+        document.querySelectorAll("[data-mode]").forEach((button) => {
+          button.classList.toggle("active", button.dataset.mode === mode);
+        });
+        fit(routes[mode]);
+        animate();
+      }
+
+      document.querySelectorAll("[data-mode]").forEach((button) => {
+        button.addEventListener("click", () => setMode(button.dataset.mode));
+      });
+
+      document.getElementById("locate").addEventListener("click", () => {
+        const button = document.getElementById("locate");
+        if (!navigator.geolocation) {
+          button.textContent = "No disponible";
+          return;
+        }
+
+        button.textContent = "Localizando";
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const coords = [position.coords.longitude, position.coords.latitude];
+            L.marker(toLatLng(coords)).bindPopup("<strong>Estas aqui</strong><p>Te llevamos al 3x3.</p>").addTo(map);
+            map.fitBounds(L.latLngBounds([toLatLng(coords), ...toLatLngs(routes[mode])]), { ...padding(), maxZoom: 14, animate: true });
+            button.textContent = "Ubicacion OK";
+          },
+          () => {
+            button.textContent = "Permiso denegado";
+          },
+          { enableHighAccuracy: true, timeout: 8000 }
+        );
+      });
+
+      fit(routes.walk);
+      animate();
+    </script>
+  </body>
+</html>
