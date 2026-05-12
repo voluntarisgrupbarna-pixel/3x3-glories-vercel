@@ -486,7 +486,7 @@ export default function Home() {
             </div>
             <div>
               <strong>Inscripció</strong>
-              <span>Equips: 75–105 € · Individual sense equip: 20 €</span>
+              <span>Equips: 75–90 € · Sènior Pro: 85–90 € · Individual: 20 €</span>
             </div>
           </div>
           <a href="/inscripcion" className="event-info-cta">

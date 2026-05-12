@@ -184,7 +184,7 @@ const jsonLdEvent = {
       name: "Inscripció equip 3×3",
       url: `${SITE_URL}/inscripcion`,
       lowPrice: "75",
-      highPrice: "105",
+      highPrice: "90",
       priceCurrency: "EUR",
       offerCount: "10",
       availability: "https://schema.org/InStock",
@@ -286,7 +286,7 @@ const jsonLdFaq = {
       acceptedAnswer: {
         "@type": "Answer",
         text:
-          "Entre 75€ i 105€ per equip. 75€ equip de 4 jugadors (categoria general), 85€ equip de 4 jugadors (Sèniors), 90€ equip de 5 jugadors (general), 105€ equip de 5 jugadors (Sèniors). Samarretes addicionals opcionals a 25€/u (per acompanyants o recanvi). Hi ha descompte del 10% si comparteixes el torneig amb amics per WhatsApp i segueixes @cbgrupbarna a Instagram, però és opcional: pots saltar el gate i pagar el preu base sense compartir.",
+          "Entre 75€ i 90€ per equip. Categories generals: 75€ equip de 4 jugadors, 90€ equip de 5 jugadors. Sènior Pro (Masculí/Femení): 85€ equip de 4 jugadors, 90€ equip de 5 jugadors. Samarretes addicionals opcionals a 25€/u. Hi ha Early Bird del 10% per inscripcions fins el 20 de maig, i un 5% addicional si comparteixes la web a 5 amics per WhatsApp (codi AMIC5).",
       },
     },
     {

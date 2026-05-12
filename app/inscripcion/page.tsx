@@ -17,16 +17,16 @@ export const metadata: Metadata = {
 };
 
 const categories = [
-  { name: "Premini", any: "2016–2017", preu: "70 €", nota: "Equip de 3-4 jugadors" },
-  { name: "Mini", any: "2014–2015", preu: "70 €", nota: "Equip de 3-4 jugadors" },
-  { name: "Infantil", any: "2012–2013", preu: "70 €", nota: "Equip de 3-4 jugadors" },
-  { name: "Cadet", any: "2010–2011", preu: "70 €", nota: "Equip de 3-4 jugadors" },
-  { name: "Júnior", any: "2008–2009", preu: "70 €", nota: "Equip de 3-4 jugadors" },
-  { name: "Sub-23", any: "2003–2007", preu: "70 €", nota: "Equip de 3-4 jugadors" },
-  { name: "Sènior Masculí", any: "fins 2002", preu: "70–90 €", nota: "Punts FIBA · Prize money" },
-  { name: "Sènior Femení", any: "fins 2002", preu: "70–90 €", nota: "Punts FIBA · Prize money" },
-  { name: "Veterans Masculí", any: "nascuts fins 1986", preu: "70 €", nota: "Trofeus i medalles" },
-  { name: "Veterans Femení", any: "nascut fins 1986", preu: "70 €", nota: "Trofeus i medalles" },
+  { name: "Premini", any: "2016–2017", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€" },
+  { name: "Mini", any: "2014–2015", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€" },
+  { name: "Infantil", any: "2012–2013", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€" },
+  { name: "Cadet", any: "2010–2011", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€" },
+  { name: "Júnior", any: "2008–2009", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€" },
+  { name: "Sub-23", any: "2003–2007", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€" },
+  { name: "Sènior Masculí", any: "fins 2002", preu: "85–90 €", nota: "4 jug.: 85€ · 5 jug.: 90€ · Punts FIBA · Prize money" },
+  { name: "Sènior Femení", any: "fins 2002", preu: "85–90 €", nota: "4 jug.: 85€ · 5 jug.: 90€ · Punts FIBA · Prize money" },
+  { name: "Veterans Masculí", any: "nascuts fins 1986", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€ · Trofeus i medalles" },
+  { name: "Veterans Femení", any: "nascut fins 1986", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€ · Trofeus i medalles" },
 ];
 
 export default function InscripcionPage() {
