@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import EarlyBirdBanner from "./components/EarlyBirdBanner";
 import WhatsAppLeadWidget from "./components/WhatsAppLeadWidget";
 
 type LngLat = [number, number];
@@ -385,7 +386,9 @@ export default function Home() {
   }
 
   return (
-    <main className="experience-shell">
+    <>
+      <EarlyBirdBanner />
+      <main className="experience-shell">
       <div className="map-stage">
         <div ref={mapContainerRef} className="map-canvas" />
         {!mapReady && <div className="map-fallback" aria-hidden="true" />}
@@ -494,5 +497,6 @@ export default function Home() {
 
       <WhatsAppLeadWidget />
     </main>
+    </>
   );
 }

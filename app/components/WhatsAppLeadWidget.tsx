@@ -76,20 +76,32 @@ export default function WhatsAppLeadWidget({ mode = "floating" }: { mode?: LeadM
   const [form, setForm] = useState<LeadForm>(emptyForm);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [sharedWA, setSharedWA] = useState(false);
-  const [followedIG, setFollowedIG] = useState(false);
+  const [shareCount, setShareCount] = useState(0);
+  const [isEarlyBird, setIsEarlyBird] = useState(false);
   const [error, setError] = useState("");
-  const discountUnlocked = sharedWA && followedIG;
+  const referralUnlocked = shareCount >= 5;
   const whatsappUrl = useMemo(() => buildWhatsappUrl(form), [form]);
 
   useEffect(() => {
-    if (mode !== "floating") return;
+    const stored = parseInt(localStorage.getItem("share_count_3x3") ?? "0", 10);
+    setShareCount(Math.min(stored, 5));
+    setIsEarlyBird(Date.now() < new Date("2026-05-21T00:00:00+02:00").getTime());
+  }, []);
 
+  useEffect(() => {
+    if (mode !== "floating") return;
     const params = new URLSearchParams(window.location.search);
     if (params.get("contacte") === "1" || params.get("qr") === "contacte") {
       setOpen(true);
     }
   }, [mode]);
+
+  function handleShare() {
+    const next = Math.min(shareCount + 1, 5);
+    setShareCount(next);
+    localStorage.setItem("share_count_3x3", String(next));
+    window.open(buildShareUrl(), "_blank", "noreferrer");
+  }
 
   function updateField<K extends keyof LeadForm>(field: K, value: LeadForm[K]) {
     setForm((current) => ({ ...current, [field]: value }));
@@ -143,15 +155,15 @@ export default function WhatsAppLeadWidget({ mode = "floating" }: { mode?: LeadM
           <span />
         </div>
         <div>
-          <h2>{discountUnlocked ? "10% activat! 🎉" : "Tot llest! ✅"}</h2>
-          <p>{discountUnlocked ? "Descompte aplicat a la teva inscripció" : "Fes les 2 accions i obtén un 10% off"}</p>
+          <h2>Tot llest! ✅</h2>
+          <p>Hem guardat el teu contacte</p>
         </div>
         {mode === "floating" && (
           <button
             className="wa-lead-close"
             type="button"
             aria-label="Tancar"
-            onClick={() => { setOpen(false); setSubmitted(false); setSharedWA(false); setFollowedIG(false); }}
+            onClick={() => { setOpen(false); setSubmitted(false); }}
           >
             ×
           </button>
@@ -159,37 +171,45 @@ export default function WhatsAppLeadWidget({ mode = "floating" }: { mode?: LeadM
       </div>
 
       <div className="wa-lead-body">
-        {discountUnlocked ? (
-          <div className="wa-discount-badge">
+        {isEarlyBird && (
+          <div className="wa-discount-block wa-discount-green">
             <span className="wa-discount-pct">−10%</span>
-            <span className="wa-discount-txt">Presenta aquesta pantalla el dia del torneig per aplicar el descompte a la teva inscripció.</span>
+            <span className="wa-discount-txt">
+              <strong>Early Bird activat!</strong><br />
+              Vàlid fins el 20 de maig. Menciona&apos;l en contactar per WhatsApp.
+            </span>
           </div>
-        ) : (
-          <p className="wa-success-msg">
-            Hem guardat el teu contacte. Fes les 2 accions per desbloquejar el <strong>10% de descompte</strong> a la inscripció.
-          </p>
         )}
 
-        <a
-          className={`wa-share-btn${sharedWA ? " wa-action-done" : ""}`}
-          href={buildShareUrl()}
-          target="_blank"
-          rel="noreferrer"
-          onClick={() => setSharedWA(true)}
-        >
-          <span aria-hidden="true">{sharedWA ? "✅" : "📲"}</span>
-          {sharedWA ? "Compartit!" : "Comparteix el 3x3 amb 5 amics"}
-        </a>
+        <div className="wa-referral-block">
+          <p className="wa-referral-title">Guanya un <strong>−5% addicional</strong></p>
+          {referralUnlocked ? (
+            <div className="wa-discount-badge">
+              <span className="wa-discount-pct">−5%</span>
+              <span className="wa-discount-txt">
+                <strong>Codi: AMIC5</strong><br />
+                Menciona&apos;l quan contactis per WhatsApp.
+              </span>
+            </div>
+          ) : (
+            <>
+              <p className="wa-referral-hint">Reenvia la pàgina a 5 amics per WhatsApp</p>
+              <button className="wa-share-btn" type="button" onClick={handleShare}>
+                <span aria-hidden="true">📲</span>
+                Comparteix ({shareCount}/5 amics)
+              </button>
+            </>
+          )}
+        </div>
 
         <a
-          className={`wa-insta-btn${followedIG ? " wa-action-done" : ""}`}
+          className="wa-insta-btn"
           href="https://www.instagram.com/cbgrupbarna/"
           target="_blank"
           rel="noreferrer"
-          onClick={() => setFollowedIG(true)}
         >
-          <span aria-hidden="true">{followedIG ? "✅" : "📸"}</span>
-          {followedIG ? "Seguit!" : "Segueix @cbgrupbarna a Instagram"}
+          <span aria-hidden="true">📸</span>
+          Segueix @cbgrupbarna a Instagram
         </a>
 
         <a

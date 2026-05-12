@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import ReferralCard from "../components/ReferralCard";
 
 export const metadata: Metadata = {
   title: "Inscripció d'equip | 3×3 Westfield Glòries 2026",
@@ -100,9 +101,10 @@ export default function InscripcionPage() {
         </div>
 
         <p style={{ fontSize: 14, color: "rgba(255,247,239,0.5)", marginTop: 8 }}>
-          Samarreta addicional (acompanyant o recanvi): 25 €/u. Descompte del 10% opcional si comparteixes
-          el torneig a Instagram i WhatsApp.
+          Samarreta addicional (acompanyant o recanvi): 25 €/u.
         </p>
+
+        <ReferralCard />
 
         <hr className="page-divider" />
 
