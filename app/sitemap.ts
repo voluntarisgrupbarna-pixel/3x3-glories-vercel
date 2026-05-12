@@ -3,7 +3,7 @@ import type { MetadataRoute } from "next";
 const SITE_URL = "https://cbgrupbarna-3x3timechamber.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const lastModified = new Date("2026-05-03");
+  const lastModified = new Date("2026-05-11");
 
   return [
     {
@@ -31,27 +31,33 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.85,
     },
     {
+      url: `${SITE_URL}/contacte`,
+      lastModified,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
       url: `${SITE_URL}/seu/westfield-glories`,
       lastModified,
       changeFrequency: "monthly",
-      priority: 0.85,
+      priority: 0.75,
     },
     {
       url: `${SITE_URL}/seu/nau-del-clot`,
       lastModified,
       changeFrequency: "monthly",
-      priority: 0.85,
+      priority: 0.75,
     },
     {
       url: `${SITE_URL}/seu/rambleta-del-clot`,
       lastModified,
       changeFrequency: "monthly",
-      priority: 0.85,
+      priority: 0.75,
     },
     {
       url: `${SITE_URL}/equip`,
       lastModified,
-      changeFrequency: "weekly",
+      changeFrequency: "monthly",
       priority: 0.6,
     },
   ];

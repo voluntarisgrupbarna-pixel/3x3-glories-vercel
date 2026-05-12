@@ -518,6 +518,346 @@ a {
   }
 }
 
+/* === Secció informativa indexable (SEO) === */
+.event-info-section {
+  position: relative;
+  z-index: 4;
+  margin: 0 24px 120px;
+  padding: 0;
+}
+
+@media (min-width: 761px) {
+  .event-info-section {
+    max-width: 440px;
+  }
+}
+
+.event-info-inner {
+  padding: 24px 28px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background: rgba(7, 8, 10, 0.72);
+  backdrop-filter: blur(18px);
+}
+
+.event-info-inner h2 {
+  margin: 0 0 12px;
+  font-size: 18px;
+  line-height: 1.25;
+  color: #fff7ef;
+}
+
+.event-info-inner > p {
+  margin: 0 0 16px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(255, 247, 239, 0.74);
+}
+
+.event-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.event-info-grid div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.event-info-grid strong {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #ff375f;
+}
+
+.event-info-grid span {
+  font-size: 13px;
+  color: rgba(255, 247, 239, 0.7);
+  line-height: 1.4;
+}
+
+.event-info-cta {
+  display: inline-block;
+  padding: 10px 16px;
+  border: 1px solid rgba(255, 55, 95, 0.5);
+  border-radius: 8px;
+  color: #ff375f;
+  background: rgba(255, 55, 95, 0.08);
+  font-size: 14px;
+  font-weight: 800;
+  text-decoration: none;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.event-info-cta:hover {
+  background: rgba(255, 55, 95, 0.18);
+  border-color: rgba(255, 55, 95, 0.8);
+}
+
+@media (max-width: 760px) {
+  .event-info-section {
+    margin: 0 12px 100px;
+  }
+
+  .event-info-inner {
+    padding: 16px;
+  }
+
+  .event-info-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
+/* === Pàgines de contingut (inner pages) === */
+.page-shell {
+  min-height: 100vh;
+  color: #fff7ef;
+  background: #050505;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.page-nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 32px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(5, 5, 5, 0.88);
+  backdrop-filter: blur(14px);
+}
+
+.page-nav-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255, 247, 239, 0.62);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.page-nav-back:hover {
+  color: #fff7ef;
+}
+
+.page-nav-logo {
+  margin-left: auto;
+  color: #ff375f;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.page-content {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 48px 32px 96px;
+}
+
+.page-kicker {
+  display: inline-block;
+  margin-bottom: 16px;
+  color: #ff375f;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.page-content h1 {
+  margin: 0 0 20px;
+  font-size: clamp(32px, 5vw, 56px);
+  line-height: 1.05;
+  color: #fff7ef;
+}
+
+.page-content h2 {
+  margin: 40px 0 12px;
+  font-size: clamp(20px, 3vw, 28px);
+  color: #fff7ef;
+}
+
+.page-content p {
+  margin: 0 0 16px;
+  font-size: 16px;
+  line-height: 1.65;
+  color: rgba(255, 247, 239, 0.78);
+}
+
+.page-content ul {
+  margin: 0 0 16px;
+  padding-left: 20px;
+}
+
+.page-content li {
+  margin-bottom: 8px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: rgba(255, 247, 239, 0.78);
+}
+
+.page-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.page-card {
+  padding: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.page-card-label {
+  display: block;
+  margin-bottom: 8px;
+  color: #ff375f;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.page-card strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 22px;
+  color: #fff7ef;
+}
+
+.page-card p {
+  margin: 0;
+  font-size: 14px;
+  color: rgba(255, 247, 239, 0.62);
+}
+
+.page-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 32px;
+  padding: 16px 28px;
+  border: 0;
+  border-radius: 10px;
+  color: #050505;
+  background: #ff375f;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 900;
+  text-decoration: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.page-cta:hover {
+  opacity: 0.88;
+  transform: translateY(-2px);
+}
+
+.page-cta-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+  padding: 14px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 10px;
+  color: #fff7ef;
+  background: rgba(255, 255, 255, 0.06);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.page-cta-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.page-divider {
+  margin: 32px 0;
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.page-faq-item {
+  padding: 24px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.page-faq-item:first-of-type {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.page-faq-item h2 {
+  margin: 0 0 12px;
+  font-size: 18px;
+  color: #fff7ef;
+}
+
+.page-faq-item p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.65;
+  color: rgba(255, 247, 239, 0.72);
+}
+
+.page-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(255, 55, 95, 0.14);
+  color: #ff375f;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.page-address-block {
+  padding: 20px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.page-address-block strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #fff7ef;
+  font-size: 16px;
+}
+
+.page-address-block p {
+  margin: 0;
+  font-size: 14px;
+  color: rgba(255, 247, 239, 0.6);
+}
+
+@media (max-width: 760px) {
+  .page-nav {
+    padding: 14px 16px;
+  }
+
+  .page-content {
+    padding: 32px 16px 72px;
+  }
+}
+
 .wa-floating-button {
   position: fixed;
   right: 22px;

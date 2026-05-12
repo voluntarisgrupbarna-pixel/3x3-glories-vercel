@@ -35,6 +35,7 @@ export const metadata: Metadata = {
     canonical: "/",
     languages: {
       ca: "/",
+      es: "/",
       "x-default": "/",
     },
   },
@@ -78,6 +79,7 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
       { url: "/favicon.ico", sizes: "any" },
       { url: "/favicon-16x16.png", type: "image/png", sizes: "16x16" },
       { url: "/favicon-32x32.png", type: "image/png", sizes: "32x32" },
@@ -104,9 +106,9 @@ export const metadata: Metadata = {
     "article:section": "Bàsquet · Esports",
     "article:tag": "3x3, FIBA, Barcelona, Bàsquet, Westfield Glòries, Clot",
   },
-  verification: {
-    google: "PEGAR_AQUI_CODIGO_GOOGLE",
-  },
+  ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+    ? { verification: { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION } }
+    : {}),
 };
 
 export const viewport: Viewport = {
@@ -355,8 +357,8 @@ export default function RootLayout({
               t.src=v;s=b.getElementsByTagName(e)[0];
               s.parentNode.insertBefore(t,s)}(window,document,'script',
               'https://connect.facebook.net/en_US/fbevents.js');
-              fbq('init','PEGAR_AQUI_PIXEL_ID');
-              fbq('track','PageView');
+              var pixelId = '${process.env.NEXT_PUBLIC_META_PIXEL_ID || ''}';
+              if(pixelId){fbq('init',pixelId);fbq('track','PageView');}
             `,
           }}
         />

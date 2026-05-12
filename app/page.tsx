@@ -21,23 +21,23 @@ type LeafletWindow = Window & {
 const venues: VenuePoint[] = [
   {
     id: "glories",
-    name: "Westfield Glories",
-    tag: "Inicio",
-    detail: "Parking gratis 2h, punto de llegada y zona de encuentro.",
+    name: "Westfield Glòries",
+    tag: "Inici",
+    detail: "Pàrquing gratis 2h, punt d'arribada i zona de trobada.",
     coords: [2.191, 41.404],
   },
   {
     id: "nau",
-    name: "La Nau",
-    tag: "3x3",
-    detail: "Zona urbana de juego, ambiente, musica y competicion.",
+    name: "La Nau del Clot",
+    tag: "3×3",
+    detail: "Zona urbana de joc, ambient, música i competició.",
     coords: [2.188, 41.406],
   },
   {
     id: "rambleta",
     name: "Rambleta del Clot",
     tag: "Pista",
-    detail: "Conexion con pabellon cubierto y entorno del club.",
+    detail: "Connexió amb el pavelló cobert i l'entorn del club.",
     coords: [2.187, 41.408],
   },
 ];
@@ -72,24 +72,24 @@ const routes: Record<RouteMode, LngLat[]> = {
 
 const routeCopy: Record<RouteMode, { label: string; time: string; note: string }> = {
   walk: {
-    label: "Caminando",
+    label: "A peu",
     time: "10 min",
-    note: "Circuito real a pie: 786 m por calles reales hasta la pista.",
+    note: "Circuit real a peu: 786 m per carrers reals fins a la pista.",
   },
   metro: {
     label: "Metro",
     time: "L1",
-    note: "Bajas en Glories y entras directo en ambiente de 3x3.",
+    note: "Baixes a Glòries i entres directe en l'ambient del 3×3.",
   },
   bus: {
     label: "Bus",
     time: "Diagonal",
-    note: "Ruta pensada para familias y equipos que vienen en grupo.",
+    note: "Ruta pensada per a famílies i equips que venen en grup.",
   },
   parking: {
-    label: "Parking 2h",
+    label: "Pàrquing 2h",
     time: "Gratis",
-    note: "Aparcas, cruzas el centro y estas jugando en minutos.",
+    note: "Aparques, creues el centre i ja estàs jugant en minuts.",
   },
 };
 
@@ -169,7 +169,7 @@ export default function Home() {
   const [mode, setMode] = useState<RouteMode>("walk");
   const [mapReady, setMapReady] = useState(false);
   const [mapError, setMapError] = useState("");
-  const [geoLabel, setGeoLabel] = useState("Mi ubicacion");
+  const [geoLabel, setGeoLabel] = useState("La meva ubicació");
 
   const currentRoute = useMemo(() => routes[mode], [mode]);
   const currentCopy = routeCopy[mode];
@@ -286,7 +286,7 @@ export default function Home() {
         script.setAttribute("data-leaflet", "true");
         script.onload = startMap;
         script.onerror = () => {
-          if (mounted) setMapError("No se ha podido cargar el mapa.");
+          if (mounted) setMapError("No s'ha pogut carregar el mapa.");
         };
         document.body.appendChild(script);
       }
@@ -352,7 +352,7 @@ export default function Home() {
       return;
     }
 
-    setGeoLabel("Localizando");
+    setGeoLabel("Localitzant…");
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const coords: LngLat = [position.coords.longitude, position.coords.latitude];
@@ -366,7 +366,7 @@ export default function Home() {
             iconAnchor: [9, 9],
           }),
         })
-          .bindPopup("<strong>Estas aqui</strong><p>Te llevamos al 3x3.</p>")
+          .bindPopup("<strong>Ets aquí</strong><p>T'hi portem al 3×3.</p>")
           .addTo(map);
 
         const bounds = win.L.latLngBounds([toLatLng(coords), ...toLatLngs(currentRoute)]);
@@ -377,9 +377,9 @@ export default function Home() {
           maxZoom: 14,
           animate: true,
         });
-        setGeoLabel("Ubicacion OK");
+        setGeoLabel("Ubicació OK");
       },
-      () => setGeoLabel("Permiso denegado"),
+      () => setGeoLabel("Permís denegat"),
       { enableHighAccuracy: true, timeout: 8000 },
     );
   }
@@ -393,15 +393,15 @@ export default function Home() {
           <div className="token-alert">
             <span>Mapa</span>
             <strong>{mapError}</strong>
-            <p>Comprueba la conexion y recarga la pagina.</p>
+            <p>Comprova la connexió i recarrega la pàgina.</p>
           </div>
         )}
       </div>
 
-      <section className="hero-panel" aria-label="3x3 Westfield Glories">
-        <div className="kicker">CB Grup Barna x Time Chamber</div>
-        <h1>Asi se vive el 3x3</h1>
-        <p>Llegas. Caminas. Entras en la energia de Glories. Y juegas.</p>
+      <section className="hero-panel" aria-label="3×3 Westfield Glòries 2026">
+        <div className="kicker">CB Grup Barna × Time Chamber</div>
+        <h1>Així es viu el 3×3</h1>
+        <p>Arribes. Camines. Entres a l'energia de Glòries. I juges.</p>
 
         <div className="route-status">
           <div>
@@ -409,12 +409,12 @@ export default function Home() {
             <strong>{currentCopy.label}</strong>
           </div>
           <div>
-            <span>Tiempo</span>
+            <span>Temps</span>
             <strong>{currentCopy.time}</strong>
           </div>
         </div>
 
-        <div className="mode-grid" aria-label="Opciones de transporte">
+        <div className="mode-grid" aria-label="Opcions de transport">
           {(Object.keys(routeCopy) as RouteMode[]).map((item) => (
             <button
               key={item}
@@ -439,25 +439,58 @@ export default function Home() {
             target="_blank"
             rel="noreferrer"
           >
-            Abrir ruta
+            Obre la ruta
           </a>
         </div>
       </section>
 
-      <aside className="scoreboard" aria-label="Informacion del evento">
+      <aside className="scoreboard" aria-label="Informació de l'esdeveniment">
         <div>
-          <span>Parking</span>
+          <span>Pàrquing</span>
           <strong>2h gratis</strong>
         </div>
         <div>
-          <span>Formato</span>
-          <strong>3x3 urbano</strong>
+          <span>Format</span>
+          <strong>3×3 urbà</strong>
         </div>
         <div>
           <span>Zona</span>
-          <strong>Glories</strong>
+          <strong>Glòries</strong>
         </div>
       </aside>
+
+      <section className="event-info-section" aria-label="Sobre el torneig 3×3">
+        <div className="event-info-inner">
+          <h2>El torneig 3×3 més potent de Barcelona</h2>
+          <p>
+            El <strong>3×3 Westfield Glòries</strong> és el torneig oficial de bàsquet 3×3 amb punts FIBA del
+            barri del Clot-Glòries de Barcelona. La <strong>4a edició</strong> se celebra els dies{" "}
+            <strong>6 i 7 de juny de 2026</strong> amb <strong>2.000 € de prize money</strong> per als equips
+            Sèniors Masculí i Sèniors Femení, i punts pel rànquing mundial de FIBA 3×3.
+          </p>
+          <div className="event-info-grid">
+            <div>
+              <strong>Categories</strong>
+              <span>Premini · Mini · Infantil · Cadet · Júnior · Sub-23 · Sènior Pro · Veterans M/F</span>
+            </div>
+            <div>
+              <strong>Prize money</strong>
+              <span>2.000 € Sèniors M/F · Trofeus i medalles per a totes les categories</span>
+            </div>
+            <div>
+              <strong>Seus</strong>
+              <span>Westfield Glòries · La Nau del Clot · Rambleta del Clot</span>
+            </div>
+            <div>
+              <strong>Inscripció</strong>
+              <span>Equips: 75–105 € · Individual sense equip: 20 €</span>
+            </div>
+          </div>
+          <a href="/inscripcion" className="event-info-cta">
+            Inscriu el teu equip al 3×3 Barcelona →
+          </a>
+        </div>
+      </section>
 
       <WhatsAppLeadWidget />
     </main>
