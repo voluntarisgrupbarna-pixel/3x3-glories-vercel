@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import ReferralCard from "../components/ReferralCard";
+import InscripcioWizard from "./InscripcioWizard";
 
 export const metadata: Metadata = {
   title: "Inscripció d'equip | 3×3 Westfield Glòries 2026",
   description:
-    "Inscriu el teu equip al 3×3 Westfield Glòries 2026. Torneig FIBA a Barcelona, 6-7 juny. Des de 70 € per equip. Categories Premini, Mini, Infantil, Cadet, Júnior, Sènior i Veterans.",
+    "Inscriu el teu equip al 3×3 Westfield Glòries 2026. Torneig FIBA a Barcelona, 6-7 juny. Des de 75 € per equip. Categories Premini, Mini, Infantil, Cadet, Júnior, Sènior i Veterans.",
   alternates: {
     canonical: "/inscripcion",
   },
@@ -29,7 +30,35 @@ const categories = [
   { name: "Veterans Femení", any: "nascut fins 1986", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€ · Trofeus i medalles" },
 ];
 
-export default function InscripcionPage() {
+type InscripcionPageProps = {
+  searchParams?: Promise<{ ref?: string | string[] }>;
+};
+
+function sanitizeRef(raw: string | string[] | undefined): string {
+  if (!raw) return "";
+  const value = Array.isArray(raw) ? raw[0] : raw;
+  return value.replace(/[^a-zA-Z0-9\-]/g, "").slice(0, 40);
+}
+
+function formatTeamName(slug: string): string {
+  return slug
+    .split("-")
+    .filter(Boolean)
+    .map((w) => (w.length <= 2 ? w.toUpperCase() : w.charAt(0).toUpperCase() + w.slice(1)))
+    .join(" ");
+}
+
+export default async function InscripcionPage({ searchParams }: InscripcionPageProps) {
+  const params = (await searchParams) ?? {};
+  const ref = sanitizeRef(params.ref);
+  const fromTeam = ref ? formatTeamName(ref) : "";
+  const rivalCode = ref ? `RIVAL-${ref.toUpperCase()}` : "";
+
+  const waBaseMsg = ref
+    ? `Hola! Vull inscriure el meu equip al 3x3 Westfield Glòries 2026. Vinc de part de ${fromTeam}. CODI: ${rivalCode} (pack rival -5€ a cada equip).`
+    : `Hola! Vull inscriure el meu equip al 3x3 Westfield Glòries 2026`;
+  const waLink = `https://wa.me/34698425153?text=${encodeURIComponent(waBaseMsg)}`;
+
   return (
     <div className="page-shell">
       <nav className="page-nav">
@@ -43,40 +72,46 @@ export default function InscripcionPage() {
         <span className="page-kicker">Inscripció d'equip</span>
         <h1>Inscriu-te al 3×3 Barcelona 2026</h1>
 
+        {ref && (
+          <div className="rival-banner">
+            <span className="rival-banner-tag">Pack rival actiu</span>
+            <strong>T'ha desafiat el {fromTeam} 🏀</strong>
+            <p>
+              Aplicarem <strong>−5 €</strong> a la teva inscripció i <strong>−5 €</strong> a la del{" "}
+              {fromTeam}. Cita aquest codi quan ens escriguis:
+            </p>
+            <div className="rival-banner-code">
+              <code>{rivalCode}</code>
+            </div>
+            <p className="rival-banner-hint">
+              El botó "Inscriu l'equip" ja porta el codi al missatge de WhatsApp — només cal que cliquis i
+              enviïs.
+            </p>
+          </div>
+        )}
+
         <p>
           El <strong>3×3 Westfield Glòries</strong> és el torneig de bàsquet 3×3 FIBA més important de
           Barcelona. La 4a edició se celebra els dies <strong>6 i 7 de juny de 2026</strong> al barri del
           Clot-Glòries. Les places són limitades — inscriu l'equip ara.
         </p>
 
-        <h2>Com funciona la inscripció</h2>
+        <h2>Inscripció online</h2>
         <p>
-          El procés és online i té 5 passos: dades de l'equip, capità, jugadors (3-5), samarretes i
-          pagament. La transferència bancària es fa amb un codi QR pre-omplert. Confirmem la plaça en menys
-          de 24h per email i WhatsApp.
+          5 passos: tria el paquet, registra els contactes, fes la transferència i puja el justificant,
+          omple les dades dels jugadors i envia. <strong>El justificant no et bloqueja</strong> — pots
+          continuar de seguida i nosaltres validem el pagament en menys de 24h.
         </p>
 
-        <div
-          style={{
-            display: "flex",
-            gap: 16,
-            flexWrap: "wrap",
-            marginBottom: 40,
-            marginTop: 8,
-          }}
-        >
-          <a
-            href="https://wa.me/34698425153?text=Hola!+Vull+inscriure+el+meu+equip+al+3x3+Westfield+Gl%C3%B2ries+2026"
-            target="_blank"
-            rel="noreferrer"
-            className="page-cta"
-          >
-            Inscriu l'equip →
-          </a>
-          <Link href="/inscripcio-individual" className="page-cta-secondary">
-            Vull jugar sense equip
-          </Link>
-        </div>
+        <InscripcioWizard initialRefCode={rivalCode} />
+
+        <p style={{ fontSize: 14, color: "rgba(255,247,239,0.55)", marginTop: 8 }}>
+          Prefereixes parlar per WhatsApp?{" "}
+          <a href={waLink} target="_blank" rel="noreferrer" style={{ color: "#ff375f" }}>
+            Inscripció via WhatsApp
+          </a>{" "}
+          (et responem en menys de 24h).
+        </p>
 
         <hr className="page-divider" />
 

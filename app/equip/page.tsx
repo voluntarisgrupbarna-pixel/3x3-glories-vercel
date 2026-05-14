@@ -103,6 +103,21 @@ export default function EquipPage() {
         <Link href="/inscripcion" className="page-cta-secondary">
           Inscriu l'equip
         </Link>
+
+        <div style={{ marginTop: 48, padding: "28px", border: "1px solid rgba(255,55,95,0.22)", borderRadius: 10, background: "rgba(255,55,95,0.05)" }}>
+          <p style={{ margin: "0 0 6px", fontSize: 12, fontWeight: 900, letterSpacing: "0.14em", textTransform: "uppercase", color: "#ff375f" }}>
+            Repte obert
+          </p>
+          <strong style={{ display: "block", fontSize: 20, color: "#fff7ef", marginBottom: 8 }}>
+            Creus que pots guanyar-nos?
+          </strong>
+          <p style={{ margin: "0 0 20px", fontSize: 15, color: "rgba(255,247,239,0.7)", lineHeight: 1.6 }}>
+            Inscriu el teu equip al 3×3 Westfield Glòries 2026 i demostra-ho a la pista.
+          </p>
+          <Link href="/inscripcion" className="page-cta" style={{ marginTop: 0 }}>
+            Desafia'ns al 3×3 →
+          </Link>
+        </div>
       </main>
     </div>
   );

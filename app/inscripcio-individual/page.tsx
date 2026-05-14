@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import IndividualSignupForm from "./IndividualSignupForm";
 
 export const metadata: Metadata = {
   title: "Inscripció individual | 3×3 Westfield Glòries 2026",
@@ -59,33 +60,14 @@ export default function InscripcioIndividualPage() {
           </div>
         </div>
 
-        <h2>Com funciona</h2>
-        <ol style={{ paddingLeft: 20, color: "rgba(255,247,239,0.78)", lineHeight: 1.7 }}>
-          <li style={{ marginBottom: 10, fontSize: 16 }}>
-            Omplenes el formulari amb les teves dades, talla de samarreta i posició preferida.
-          </li>
-          <li style={{ marginBottom: 10, fontSize: 16 }}>
-            Fas el pagament de 20 € per transferència (QR pre-omplert, 2 minuts).
-          </li>
-          <li style={{ marginBottom: 10, fontSize: 16 }}>
-            L'organització et confirma la plaça en menys de 24h.
-          </li>
-          <li style={{ marginBottom: 10, fontSize: 16 }}>
-            Una setmana abans del torneig et diem a quin equip vas, els horaris i les seus on jugaràs.
-          </li>
-          <li style={{ marginBottom: 10, fontSize: 16 }}>
-            El dia del torneig, et presentes amb la samarreta oficial i gaudeixes del 3×3 de Barcelona.
-          </li>
-        </ol>
+        <h2>Inscriu-te</h2>
+        <p>
+          Omple les dades a continuació. Quan acabis, generem un missatge de WhatsApp amb tota la informació
+          ja preparada i només has de clicar enviar. L'organització et confirma la plaça en menys de 24h i
+          t'envia les dades de pagament (20 € per transferència).
+        </p>
 
-        <a
-          href="https://wa.me/34698425153?text=Hola!+Vull+fer+una+inscripci%C3%B3+individual+al+3x3+Westfield+Gl%C3%B2ries+2026"
-          target="_blank"
-          rel="noreferrer"
-          className="page-cta"
-        >
-          Inscripció individual →
-        </a>
+        <IndividualSignupForm />
 
         <hr className="page-divider" />
 
