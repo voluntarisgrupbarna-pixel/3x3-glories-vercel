@@ -431,18 +431,82 @@ function sendToJotForm(payload) {
 // ===== SETUP & TEST HELPERS =====
 
 /**
- * Edita els valors aquí i executa aquesta funció una sola vegada des de l'editor
- * d'Apps Script per inicialitzar les propietats.
+ * BOOTSTRAP — Executa aquesta funció UNA SOLA VEGADA des de l'editor d'Apps Script.
+ *
+ * Crearà automàticament:
+ *  1. Google Sheet "Inscripcions 3x3 2026" amb les 2 pestanyes (Inscripcions + Jugadors)
+ *  2. Carpeta Drive "3x3 Glòries 2026 · Justificants"
+ *  3. Totes les Script Properties (SHEET_ID, DRIVE_FOLDER_ID, APPSCRIPT_SECRET)
+ *
+ * Després només cal:
+ *  · Deploy > New deployment > Web app > Anyone
+ *  · Copiar la URL i posar-la a Vercel com APPSCRIPT_INSCRIPCIO_URL
+ *
+ * El secret ja està pre-omplert per garantir que coincideixi amb Vercel.
  */
-function setupProperties() {
-  PropertiesService.getScriptProperties().setProperties({
-    SHEET_ID: "PEGA_AQUI_ID_DEL_SHEET",
-    DRIVE_FOLDER_ID: "PEGA_AQUI_ID_DE_LA_CARPETA_DRIVE",
-    APPSCRIPT_SECRET: "PEGA_AQUI_UN_STRING_LLARG_I_ALEATORI",
-    JOTFORM_API_KEY: "", // opcional
-    JOTFORM_FORM_ID: "", // opcional
+function bootstrap() {
+  const props = PropertiesService.getScriptProperties();
+
+  // 1. Sheet
+  let sheetId = props.getProperty("SHEET_ID");
+  if (!sheetId) {
+    const ss = SpreadsheetApp.create("Inscripcions 3x3 2026");
+    sheetId = ss.getId();
+    // Inicialitza les 2 pestanyes amb capçaleres
+    ensureSheet(ss, "Inscripcions", TEAM_HEADERS);
+    ensureSheet(ss, "Jugadors", PLAYER_HEADERS);
+    // Esborra la pestanya "Sheet1" per defecte si està buida
+    const defaultSheet = ss.getSheetByName("Sheet1") || ss.getSheetByName("Full 1");
+    if (defaultSheet && ss.getSheets().length > 1) {
+      try {
+        ss.deleteSheet(defaultSheet);
+      } catch (_e) {
+        // ignore
+      }
+    }
+    Logger.log("Sheet creat: " + sheetId);
+  } else {
+    Logger.log("Sheet ja existeix: " + sheetId);
+  }
+
+  // 2. Drive folder
+  let folderId = props.getProperty("DRIVE_FOLDER_ID");
+  if (!folderId) {
+    const folder = DriveApp.createFolder("3x3 Glòries 2026 · Justificants");
+    folderId = folder.getId();
+    Logger.log("Drive folder creat: " + folderId);
+  } else {
+    Logger.log("Drive folder ja existeix: " + folderId);
+  }
+
+  // 3. Set properties (incloent el secret pre-generat que coincideix amb Vercel)
+  props.setProperties({
+    SHEET_ID: sheetId,
+    DRIVE_FOLDER_ID: folderId,
+    APPSCRIPT_SECRET: "2482bb392e577c6d57efe693d5237caf5b7fcf73a356aa810541bae84e7e2b93",
   });
-  Logger.log("Properties set. Verifica a Project Settings > Script Properties.");
+
+  Logger.log("====================================================");
+  Logger.log("BOOTSTRAP COMPLET ✓");
+  Logger.log("Sheet URL: " + SpreadsheetApp.openById(sheetId).getUrl());
+  Logger.log("Drive folder URL: " + DriveApp.getFolderById(folderId).getUrl());
+  Logger.log("====================================================");
+  Logger.log("Següent pas: Deploy > New deployment > Web app > Anyone");
+  return {
+    sheetUrl: SpreadsheetApp.openById(sheetId).getUrl(),
+    folderUrl: DriveApp.getFolderById(folderId).getUrl(),
+  };
+}
+
+/**
+ * (Compatibilitat) Si vols afegir manualment JotForm despres del bootstrap, edita aquí
+ * i executa només aquesta funció.
+ */
+function setJotformProperties() {
+  PropertiesService.getScriptProperties().setProperties({
+    JOTFORM_API_KEY: "", // pega aquí
+    JOTFORM_FORM_ID: "", // pega aquí
+  });
 }
 
 /**

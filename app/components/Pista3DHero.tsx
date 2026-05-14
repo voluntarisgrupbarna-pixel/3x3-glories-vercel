@@ -98,13 +98,13 @@ function Court({
           onSelect();
         }}
       >
-        <planeGeometry args={[3.2, 3.2]} />
+        <planeGeometry args={[3.8, 3.8]} />
         <meshStandardMaterial
           color={venue.color}
           emissive={venue.emissive}
-          emissiveIntensity={selected ? 1.2 : hovered ? 0.8 : 0.4}
-          metalness={0.3}
-          roughness={0.4}
+          emissiveIntensity={selected ? 1.8 : hovered ? 1.4 : 1.0}
+          metalness={0.4}
+          roughness={0.3}
         />
       </mesh>
 
@@ -372,11 +372,13 @@ function NeonGrid() {
   );
 }
 
-// === Camera fly-to controller ===
+// === Camera fly-to controller — only active when a venue is selected ===
 function CameraController({ targetVenue }: { targetVenue: Venue | null }) {
   const { camera } = useThree();
-  const targetPos = useRef(new THREE.Vector3(8, 8, 12));
-  const lookAt = useRef(new THREE.Vector3(0, 0, 0));
+  const targetPos = useRef(new THREE.Vector3());
+  const lookAt = useRef(new THREE.Vector3());
+  const animating = useRef(false);
+  const progress = useRef(0);
 
   useEffect(() => {
     if (targetVenue) {
@@ -386,15 +388,19 @@ function CameraController({ targetVenue }: { targetVenue: Venue | null }) {
         targetVenue.position[2] + 5,
       );
       lookAt.current.set(...targetVenue.position);
+      animating.current = true;
+      progress.current = 0;
     } else {
-      targetPos.current.set(8, 8, 12);
-      lookAt.current.set(0, 0, 0);
+      animating.current = false;
     }
   }, [targetVenue]);
 
   useFrame(() => {
-    camera.position.lerp(targetPos.current, 0.04);
+    if (!animating.current) return;
+    camera.position.lerp(targetPos.current, 0.06);
     camera.lookAt(lookAt.current);
+    progress.current += 0.06;
+    if (progress.current > 1.5) animating.current = false;
   });
 
   return null;
@@ -412,12 +418,14 @@ function Scene({
 
   return (
     <>
-      <fog attach="fog" args={["#020308", 14, 32]} />
+      <fog attach="fog" args={["#020308", 28, 60]} />
       <color attach="background" args={["#040510"]} />
 
-      <ambientLight intensity={0.25} />
-      <directionalLight position={[5, 12, 8]} intensity={0.6} castShadow color="#fff7ef" />
-      <pointLight position={[0, 8, 0]} intensity={0.4} color="#ff375f" distance={20} />
+      <ambientLight intensity={0.6} />
+      <directionalLight position={[5, 12, 8]} intensity={1.0} castShadow color="#fff7ef" />
+      <pointLight position={[0, 8, 0]} intensity={1.2} color="#ff375f" distance={25} />
+      <pointLight position={[-8, 6, 4]} intensity={0.8} color="#21c7a8" distance={18} />
+      <pointLight position={[8, 6, 4]} intensity={0.8} color="#f5b841" distance={18} />
 
       <Stars radius={60} depth={20} count={1200} factor={3} fade speed={0.5} />
 
