@@ -7,10 +7,34 @@ import EarlyBirdBanner from "./components/EarlyBirdBanner";
 import WhatsAppLeadWidget from "./components/WhatsAppLeadWidget";
 import { faqs } from "./data/faqs";
 
-// Three.js / R3F només al client (cap SSR ni hidratació prèvia)
+// Three.js / R3F només al client. El "loading" state renderitza ja el text del hero
+// perquè l'LCP no esperi al bundle 3D (~400KB).
 const Pista3DHero = dynamic(() => import("./components/Pista3DHero"), {
   ssr: false,
-  loading: () => <div className="pista3d-loading" aria-hidden="true" />,
+  loading: () => (
+    <div className="pista3d-shell pista3d-shell-loading">
+      <div className="pista3d-overlay">
+        <div className="pista3d-kicker">CB GRUP BARNA × TIME CHAMBER × EIX CLOT</div>
+        <h1 className="pista3d-headline">
+          Així es <em>viu</em> el 3×3
+        </h1>
+        <p className="pista3d-sub">
+          Tres pistes al barri del Clot-Glòries. Una mateixa pilota. <strong>6-7 juny 2026.</strong>
+        </p>
+        <div className="pista3d-actions">
+          <a href="/inscripcion" className="pista3d-cta-primary">
+            Inscriu el teu equip →
+          </a>
+          <a href="/porta-un-rival" className="pista3d-cta-secondary">
+            Porta un rival · −5 €
+          </a>
+        </div>
+      </div>
+      <div className="pista3d-hint">
+        <span>↻ Carregant l'escena 3D…</span>
+      </div>
+    </div>
+  ),
 });
 
 export default function Home() {

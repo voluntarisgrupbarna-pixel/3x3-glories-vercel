@@ -962,7 +962,14 @@ function SuccessPanel({ teamId, playerIds }: { teamId: string; playerIds: string
       </div>
 
       <div className="wizard-success-qr">
-        <img src={qrUrl} alt={`QR check-in equip ${teamId}`} />
+        <img
+          src={qrUrl}
+          alt={`QR check-in equip ${teamId}`}
+          width={260}
+          height={260}
+          loading="eager"
+          decoding="async"
+        />
         <p>
           <strong>Guarda aquest QR.</strong> Escanejant-lo accedeixes a la teva pàgina de check-in amb l'estat
           actualitzat de la inscripció. Si vols, fes captura ara — també te l'enviarem per email.

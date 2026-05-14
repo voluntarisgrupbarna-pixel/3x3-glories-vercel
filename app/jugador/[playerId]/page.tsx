@@ -78,7 +78,15 @@ export default async function PlayerPage({
               <span className="checkin-id-label">Codi de jugador</span>
               <code className="checkin-id">{player.playerId}</code>
             </div>
-            <img src={qrUrl} alt={`QR jugador ${player.playerId}`} className="checkin-qr" />
+            <img
+              src={qrUrl}
+              alt={`QR jugador ${player.playerId}`}
+              className="checkin-qr"
+              width={240}
+              height={240}
+              loading="lazy"
+              decoding="async"
+            />
           </div>
         </div>
 

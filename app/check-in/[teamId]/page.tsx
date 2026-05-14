@@ -99,7 +99,15 @@ export default async function CheckInPage({
               <span className="checkin-id-label">Codi de l'equip</span>
               <code className="checkin-id">{team.teamId}</code>
             </div>
-            <img src={qrUrl} alt={`QR equip ${team.teamId}`} className="checkin-qr" />
+            <img
+              src={qrUrl}
+              alt={`QR equip ${team.teamId}`}
+              className="checkin-qr"
+              width={240}
+              height={240}
+              loading="lazy"
+              decoding="async"
+            />
           </div>
         </div>
 
