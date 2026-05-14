@@ -1,8 +1,11 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
+import "leaflet/dist/leaflet.css";
 import EarlyBirdBanner from "./components/EarlyBirdBanner";
 import WhatsAppLeadWidget from "./components/WhatsAppLeadWidget";
+import { faqs } from "./data/faqs";
 
 type LngLat = [number, number];
 type RouteMode = "walk" | "metro" | "bus" | "parking";
@@ -13,10 +16,6 @@ type VenuePoint = {
   tag: string;
   detail: string;
   coords: LngLat;
-};
-
-type LeafletWindow = Window & {
-  L?: any;
 };
 
 const venues: VenuePoint[] = [
@@ -167,6 +166,7 @@ export default function Home() {
   const playerMarkerRef = useRef<any>(null);
   const userMarkerRef = useRef<any>(null);
   const animationRef = useRef<number | null>(null);
+  const LRef = useRef<any>(null);
   const [mode, setMode] = useState<RouteMode>("walk");
   const [mapReady, setMapReady] = useState(false);
   const [mapError, setMapError] = useState("");
@@ -177,25 +177,35 @@ export default function Home() {
 
   useEffect(() => {
     let mounted = true;
-    const win = window as LeafletWindow;
 
-    function fitRoute(path: LngLat[]) {
-      if (!mapRef.current || !win.L) return;
+    async function init() {
+      if (!mounted || !mapContainerRef.current) return;
 
-      const bounds = win.L.latLngBounds(toLatLngs(path));
-      const [left, bottom] = getMapPadding();
-      mapRef.current.fitBounds(bounds, {
-        paddingTopLeft: [left, 150],
-        paddingBottomRight: [90, bottom],
-        maxZoom: 14,
-        animate: true,
-      });
-    }
+      let L: any;
+      try {
+        L = (await import("leaflet")).default;
+      } catch {
+        if (mounted) setMapError("No s'ha pogut carregar el mapa.");
+        return;
+      }
 
-    function startMap() {
-      if (!mounted || !mapContainerRef.current || !win.L || mapRef.current) return;
+      if (!mounted || mapRef.current || !mapContainerRef.current) return;
 
-      const map = win.L.map(mapContainerRef.current, {
+      LRef.current = L;
+
+      function fitRoute(path: LngLat[]) {
+        if (!mapRef.current) return;
+        const bounds = L.latLngBounds(toLatLngs(path));
+        const [left, bottom] = getMapPadding();
+        mapRef.current.fitBounds(bounds, {
+          paddingTopLeft: [left, 150],
+          paddingBottomRight: [90, bottom],
+          maxZoom: 14,
+          animate: true,
+        });
+      }
+
+      const map = L.map(mapContainerRef.current, {
         center: [41.4057, 2.1892],
         zoom: 14,
         zoomControl: false,
@@ -204,15 +214,15 @@ export default function Home() {
 
       mapRef.current = map;
 
-      win.L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png", {
+      L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png", {
         attribution: "&copy; OpenStreetMap &copy; CARTO",
         subdomains: "abcd",
         maxZoom: 20,
       }).addTo(map);
 
-      win.L.control.zoom({ position: "bottomright" }).addTo(map);
+      L.control.zoom({ position: "bottomright" }).addTo(map);
 
-      routeGlowRef.current = win.L.polyline(toLatLngs(routes.walk), {
+      routeGlowRef.current = L.polyline(toLatLngs(routes.walk), {
         color: "#ff1f4f",
         weight: 14,
         opacity: 0.22,
@@ -220,7 +230,7 @@ export default function Home() {
         lineJoin: "round",
       }).addTo(map);
 
-      routeLineRef.current = win.L.polyline(toLatLngs(routes.walk), {
+      routeLineRef.current = L.polyline(toLatLngs(routes.walk), {
         color: "#ff375f",
         weight: 4,
         opacity: 0.95,
@@ -229,8 +239,8 @@ export default function Home() {
       }).addTo(map);
 
       venues.forEach((point) => {
-        win.L.marker(toLatLng(point.coords), {
-          icon: win.L.divIcon({
+        L.marker(toLatLng(point.coords), {
+          icon: L.divIcon({
             className: "venue-icon",
             html: makeVenueHtml(point),
             iconSize: [52, 52],
@@ -245,8 +255,8 @@ export default function Home() {
           .addTo(map);
       });
 
-      playerMarkerRef.current = win.L.marker(toLatLng(routes.walk[0]), {
-        icon: win.L.divIcon({
+      playerMarkerRef.current = L.marker(toLatLng(routes.walk[0]), {
+        icon: L.divIcon({
           className: "player-icon",
           html: makePlayerHtml(),
           iconSize: [38, 58],
@@ -259,39 +269,7 @@ export default function Home() {
       setMapReady(true);
     }
 
-    if (!document.getElementById("leaflet-css")) {
-      const link = document.createElement("link");
-      link.id = "leaflet-css";
-      link.rel = "stylesheet";
-      link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
-      link.integrity = "sha256-p4NxAoJBhIINfQy0iOnNG0O14FAfkqH3f8FzG5Yt2bM=";
-      link.crossOrigin = "";
-      document.head.appendChild(link);
-    }
-
-    if (win.L) {
-      startMap();
-    } else {
-      const existingScript = document.querySelector<HTMLScriptElement>(
-        'script[data-leaflet="true"]',
-      );
-
-      if (existingScript) {
-        existingScript.addEventListener("load", startMap, { once: true });
-      } else {
-        const script = document.createElement("script");
-        script.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
-        script.integrity = "sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=";
-        script.crossOrigin = "";
-        script.async = true;
-        script.setAttribute("data-leaflet", "true");
-        script.onload = startMap;
-        script.onerror = () => {
-          if (mounted) setMapError("No s'ha pogut carregar el mapa.");
-        };
-        document.body.appendChild(script);
-      }
-    }
+    init();
 
     return () => {
       mounted = false;
@@ -304,14 +282,14 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    const win = window as LeafletWindow;
+    const L = LRef.current;
     const map = mapRef.current;
-    if (!map || !mapReady || !win.L) return;
+    if (!map || !mapReady || !L) return;
 
     routeGlowRef.current?.setLatLngs(toLatLngs(currentRoute));
     routeLineRef.current?.setLatLngs(toLatLngs(currentRoute));
 
-    const bounds = win.L.latLngBounds(toLatLngs(currentRoute));
+    const bounds = L.latLngBounds(toLatLngs(currentRoute));
     const [left, bottom] = getMapPadding();
     map.fitBounds(bounds, {
       paddingTopLeft: [left, 150],
@@ -339,16 +317,29 @@ export default function Home() {
 
     animationRef.current = requestAnimationFrame(animate);
 
+    function handleVisibility() {
+      if (document.hidden) {
+        if (animationRef.current) {
+          cancelAnimationFrame(animationRef.current);
+          animationRef.current = null;
+        }
+      } else {
+        animationRef.current = requestAnimationFrame(animate);
+      }
+    }
+    document.addEventListener("visibilitychange", handleVisibility);
+
     return () => {
       if (animationRef.current) cancelAnimationFrame(animationRef.current);
+      document.removeEventListener("visibilitychange", handleVisibility);
     };
   }, [currentRoute, mapReady, mode]);
 
   function locateUser() {
-    const win = window as LeafletWindow;
+    const L = LRef.current;
     const map = mapRef.current;
 
-    if (!navigator.geolocation || !map || !win.L) {
+    if (!navigator.geolocation || !map || !L) {
       setGeoLabel("No disponible");
       return;
     }
@@ -359,8 +350,8 @@ export default function Home() {
         const coords: LngLat = [position.coords.longitude, position.coords.latitude];
 
         userMarkerRef.current?.remove();
-        userMarkerRef.current = win.L.marker(toLatLng(coords), {
-          icon: win.L.divIcon({
+        userMarkerRef.current = L.marker(toLatLng(coords), {
+          icon: L.divIcon({
             className: "user-icon",
             html: '<span class="user-marker"></span>',
             iconSize: [18, 18],
@@ -370,7 +361,7 @@ export default function Home() {
           .bindPopup("<strong>Ets aquí</strong><p>T'hi portem al 3×3.</p>")
           .addTo(map);
 
-        const bounds = win.L.latLngBounds([toLatLng(coords), ...toLatLngs(currentRoute)]);
+        const bounds = L.latLngBounds([toLatLng(coords), ...toLatLngs(currentRoute)]);
         const [left, bottom] = getMapPadding();
         map.fitBounds(bounds, {
           paddingTopLeft: [left, 150],
@@ -495,8 +486,105 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="venues-section" aria-label="Seus del torneig">
+        <div className="venues-inner">
+          <h2 className="venues-title">3 seus · 1 barri</h2>
+          <div className="venues-grid">
+            <a href="/seu/westfield-glories" className="venue-card">
+              <span className="venue-card-tag">Seu principal</span>
+              <strong>Westfield Glòries</strong>
+              <span className="venue-card-addr">Av. Diagonal 208</span>
+              <p>Zona de trobada, inscripcions, cerimònia i finals Sènior. Pàrquing gratis 2h.</p>
+            </a>
+            <a href="/seu/nau-del-clot" className="venue-card">
+              <span className="venue-card-tag">Pavelló oficial</span>
+              <strong>La Nau del Clot</strong>
+              <span className="venue-card-addr">C/ de la Llacuna 172</span>
+              <p>Pista coberta. Categories formatives (Premini–Sub-23) i semifinals Sènior.</p>
+            </a>
+            <a href="/seu/rambleta-del-clot" className="venue-card">
+              <span className="venue-card-tag">Pista exterior</span>
+              <strong>Rambleta del Clot</strong>
+              <span className="venue-card-addr">Barri del Clot-Glòries</span>
+              <p>Bàsquet de carrer: ambient, música i competició a l'aire lliure.</p>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section className="faq-section" aria-label="Preguntes freqüents">
+        <div className="faq-inner">
+          <h2 className="faq-title">Preguntes freqüents</h2>
+          <FaqAccordion />
+          <div className="faq-footer">
+            <Link href="/preguntes-frequents" className="faq-all-link">
+              Veure totes les preguntes freqüents →
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="rival-cta-section" aria-label="Porta un rival">
+        <div className="rival-cta-inner">
+          <span className="rival-cta-tag">Pack rival · −5 € cada un</span>
+          <h2>Ja tens equip? Porta'n un de rival</h2>
+          <p>
+            Convida un altre equip a venir al 3×3 i estalvieu <strong>5 € cada un</strong>. Sense límit
+            d'equips. Genera un codi únic i envia'l per WhatsApp en un clic.
+          </p>
+          <Link href="/porta-un-rival" className="rival-cta-btn">
+            Generar repte WhatsApp →
+          </Link>
+        </div>
+      </section>
+
+      <section className="solo-cta-section" aria-label="Inscripció individual">
+        <div className="solo-cta-inner">
+          <span className="solo-cta-tag">Inscripció individual · 20 €</span>
+          <h2>Vens sense equip? Apunta't sol</h2>
+          <p>
+            No tens equip? Apunta't individualment per <strong>20 €</strong> i et col·loquem en un equip una
+            setmana abans del torneig. Inclou samarreta oficial, dorsal i accés als 2 dies.
+          </p>
+          <Link href="/inscripcio-individual" className="solo-cta-btn">
+            Inscriure'm sol →
+          </Link>
+        </div>
+      </section>
+
       <WhatsAppLeadWidget />
     </main>
     </>
+  );
+}
+
+function FaqAccordion() {
+  const [open, setOpen] = useState<number | null>(null);
+
+  function toggle(i: number) {
+    setOpen(open === i ? null : i);
+  }
+
+  return (
+    <div className="faq-list">
+      {faqs.map((faq, i) => (
+        <div key={i} className={`faq-item${open === i ? " faq-item--open" : ""}`}>
+          <button
+            type="button"
+            className="faq-question"
+            aria-expanded={open === i}
+            onClick={() => toggle(i)}
+          >
+            <span>{faq.q}</span>
+            <span className="faq-icon" aria-hidden="true">{open === i ? "−" : "+"}</span>
+          </button>
+          {open === i && (
+            <div className="faq-answer">
+              <p>{faq.a}</p>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
   );
 }

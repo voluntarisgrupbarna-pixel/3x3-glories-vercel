@@ -1,6 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
+import { Inter } from "next/font/google";
 import "./globals.css";
+
+const inter = Inter({ subsets: ["latin"], display: "swap" });
 
 const SITE_URL = "https://cbgrupbarna-3x3timechamber.com";
 const SITE_NAME = "3×3 Westfield Glòries";
@@ -316,7 +319,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ca">
+    <html lang="ca" className={inter.className}>
       <head>
         {/* JSON-LD per a Google rich results + IAs (ChatGPT/Perplexity llegeixen schema.org) */}
         <Script
@@ -342,6 +345,25 @@ export default function RootLayout({
           type="application/ld+json"
           strategy="beforeInteractive"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdFaq) }}
+        />
+        {/* Clarity: skip analytics on localhost and ?noclarity=1 */}
+        <Script
+          id="clarity-opt-out"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function(){
+                var isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+                var hasParam = location.search.indexOf('noclarity=1') !== -1;
+                if(hasParam){ try{ localStorage.setItem('_clarity_opt','1'); }catch(e){} }
+                var optOut = hasParam || isLocal || (function(){ try{ return localStorage.getItem('_clarity_opt')==='1'; }catch(e){ return false; } })();
+                if(optOut){
+                  window['clarity'] = window['clarity'] || function(){};
+                  window['_clarity_blocked'] = true;
+                }
+              })();
+            `,
+          }}
         />
         <Script
           id="meta-pixel"
