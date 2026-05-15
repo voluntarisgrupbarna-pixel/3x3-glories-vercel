@@ -4,10 +4,16 @@ import { useEffect, useState } from "react";
 
 const DEADLINE = new Date("2026-05-21T00:00:00+02:00");
 
-const EB_LOGOS = [
-  { src: "/logos/westfield.svg",         alt: "Westfield Glòries", dark: false },
-  { src: "/cb-grup-barna-logo-192.png",  alt: "CB Grup Barna",     dark: false },
-  { src: "/logos/timechamber.webp",      alt: "Time Chamber",      dark: true  },
+const EB_LOGOS: Array<{
+  src: string | null;
+  alt: string;
+  dark: boolean;
+  featured?: boolean;
+}> = [
+  { src: "/logos/westfield.svg",        alt: "Westfield Glòries", dark: false },
+  { src: "/cb-grup-barna-logo-192.png", alt: "CB Grup Barna",     dark: false, featured: true },
+  { src: "/logos/timechamber.webp",     alt: "Time Chamber",      dark: true  },
+  { src: null,                           alt: "Eix Clot",          dark: false },  // pendent logo oficial
 ];
 
 function getCountdown(target: Date) {
@@ -48,15 +54,24 @@ export default function EarlyBirdBanner() {
     <div className="early-bird-bar" role="banner">
       {/* Co-organizer logos — esquerra */}
       <div className="eb-logos">
-        {EB_LOGOS.map((l) => (
-          <img
-            key={l.alt}
-            src={l.src}
-            alt={l.alt}
-            className={`eb-logo${l.dark ? " eb-logo--dark" : ""}`}
-          />
-        ))}
-        <span className="eb-logo-label">eix clot</span>
+        {EB_LOGOS.map((l) =>
+          l.src ? (
+            <img
+              key={l.alt}
+              src={l.src}
+              alt={l.alt}
+              className={[
+                "eb-logo",
+                l.dark     ? "eb-logo--dark"     : "",
+                l.featured ? "eb-logo--featured" : "",
+              ].filter(Boolean).join(" ")}
+            />
+          ) : (
+            <span key={l.alt} className="eb-logo-text" aria-label={l.alt}>
+              {l.alt}
+            </span>
+          )
+        )}
       </div>
 
       <span className="eb-sep" aria-hidden="true" />
