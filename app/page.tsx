@@ -18,6 +18,9 @@ export default function Home() {
         {/* === HERO FESTIVAL — primer impacte amb foto + nav + stats + IG === */}
         <HeroFestival />
 
+        {/* === SLIDE DOS — rèplica del disseny original: el torneig === */}
+        <SlideDos />
+
         {/* === Secció informativa indexable (SEO) === */}
         <section id="torneig" className="event-info-section" aria-label="Sobre el torneig 3×3">
           <div className="event-info-inner">
