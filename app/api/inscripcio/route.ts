@@ -22,7 +22,6 @@ type ContactPerson = {
   phone: string;
   email: string;
   shirtSize?: string;
-  dni?: string; // deprecated, no es recull al formulari
 };
 
 type Payload = {
@@ -112,7 +111,6 @@ export async function POST(req: NextRequest) {
       capNom: payload.captain.fullName,
       capEmail: payload.captain.email,
       capTelefon: payload.captain.phone,
-      capDNI: payload.captain.dni,
       tutorNom: payload.tutor?.fullName || "",
       tutorTelefon: payload.tutor?.phone || "",
       total: payload.finalPrice ?? payload.packagePrice,
