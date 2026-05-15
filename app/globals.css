@@ -3369,3 +3369,1082 @@ a {
     height: 180px;
   }
 }
+
+/* ============================== HERO 3D — Pista interactiva ============================== */
+.pista3d-shell {
+  position: relative;
+  width: 100%;
+  height: 100svh;
+  min-height: 640px;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(255, 55, 95, 0.18), transparent 55%),
+    radial-gradient(ellipse at 50% 80%, rgba(33, 199, 168, 0.1), transparent 60%),
+    #02030a;
+}
+
+.pista3d-shell canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  outline: none;
+  touch-action: none;
+}
+
+.pista3d-loading {
+  width: 100%;
+  height: 100svh;
+  min-height: 640px;
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(255, 55, 95, 0.18), transparent 55%),
+    #02030a;
+}
+
+/* Overlay UI */
+.pista3d-overlay {
+  position: absolute;
+  z-index: 5;
+  top: 32px;
+  left: 32px;
+  right: 32px;
+  max-width: 540px;
+  pointer-events: none;
+}
+
+.pista3d-overlay > * {
+  pointer-events: auto;
+}
+
+.pista3d-kicker {
+  display: inline-block;
+  margin-bottom: 14px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(7, 8, 10, 0.62);
+  border: 1px solid rgba(255, 55, 95, 0.4);
+  backdrop-filter: blur(10px);
+  color: #ff375f;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.pista3d-headline {
+  margin: 0 0 14px;
+  font-size: clamp(48px, 9vw, 96px);
+  line-height: 0.88;
+  letter-spacing: -0.02em;
+  color: #fff7ef;
+  text-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+}
+
+.pista3d-headline em {
+  font-style: italic;
+  background: linear-gradient(120deg, #ff375f, #f5b841, #21c7a8);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: pista3d-gradient 4s linear infinite;
+}
+
+@keyframes pista3d-gradient {
+  to {
+    background-position: 200% center;
+  }
+}
+
+.pista3d-sub {
+  margin: 0 0 24px;
+  max-width: 440px;
+  font-size: clamp(16px, 2vw, 19px);
+  line-height: 1.45;
+  color: rgba(255, 247, 239, 0.82);
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.7);
+}
+
+.pista3d-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.pista3d-cta-primary {
+  padding: 16px 28px;
+  border-radius: 10px;
+  background: #ff375f;
+  color: #050505;
+  font-size: 16px;
+  font-weight: 900;
+  text-decoration: none;
+  box-shadow: 0 12px 40px rgba(255, 55, 95, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pista3d-cta-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 50px rgba(255, 55, 95, 0.55);
+}
+
+.pista3d-cta-secondary {
+  padding: 16px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 10px;
+  background: rgba(7, 8, 10, 0.55);
+  backdrop-filter: blur(10px);
+  color: #fff7ef;
+  font-size: 15px;
+  font-weight: 800;
+  text-decoration: none;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.pista3d-cta-secondary:hover {
+  background: rgba(255, 55, 95, 0.15);
+  border-color: rgba(255, 55, 95, 0.5);
+}
+
+/* Venue dock (bottom) */
+.pista3d-dock {
+  position: absolute;
+  z-index: 5;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  padding: 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(7, 8, 10, 0.72);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.42);
+}
+
+.pista3d-dock-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(255, 247, 239, 0.74);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+  white-space: nowrap;
+}
+
+.pista3d-dock-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff7ef;
+}
+
+.pista3d-dock-btn-active {
+  background: var(--venue-color, #ff375f);
+  color: #050505;
+}
+
+.pista3d-dock-btn-active .pista3d-dock-dot {
+  background: #050505;
+  box-shadow: 0 0 0 3px rgba(5, 5, 5, 0.18);
+}
+
+.pista3d-dock-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--venue-color, #ff375f);
+  box-shadow: 0 0 12px var(--venue-color, #ff375f);
+}
+
+/* Detail panel */
+.pista3d-detail {
+  position: absolute;
+  z-index: 6;
+  right: 32px;
+  bottom: 100px;
+  width: min(360px, calc(100% - 64px));
+  padding: 22px;
+  border-radius: 14px;
+  border: 2px solid #ff375f;
+  background: rgba(7, 8, 10, 0.92);
+  backdrop-filter: blur(20px);
+  color: #fff7ef;
+  box-shadow: 0 24px 90px rgba(0, 0, 0, 0.55);
+  animation: pista3d-detail-in 0.3s ease;
+}
+
+@keyframes pista3d-detail-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.pista3d-detail-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff7ef;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.pista3d-detail-close:hover {
+  background: rgba(255, 55, 95, 0.4);
+}
+
+.pista3d-detail-tag {
+  display: inline-block;
+  margin-bottom: 8px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.pista3d-detail strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 22px;
+  color: #fff7ef;
+}
+
+.pista3d-detail p {
+  margin: 0 0 18px;
+  font-size: 14px;
+  color: rgba(255, 247, 239, 0.78);
+  line-height: 1.5;
+}
+
+.pista3d-detail-cta {
+  display: inline-block;
+  padding: 10px 18px;
+  border-radius: 8px;
+  background: rgba(255, 55, 95, 0.18);
+  border: 1px solid rgba(255, 55, 95, 0.5);
+  color: #ff375f;
+  font-size: 13px;
+  font-weight: 800;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.pista3d-detail-cta:hover {
+  background: rgba(255, 55, 95, 0.3);
+}
+
+/* Hint */
+.pista3d-hint {
+  position: absolute;
+  z-index: 4;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: rgba(7, 8, 10, 0.45);
+  backdrop-filter: blur(8px);
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 247, 239, 0.55);
+  pointer-events: none;
+  animation: pista3d-hint-pulse 3s ease-in-out infinite;
+}
+
+@keyframes pista3d-hint-pulse {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 760px) {
+  .pista3d-overlay {
+    top: 70px;
+    left: 16px;
+    right: 16px;
+  }
+
+  .pista3d-headline {
+    font-size: clamp(40px, 12vw, 64px);
+  }
+
+  .pista3d-dock {
+    bottom: 70px;
+    padding: 6px;
+    gap: 4px;
+  }
+
+  .pista3d-dock-btn {
+    padding: 8px 12px;
+    font-size: 11px;
+  }
+
+  .pista3d-detail {
+    right: 16px;
+    left: 16px;
+    bottom: 130px;
+    width: auto;
+    padding: 16px;
+  }
+
+  .pista3d-detail strong {
+    font-size: 18px;
+  }
+
+  .pista3d-hint {
+    bottom: 14px;
+    font-size: 11px;
+  }
+}
+
+/* ============================== HERO VÍDEO BANNER ============================== */
+.hero-video-banner {
+  position: relative;
+  width: 100%;
+  height: 100svh;
+  min-height: 600px;
+  overflow: hidden;
+  background: #050505;
+}
+
+.hero-video-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.hero-video-stage video,
+.hero-video-stage img,
+.hero-video-ig-poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.hero-video-tint {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background:
+    linear-gradient(180deg, rgba(5, 5, 5, 0.35) 0%, rgba(5, 5, 5, 0.05) 28%, rgba(5, 5, 5, 0.45) 70%, rgba(5, 5, 5, 0.88) 100%),
+    linear-gradient(90deg, rgba(5, 5, 5, 0.55) 0%, rgba(5, 5, 5, 0.1) 50%, transparent 100%);
+  pointer-events: none;
+}
+
+.hero-video-overlay {
+  position: absolute;
+  z-index: 3;
+  left: 5%;
+  bottom: 12%;
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.hero-video-kicker {
+  display: inline-block;
+  align-self: flex-start;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(7, 8, 10, 0.7);
+  border: 1px solid rgba(255, 55, 95, 0.4);
+  backdrop-filter: blur(10px);
+  color: #ff375f;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.hero-video-headline {
+  margin: 0;
+  font-size: clamp(40px, 7vw, 88px);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  color: #fff7ef;
+  text-shadow: 0 8px 40px rgba(0, 0, 0, 0.65);
+}
+
+.hero-video-headline em {
+  font-style: italic;
+  background: linear-gradient(120deg, #ff375f, #f5b841, #21c7a8);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: hero-video-gradient 5s linear infinite;
+}
+
+@keyframes hero-video-gradient {
+  to {
+    background-position: 200% center;
+  }
+}
+
+.hero-video-sub {
+  margin: 0;
+  max-width: 560px;
+  font-size: clamp(15px, 1.8vw, 19px);
+  line-height: 1.45;
+  color: rgba(255, 247, 239, 0.92);
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.7);
+}
+
+.hero-video-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.hero-video-cta-primary {
+  padding: 16px 28px;
+  border-radius: 10px;
+  background: #ff375f;
+  color: #050505;
+  font-size: 16px;
+  font-weight: 900;
+  text-decoration: none;
+  box-shadow: 0 12px 40px rgba(255, 55, 95, 0.42);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hero-video-cta-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 50px rgba(255, 55, 95, 0.6);
+}
+
+.hero-video-cta-secondary {
+  padding: 16px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 10px;
+  background: rgba(7, 8, 10, 0.55);
+  backdrop-filter: blur(10px);
+  color: #fff7ef;
+  font-size: 15px;
+  font-weight: 800;
+  text-decoration: none;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.hero-video-cta-secondary:hover {
+  background: rgba(255, 55, 95, 0.18);
+  border-color: rgba(255, 55, 95, 0.55);
+}
+
+.hero-video-dots {
+  position: absolute;
+  z-index: 4;
+  bottom: 4%;
+  right: 5%;
+  display: flex;
+  gap: 8px;
+}
+
+.hero-video-dot {
+  width: 32px;
+  height: 4px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.32);
+  cursor: pointer;
+  transition: background 0.2s ease, width 0.2s ease;
+}
+
+.hero-video-dot:hover {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.hero-video-dot-active {
+  background: #ff375f;
+  width: 48px;
+}
+
+.hero-video-ig-link {
+  position: absolute;
+  inset: 0;
+  display: block;
+  text-decoration: none;
+}
+
+.hero-video-ig-fallback {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 30% 40%, rgba(255, 55, 95, 0.45), transparent 60%),
+    radial-gradient(ellipse at 70% 70%, rgba(33, 199, 168, 0.3), transparent 55%),
+    #0a0c14;
+}
+
+.hero-video-ig-play {
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.hero-video-ig-play svg {
+  filter: drop-shadow(0 12px 30px rgba(255, 55, 95, 0.55));
+}
+
+.hero-video-ig-label {
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(7, 8, 10, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff7ef;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+@media (max-width: 760px) {
+  .hero-video-overlay {
+    left: 16px;
+    right: 16px;
+    bottom: 10%;
+    max-width: none;
+  }
+
+  .hero-video-headline {
+    font-size: clamp(36px, 11vw, 56px);
+  }
+
+  .hero-video-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hero-video-cta-primary,
+  .hero-video-cta-secondary {
+    text-align: center;
+  }
+
+  .hero-video-dots {
+    right: 50%;
+    transform: translateX(50%);
+  }
+}
+
+/* ============================== HERO FESTIVAL ============================== */
+.hero-festival {
+  position: relative;
+  width: 100%;
+  min-height: 100svh;
+  overflow: hidden;
+  background: #050505;
+  color: #fff7ef;
+  font-family: Inter, InterFallback, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.hero-festival-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.hero-festival-bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: saturate(1.05);
+}
+
+.hero-festival-tint {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(5, 5, 5, 0.78) 0%, rgba(5, 5, 5, 0.55) 35%, rgba(5, 5, 5, 0.25) 55%, transparent 80%),
+    linear-gradient(180deg, rgba(5, 5, 5, 0.55) 0%, transparent 25%, transparent 75%, rgba(5, 5, 5, 0.78) 100%);
+}
+
+/* === Top nav === */
+.hero-festival-nav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 18px 32px;
+  transition: background 0.3s ease, backdrop-filter 0.3s ease, border-color 0.3s ease;
+  border-bottom: 1px solid transparent;
+}
+
+.hero-festival-nav-scrolled {
+  background: rgba(5, 5, 5, 0.78);
+  backdrop-filter: blur(14px);
+  border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+.hero-festival-logos {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hero-festival-logo {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: #fff7ef;
+  color: #050505;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 1.05;
+  padding: 4px;
+  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.35);
+  border: 2px solid rgba(255, 255, 255, 0.92);
+}
+
+.hero-festival-logo-westfield {
+  background: #fff7ef;
+  color: #c0162e;
+  font-size: 8px;
+  letter-spacing: 0;
+}
+
+.hero-festival-logo-grupbarna {
+  background: #2e7d32;
+  color: #fff7ef;
+}
+
+.hero-festival-logo-timechamber {
+  background: #fff7ef;
+  color: #050505;
+  font-size: 8px;
+}
+
+.hero-festival-logo-eixclot {
+  background: #fff7ef;
+  color: #ff375f;
+  font-size: 8px;
+}
+
+.hero-festival-logo span {
+  display: block;
+}
+
+.hero-festival-links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.hero-festival-link {
+  color: rgba(255, 247, 239, 0.86);
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.hero-festival-link:hover {
+  color: #ff375f;
+}
+
+.hero-festival-nav-cta {
+  padding: 11px 24px;
+  border-radius: 999px;
+  background: #ff1f3a;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.hero-festival-nav-cta:hover {
+  background: #ff375f;
+  transform: translateY(-1px);
+}
+
+/* === Left panel === */
+.hero-festival-panel {
+  position: absolute;
+  z-index: 4;
+  top: 50%;
+  left: 5%;
+  transform: translateY(-50%);
+  width: min(620px, calc(100vw - 40px));
+  padding: 36px;
+  border-radius: 18px;
+  background: rgba(7, 8, 10, 0.42);
+  border: 1px solid rgba(255, 55, 95, 0.18);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
+}
+
+.hero-festival-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 55, 95, 0.55);
+  background: rgba(255, 55, 95, 0.1);
+  color: #ff375f;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+
+.hero-festival-chip-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ff375f;
+  box-shadow: 0 0 8px #ff375f;
+  animation: hero-festival-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes hero-festival-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.4); }
+}
+
+.hero-festival-title {
+  margin: 0 0 8px;
+  font-size: clamp(40px, 5.5vw, 76px);
+  line-height: 0.94;
+  letter-spacing: -0.015em;
+  color: #ff1f3a;
+  text-shadow: 0 6px 30px rgba(0, 0, 0, 0.5);
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.hero-festival-subtitle {
+  margin: 0 0 20px;
+  font-size: clamp(13px, 1.5vw, 18px);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(255, 247, 239, 0.78);
+}
+
+.hero-festival-subtitle strong {
+  color: #fff7ef;
+}
+
+.hero-festival-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-bottom: 24px;
+  font-size: 14px;
+  color: rgba(255, 247, 239, 0.86);
+}
+
+.hero-festival-meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.hero-festival-meta-item svg {
+  color: rgba(255, 247, 239, 0.62);
+}
+
+.hero-festival-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.hero-festival-cta-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 28px;
+  border-radius: 999px;
+  background: #ff1f3a;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 900;
+  text-decoration: none;
+  box-shadow: 0 14px 42px rgba(255, 31, 58, 0.45);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hero-festival-cta-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 50px rgba(255, 31, 58, 0.6);
+}
+
+.hero-festival-cta-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 24px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff7ef;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.hero-festival-cta-secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Stats grid */
+.hero-festival-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  padding: 18px;
+  border-radius: 14px;
+  background: rgba(5, 5, 5, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  margin-bottom: 16px;
+}
+
+.hero-festival-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: left;
+}
+
+.hero-festival-stat-value {
+  font-size: clamp(20px, 2.2vw, 28px);
+  font-weight: 900;
+  color: #ff375f;
+  line-height: 1;
+}
+
+.hero-festival-stat-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 247, 239, 0.6);
+  line-height: 1.3;
+}
+
+.hero-festival-progress {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: rgba(255, 55, 95, 0.14);
+  border: 1px solid rgba(255, 55, 95, 0.42);
+  color: #ff375f;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.hero-festival-progress-icon {
+  font-size: 14px;
+}
+
+/* === Right Instagram card === */
+.hero-festival-ig {
+  position: absolute;
+  z-index: 4;
+  top: 50%;
+  right: 5%;
+  transform: translateY(-50%);
+  width: min(360px, 32vw);
+  border-radius: 22px;
+  overflow: hidden;
+  background: #0a0c14;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
+  text-decoration: none;
+  color: #fff7ef;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.hero-festival-ig:hover {
+  transform: translateY(calc(-50% - 4px));
+  box-shadow: 0 30px 100px rgba(0, 0, 0, 0.65);
+}
+
+.hero-festival-ig-header {
+  position: absolute;
+  z-index: 2;
+  top: 12px;
+  left: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(5, 5, 5, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.hero-festival-ig-media {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+
+.hero-festival-ig-tags {
+  position: absolute;
+  z-index: 2;
+  bottom: 12px;
+  left: 12px;
+  display: flex;
+  gap: 6px;
+}
+
+.hero-festival-ig-tags span {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255, 55, 95, 0.85);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+/* === Bottom banner === */
+.hero-festival-bottom {
+  position: absolute;
+  z-index: 4;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #ff375f;
+  font-size: clamp(18px, 2.4vw, 32px);
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .hero-festival-ig {
+    display: none;
+  }
+
+  .hero-festival-panel {
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(620px, calc(100vw - 32px));
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-festival-nav {
+    padding: 14px 16px;
+    flex-direction: column;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .hero-festival-logo {
+    width: 44px;
+    height: 44px;
+    border-radius: 11px;
+  }
+
+  .hero-festival-links {
+    display: none;
+  }
+
+  .hero-festival-nav-cta {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    padding: 8px 18px;
+    font-size: 11px;
+  }
+
+  .hero-festival-panel {
+    padding: 24px;
+    top: auto;
+    bottom: 64px;
+    transform: translateX(-50%);
+    border-radius: 14px;
+  }
+
+  .hero-festival-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding: 14px;
+  }
+
+  .hero-festival-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hero-festival-cta-primary,
+  .hero-festival-cta-secondary {
+    justify-content: center;
+  }
+
+  .hero-festival-bottom {
+    bottom: 12px;
+    font-size: 13px;
+  }
+}
