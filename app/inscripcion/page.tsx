@@ -33,7 +33,7 @@ const jsonLdHowTo = {
     "@type": "MonetaryAmount",
     currency: "EUR",
     minValue: "75",
-    maxValue: "105",
+    maxValue: "90",
   },
   supply: [
     { "@type": "HowToSupply", name: "Dades dels 3–5 jugadors (nom, cognoms, any de naixement)" },

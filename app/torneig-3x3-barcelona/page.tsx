@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import Link from "next/link";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Torneig 3×3 Barcelona 2026 — Westfield Glòries · FIBA · 2.000€ premis",
@@ -71,9 +72,9 @@ export default function TorneigPage() {
         </nav>
 
         <div className="insc-hero">
-          <img src="/hero-bg-2.webp"
+          <Image src="/hero-bg-2.webp" fill priority sizes="100vw"
             alt="Torneig 3×3 Barcelona 2026 — pista exterior Clot-Glòries"
-            className="insc-hero-img" />
+            className="insc-hero-img" style={{ objectFit: "cover", objectPosition: "center 30%" }} />
           <div className="insc-hero-overlay" />
           <div className="insc-hero-body">
             <span className="insc-hero-kicker">4a edició · 6-7 Juny 2026 · Clot-Glòries, Barcelona</span>
@@ -118,8 +119,8 @@ export default function TorneigPage() {
               { emoji: "🏀", name: "Cadet", any: "2010–2011", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€" },
               { emoji: "🏀", name: "Júnior", any: "2008–2009", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€" },
               { emoji: "🏀", name: "Sub-23", any: "2003–2007", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€" },
-              { emoji: "🏆", name: "Sènior Masculí", any: "fins 2002", preu: "85–105 €", nota: "4 jug.: 85€ · 5 jug.: 105€", special: true },
-              { emoji: "🏆", name: "Sènior Femení", any: "fins 2002", preu: "85–105 €", nota: "4 jug.: 85€ · 5 jug.: 105€", special: true },
+              { emoji: "🏆", name: "Sènior Masculí", any: "fins 2002", preu: "85–90 €", nota: "4 jug.: 85€ · 5 jug.: 90€", special: true },
+              { emoji: "🏆", name: "Sènior Femení", any: "fins 2002", preu: "85–90 €", nota: "4 jug.: 85€ · 5 jug.: 90€", special: true },
               { emoji: "🎖️", name: "Veterans Masculí", any: "fins 1986", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€" },
               { emoji: "🎖️", name: "Veterans Femení", any: "fins 1986", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€" },
             ].map((cat) => (

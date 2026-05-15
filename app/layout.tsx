@@ -199,7 +199,7 @@ const jsonLdEvent = {
       name: "Inscripció equip 3×3",
       url: `${SITE_URL}/inscripcion`,
       lowPrice: "75",
-      highPrice: "105",
+      highPrice: "90",
       priceCurrency: "EUR",
       offerCount: "10",
       availability: "https://schema.org/InStock",
@@ -303,8 +303,8 @@ const jsonLdCategories = {
     { "@type": "ListItem", position: 4, name: "Cadet · nascuts 2010–2011 · 75–90€/equip", url: `${SITE_URL}/inscripcion` },
     { "@type": "ListItem", position: 5, name: "Júnior · nascuts 2008–2009 · 75–90€/equip", url: `${SITE_URL}/inscripcion` },
     { "@type": "ListItem", position: 6, name: "Sub-23 · nascuts 2003–2007 · 75–90€/equip", url: `${SITE_URL}/inscripcion` },
-    { "@type": "ListItem", position: 7, name: "Sènior Masculí FIBA · 1.000€ premi en metàl·lic · 85–105€/equip", url: `${SITE_URL}/torneo-3x3-senior-fiba-barcelona` },
-    { "@type": "ListItem", position: 8, name: "Sènior Femení FIBA · 1.000€ premi en metàl·lic · 85–105€/equip", url: `${SITE_URL}/torneo-3x3-femenino-barcelona` },
+    { "@type": "ListItem", position: 7, name: "Sènior Masculí FIBA · 1.000€ premi en metàl·lic · 85–90€/equip", url: `${SITE_URL}/torneo-3x3-senior-fiba-barcelona` },
+    { "@type": "ListItem", position: 8, name: "Sènior Femení FIBA · 1.000€ premi en metàl·lic · 85–90€/equip", url: `${SITE_URL}/torneo-3x3-femenino-barcelona` },
     { "@type": "ListItem", position: 9, name: "Veterans Masculí · nascuts fins 1986 · 75–90€/equip", url: `${SITE_URL}/torneo-3x3-veteranos-barcelona` },
     { "@type": "ListItem", position: 10, name: "Veterans Femení · nascuts fins 1986 · 75–90€/equip", url: `${SITE_URL}/torneo-3x3-veteranos-barcelona` },
   ],
@@ -354,7 +354,7 @@ const jsonLdFaq = {
       name: "Quant costa la inscripció per equip?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Entre 75 € i 105 €. 75 € per equip de 3-4 jugadors (categories formatives), 85 € per equip de 3-4 jugadors Sèniors/Veterans, 90 € per equip de 5 jugadors (categoria general) i 105 € per equip de 5 jugadors Sèniors. Les samarretes addicionals costen 25 €/u. Hi ha un descompte del 10% per compartir el torneig a xarxes socials.",
+        text: "Entre 75 € i 90 €. 75 € per equip de 3-4 jugadors (categories formatives i Veterans), 85 € per equip de 3-4 jugadors Sèniors, 90 € per equip de 5 jugadors (qualsevol categoria). Les samarretes addicionals costen 25 €/u. Hi ha un descompte del 10% per compartir el torneig a xarxes socials (Early Bird).",
       },
     },
     {

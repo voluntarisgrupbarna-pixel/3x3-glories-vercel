@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import Link from "next/link";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "3×3 Sènior FIBA Barcelona 2026 | 1.000€ premi + punts rànquing mundial",
@@ -44,11 +45,9 @@ export default function SeniorFibaPage() {
         </nav>
 
         <div className="insc-hero">
-          <img
-            src="/hero-bg-3.webp"
+          <Image src="/hero-bg-3.webp" fill priority sizes="100vw"
             alt="Jugadors Sènior competint al Torneig 3×3 FIBA Barcelona 2026 a Westfield Glòries"
-            className="insc-hero-img"
-          />
+            className="insc-hero-img" style={{ objectFit: "cover", objectPosition: "center 30%" }} />
           <div className="insc-hero-overlay" />
           <div className="insc-hero-body">
             <span className="insc-hero-kicker">Dissabte 6 de Juny 2026 · Westfield Glòries, Barcelona</span>
@@ -69,7 +68,8 @@ export default function SeniorFibaPage() {
 
           <div className="insc-prize">
             <div className="insc-prize-img-wrap">
-              <img src="/hero-bg-1.webp" alt="Finals Sènior al Westfield Glòries Barcelona" className="insc-prize-img" />
+              <Image src="/hero-bg-1.webp" fill sizes="(max-width: 768px) 100vw, 50vw"
+                alt="Finals Sènior al Westfield Glòries Barcelona" className="insc-prize-img" style={{ objectFit: "cover" }} />
               <div className="insc-prize-img-overlay" />
               <span className="insc-prize-fiba">FIBA Official</span>
             </div>
@@ -106,15 +106,15 @@ export default function SeniorFibaPage() {
               <span className="insc-cat-emoji">🏆</span>
               <span className="insc-cat-name">Sènior Masculí</span>
               <span className="insc-cat-year">Nascuts fins 2002</span>
-              <span className="insc-cat-price">85–105 €</span>
-              <span className="insc-cat-note">4 jug.: 85€ · 5 jug.: 90–105€</span>
+              <span className="insc-cat-price">85–90 €</span>
+              <span className="insc-cat-note">4 jug.: 85€ · 5 jug.: 90€</span>
             </div>
             <div className="insc-cat-card insc-cat-card--pro">
               <span className="insc-cat-emoji">🏆</span>
               <span className="insc-cat-name">Sènior Femení</span>
               <span className="insc-cat-year">Nascudes fins 2002</span>
-              <span className="insc-cat-price">85–105 €</span>
-              <span className="insc-cat-note">4 jug.: 85€ · 5 jug.: 90–105€</span>
+              <span className="insc-cat-price">85–90 €</span>
+              <span className="insc-cat-note">4 jug.: 85€ · 5 jug.: 90€</span>
             </div>
           </div>
           <p style={{ fontSize: "0.85rem", color: "rgba(255,247,239,0.5)", marginTop: 8 }}>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import Link from "next/link";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "3×3 Barcelona 2026 — Torneig FIBA · Westfield Glòries · 2.000€",
@@ -144,9 +145,9 @@ export default function Page3x3Barcelona() {
 
         {/* Hero */}
         <div className="insc-hero">
-          <img src="/hero-bg-1.webp"
+          <Image src="/hero-bg-1.webp" fill priority sizes="100vw"
             alt="Torneig 3×3 Barcelona 2026 al Westfield Glòries — Clot-Glòries"
-            className="insc-hero-img" />
+            className="insc-hero-img" style={{ objectFit: "cover", objectPosition: "center 30%" }} />
           <div className="insc-hero-overlay" />
           <div className="insc-hero-body">
             <span className="insc-hero-kicker">6-7 Juny 2026 · Clot-Glòries, Barcelona · FIBA Oficial</span>
@@ -169,9 +170,9 @@ export default function Page3x3Barcelona() {
           {/* Prize block */}
           <div className="insc-prize">
             <div className="insc-prize-img-wrap">
-              <img src="/hero-bg-3.webp"
+              <Image src="/hero-bg-3.webp" fill sizes="(max-width: 768px) 100vw, 50vw"
                 alt="Jugadors al 3×3 Barcelona 2026 Westfield Glòries"
-                className="insc-prize-img" />
+                className="insc-prize-img" style={{ objectFit: "cover" }} />
               <div className="insc-prize-img-overlay" />
               <span className="insc-prize-fiba">FIBA Official</span>
             </div>

@@ -147,7 +147,7 @@ export default function HeroFestival() {
           </a>
         </div>
 
-        <a href="/inscripcion/solo" className="hero-festival-solo-cta">
+        <a href="/inscripcio-individual" className="hero-festival-solo-cta">
           <span aria-hidden="true">👤</span> No tens equip? Apunta&apos;t sol per <strong>20€</strong> · t&apos;assignem un equip <span aria-hidden="true">→</span>
         </a>
 
