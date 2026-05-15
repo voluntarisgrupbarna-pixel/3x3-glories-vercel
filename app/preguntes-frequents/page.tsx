@@ -28,6 +28,17 @@ export default function PreguntesFrequentsPage() {
       </nav>
 
       <main className="page-content">
+        {/* ── Urgency strip — fil de la xarxa (la mosca que llegeix les FAQs ja sap que vol apuntar-se) ── */}
+        <div className="urgency-strip urgency-strip--top">
+          <span className="urgency-strip-icon" aria-hidden="true">🏀</span>
+          <span className="urgency-strip-text">
+            <strong>Places limitades · Early Bird −10%</strong> actiu ara
+          </span>
+          <Link href="/inscripcion" className="urgency-strip-cta">
+            Inscriu l'equip →
+          </Link>
+        </div>
+
         <span className="page-kicker">FAQ</span>
         <h1>Preguntes freqüents sobre el 3×3 Barcelona</h1>
 

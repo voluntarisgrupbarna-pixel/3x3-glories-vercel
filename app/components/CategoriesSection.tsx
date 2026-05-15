@@ -59,7 +59,18 @@ export default function CategoriesSection() {
           ))}
         </div>
 
-        <div style={{ textAlign: "center", marginTop: 40 }}>
+        {/* ── Urgency strip — fil de la xarxa ── */}
+        <div className="urgency-strip">
+          <span className="urgency-strip-icon" aria-hidden="true">🔥</span>
+          <span className="urgency-strip-text">
+            <strong>Early Bird −10%</strong> actiu ara · acaba aviat
+          </span>
+          <a href="/inscripcion" className="urgency-strip-cta">
+            Inscriu l'equip →
+          </a>
+        </div>
+
+        <div style={{ textAlign: "center", marginTop: 28 }}>
           <a href="/inscripcion" className="cta-btn">
             Inscriu el teu Equip Ara
           </a>

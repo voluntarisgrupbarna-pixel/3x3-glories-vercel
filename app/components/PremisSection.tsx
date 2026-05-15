@@ -50,7 +50,18 @@ export default function PremisSection() {
           ))}
         </div>
 
-        <div style={{ textAlign: "center", marginTop: 40 }}>
+        {/* ── Urgency strip — fil de la xarxa ── */}
+        <div className="urgency-strip">
+          <span className="urgency-strip-icon" aria-hidden="true">⏱️</span>
+          <span className="urgency-strip-text">
+            <strong>Places limitades</strong> — els equips s'apunten ràpid cada edició
+          </span>
+          <a href="/inscripcion" className="urgency-strip-cta">
+            Reserva la plaça ara →
+          </a>
+        </div>
+
+        <div style={{ textAlign: "center", marginTop: 28 }}>
           <a href="/inscripcion" className="cta-btn">
             🏆 Vull competir pels premis
           </a>
