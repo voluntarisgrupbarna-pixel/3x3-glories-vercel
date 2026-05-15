@@ -143,13 +143,13 @@ export default function HeroFestival() {
         </div>
       </div>
 
-      {/* Right card — Instagram embed */}
+      {/* Right card — Instagram reel embed */}
       <a
-        href="https://www.instagram.com/cbgrupbarna/"
+        href="https://www.instagram.com/reel/DJNKYiuMOGm/"
         target="_blank"
         rel="noreferrer"
         className="hero-festival-ig"
-        aria-label="Veure @cbgrupbarna a Instagram"
+        aria-label="Veure el reel del 3×3 a @cbgrupbarna a Instagram"
       >
         <div className="hero-festival-ig-header">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2">
@@ -159,14 +159,17 @@ export default function HeroFestival() {
           </svg>
           <span>@cbgrupbarna</span>
         </div>
-        <img
-          src="/hero-bg.jpg"
-          alt="3×3 Westfield Glòries · moment del torneig"
+        <video
           className="hero-festival-ig-media"
+          src="/videos/hero-ig.mp4"
+          poster="/videos/hero-ig-poster.jpg"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
           width={420}
           height={520}
-          loading="eager"
-          decoding="async"
         />
         <div className="hero-festival-ig-tags">
           <span>#3×3</span>
