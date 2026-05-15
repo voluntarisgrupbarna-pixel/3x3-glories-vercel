@@ -5421,87 +5421,95 @@ html {
 
 /* ══════════════════════════════════════════════════════════════
    STICKY CTA BAR — Pack Rival + Inscriure'm sol (totes les pàgines)
+   Posició: cantonada inferior ESQUERRA (WA i countdown estan a la dreta)
 ══════════════════════════════════════════════════════════════ */
 .sticky-cta-bar {
   position: fixed;
-  right: 22px;              /* alineat amb el botó WhatsApp a la dreta */
-  bottom: 24px;
+  left: 18px;
+  bottom: 20px;
   z-index: 18;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  align-items: flex-end;
+  gap: 6px;
+  align-items: flex-start;
+  /* Els botons entren des de baix amb una animació suau */
+  animation: sticky-cta-in 0.4s ease both;
+}
+
+@keyframes sticky-cta-in {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .sticky-cta-rival,
 .sticky-cta-solo {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 14px;
-  border-radius: 12px;
+  gap: 9px;
+  padding: 9px 13px;
+  border-radius: 10px;
   text-decoration: none;
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
-  min-width: 170px;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s;
+  min-width: 0;
+  white-space: nowrap;
 }
 
 .sticky-cta-rival {
-  background: rgba(20, 4, 8, 0.88);
+  background: rgba(20, 4, 8, 0.9);
   border: 1.5px solid #ff375f;
   color: #fff7ef;
-  backdrop-filter: blur(12px);
-  box-shadow: 0 6px 24px rgba(255, 55, 95, 0.22);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 4px 18px rgba(255, 55, 95, 0.25);
 }
 
 .sticky-cta-solo {
-  background: rgba(4, 18, 14, 0.88);
+  background: rgba(4, 18, 14, 0.9);
   border: 1.5px solid #21c7a8;
   color: #fff7ef;
-  backdrop-filter: blur(12px);
-  box-shadow: 0 6px 24px rgba(33, 199, 168, 0.18);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 4px 18px rgba(33, 199, 168, 0.2);
 }
 
 .sticky-cta-rival:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 32px rgba(255, 55, 95, 0.38);
+  transform: translateX(3px);
+  box-shadow: 0 8px 28px rgba(255, 55, 95, 0.42);
 }
 
 .sticky-cta-solo:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 32px rgba(33, 199, 168, 0.34);
+  transform: translateX(3px);
+  box-shadow: 0 8px 28px rgba(33, 199, 168, 0.38);
 }
 
 .sticky-cta-share {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 9px 14px;
-  border-radius: 12px;
-  border: 1.5px solid rgba(255, 255, 255, 0.2);
-  background: rgba(14, 14, 22, 0.82);
+  gap: 9px;
+  padding: 8px 13px;
+  border-radius: 10px;
+  border: 1.5px solid rgba(255, 255, 255, 0.18);
+  background: rgba(14, 14, 22, 0.86);
   color: #fff7ef;
-  backdrop-filter: blur(12px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
   cursor: pointer;
   font: inherit;
   text-decoration: none;
-  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
-  min-width: 120px;
+  transition: transform 0.18s ease, border-color 0.18s ease;
+  white-space: nowrap;
 }
 
 .sticky-cta-share:hover {
-  transform: translateY(-2px);
+  transform: translateX(3px);
   border-color: rgba(255, 255, 255, 0.38);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
 }
 
 .sticky-cta-share .sticky-cta-text strong {
   color: rgba(255, 247, 239, 0.75);
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .sticky-cta-icon {
-  font-size: 20px;
+  font-size: 18px;
   flex-shrink: 0;
   line-height: 1;
 }
@@ -5514,7 +5522,7 @@ html {
 }
 
 .sticky-cta-text strong {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 800;
   line-height: 1.2;
 }
@@ -5524,24 +5532,28 @@ html {
 
 .sticky-cta-text em {
   font-style: normal;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 500;
-  color: rgba(255, 247, 239, 0.55);
+  color: rgba(255, 247, 239, 0.5);
   line-height: 1.2;
 }
 
-@media (max-width: 480px) {
+/* Mobile: més compactes, puja una mica per no tapar la nav del browser */
+@media (max-width: 640px) {
+  .sticky-cta-bar {
+    left: 12px;
+    bottom: 14px;
+    gap: 5px;
+  }
   .sticky-cta-rival,
   .sticky-cta-solo,
   .sticky-cta-share {
-    padding: 8px 11px;
-    min-width: 130px;
-    gap: 8px;
+    padding: 7px 10px;
+    gap: 7px;
   }
-  .sticky-cta-icon { font-size: 17px; }
-  .sticky-cta-text strong { font-size: 12px; }
-  .sticky-cta-text em { font-size: 10px; }
-  .wa-floating-button { bottom: 230px; }
+  .sticky-cta-icon { font-size: 16px; }
+  .sticky-cta-text strong { font-size: 11px; }
+  .sticky-cta-text em { font-size: 9px; }
 }
 
 /* ══════════════════════════════════════════════════════════════
