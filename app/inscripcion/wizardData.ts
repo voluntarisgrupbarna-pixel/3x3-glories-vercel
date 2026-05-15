@@ -3,7 +3,7 @@
 
 export type PackageKey = "individual" | "team-4" | "team-5" | "senior";
 
-export type DiscountType = "earlybird" | "social" | null;
+export type DiscountType = "earlybird" | "social" | "rival" | null;
 
 export type Package = {
   key: PackageKey;
