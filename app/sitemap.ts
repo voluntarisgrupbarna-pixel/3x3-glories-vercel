@@ -68,6 +68,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       alternates: langs("/seu/rambleta-del-clot"),
     },
     {
+      url: `${SITE_URL}/patrocinar`,
+      lastModified,
+      changeFrequency: "monthly",
+      priority: 0.8,
+      alternates: langs("/patrocinar"),
+    },
+    {
       url: `${SITE_URL}/equip`,
       lastModified,
       changeFrequency: "monthly",

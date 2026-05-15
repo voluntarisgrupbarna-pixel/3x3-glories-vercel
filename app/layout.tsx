@@ -344,6 +344,20 @@ const jsonLdFaq = {
   ],
 };
 
+// JSON-LD: BreadcrumbList — navegació principal (millora rich results i comprensió d'IAs)
+const jsonLdBreadcrumb = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Inici", item: SITE_URL },
+    { "@type": "ListItem", position: 2, name: "Inscripció d'equip", item: `${SITE_URL}/inscripcion` },
+    { "@type": "ListItem", position: 3, name: "Inscripció individual", item: `${SITE_URL}/inscripcio-individual` },
+    { "@type": "ListItem", position: 4, name: "Preguntes freqüents", item: `${SITE_URL}/preguntes-frequents` },
+    { "@type": "ListItem", position: 5, name: "Patrocina el 3×3", item: `${SITE_URL}/patrocinar` },
+    { "@type": "ListItem", position: 6, name: "Contacte", item: `${SITE_URL}/contacte` },
+  ],
+};
+
 // JSON-LD: EventSeries — 4 edicions (GEO: estableix historial d'autoritat)
 const jsonLdSeries = {
   "@context": "https://schema.org",
@@ -420,6 +434,12 @@ export default function RootLayout({
           type="application/ld+json"
           strategy="beforeInteractive"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdFaq) }}
+        />
+        <Script
+          id="ld-breadcrumb"
+          type="application/ld+json"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }}
         />
         {/* Clarity: skip analytics on localhost and ?noclarity=1 */}
         <Script

@@ -19,9 +19,9 @@ const STATS = [
 const EVENT_DATE = new Date("2026-06-06T09:00:00+02:00");
 
 const HERO_SLIDES = [
-  { src: "/hero-bg-1.jpg", alt: "Públic gaudint del torneig al Westfield Glòries" },
-  { src: "/hero-bg-2.jpg", alt: "Vista aèria de la pista del 3×3 al Clot-Glòries" },
-  { src: "/hero-bg-3.jpg", alt: "Jugadora encistellant en un partit del 3×3" },
+  { src: "/hero-bg-1.jpg", alt: "Públic i equips al Torneig 3×3 Barcelona 2026 a Westfield Glòries, Clot-Glòries" },
+  { src: "/hero-bg-2.jpg", alt: "Pista exterior del Torneig 3×3 FIBA al barri del Clot-Glòries de Barcelona" },
+  { src: "/hero-bg-3.jpg", alt: "Jugadora encistellant al Torneig 3×3 Westfield Glòries Barcelona 2026" },
 ];
 const SLIDE_INTERVAL_MS = 5000;
 
@@ -33,6 +33,7 @@ const NAV_LINKS = [
   { href: "#galeria", label: "Galeria" },
   { href: "#sponsors", label: "Sponsors" },
   { href: "/preguntes-frequents", label: "FAQs" },
+  { href: "/patrocinar", label: "Patrocina" },
 ];
 
 function getCountdown(target: Date) {

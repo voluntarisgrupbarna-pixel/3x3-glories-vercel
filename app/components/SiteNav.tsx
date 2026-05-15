@@ -11,6 +11,7 @@ const NAV_LINKS = [
   { href: "/#galeria",      label: "Galeria" },
   { href: "/#sponsors",     label: "Sponsors" },
   { href: "/preguntes-frequents", label: "FAQs" },
+  { href: "/patrocinar",    label: "Patrocina" },
 ];
 
 /**
