@@ -18,6 +18,13 @@ const STATS = [
 
 const EVENT_DATE = new Date("2026-06-06T09:00:00+02:00");
 
+const HERO_SLIDES = [
+  { src: "/hero-bg-1.jpg", alt: "Públic gaudint del torneig al Westfield Glòries" },
+  { src: "/hero-bg-2.jpg", alt: "Vista aèria de la pista del 3×3 al Clot-Glòries" },
+  { src: "/hero-bg-3.jpg", alt: "Jugadora encistellant en un partit del 3×3" },
+];
+const SLIDE_INTERVAL_MS = 5000;
+
 const NAV_LINKS = [
   { href: "#torneig", label: "Torneig" },
   { href: "#ubicacions", label: "Ubicacions" },
@@ -40,6 +47,7 @@ function getCountdown(target: Date) {
 export default function HeroFestival() {
   const [scrolled, setScrolled] = useState(false);
   const [countdown, setCountdown] = useState<ReturnType<typeof getCountdown> | null>(null);
+  const [slide, setSlide] = useState(0);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -53,33 +61,39 @@ export default function HeroFestival() {
     return () => clearInterval(id);
   }, []);
 
+  useEffect(() => {
+    const id = setInterval(() => {
+      setSlide((s) => (s + 1) % HERO_SLIDES.length);
+    }, SLIDE_INTERVAL_MS);
+    return () => clearInterval(id);
+  }, []);
+
   return (
     <section className="hero-festival" aria-label="3×3 Westfield Glòries 2026">
-      {/* Background image + tint */}
+      {/* Background slideshow + tint */}
       <div className="hero-festival-bg" aria-hidden="true">
-        <img
-          src="/hero-bg.jpg"
-          alt=""
-          width={1920}
-          height={1080}
-          fetchPriority="high"
-          loading="eager"
-        />
+        {HERO_SLIDES.map((s, i) => (
+          <img
+            key={s.src}
+            src={s.src}
+            alt={s.alt}
+            width={1920}
+            height={1080}
+            fetchPriority={i === 0 ? "high" : "low"}
+            loading={i === 0 ? "eager" : "lazy"}
+            className={`hero-festival-slide${i === slide ? " hero-festival-slide-active" : ""}`}
+          />
+        ))}
         <div className="hero-festival-tint" />
+        <div className="hero-festival-slide-dots" aria-hidden="true">
+          {HERO_SLIDES.map((_, i) => (
+            <span key={i} className={`hero-festival-slide-dot${i === slide ? " hero-festival-slide-dot-active" : ""}`} />
+          ))}
+        </div>
       </div>
 
       {/* Top nav */}
       <header className={`hero-festival-nav${scrolled ? " hero-festival-nav-scrolled" : ""}`}>
-        <div className="hero-festival-logos">
-          {ORGANIZERS.map((o) => (
-            <div key={o.id} className={`hero-festival-logo hero-festival-logo-${o.id}`} title={o.name}>
-              {o.logo
-                ? <img src={o.logo} alt={o.name} className="hero-festival-logo-img" />
-                : <span>{o.short}</span>
-              }
-            </div>
-          ))}
-        </div>
         <nav className="hero-festival-links">
           {NAV_LINKS.map((l) => (
             <a key={l.href} href={l.href} className="hero-festival-link">
@@ -143,7 +157,7 @@ export default function HeroFestival() {
         </div>
 
         <div className="hero-festival-progress">
-          <span className="hero-festival-progress-icon">🔥</span> <strong>60%</strong> ocupat · <strong>74</strong> places lliures
+          <span className="hero-festival-progress-icon">🔥</span> <strong>64%</strong> ocupat · <strong>64</strong> places lliures
         </div>
       </div>
 

@@ -1358,9 +1358,8 @@ a {
   z-index: 50;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 0 20px;
+  justify-content: space-between;
+  padding: 0 16px;
   height: 44px;
   background: linear-gradient(90deg, #ff5b1f 0%, #ff2563 50%, #ff3da0 100%);
   color: #fff;
@@ -1368,6 +1367,56 @@ a {
   font-size: 13px;
   overflow: hidden;
   letter-spacing: 0.04em;
+}
+
+/* Logos co-organitzadors — esquerra */
+.eb-logos {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.eb-logo {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.92);
+  padding: 2px;
+}
+
+.eb-logo--dark {
+  background: #050505;
+}
+
+.eb-logo-label {
+  font-size: 8px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 3px 7px;
+  background: rgba(255, 255, 255, 0.22);
+  border-radius: 5px;
+  white-space: nowrap;
+}
+
+/* Separador vertical */
+.eb-sep {
+  width: 1px;
+  height: 22px;
+  background: rgba(255, 255, 255, 0.35);
+  flex-shrink: 0;
+  margin: 0 12px;
+}
+
+/* Promo Early Bird — centre */
+.eb-promo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  justify-content: center;
 }
 
 .eb-dot {
@@ -1437,9 +1486,18 @@ a {
 @media (max-width: 760px) {
   .early-bird-bar {
     height: 40px;
-    gap: 6px;
     padding: 0 10px;
     font-size: 11px;
+  }
+
+  /* Amagar logos i separador en mòbil — espai massa just */
+  .eb-logos,
+  .eb-sep {
+    display: none;
+  }
+
+  .eb-promo {
+    gap: 6px;
   }
 
   .eb-timer {
@@ -3986,6 +4044,43 @@ a {
   filter: saturate(1.18) contrast(1.05) brightness(1.06);
 }
 
+.hero-festival-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1.4s ease-in-out, transform 7s ease-out;
+  transform: scale(1);
+  will-change: opacity, transform;
+}
+
+.hero-festival-slide-active {
+  opacity: 1;
+  transform: scale(1.04);
+}
+
+.hero-festival-slide-dots {
+  position: absolute;
+  z-index: 5;
+  bottom: 14px;
+  right: 18px;
+  display: flex;
+  gap: 6px;
+}
+
+.hero-festival-slide-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.32);
+  transition: background 0.3s ease, width 0.3s ease;
+}
+
+.hero-festival-slide-dot-active {
+  background: #eaff00;
+  width: 22px;
+  box-shadow: 0 0 8px rgba(234, 255, 0, 0.55);
+}
+
 .hero-festival-tint {
   position: absolute;
   inset: 0;
@@ -4004,7 +4099,7 @@ a {
   z-index: 5;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 24px;
   padding: 18px 32px;
   transition: background 0.3s ease, backdrop-filter 0.3s ease, border-color 0.3s ease;
@@ -4403,7 +4498,7 @@ a {
   font-weight: 800;
 }
 
-/* === Bottom countdown === */
+/* === Bottom countdown — NEÓ GROC === */
 .hero-festival-countdown {
   position: absolute;
   z-index: 4;
@@ -4415,9 +4510,10 @@ a {
   gap: 10px;
   padding: 10px 14px;
   border-radius: 14px;
-  background: rgba(8, 12, 24, 0.55);
+  background: rgba(8, 12, 24, 0.62);
   backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(234, 255, 0, 0.25);
+  box-shadow: 0 0 22px rgba(234, 255, 0, 0.18), 0 14px 40px rgba(0, 0, 0, 0.45);
 }
 
 .hero-festival-countdown-box {
@@ -4427,31 +4523,37 @@ a {
   min-width: 56px;
   padding: 8px 6px;
   border-radius: 10px;
-  background: rgba(20, 24, 38, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(8, 12, 22, 0.92);
+  border: 1px solid rgba(234, 255, 0, 0.35);
 }
 
 .hero-festival-countdown-value {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: clamp(22px, 2.6vw, 32px);
   font-weight: 800;
-  color: #fff;
+  color: #eaff00;
   line-height: 1;
+  text-shadow:
+    0 0 6px rgba(234, 255, 0, 0.85),
+    0 0 14px rgba(234, 255, 0, 0.55),
+    0 0 26px rgba(234, 255, 0, 0.35);
 }
 
 .hero-festival-countdown-label {
   margin-top: 4px;
   font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  color: rgba(255, 247, 239, 0.55);
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: rgba(234, 255, 0, 0.78);
+  text-shadow: 0 0 6px rgba(234, 255, 0, 0.35);
 }
 
 .hero-festival-countdown-sep {
-  color: rgba(255, 247, 239, 0.5);
+  color: rgba(234, 255, 0, 0.85);
   font-size: 22px;
   font-weight: 800;
   margin: 0 -2px;
+  text-shadow: 0 0 8px rgba(234, 255, 0, 0.6);
 }
 
 /* Responsive */
