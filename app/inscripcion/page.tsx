@@ -6,7 +6,7 @@ import InscripcioWizard from "./InscripcioWizard";
 export const metadata: Metadata = {
   title: "Inscripció d'equip | 3×3 Westfield Glòries 2026",
   description:
-    "Inscriu el teu equip al 3×3 Westfield Glòries 2026. Torneig FIBA a Barcelona, 6-7 juny. Des de 75 € per equip. Categories Premini, Mini, Infantil, Cadet, Júnior, Sènior i Veterans.",
+    "Inscriu el teu equip al 3×3 Westfield Glòries 2026. Torneig FIBA a Barcelona, 6-7 juny. Des de 75 €. De Premini a Sènior i Veterans. Places limitades.",
   alternates: {
     canonical: "/inscripcion",
   },
