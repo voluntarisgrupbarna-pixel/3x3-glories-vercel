@@ -1,112 +1,188 @@
 "use client";
 
 import { useState } from "react";
-import { VENUES } from "../data/seccions3x3";
+import { VENUES, PROGRAM } from "../data/seccions3x3";
 
 export default function UbicacionsSection() {
-  const [activeVenue, setActiveVenue] = useState(0);
-  const v = VENUES[activeVenue];
+  const [active, setActive] = useState(1); // WG per defecte (seu principal)
+  const v = VENUES[active];
 
   return (
-    <section id="ubicacions" className="ubicacions-section">
-      <div className="section-inner">
-        <header className="section-header">
-          <span className="section-kicker">On juguem</span>
-          <h2 className="section-title">
-            3 SEUS · <span className="accent">1 BARRI</span>
+    <section id="ubicacions" className="ubic-section">
+      <div className="ubic-inner">
+
+        {/* ── Header ── */}
+        <header className="ubic-header">
+          <span className="ubic-kicker">On juguem</span>
+          <h2 className="ubic-title">
+            3 seus · <span className="ubic-title-accent">1 barri</span>
           </h2>
-          <p className="section-desc">
-            La Nau del Clot, Westfield Glòries i la Rambleta del Clot formen el circuit
-            del torneig al barri del Clot-Glòries.
+          <p className="ubic-subtitle">
+            Tots els recintes al barri del Clot-Glòries, menys de 15 min a peu entre ells.
           </p>
         </header>
 
-        <div className="ubicacions-grid">
-          {/* Columna esquerra */}
-          <div className="ubicacions-col">
-            {VENUES.map((venue, i) => (
-              <button
-                key={venue.id}
-                type="button"
-                onClick={() => setActiveVenue(i)}
-                className={`venue-sel-card ${activeVenue === i ? "venue-sel-card--active" : ""}`}
-                style={{ "--card-color": venue.color } as React.CSSProperties}
-              >
-                <span className="venue-sel-emoji">{venue.emoji}</span>
-                <span className="venue-sel-info">
-                  <span className="venue-sel-name">
-                    {venue.name}
-                    <span className="venue-sel-badge" style={{ color: venue.color, background: `${venue.color}22` }}>
-                      {venue.id}
-                    </span>
-                  </span>
-                  <span className="venue-sel-type" style={{ color: venue.color }}>{venue.type}</span>
-                  <span className="venue-sel-addr">{venue.addr}</span>
-                </span>
-              </button>
-            ))}
+        {/* ── Tab selector ── */}
+        <div className="ubic-tabs" role="tablist">
+          {VENUES.map((venue, i) => (
+            <button
+              key={venue.id}
+              role="tab"
+              aria-selected={active === i}
+              type="button"
+              onClick={() => setActive(i)}
+              className={`ubic-tab${active === i ? " ubic-tab--active" : ""}`}
+              style={{ "--tab-color": venue.color } as React.CSSProperties}
+            >
+              <span className="ubic-tab-emoji">{venue.emoji}</span>
+              <span className="ubic-tab-name">{venue.name}</span>
+              <span className="ubic-tab-type">{venue.type}</span>
+            </button>
+          ))}
+        </div>
 
-            <div className="circuit-bar">
-              <p className="circuit-label">Circuit</p>
-              <div className="circuit-line">
-                <span style={{ color: "#E31E24", fontWeight: 800 }}>NC</span>
-                <span className="circuit-dash" />
-                <span style={{ color: "#F97316", fontWeight: 800 }}>WG</span>
-                <span className="circuit-dash" />
-                <span style={{ color: "#EAB308", fontWeight: 800 }}>RC</span>
+        {/* ── Panel principal ── */}
+        <div className="ubic-panel">
+
+          {/* Columna esquerra: foto + info */}
+          <div className="ubic-panel-left">
+            <div className="ubic-photo-wrap">
+              <img
+                key={v.id}
+                src={v.photo}
+                alt={`${v.name} — seu del 3×3 Westfield Glòries 2026`}
+                className="ubic-photo"
+              />
+              <div className="ubic-photo-overlay" />
+              <div className="ubic-photo-info">
+                <span
+                  className="ubic-photo-badge"
+                  style={{ background: `${v.color}22`, color: v.color, borderColor: `${v.color}44` }}
+                >
+                  {v.type}
+                </span>
+                <h3 className="ubic-photo-name">{v.name}</h3>
+                <p className="ubic-photo-addr">📍 {v.addr}</p>
               </div>
-              <p className="circuit-time">🚶 ~15 min a peu entre les tres seus</p>
             </div>
 
-            <div className="venue-links">
-              <p className="venue-links-label">Tota la info per seu</p>
-              <a href="/seu/westfield-glories" className="venue-link">
-                <span>🏬 Westfield Glòries · Seu Principal</span>
-                <span className="venue-link-arrow">›</span>
+            {/* Descripció */}
+            <p className="ubic-desc">{v.desc}</p>
+
+            {/* Transport */}
+            <div className="ubic-transport">
+              <p className="ubic-transport-title">Com arribar-hi</p>
+              <div className="ubic-transport-rows">
+                {(v.transport as readonly { icon: string; label: string; value: string }[]).map((t) => (
+                  <div key={t.label} className="ubic-transport-row">
+                    <span className="ubic-transport-icon">{t.icon}</span>
+                    <span className="ubic-transport-label">{t.label}</span>
+                    <span className="ubic-transport-value">{t.value}</span>
+                  </div>
+                ))}
+              </div>
+              <a
+                href={v.mapsLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="ubic-maps-btn"
+                style={{ "--btn-color": v.color } as React.CSSProperties}
+              >
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M12 21s-7-7-7-12a7 7 0 1 1 14 0c0 5-7 12-7 12z" />
+                  <circle cx="12" cy="9" r="2.5" />
+                </svg>
+                Obrir en Google Maps
               </a>
-              <a href="/seu/nau-del-clot" className="venue-link">
-                <span>🏟️ La Nau del Clot · Pavelló Oficial</span>
-                <span className="venue-link-arrow">›</span>
-              </a>
-              <a href="/seu/rambleta-del-clot" className="venue-link">
-                <span>🌳 Rambleta del Clot · Streetball</span>
-                <span className="venue-link-arrow">›</span>
-              </a>
+            </div>
+
+            {/* Categories */}
+            <div className="ubic-cats">
+              <p className="ubic-cats-title">Competicions aquí</p>
+              <ul className="ubic-cats-list">
+                {(v.categories as readonly string[]).map((cat) => (
+                  <li key={cat} className="ubic-cat-item">
+                    <span className="ubic-cat-dot" style={{ background: v.color }} />
+                    {cat}
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
 
-          {/* Columna dreta — Google Maps */}
-          <div className="ubicacions-map-col">
-            <div className="map-embed-wrap">
+          {/* Columna dreta: mapa */}
+          <div className="ubic-panel-right">
+            <div className="ubic-map-wrap">
               <iframe
-                key={activeVenue}
-                title={`Mapa ${v.name} · 3x3 Westfield Glòries`}
+                key={active}
+                title={`Mapa ${v.name}`}
                 src={`https://maps.google.com/maps?q=${v.lat},${v.lng}&hl=ca&z=16&output=embed`}
                 width="100%"
-                height="380"
+                height="100%"
                 style={{ border: 0 }}
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
               />
             </div>
-            <div className="map-info-bar">
-              <span className="map-info-emoji">{v.emoji}</span>
-              <span className="map-info-text">
-                <strong>{v.name}</strong>
-                <small>{v.addr}</small>
-              </span>
-              <a
-                href={`https://maps.google.com/?q=${encodeURIComponent(v.addr)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="map-info-link"
-              >
-                📍 Com arribar-hi
-              </a>
-            </div>
+            <a
+              href="/inscripcion"
+              className="ubic-inscriu-btn"
+              style={{ "--btn-color": v.color } as React.CSSProperties}
+            >
+              🏀 Inscriu el teu equip aquí →
+            </a>
           </div>
         </div>
+
+        {/* ── Circuit strip ── */}
+        <div className="ubic-circuit">
+          <div className="ubic-circuit-nodes">
+            {VENUES.map((venue, i) => (
+              <div key={venue.id} className="ubic-circuit-node">
+                <span
+                  className="ubic-circuit-dot"
+                  style={{ background: venue.color, boxShadow: `0 0 8px ${venue.color}66` }}
+                />
+                <span className="ubic-circuit-id" style={{ color: venue.color }}>{venue.id}</span>
+                <span className="ubic-circuit-name">{venue.name}</span>
+                {i < VENUES.length - 1 && (
+                  <span className="ubic-circuit-line" />
+                )}
+              </div>
+            ))}
+          </div>
+          <p className="ubic-circuit-time">🚶 ~15 min a peu entre les tres seus · tot al barri del Clot-Glòries</p>
+        </div>
+
+        {/* ── Programa per dies ── */}
+        <div className="ubic-program">
+          <p className="ubic-program-title">Programa del torneig</p>
+          <div className="ubic-program-grid">
+            {PROGRAM.map((day) => (
+              <div key={day.dateShort} className="ubic-program-day">
+                <div className="ubic-program-day-header" style={{ borderColor: day.dayColor }}>
+                  <span className="ubic-program-date" style={{ color: day.dayColor }}>{day.dateShort}</span>
+                  <span className="ubic-program-dia">{day.dia}</span>
+                </div>
+                <ul className="ubic-program-cats">
+                  {day.categories.map((cat) => (
+                    <li key={cat.nom} className="ubic-program-cat">
+                      <span className="ubic-program-hora">{cat.hora}</span>
+                      <span className="ubic-program-nom">
+                        {cat.nom}
+                        {cat.fiba && (
+                          <span className="ubic-fiba-badge">FIBA</span>
+                        )}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+
       </div>
     </section>
   );
