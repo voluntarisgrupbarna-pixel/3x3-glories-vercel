@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 
 const ORGANIZERS = [
-  { id: "westfield", name: "Westfield Glòries", short: "Westfield" },
-  { id: "grupbarna", name: "CB Grup Barna", short: "Grup Barna" },
-  { id: "timechamber", name: "Time Chamber", short: "TIME Chamber" },
-  { id: "eixclot", name: "Eix Clot", short: "eix clot" },
+  { id: "westfield",    name: "Westfield Glòries", short: "Westfield",    logo: "/logos/westfield.svg" },
+  { id: "grupbarna",   name: "CB Grup Barna",      short: "Grup Barna",   logo: "/cb-grup-barna-logo-192.png" },
+  { id: "timechamber", name: "Time Chamber",        short: "TIME Chamber", logo: "/logos/timechamber.webp" },
+  { id: "eixclot",     name: "Eix Clot",            short: "eix clot",     logo: null },
 ];
 
 const STATS = [
@@ -25,6 +25,7 @@ const NAV_LINKS = [
   { href: "#categories", label: "Categories" },
   { href: "#galeria", label: "Galeria" },
   { href: "#sponsors", label: "Sponsors" },
+  { href: "/preguntes-frequents", label: "FAQs" },
 ];
 
 function getCountdown(target: Date) {
@@ -72,7 +73,10 @@ export default function HeroFestival() {
         <div className="hero-festival-logos">
           {ORGANIZERS.map((o) => (
             <div key={o.id} className={`hero-festival-logo hero-festival-logo-${o.id}`} title={o.name}>
-              <span>{o.short}</span>
+              {o.logo
+                ? <img src={o.logo} alt={o.name} className="hero-festival-logo-img" />
+                : <span>{o.short}</span>
+              }
             </div>
           ))}
         </div>

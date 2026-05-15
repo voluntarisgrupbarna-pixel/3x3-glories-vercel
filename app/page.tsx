@@ -4,6 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import EarlyBirdBanner from "./components/EarlyBirdBanner";
 import HeroFestival from "./components/HeroFestival";
+import OccupancyGrid from "./components/OccupancyGrid";
+import CategoryBars from "./components/CategoryBars";
 import WhatsAppLeadWidget from "./components/WhatsAppLeadWidget";
 import { faqs } from "./data/faqs";
 
@@ -50,6 +52,12 @@ export default function Home() {
             </a>
           </div>
         </section>
+
+        {/* === Occupancy Grid — categories fill === */}
+        <OccupancyGrid />
+
+        {/* === Category Bars — places per categoria === */}
+        <CategoryBars />
 
         {/* === Secció seus === */}
         <section className="venues-section" aria-label="Seus del torneig">

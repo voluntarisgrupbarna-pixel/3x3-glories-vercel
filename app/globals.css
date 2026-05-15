@@ -1430,6 +1430,10 @@ a {
   margin-top: 72px;
 }
 
+.has-eb-banner .hero-festival-nav {
+  top: 44px;
+}
+
 @media (max-width: 760px) {
   .early-bird-bar {
     height: 40px;
@@ -1450,6 +1454,10 @@ a {
 
   .has-eb-banner .hero-panel {
     margin-top: 56px;
+  }
+
+  .has-eb-banner .hero-festival-nav {
+    top: 40px;
   }
 }
 
@@ -4046,8 +4054,8 @@ a {
 }
 
 .hero-festival-logo-timechamber {
-  background: #fff7ef;
-  color: #050505;
+  background: #050505;
+  color: #fff7ef;
   font-size: 8px;
 }
 
@@ -4059,6 +4067,18 @@ a {
 
 .hero-festival-logo span {
   display: block;
+}
+
+.hero-festival-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 6px;
+}
+
+.hero-festival-logo-westfield {
+  background: transparent;
+  border-color: rgba(219, 8, 18, 0.5);
 }
 
 .hero-festival-links {
@@ -4517,5 +4537,336 @@ a {
 
   .hero-festival-countdown-sep {
     font-size: 16px;
+  }
+}
+
+/* === Secció OccupancyGrid (home) === */
+
+.occupancy-section {
+  position: relative;
+  z-index: 4;
+  padding: 80px 24px;
+  background: #0a0a0a;
+}
+
+.occupancy-inner {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.occupancy-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.occupancy-kicker {
+  color: #ff375f;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin: 0 0 8px;
+}
+
+.occupancy-title {
+  margin: 0;
+  font-size: clamp(22px, 3.5vw, 34px);
+  color: #fff7ef;
+  line-height: 1.15;
+  font-weight: 800;
+}
+
+.occupancy-badge {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(255, 247, 239, 0.6);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+.occupancy-grid {
+  display: grid;
+  grid-template-columns: repeat(20, 1fr);
+  gap: 5px;
+  margin-bottom: 20px;
+}
+
+.occupancy-square {
+  aspect-ratio: 1;
+  border-radius: 4px;
+}
+
+.occupancy-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+}
+
+.occupancy-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: rgba(255, 247, 239, 0.72);
+}
+
+.occupancy-legend-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 760px) {
+  .occupancy-section {
+    padding: 56px 16px;
+  }
+
+  .occupancy-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .occupancy-grid {
+    gap: 3px;
+  }
+
+  .occupancy-square {
+    border-radius: 2px;
+  }
+
+  .occupancy-legend {
+    gap: 6px 14px;
+  }
+
+  .occupancy-legend-item {
+    font-size: 11px;
+  }
+}
+
+/* === Secció CategoryBars (home) === */
+
+.catbars-section {
+  position: relative;
+  z-index: 4;
+  padding: 80px 24px;
+  background: #050505;
+}
+
+.catbars-inner {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.catbars-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+
+.catbars-kicker {
+  color: #ff375f;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin: 0 0 8px;
+}
+
+.catbars-title {
+  margin: 0 0 6px;
+  font-size: clamp(28px, 4vw, 52px);
+  color: #fff7ef;
+  line-height: 1.05;
+  font-weight: 800;
+}
+
+.catbars-subtitle {
+  margin: 0;
+  font-size: 14px;
+  color: rgba(255, 247, 239, 0.55);
+}
+
+.catbars-cta {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: 10px;
+  background: #ff375f;
+  color: #050505;
+  font-size: 13px;
+  font-weight: 900;
+  text-decoration: none;
+  white-space: nowrap;
+  align-self: flex-start;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.catbars-cta:hover {
+  opacity: 0.88;
+  transform: translateY(-2px);
+}
+
+.catbars-list {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.catbars-row {
+  display: grid;
+  grid-template-columns: 180px 1fr 56px;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.catbars-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.catbars-emoji {
+  font-size: 20px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.catbars-name-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.catbars-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff7ef;
+  white-space: nowrap;
+}
+
+.catbars-age {
+  font-size: 11px;
+  color: rgba(255, 247, 239, 0.44);
+}
+
+.catbars-bar-wrap {
+  display: flex;
+  align-items: center;
+}
+
+.catbars-bar-track {
+  flex: 1;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.catbars-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+}
+
+.catbars-bar-full {
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+}
+
+.catbars-ple-label {
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #0a0a0a;
+  white-space: nowrap;
+}
+
+.catbars-pct {
+  text-align: right;
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(255, 247, 239, 0.65);
+}
+
+.catbars-llista {
+  text-align: right;
+  font-size: 12px;
+  font-weight: 800;
+  color: #818CF8;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  white-space: nowrap;
+}
+
+.catbars-footer {
+  margin: 24px 0 0;
+  font-size: 12px;
+  line-height: 1.65;
+  color: rgba(255, 247, 239, 0.38);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 16px;
+}
+
+.catbars-footer strong {
+  color: rgba(255, 247, 239, 0.65);
+}
+
+@media (max-width: 760px) {
+  .catbars-section {
+    padding: 56px 16px;
+  }
+
+  .catbars-row {
+    grid-template-columns: 1fr 1fr 44px;
+    gap: 10px;
+    padding: 12px 0;
+  }
+
+  .catbars-label {
+    grid-column: 1 / -1;
+  }
+
+  .catbars-emoji {
+    font-size: 17px;
+  }
+
+  .catbars-name {
+    font-size: 13px;
+  }
+
+  .catbars-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .catbars-cta {
+    text-align: center;
+    justify-content: center;
   }
 }
