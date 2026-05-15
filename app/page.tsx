@@ -4,10 +4,11 @@ import { useState } from "react";
 import Link from "next/link";
 import EarlyBirdBanner from "./components/EarlyBirdBanner";
 import HeroFestival from "./components/HeroFestival";
-import OccupancyGrid from "./components/OccupancyGrid";
-import CategoryBars from "./components/CategoryBars";
 import WhatsAppLeadWidget from "./components/WhatsAppLeadWidget";
 import SlideDos from "./components/SlideDos";
+import UbicacionsSection from "./components/UbicacionsSection";
+import PremisSection from "./components/PremisSection";
+import CategoriesSection from "./components/CategoriesSection";
 import { faqs } from "./data/faqs";
 
 export default function Home() {
@@ -20,86 +21,61 @@ export default function Home() {
 
         {/* === SLIDE DOS — rèplica del disseny original: el torneig === */}
         <SlideDos />
-
-
-        {/* === Occupancy Grid — categories fill === */}
-        <OccupancyGrid />
-
-        {/* === Category Bars — places per categoria === */}
-        <CategoryBars />
-
-        {/* === Secció seus === */}
-        <section className="venues-section" aria-label="Seus del torneig">
-          <div className="venues-inner">
-            <h2 className="venues-title">3 seus · 1 barri</h2>
-            <div className="venues-grid">
-              <a href="/seu/westfield-glories" className="venue-card">
-                <span className="venue-card-tag">Seu principal</span>
-                <strong>Westfield Glòries</strong>
-                <span className="venue-card-addr">Av. Diagonal 208</span>
-                <p>Zona de trobada, inscripcions, cerimònia i finals Sènior. Pàrquing gratis 2h.</p>
-              </a>
-              <a href="/seu/nau-del-clot" className="venue-card">
-                <span className="venue-card-tag">Pavelló oficial</span>
-                <strong>La Nau del Clot</strong>
-                <span className="venue-card-addr">C/ de la Llacuna 172</span>
-                <p>Pista coberta. Categories formatives (Premini–Sub-23) i semifinals Sènior.</p>
-              </a>
-              <a href="/seu/rambleta-del-clot" className="venue-card">
-                <span className="venue-card-tag">Pista exterior</span>
-                <strong>Rambleta del Clot</strong>
-                <span className="venue-card-addr">Barri del Clot-Glòries</span>
-                <p>Bàsquet de carrer: ambient, música i competició a l'aire lliure.</p>
-              </a>
-            </div>
-          </div>
-        </section>
-
-        {/* === FAQ === */}
-        <section className="faq-section" aria-label="Preguntes freqüents">
-          <div className="faq-inner">
-            <h2 className="faq-title">Preguntes freqüents</h2>
-            <FaqAccordion />
-            <div className="faq-footer">
-              <Link href="/preguntes-frequents" className="faq-all-link">
-                Veure totes les preguntes freqüents →
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* === Porta un rival === */}
-        <section className="rival-cta-section" aria-label="Porta un rival">
-          <div className="rival-cta-inner">
-            <span className="rival-cta-tag">Pack rival · −5 € cada un</span>
-            <h2>Ja tens equip? Porta'n un de rival</h2>
-            <p>
-              Convida un altre equip a venir al 3×3 i estalvieu <strong>5 € cada un</strong>. Sense límit
-              d'equips. Genera un codi únic i envia'l per WhatsApp en un clic.
-            </p>
-            <Link href="/porta-un-rival" className="rival-cta-btn">
-              Generar repte WhatsApp →
-            </Link>
-          </div>
-        </section>
-
-        {/* === Inscripció individual === */}
-        <section className="solo-cta-section" aria-label="Inscripció individual">
-          <div className="solo-cta-inner">
-            <span className="solo-cta-tag">Inscripció individual · 20 €</span>
-            <h2>Vens sense equip? Apunta't sol</h2>
-            <p>
-              No tens equip? Apunta't individualment per <strong>20 €</strong> i et col·loquem en un equip
-              una setmana abans del torneig. Inclou samarreta oficial, dorsal i accés als 2 dies.
-            </p>
-            <Link href="/inscripcio-individual" className="solo-cta-btn">
-              Inscriure'm sol →
-            </Link>
-          </div>
-        </section>
-
-        <WhatsAppLeadWidget />
       </main>
+
+      {/* === Ubicacions — 3 seus amb mapa === */}
+      <UbicacionsSection />
+
+      {/* === Premis & Trofeus === */}
+      <PremisSection />
+
+      {/* === Categories — dia 6 + dia 7 === */}
+      <CategoriesSection />
+
+      {/* === FAQ === */}
+      <section className="faq-section" aria-label="Preguntes freqüents">
+        <div className="faq-inner">
+          <h2 className="faq-title">Preguntes freqüents</h2>
+          <FaqAccordion />
+          <div className="faq-footer">
+            <Link href="/preguntes-frequents" className="faq-all-link">
+              Veure totes les preguntes freqüents →
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* === Porta un rival === */}
+      <section className="rival-cta-section" aria-label="Porta un rival">
+        <div className="rival-cta-inner">
+          <span className="rival-cta-tag">Pack rival · −5 € cada un</span>
+          <h2>Ja tens equip? Porta&apos;n un de rival</h2>
+          <p>
+            Convida un altre equip a venir al 3×3 i estalvieu <strong>5 € cada un</strong>. Sense límit
+            d&apos;equips. Genera un codi únic i envia&apos;l per WhatsApp en un clic.
+          </p>
+          <Link href="/porta-un-rival" className="rival-cta-btn">
+            Generar repte WhatsApp →
+          </Link>
+        </div>
+      </section>
+
+      {/* === Inscripció individual === */}
+      <section className="solo-cta-section" aria-label="Inscripció individual">
+        <div className="solo-cta-inner">
+          <span className="solo-cta-tag">Inscripció individual · 20 €</span>
+          <h2>Vens sense equip? Apunta&apos;t sol</h2>
+          <p>
+            No tens equip? Apunta&apos;t individualment per <strong>20 €</strong> i et col·loquem en un equip
+            una setmana abans del torneig. Inclou samarreta oficial, dorsal i accés als 2 dies.
+          </p>
+          <Link href="/inscripcio-individual" className="solo-cta-btn">
+            Inscriure&apos;m sol →
+          </Link>
+        </div>
+      </section>
+
+      <WhatsAppLeadWidget />
     </>
   );
 }

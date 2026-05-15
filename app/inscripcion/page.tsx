@@ -18,16 +18,16 @@ export const metadata: Metadata = {
 };
 
 const categories = [
-  { name: "Premini", any: "2016–2017", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€" },
-  { name: "Mini", any: "2014–2015", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€" },
-  { name: "Infantil", any: "2012–2013", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€" },
-  { name: "Cadet", any: "2010–2011", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€" },
-  { name: "Júnior", any: "2008–2009", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€" },
-  { name: "Sub-23", any: "2003–2007", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€" },
-  { name: "Sènior Masculí", any: "fins 2002", preu: "85–90 €", nota: "4 jug.: 85€ · 5 jug.: 90€ · Punts FIBA · Prize money" },
-  { name: "Sènior Femení", any: "fins 2002", preu: "85–90 €", nota: "4 jug.: 85€ · 5 jug.: 90€ · Punts FIBA · Prize money" },
-  { name: "Veterans Masculí", any: "nascuts fins 1986", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€ · Trofeus i medalles" },
-  { name: "Veterans Femení", any: "nascut fins 1986", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€ · Trofeus i medalles" },
+  { name: "Premini", any: "2016–2017", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€", emoji: "⭐" },
+  { name: "Mini", any: "2014–2015", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€", emoji: "⭐" },
+  { name: "Infantil", any: "2012–2013", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€", emoji: "🏀" },
+  { name: "Cadet", any: "2010–2011", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€", emoji: "🏀" },
+  { name: "Júnior", any: "2008–2009", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€", emoji: "🏀" },
+  { name: "Sub-23", any: "2003–2007", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€", emoji: "🏀" },
+  { name: "Sènior Masculí", any: "fins 2002", preu: "85–90 €", nota: "4 jug.: 85€ · 5 jug.: 90€", special: true, emoji: "🏆" },
+  { name: "Sènior Femení", any: "fins 2002", preu: "85–90 €", nota: "4 jug.: 85€ · 5 jug.: 90€", special: true, emoji: "🏆" },
+  { name: "Veterans Masculí", any: "nascuts fins 1986", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€", emoji: "🎖️" },
+  { name: "Veterans Femení", any: "nascut fins 1986", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€", emoji: "🎖️" },
 ];
 
 type InscripcionPageProps = {
@@ -61,6 +61,7 @@ export default async function InscripcionPage({ searchParams }: InscripcionPageP
 
   return (
     <div className="page-shell">
+      {/* Nav */}
       <nav className="page-nav">
         <Link href="/" className="page-nav-back">
           ← Inici
@@ -68,14 +69,41 @@ export default async function InscripcionPage({ searchParams }: InscripcionPageP
         <span className="page-nav-logo">3×3 Glòries 2026</span>
       </nav>
 
-      <main className="page-content">
-        <span className="page-kicker">Inscripció d'equip</span>
-        <h1>Inscriu-te al 3×3 Barcelona 2026</h1>
+      {/* ── Hero amb foto ── */}
+      <div className="insc-hero">
+        <img
+          src="/hero-bg-1.jpg"
+          alt="Públic gaudint del 3×3 Westfield Glòries"
+          className="insc-hero-img"
+        />
+        <div className="insc-hero-overlay" />
+        <div className="insc-hero-body">
+          <span className="insc-hero-kicker">4a edició · 6-7 Juny 2026 · Clot-Glòries, Barcelona</span>
+          <h1 className="insc-hero-title">Inscriu el teu equip</h1>
+          <p className="insc-hero-sub">
+            El torneig 3×3 FIBA més potent de Barcelona — 10 categories, 3 seus, 2.000€ prize money
+          </p>
+          <div className="insc-hero-chips">
+            <span>🔥 Early Bird −10%</span>
+            <span>🏀 Des de 75€</span>
+            <span>🏆 FIBA · Prize Money</span>
+            <span>📍 3 seus al Clot</span>
+          </div>
+        </div>
+        <a href="#form" className="insc-hero-scroll" aria-label="Anar al formulari">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <path d="M6 9l6 6 6-6" />
+          </svg>
+        </a>
+      </div>
+
+      {/* ── Contingut principal ── */}
+      <main className="page-content" id="form">
 
         {ref && (
           <div className="rival-banner">
             <span className="rival-banner-tag">Pack rival actiu</span>
-            <strong>T'ha desafiat el {fromTeam} 🏀</strong>
+            <strong>T&apos;ha desafiat el {fromTeam} 🏀</strong>
             <p>
               Aplicarem <strong>−5 €</strong> a la teva inscripció i <strong>−5 €</strong> a la del{" "}
               {fromTeam}. Cita aquest codi quan ens escriguis:
@@ -84,20 +112,13 @@ export default async function InscripcionPage({ searchParams }: InscripcionPageP
               <code>{rivalCode}</code>
             </div>
             <p className="rival-banner-hint">
-              El botó "Inscriu l'equip" ja porta el codi al missatge de WhatsApp — només cal que cliquis i
+              El botó &quot;Inscriu l&apos;equip&quot; ja porta el codi al missatge de WhatsApp — només cal que cliquis i
               enviïs.
             </p>
           </div>
         )}
 
-        <p>
-          El <strong>3×3 Westfield Glòries</strong> és el torneig de bàsquet 3×3 FIBA més important de
-          Barcelona. La 4a edició se celebra els dies <strong>6 i 7 de juny de 2026</strong> al barri del
-          Clot-Glòries. Les places són limitades — inscriu l'equip ara.
-        </p>
-
-        <h2>Inscripció online</h2>
-        <p>
+        <p className="insc-intro-text">
           5 passos: tria el paquet, registra els contactes, fes la transferència i puja el justificant,
           omple les dades dels jugadors i envia. <strong>El justificant no et bloqueja</strong> — pots
           continuar de seguida i nosaltres validem el pagament en menys de 24h.
@@ -105,9 +126,9 @@ export default async function InscripcionPage({ searchParams }: InscripcionPageP
 
         <InscripcioWizard initialRefCode={rivalCode} />
 
-        <p style={{ fontSize: 14, color: "rgba(255,247,239,0.55)", marginTop: 8 }}>
+        <p className="insc-wa-hint">
           Prefereixes parlar per WhatsApp?{" "}
-          <a href={waLink} target="_blank" rel="noreferrer" style={{ color: "#ff375f" }}>
+          <a href={waLink} target="_blank" rel="noreferrer" className="insc-link">
             Inscripció via WhatsApp
           </a>{" "}
           (et responem en menys de 24h).
@@ -115,22 +136,49 @@ export default async function InscripcionPage({ searchParams }: InscripcionPageP
 
         <hr className="page-divider" />
 
+        {/* ── Prize money amb foto ── */}
+        <div className="insc-prize">
+          <div className="insc-prize-img-wrap">
+            <img
+              src="/hero-bg-3.jpg"
+              alt="Jugadors competint al 3×3 Westfield Glòries"
+              className="insc-prize-img"
+            />
+            <div className="insc-prize-img-overlay" />
+            <span className="insc-prize-fiba">FIBA Official</span>
+          </div>
+          <div className="insc-prize-body">
+            <span className="insc-prize-kicker">Sènior Masculí &amp; Femení</span>
+            <p className="insc-prize-amount">2.000€</p>
+            <p className="insc-prize-label">Prize Money</p>
+            <p className="insc-prize-desc">
+              Les categories Sènior M/F opten a <strong>1.000 € cadascuna</strong>. A més, el torneig és
+              oficial de FIBA 3×3 — els jugadors sumen punts al rànquing mundial individual per accedir a
+              competicions internacionals.
+            </p>
+            <p className="insc-prize-rest">
+              La resta de categories reben <strong>trofeus i medalles</strong>.
+            </p>
+          </div>
+        </div>
+
+        <hr className="page-divider" />
+
+        {/* ── Categories i preus ── */}
         <h2>Categories i preus</h2>
         <p>
-          Hi ha <strong>10 categories</strong> per edat i gènere. El preu depèn del nombre de jugadors i la
-          categoria. Tots els equips reben samarreta oficial i dorsal.
+          Hi ha <strong>10 categories</strong> per edat i gènere. Tots els equips reben samarreta oficial
+          i dorsal.
         </p>
 
-        <div className="page-card-grid">
+        <div className="insc-cat-grid">
           {categories.map((cat) => (
-            <div key={cat.name} className="page-card">
-              <span className="page-card-label">{cat.name}</span>
-              <strong>{cat.preu}</strong>
-              <p>
-                {cat.any}
-                <br />
-                {cat.nota}
-              </p>
+            <div key={cat.name} className={`insc-cat-card${cat.special ? " insc-cat-card--pro" : ""}`}>
+              <span className="insc-cat-emoji">{cat.emoji}</span>
+              <span className="insc-cat-name">{cat.name}</span>
+              <span className="insc-cat-year">{cat.any}</span>
+              <span className="insc-cat-price">{cat.preu}</span>
+              <span className="insc-cat-note">{cat.nota}</span>
             </div>
           ))}
         </div>
@@ -143,38 +191,50 @@ export default async function InscripcionPage({ searchParams }: InscripcionPageP
 
         <hr className="page-divider" />
 
-        <h2>Prize money i punts FIBA</h2>
-        <p>
-          Les categories Sènior Masculí i Sènior Femení opten a <strong>1.000 € cadascuna</strong> (2.000 €
-          en total). A més, el torneig és oficial de FIBA 3×3, de manera que els jugadors Sèniors sumen
-          punts pel rànquing mundial individual de FIBA que serveixen per accedir a competicions
-          internacionals. La resta de categories reben trofeus i medalles.
-        </p>
-
-        <hr className="page-divider" />
-
-        <h2>Seus del torneig</h2>
-        <p>
-          El torneig es juga a tres punts del barri del Clot-Glòries, a menys de 10 minuts a peu entre ells:
-        </p>
-        <ul>
-          <li>
-            <strong>Westfield Glòries</strong> — Av. Diagonal 208. Seu principal, pàrquing gratis 2h.
-          </li>
-          <li>
-            <strong>La Nau del Clot</strong> — Carrer de la Llacuna 172. Pavelló cobert oficial.
-          </li>
-          <li>
-            <strong>Rambleta del Clot</strong> — Pista exterior amb ambient de carrer.
-          </li>
-        </ul>
+        {/* ── Seus amb foto ── */}
+        <div className="insc-venues">
+          <div className="insc-venues-text">
+            <h2>3 seus · 1 barri</h2>
+            <p>
+              Tots els recintes estan al barri del Clot-Glòries, a menys de 10 minuts a peu entre ells:
+            </p>
+            <ul className="insc-venues-list">
+              <li>
+                <strong>Westfield Glòries</strong>
+                <span>Av. Diagonal 208 · Seu principal, pàrquing gratis 2h</span>
+              </li>
+              <li>
+                <strong>La Nau del Clot</strong>
+                <span>Carrer de la Llacuna 172 · Pavelló cobert oficial</span>
+              </li>
+              <li>
+                <strong>Rambleta del Clot</strong>
+                <span>Pista exterior · ambient de carrer</span>
+              </li>
+            </ul>
+          </div>
+          <div className="insc-venues-img-wrap">
+            <img
+              src="/hero-bg-2.jpg"
+              alt="Vista aèria de la pista 3×3 al Clot-Glòries"
+              className="insc-venues-img"
+            />
+          </div>
+        </div>
 
         <hr className="page-divider" />
 
         <h2>Tens dubtes?</h2>
         <p>
-          Consulta les <Link href="/preguntes-frequents" style={{ color: "#ff375f" }}>preguntes freqüents</Link> o{" "}
-          <Link href="/contacte" style={{ color: "#ff375f" }}>contacta'ns per WhatsApp</Link>. Resposta en menys de 24h.
+          Consulta les{" "}
+          <Link href="/preguntes-frequents" className="insc-link">
+            preguntes freqüents
+          </Link>{" "}
+          o{" "}
+          <Link href="/contacte" className="insc-link">
+            contacta&apos;ns per WhatsApp
+          </Link>
+          . Resposta en menys de 24h.
         </p>
       </main>
     </div>

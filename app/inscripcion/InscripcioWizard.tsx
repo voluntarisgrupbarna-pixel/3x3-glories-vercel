@@ -227,7 +227,13 @@ export default function InscripcioWizard({ initialRefCode }: Props) {
     setState((prev) => ({ ...prev, players: prev.players.filter((_, i) => i !== idx) }));
   }
 
-  function next() { setState((prev) => ({ ...prev, step: Math.min(6, prev.step + 1) })); }
+  function next() {
+    if (state.step === 3) {
+      // Contactes completats → capturem proactivament (poden abandonar al pagament)
+      sendAbandonedLead("step3_advance");
+    }
+    setState((prev) => ({ ...prev, step: Math.min(6, prev.step + 1) }));
+  }
   function prev() { setState((prev) => ({ ...prev, step: Math.max(1, prev.step - 1) })); }
 
   async function handleFileChange(file: File | null) {
