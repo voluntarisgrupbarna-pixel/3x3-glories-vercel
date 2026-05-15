@@ -3,6 +3,8 @@
 
 export type PackageKey = "individual" | "team-4" | "team-5" | "senior";
 
+export type DiscountType = "earlybird" | "social" | null;
+
 export type Package = {
   key: PackageKey;
   emoji: string;
@@ -88,3 +90,42 @@ export const IBAN_INFO = {
   iban: "ES98 0049 1500 0826 1097 0382",
   beneficiary: "CB Grup Barna",
 };
+
+// ── Descomptes (acumulables) ───────────────────────────────────────────────
+export const EARLY_BIRD_DEADLINE = new Date("2026-05-20T23:59:59+02:00");
+export const EARLY_BIRD_PCT      = 0.10; // 10 % sobre el preu base
+export const SOCIAL_PCT          = 0.05; // 5 %  sobre el preu base
+export const RIVAL_FLAT          = 5;    // −5 € fixos
+
+export function isEarlyBirdActive(): boolean {
+  return new Date() < EARLY_BIRD_DEADLINE;
+}
+
+export type DiscountResult = {
+  earlyBirdAmt : number;
+  socialAmt    : number;
+  rivalAmt     : number;
+  totalDiscount: number;
+  finalPrice   : number;
+};
+
+/**
+ * Calcula tots els descomptes actius sobre `basePrice`.
+ * Els tres descomptes s'apliquen sobre el preu base (no en cascada)
+ * per simplicitat i transparència.
+ */
+export function calcDiscount(
+  basePrice: number,
+  opts: { earlyBird?: boolean; social?: boolean; rivalValid?: boolean },
+): DiscountResult {
+  const earlyBirdAmt = opts.earlyBird
+    ? Math.round(basePrice * EARLY_BIRD_PCT * 100) / 100
+    : 0;
+  const socialAmt = opts.social
+    ? Math.round(basePrice * SOCIAL_PCT * 100) / 100
+    : 0;
+  const rivalAmt = opts.rivalValid ? RIVAL_FLAT : 0;
+  const totalDiscount = earlyBirdAmt + socialAmt + rivalAmt;
+  const finalPrice = Math.max(0, Math.round((basePrice - totalDiscount) * 100) / 100);
+  return { earlyBirdAmt, socialAmt, rivalAmt, totalDiscount, finalPrice };
+}
