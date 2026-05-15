@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import ReferralCard from "../components/ReferralCard";
 import InscripcioWizard from "./InscripcioWizard";
+import QueueGate from "./QueueGate";
 
 export const metadata: Metadata = {
   title: "Inscripció d'equip | 3×3 Westfield Glòries 2026",
@@ -60,6 +61,7 @@ export default async function InscripcionPage({ searchParams }: InscripcionPageP
   const waLink = `https://wa.me/34698425153?text=${encodeURIComponent(waBaseMsg)}`;
 
   return (
+    <QueueGate>
     <div className="page-shell">
       {/* Nav */}
       <nav className="page-nav">
@@ -238,5 +240,6 @@ export default async function InscripcionPage({ searchParams }: InscripcionPageP
         </p>
       </main>
     </div>
+    </QueueGate>
   );
 }

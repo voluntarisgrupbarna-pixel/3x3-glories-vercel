@@ -85,17 +85,17 @@ export async function POST(req: NextRequest) {
     const playerIds = payload.players.map((_, idx) => generatePlayerId(teamId, idx));
 
     // === Fase 1 (MVP): forward to Apps Script Web App ===
-    // Apps Script ha de gestionar:
+    // Apps Script gestiona:
     //   1. Desar a Google Sheet "Inscripcions 3x3 2026"
     //   2. Guardar justificant a Drive (decodificant base64)
-    //   3. POST a JotForm API (Submission Create)
-    //   4. (Opcional) Email confirmació via Brevo
+    //   3. Forward a GitHub JSON + Issue (backup paranoid)
+    //   4. Notificació WhatsApp via Brevo + email confirmació
     //
-    // L'URL del Web App va a la env var NEXT_PUBLIC_APPSCRIPT_INSCRIPCIO_URL.
-    // Mentre no estigui configurada, l'endpoint guarda les dades en memòria del log
+    // L'URL del Web App va a la env var APPS_SCRIPT_WEBHOOK_URL (Vercel env).
+    // Mentre no estigui configurada, l'endpoint guarda les dades al log
     // (en producció Vercel logs queden 1h) i retorna OK perquè el frontend continuï.
 
-    const scriptUrl = process.env.APPSCRIPT_INSCRIPCIO_URL;
+    const scriptUrl = process.env.APPS_SCRIPT_WEBHOOK_URL;
     const scriptSecret = process.env.APPSCRIPT_SECRET;
 
     const forwardPayload = {
@@ -147,7 +147,7 @@ export async function POST(req: NextRequest) {
     } else {
       // Sense backend Apps Script — log a Vercel
       const { proof, secret, ...safe } = forwardPayload;
-      console.log("[inscripcio] PENDING (no APPSCRIPT_INSCRIPCIO_URL):", JSON.stringify(safe));
+      console.log("[inscripcio] PENDING (no APPS_SCRIPT_WEBHOOK_URL):", JSON.stringify(safe));
       console.log(
         "[inscripcio] proof file:",
         proof.fileName,

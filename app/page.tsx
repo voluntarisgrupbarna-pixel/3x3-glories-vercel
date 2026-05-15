@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
 import EarlyBirdBanner from "./components/EarlyBirdBanner";
 import HeroFestival from "./components/HeroFestival";
 import WhatsAppLeadWidget from "./components/WhatsAppLeadWidget";
@@ -9,7 +7,10 @@ import SlideDos from "./components/SlideDos";
 import UbicacionsSection from "./components/UbicacionsSection";
 import PremisSection from "./components/PremisSection";
 import CategoriesSection from "./components/CategoriesSection";
-import { faqs } from "./data/faqs";
+import InstagramReels from "./components/InstagramReels";
+import FaqSection from "./components/FaqSection";
+import SponsorsSection from "./components/SponsorsSection";
+import SiteFooter from "./components/SiteFooter";
 
 export default function Home() {
   return (
@@ -32,54 +33,19 @@ export default function Home() {
       {/* === Categories — dia 6 + dia 7 === */}
       <CategoriesSection />
 
-      {/* === FAQ === */}
-      <section className="faq-section" aria-label="Preguntes freqüents">
-        <div className="faq-inner">
-          <h2 className="faq-title">Preguntes freqüents</h2>
-          <FaqAccordion />
-          <div className="faq-footer">
-            <Link href="/preguntes-frequents" className="faq-all-link">
-              Veure totes les preguntes freqüents →
-            </Link>
-          </div>
-        </div>
-      </section>
+      {/* === Galeria — Instagram Reels === */}
+      <InstagramReels />
 
+      {/* === FAQ accordion === */}
+      <FaqSection />
+
+      {/* === Patrocinadors === */}
+      <SponsorsSection />
+
+      {/* === Footer === */}
+      <SiteFooter />
 
       <WhatsAppLeadWidget />
     </>
-  );
-}
-
-function FaqAccordion() {
-  const [open, setOpen] = useState<number | null>(null);
-
-  function toggle(i: number) {
-    setOpen(open === i ? null : i);
-  }
-
-  return (
-    <div className="faq-list">
-      {faqs.map((faq, i) => (
-        <div key={i} className={`faq-item${open === i ? " faq-item--open" : ""}`}>
-          <button
-            type="button"
-            className="faq-question"
-            aria-expanded={open === i}
-            onClick={() => toggle(i)}
-          >
-            <span>{faq.q}</span>
-            <span className="faq-icon" aria-hidden="true">
-              {open === i ? "−" : "+"}
-            </span>
-          </button>
-          {open === i && (
-            <div className="faq-answer">
-              <p>{faq.a}</p>
-            </div>
-          )}
-        </div>
-      ))}
-    </div>
   );
 }

@@ -13,7 +13,7 @@ const STATS = [
   { value: "180+", label: "Equips a 2 edicions" },
   { value: "800+", label: "Jugadors/es totals" },
   { value: "2.4M+", label: "Impressions potencials" },
-  { value: "25%", label: "Creixement 2024→2025" },
+  { value: "4a", label: "Edició consecutiva" },
 ];
 
 const EVENT_DATE = new Date("2026-06-06T09:00:00+02:00");
@@ -109,7 +109,7 @@ export default function HeroFestival() {
       {/* Left panel */}
       <div className="hero-festival-panel">
         <span className="hero-festival-chip">
-          <span className="hero-festival-chip-dot" /> 3a edició · Inscripcions obertes
+          <span className="hero-festival-chip-dot" /> 4a edició · Inscripcions obertes
         </span>
 
         <h1 className="hero-festival-title">3×3 Westfield Glòries</h1>

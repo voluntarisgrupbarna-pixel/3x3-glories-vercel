@@ -1,0 +1,83 @@
+import Image from "next/image";
+
+const SPONSORS = [
+  {
+    name: "Westfield Glòries",
+    role: "Seu oficial",
+    img: "/logos/westfield.svg",
+    url: "https://www.westfield.com/gloriesbarcelona",
+  },
+  {
+    name: "CB Grup Barna",
+    role: "Organitzador",
+    img: "/cb-grup-barna-logo-512.png",
+    url: "https://cbgrupbarna.com",
+  },
+  {
+    name: "Time Chamber",
+    role: "Organitzador",
+    img: "/logos/timechamber.webp",
+    url: "https://timechamber.es",
+  },
+  {
+    name: "Eix Clot",
+    role: "Patrocinador",
+    img: "/logos/eix-clot.png",
+    url: "https://eixclot.cat",
+  },
+  {
+    name: "Ajuntament de Barcelona",
+    role: "Institucional",
+    img: "/logos/ajuntament-barcelona.jpg",
+    url: "https://www.barcelona.cat",
+  },
+];
+
+export default function SponsorsSection() {
+  return (
+    <section id="sponsors" className="sponsors-section">
+      <div className="sponsors-inner">
+        <header className="sponsors-header">
+          <span className="sponsors-kicker">Amb el suport de</span>
+          <h2 className="sponsors-title">Patrocinadors</h2>
+        </header>
+
+        <div className="sponsors-grid">
+          {SPONSORS.map((s) => (
+            <a
+              key={s.name}
+              href={s.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="sponsor-card"
+              aria-label={`${s.name} — ${s.role}`}
+            >
+              <div className="sponsor-logo-wrap">
+                <Image
+                  src={s.img}
+                  alt={s.name}
+                  width={120}
+                  height={72}
+                  className="sponsor-logo-img"
+                  style={{ objectFit: "contain" }}
+                />
+              </div>
+              <span className="sponsor-name">{s.name}</span>
+              <span className="sponsor-role">{s.role}</span>
+            </a>
+          ))}
+        </div>
+
+        <div className="sponsors-cta">
+          <p className="sponsors-cta-text">Vols ser patrocinador del torneig?</p>
+          <a
+            href="mailto:info@cbgrupbarna.com"
+            className="sponsors-cta-btn"
+          >
+            Contacta amb nosaltres ↗
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
