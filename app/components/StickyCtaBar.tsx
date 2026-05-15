@@ -38,8 +38,8 @@ export default function StickyCtaBar() {
           text:  SHARE_TEXT,
           url:   SHARE_URL,
         });
-      } else if (typeof navigator !== "undefined" && navigator.clipboard) {
-        await navigator.clipboard.writeText(SHARE_URL);
+      } else if (typeof navigator !== "undefined" && "clipboard" in navigator && (navigator as Navigator & { clipboard: Clipboard }).clipboard) {
+        await (navigator as Navigator & { clipboard: Clipboard }).clipboard.writeText(SHARE_URL);
         setShared(true);
         setTimeout(() => setShared(false), 2200);
       }
