@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import EarlyBirdBanner from "./components/EarlyBirdBanner";
-import HeroVideoBanner from "./components/HeroVideoBanner";
+import HeroFestival from "./components/HeroFestival";
 import WhatsAppLeadWidget from "./components/WhatsAppLeadWidget";
 import { faqs } from "./data/faqs";
 
@@ -12,8 +12,8 @@ export default function Home() {
     <>
       <EarlyBirdBanner />
       <main className="experience-shell">
-        {/* === HERO VÍDEO — primer impacte de la home === */}
-        <HeroVideoBanner />
+        {/* === HERO FESTIVAL — primer impacte amb foto + nav + stats + IG === */}
+        <HeroFestival />
 
         {/* === Secció informativa indexable (SEO) === */}
         <section className="event-info-section" aria-label="Sobre el torneig 3×3">
