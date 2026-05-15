@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import StickyCtaBar from "./components/StickyCtaBar";
 import SiteNav from "./components/SiteNav";
+import ExitIntentModal from "./components/ExitIntentModal";
 
 const inter = Inter({ subsets: ["latin"], display: "swap" });
 
@@ -15,7 +16,7 @@ const LOGO_512 = `${SITE_URL}/cb-grup-barna-logo-512.png`;
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "3×3 Barcelona — Torneig FIBA Westfield Glòries 2026 · CB Grup Barna",
+    default: "Torneig 3×3 Barcelona 2026 — Westfield Glòries · FIBA · 2.000€ premis",
     template: "%s | 3×3 Westfield Glòries",
   },
   description:
@@ -482,6 +483,7 @@ export default function RootLayout({
       <body>
         <SiteNav />
         <StickyCtaBar />
+        <ExitIntentModal />
         {children}
         <Script
           id="tracking-conversions"

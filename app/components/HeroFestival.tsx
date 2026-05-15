@@ -115,6 +115,9 @@ export default function HeroFestival() {
 
         <h1 className="hero-festival-title">3×3 Westfield Glòries</h1>
         <p className="hero-festival-subtitle">
+          El torneig 3×3 FIBA de referència a Barcelona
+        </p>
+        <p className="hero-festival-subtitle" style={{ opacity: 0.6, fontSize: "0.8em", marginTop: "-0.4em" }}>
           × <strong>Grup Barna</strong> · <strong>Time Chamber</strong> · <strong>Eix Clot</strong>
         </p>
 
