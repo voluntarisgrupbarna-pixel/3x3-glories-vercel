@@ -296,6 +296,7 @@ export default function Page3x3Barcelona() {
           {/* Cross-links */}
           <h2>Més informació del torneig</h2>
           <ul>
+            <li><Link href="/3x3-barna" className="insc-link">3×3 Barna 2026</Link> — pàgina principal del torneig amb categories i inscripció</li>
             <li><Link href="/inscripcion" className="insc-link">Inscripció d&apos;equip</Link> — formulari online en 5 passos</li>
             <li><Link href="/inscripcio-individual" className="insc-link">Inscripció individual</Link> — sense equip, 20€, t&apos;assignem un equip</li>
             <li><Link href="/horarios-3x3-barcelona-2026" className="insc-link">Horaris 3×3 Barcelona 2026</Link> — programa complet 6-7 juny</li>

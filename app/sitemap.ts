@@ -96,6 +96,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       alternates: langs("/3x3-barcelona"),
     },
     {
+      url: `${SITE_URL}/3x3-glories`,
+      lastModified,
+      changeFrequency: "weekly",
+      priority: 0.9,
+      alternates: langs("/3x3-glories"),
+    },
+    {
       url: `${SITE_URL}/torneig-3x3-barcelona`,
       lastModified,
       changeFrequency: "weekly",

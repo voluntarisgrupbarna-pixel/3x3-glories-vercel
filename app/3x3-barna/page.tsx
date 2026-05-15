@@ -28,6 +28,54 @@ const CATEGORIES = [
   { name: "Veterans Femení", any: "fins 1986", preu: "75€" },
 ];
 
+// JSON-LD FAQ per a la pàgina 3x3-barna
+const jsonLdFaq = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "Què és el 3×3 Barna?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "El 3×3 Barna és el torneig de bàsquet 3×3 FIBA anual organitzat per CB Grup Barna, Time Chamber i Eix Clot al barri del Clot-Glòries de Barcelona. És la cita 3×3 de carrer més important de Barna, amb 10 categories, 2.000€ de premi i punts FIBA per al rànquing mundial.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Quan és el 3×3 Barna 2026?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "El 3×3 Barna 2026 es celebra els dies 6 i 7 de juny de 2026 (dissabte i diumenge) al barri del Clot-Glòries de Barcelona.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "On és el 3×3 Barna 2026?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "El 3×3 Barna 2026 té tres seus al barri del Clot-Glòries: Westfield Glòries (seu principal, finals), La Nau del Clot (pavelló cobert, semifinals) i la Rambleta del Clot (pista de carrer). Totes tres a menys de 10 minuts a peu.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Quant costa inscriure's al 3×3 Barna 2026?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "La inscripció al 3×3 Barna 2026 costa des de 75€ per equip (categories base) fins a 105€ (Sèniors amb 5 jugadors). El preu inclou samarreta oficial i dorsal per a cada jugador.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "El 3×3 Barna 2026 dóna punts FIBA?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Sí. El 3×3 Barna 2026 és un torneig homologat per FIBA 3×3. Els jugadors de les categories Sènior Masculí i Sènior Femení sumen punts al rànquing mundial individual FIBA, que serveix per accedir a competicions internacionals oficials.",
+      },
+    },
+  ],
+};
+
 // JSON-LD específic per a la query "3x3 barna"
 const jsonLd = {
   "@context": "https://schema.org",
@@ -77,6 +125,10 @@ export default function Page3x3Barna() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdFaq) }}
       />
 
       <div className="page-shell">
@@ -172,6 +224,29 @@ export default function Page3x3Barna() {
             <p style={{ color: "rgba(255,247,239,0.7)", fontSize: 15, lineHeight: 1.7 }}>
               Si busques el <strong style={{ color: "#fff7ef" }}>millor torneig 3×3 de Barna</strong>, has arribat al lloc correcte. Inscriu el teu equip ara i assegura la teva plaça abans que s'esgotin.
             </p>
+          </div>
+
+          <hr className="page-divider" />
+
+          {/* FAQ */}
+          <div style={{ maxWidth: 680, margin: "0 auto 40px" }}>
+            <h2 style={{ fontSize: 20, fontWeight: 800, color: "#fff7ef", marginBottom: 20 }}>
+              Preguntes freqüents sobre el 3×3 Barna
+            </h2>
+            {[
+              { q: "Què és el 3×3 Barna?", a: "El 3×3 Barna és el torneig de bàsquet 3×3 FIBA anual del barri del Clot-Glòries. Organitzat per CB Grup Barna, Time Chamber i Eix Clot, és la cita 3×3 de carrer més important de Barna: 10 categories, 2.000€ de premi i punts FIBA." },
+              { q: "Quan és el 3×3 Barna 2026?", a: "Dissabte 6 i diumenge 7 de juny de 2026." },
+              { q: "On és el 3×3 Barna?", a: "Tres seus al Clot-Glòries: Westfield Glòries (finals), La Nau del Clot (semifinals) i Rambleta del Clot (carrer). Tot a menys de 10 minuts a peu." },
+              { q: "Quant costa inscriure's?", a: "Des de 75€ per equip (categories base) fins a 105€ (Sèniors 5 jugadors). Samarreta oficial i dorsal inclosos." },
+              { q: "El 3×3 Barna dóna punts FIBA?", a: "Sí. Torneig homologat FIBA 3×3. Els Sèniors sumen punts al rànquing mundial individual per accedir a competicions internacionals." },
+            ].map((faq, i) => (
+              <details key={i} style={{ marginBottom: 12, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 12, padding: "16px 20px" }}>
+                <summary style={{ fontWeight: 700, fontSize: 15, color: "#fff7ef", cursor: "pointer", listStyle: "none", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  {faq.q} <span style={{ color: "#ff5b1f", fontSize: 18, marginLeft: 8 }}>+</span>
+                </summary>
+                <p style={{ margin: "12px 0 0", fontSize: 14, color: "rgba(255,247,239,0.7)", lineHeight: 1.7 }}>{faq.a}</p>
+              </details>
+            ))}
           </div>
 
           {/* CTA final */}
