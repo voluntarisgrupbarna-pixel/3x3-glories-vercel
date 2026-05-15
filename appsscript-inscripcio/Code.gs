@@ -24,6 +24,11 @@ function doPost(e) {
     }
     const payload = JSON.parse(e.postData.contents);
 
+    if (payload.action === "cerca") {
+      const result = guardarCerca(payload);
+      return jsonResponse(result);
+    }
+
     if (payload.action === "abandoned") {
       const result = handleAbandoned(payload);
       return jsonResponse(result);
@@ -805,4 +810,48 @@ function testHandleInscripcio() {
   const result = handleInscripcio(fake);
   Logger.log(JSON.stringify(result, null, 2));
   return result;
+}
+
+// ===== CERCA — FAQ search tracking =====
+
+/**
+ * Guarda una cerca del buscador de FAQ al tab "Cerques" del Google Sheet.
+ * Columnes: Timestamp | Pàgina | Consulta | Nom | Email | ConsentimentRGPD
+ */
+function guardarCerca(payload) {
+  try {
+    const sheetId = PropertiesService.getScriptProperties().getProperty("SHEET_ID");
+    if (!sheetId) {
+      console.warn("guardarCerca: SHEET_ID not configured, skipping");
+      return { ok: true, saved: false, reason: "no SHEET_ID" };
+    }
+
+    const ss = SpreadsheetApp.openById(sheetId);
+    let sheet = ss.getSheetByName("Cerques");
+
+    // Crea el tab si no existeix
+    if (!sheet) {
+      sheet = ss.insertSheet("Cerques");
+      sheet.getRange(1, 1, 1, 6).setValues([[
+        "Timestamp", "Pàgina", "Consulta", "Nom", "Email", "ConsentimentRGPD"
+      ]]);
+      sheet.getRange(1, 1, 1, 6).setFontWeight("bold");
+      sheet.setFrozenRows(1);
+    }
+
+    const hasConsent = !!(payload.name || payload.email);
+    sheet.appendRow([
+      payload.receivedAt || new Date().toISOString(),
+      payload.page || "unknown",
+      payload.query || "",
+      payload.name || "",
+      payload.email || "",
+      hasConsent ? "Sí" : "No",
+    ]);
+
+    return { ok: true, saved: true };
+  } catch (err) {
+    console.error("guardarCerca error", err);
+    return { ok: false, error: String(err && err.message ? err.message : err) };
+  }
 }

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { faqs } from "../data/faqs";
+import FaqSearch from "../components/FaqSearch";
 
 export const metadata: Metadata = {
   title: "Preguntes freqüents | 3×3 Westfield Glòries 2026",
@@ -32,18 +32,13 @@ export default function PreguntesFrequentsPage() {
         <h1>Preguntes freqüents sobre el 3×3 Barcelona</h1>
 
         <p>
-          Totes les respostes sobre el <strong>3×3 Westfield Glòries 2026</strong>. Si no trobes el que
-          busques, <Link href="/contacte" style={{ color: "#ff375f" }}>escriu-nos</Link> i et responem en
-          menys de 24h.
+          Totes les respostes sobre el <strong>3×3 Westfield Glòries 2026</strong>. Utilitza el cercador
+          o navega per totes les preguntes. Si no trobes el que busques,{" "}
+          <Link href="/contacte" style={{ color: "#ff375f" }}>escriu-nos</Link> i et responem en menys de 24h.
         </p>
 
         <div style={{ marginTop: 32 }}>
-          {faqs.map((faq) => (
-            <div key={faq.q} className="page-faq-item">
-              <h2>{faq.q}</h2>
-              <p>{faq.a}</p>
-            </div>
-          ))}
+          <FaqSearch page="frequents" />
         </div>
 
         <div style={{ marginTop: 48 }}>
