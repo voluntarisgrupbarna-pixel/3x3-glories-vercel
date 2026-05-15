@@ -538,7 +538,7 @@ function SocialDiscountBlock({
           className={`wizard-social-btn wizard-social-btn--wa${waClicked ? " wizard-social-btn--done" : ""}`}
           onClick={handleWa}
         >
-          {waClicked ? "✓ Compartit per WhatsApp" : "📲 Comparteix per WhatsApp"}
+          {waClicked ? "📲 WhatsApp obert" : "📲 Comparteix per WhatsApp"}
         </a>
         <a
           href="https://www.instagram.com/cbgrupbarna/"
@@ -547,7 +547,7 @@ function SocialDiscountBlock({
           className={`wizard-social-btn wizard-social-btn--ig${igClicked ? " wizard-social-btn--done" : ""}`}
           onClick={handleIg}
         >
-          {igClicked ? "✓ Seguint @cbgrupbarna" : "📸 Segueix @cbgrupbarna a Instagram"}
+          {igClicked ? "📸 Instagram obert" : "📸 Segueix @cbgrupbarna a Instagram"}
         </a>
         {socialShareDone && <p className="wizard-social-ok">✅ Descompte social del 5 % activat!</p>}
       </div>
@@ -573,6 +573,8 @@ function Step1Discounts({
   const earlyBirdActive = isEarlyBirdActive();
   const daysLeft = Math.max(0, Math.ceil((EARLY_BIRD_DEADLINE.getTime() - Date.now()) / 86_400_000));
   const rivalValid = isRivalCodeValid(rivalCode);
+  // Pre-obrir si hi ha codi des de la URL (?ref=...)
+  const [rivalOpen, setRivalOpen] = useState(rivalCode.length > 0);
 
   return (
     <div className="wizard-step">
@@ -598,6 +600,43 @@ function Step1Discounts({
 
       {/* Social share */}
       <SocialDiscountBlock socialShareDone={socialShareDone} onSocialDone={onSocialDone} />
+
+      {/* Pack Rival — plegat per defecte, s'obre amb codi de la URL o manualment */}
+      {!rivalOpen ? (
+        <button
+          type="button"
+          className="wizard-rival-toggle"
+          onClick={() => setRivalOpen(true)}
+        >
+          🏀 Tens un codi d&apos;equip rival? (−5 €)
+        </button>
+      ) : (
+        <div className={`wizard-discount-block${rivalValid ? " wizard-discount-block--active" : ""}`}>
+          <div className="wizard-discount-head">
+            <span className="wizard-discount-pct" style={{ background: "rgba(255,122,0,.18)", color: "#ff9c3c" }}>🏀 −5 €</span>
+            <div>
+              <strong>Pack Rival</strong>
+              {rivalValid
+                ? <span className="wizard-discount-status wizard-discount-status--on">Activat ✓</span>
+                : <span className="wizard-discount-status wizard-discount-status--off">Introdueix el codi</span>
+              }
+            </div>
+          </div>
+          <p className="wizard-discount-desc">
+            Un equip rival t&apos;ha convidat? Introdueix el seu codi i us feu −5 € cadascun.
+          </p>
+          <input
+            type="text"
+            className="wizard-rival-input"
+            placeholder="RIVAL-XXXXXX"
+            value={rivalCode}
+            onChange={(e) => onRivalCode(e.target.value)}
+            maxLength={40}
+            autoCapitalize="characters"
+            style={{ marginTop: 8, width: "100%", padding: "0.55rem 0.8rem", borderRadius: 8, border: rivalValid ? "1.5px solid #ff9c3c" : "1.5px solid rgba(255,247,239,.15)", background: "rgba(255,247,239,.06)", color: "#fff7ef", fontSize: "0.95rem", letterSpacing: "0.04em" }}
+          />
+        </div>
+      )}
 
       <div className="wizard-nav" style={{ marginTop: 28 }}>
         <button type="button" className="wizard-btn wizard-btn-primary" onClick={onNext}>
