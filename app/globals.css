@@ -5297,13 +5297,13 @@ html {
 ══════════════════════════════════════════════════════════════ */
 .sticky-cta-bar {
   position: fixed;
-  right: 14px;
-  bottom: 96px;             /* damunt del WhatsApp widget */
+  left: 14px;               /* esquerra — WA queda a la dreta sense overlap */
+  bottom: 24px;
   z-index: 18;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  align-items: flex-end;
+  align-items: flex-start;
 }
 
 .sticky-cta-rival,
