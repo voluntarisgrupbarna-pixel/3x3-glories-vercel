@@ -92,7 +92,7 @@ export const IBAN_INFO = {
 };
 
 // ── Descomptes (acumulables) ───────────────────────────────────────────────
-export const EARLY_BIRD_DEADLINE = new Date("2026-05-20T23:59:59+02:00");
+export const EARLY_BIRD_DEADLINE = new Date("2026-04-20T23:59:59+02:00");
 export const EARLY_BIRD_PCT      = 0.10; // 10 % sobre el preu base
 export const SOCIAL_PCT          = 0.05; // 5 %  sobre el preu base
 export const RIVAL_FLAT          = 5;    // −5 € fixos
