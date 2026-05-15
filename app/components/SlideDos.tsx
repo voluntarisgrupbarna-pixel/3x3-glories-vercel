@@ -1,7 +1,35 @@
 "use client";
 
+import { useState } from "react";
 import { useShareGate } from "./ShareGate";
 
+/* ── Programa per dia ─────────────────────────────────────── */
+const PROGRAM = [
+  {
+    dia: "Dissabte 6 de Juny",
+    dateShort: "6 Jun",
+    categories: [
+      { nom: "Sènior Masculí Pro", fiba: true },
+      { nom: "Sènior Femení Pro",  fiba: true },
+      { nom: "Veterans",          fiba: false },
+      { nom: "Màgics",            fiba: false },
+    ],
+  },
+  {
+    dia: "Diumenge 7 de Juny",
+    dateShort: "7 Jun",
+    categories: [
+      { nom: "Premini",  fiba: false },
+      { nom: "Mini",     fiba: false },
+      { nom: "Infantil", fiba: false },
+      { nom: "Cadet",    fiba: false },
+      { nom: "Júnior",   fiba: false },
+      { nom: "Sub-23",   fiba: false },
+    ],
+  },
+];
+
+/* ── Cards info ───────────────────────────────────────────── */
 const INFO_CARDS = [
   {
     icon: (
@@ -12,6 +40,8 @@ const INFO_CARDS = [
     ),
     label: "DATES",
     value: "6-7 Juny 2026",
+    href: null,           // obre modal
+    action: "calendar",
   },
   {
     icon: (
@@ -22,6 +52,8 @@ const INFO_CARDS = [
     ),
     label: "SEUS",
     value: "3 ubicacions",
+    href: "#ubicacions",
+    action: null,
   },
   {
     icon: (
@@ -31,7 +63,9 @@ const INFO_CARDS = [
       </svg>
     ),
     label: "EQUIP",
-    value: "3+1 jugadors",
+    value: "4+1 jugadors",
+    href: "/inscripcion",
+    action: null,
   },
   {
     icon: (
@@ -42,10 +76,53 @@ const INFO_CARDS = [
     ),
     label: "INSCRIPCIÓ",
     value: "des de 75€",
+    href: "/inscripcion",
+    action: null,
   },
 ];
 
+/* ── Modal calendari ──────────────────────────────────────── */
+function CalendarModal({ onClose }: { onClose: () => void }) {
+  return (
+    <div className="cal-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-label="Programa del torneig">
+      <div className="cal-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="cal-header">
+          <span className="cal-title">Programa 2026</span>
+          <button className="cal-close" onClick={onClose} aria-label="Tancar">×</button>
+        </div>
+
+        <div className="cal-days">
+          {PROGRAM.map((day) => (
+            <div key={day.dateShort} className="cal-day">
+              <div className="cal-day-header">
+                <span className="cal-day-num">{day.dateShort}</span>
+                <span className="cal-day-name">{day.dia}</span>
+              </div>
+              <ul className="cal-cats">
+                {day.categories.map((cat) => (
+                  <li key={cat.nom} className="cal-cat">
+                    <span className="cal-cat-dot" />
+                    {cat.nom}
+                    {cat.fiba && <span className="cal-fiba-badge">FIBA · Prize Money</span>}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        <a href="/inscripcion" className="cal-cta" onClick={onClose}>
+          Inscriu el teu equip →
+        </a>
+      </div>
+    </div>
+  );
+}
+
+/* ── Component principal ──────────────────────────────────── */
 export default function SlideDos() {
+  const [calOpen, setCalOpen] = useState(false);
+
   const { trigger: handleShare, modal: shareModal } = useShareGate({
     shareData: {
       title: "3×3 Westfield Glòries 2026",
@@ -58,6 +135,8 @@ export default function SlideDos() {
   return (
     <section className="slide-dos" id="torneig" aria-label="El torneig 3×3 Westfield Glòries">
       {shareModal}
+      {calOpen && <CalendarModal onClose={() => setCalOpen(false)} />}
+
       <div className="slide-dos-inner">
         {/* Columna esquerra */}
         <div className="slide-dos-left">
@@ -73,14 +152,35 @@ export default function SlideDos() {
           <p className="slide-dos-desc">
             Tres seus de competició oficial FIBA al barri del Clot-Glòries. Des de Premini fins a Sènior Pro amb Prize Money i punts per al rànquing mundial.
           </p>
+
           <div className="slide-dos-info-grid">
-            {INFO_CARDS.map((card) => (
-              <div key={card.label} className="slide-dos-info-card">
-                <span className="slide-dos-info-icon">{card.icon}</span>
-                <span className="slide-dos-info-label">{card.label}</span>
-                <span className="slide-dos-info-value">{card.value}</span>
-              </div>
-            ))}
+            {INFO_CARDS.map((card) =>
+              card.action === "calendar" ? (
+                <button
+                  key={card.label}
+                  type="button"
+                  className="slide-dos-info-card slide-dos-info-card--link"
+                  onClick={() => setCalOpen(true)}
+                  aria-label="Veure el programa del torneig"
+                >
+                  <span className="slide-dos-info-icon">{card.icon}</span>
+                  <span className="slide-dos-info-label">{card.label}</span>
+                  <span className="slide-dos-info-value">{card.value}</span>
+                  <span className="slide-dos-info-arrow">→</span>
+                </button>
+              ) : (
+                <a
+                  key={card.label}
+                  href={card.href!}
+                  className="slide-dos-info-card slide-dos-info-card--link"
+                >
+                  <span className="slide-dos-info-icon">{card.icon}</span>
+                  <span className="slide-dos-info-label">{card.label}</span>
+                  <span className="slide-dos-info-value">{card.value}</span>
+                  <span className="slide-dos-info-arrow">→</span>
+                </a>
+              )
+            )}
           </div>
         </div>
 

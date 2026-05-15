@@ -5806,6 +5806,33 @@ html {
   border: 1px solid rgba(255, 255, 255, 0.09);
   border-radius: 10px;
   padding: 14px 16px;
+  text-decoration: none;
+  font: inherit;
+  text-align: left;
+  cursor: default;
+}
+
+.slide-dos-info-card--link {
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.slide-dos-info-card--link:hover {
+  background: rgba(255, 55, 95, 0.12);
+  border-color: rgba(255, 55, 95, 0.4);
+  transform: translateY(-2px);
+}
+
+.slide-dos-info-arrow {
+  font-size: 13px;
+  color: #ff375f;
+  margin-top: 4px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.slide-dos-info-card--link:hover .slide-dos-info-arrow {
+  opacity: 1;
 }
 
 .slide-dos-info-icon {
@@ -5826,6 +5853,155 @@ html {
   font-size: 15px;
   font-weight: 700;
   color: #fff7ef;
+}
+
+/* ── Modal calendari ──────────────────────────────── */
+.cal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.cal-modal {
+  width: min(520px, 100%);
+  background: #0f0f10;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 18px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.6);
+}
+
+.cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cal-title {
+  font-size: 18px;
+  font-weight: 900;
+  color: #fff7ef;
+  letter-spacing: -0.01em;
+}
+
+.cal-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: transparent;
+  color: #fff7ef;
+  font-size: 20px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  font: inherit;
+  line-height: 1;
+  transition: background 0.15s;
+}
+
+.cal-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.cal-days {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cal-day {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.cal-day-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: rgba(255, 55, 95, 0.12);
+  border-bottom: 1px solid rgba(255, 55, 95, 0.2);
+}
+
+.cal-day-num {
+  font-size: 22px;
+  font-weight: 900;
+  color: #ff375f;
+  line-height: 1;
+  min-width: 44px;
+}
+
+.cal-day-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(255, 247, 239, 0.7);
+}
+
+.cal-cats {
+  list-style: none;
+  margin: 0;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cal-cat {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff7ef;
+}
+
+.cal-cat-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ff375f;
+  flex-shrink: 0;
+}
+
+.cal-fiba-badge {
+  margin-left: auto;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: #ff375f;
+  background: rgba(255, 55, 95, 0.12);
+  border: 1px solid rgba(255, 55, 95, 0.3);
+  border-radius: 4px;
+  padding: 2px 7px;
+  white-space: nowrap;
+}
+
+.cal-cta {
+  display: block;
+  text-align: center;
+  background: #ff375f;
+  color: #fff;
+  font-weight: 800;
+  font-size: 15px;
+  text-decoration: none;
+  border-radius: 10px;
+  padding: 14px;
+  transition: background 0.2s ease;
+}
+
+.cal-cta:hover {
+  background: #e02050;
 }
 
 .slide-dos-right {
