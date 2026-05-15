@@ -9,11 +9,12 @@ const EB_LOGOS: Array<{
   alt: string;
   dark: boolean;
   featured?: boolean;
+  instagram: string;
 }> = [
-  { src: "/logos/westfield.svg",        alt: "Westfield Glòries", dark: false },
-  { src: "/cb-grup-barna-logo-192.png", alt: "CB Grup Barna",     dark: false, featured: true },
-  { src: "/logos/timechamber.webp",     alt: "Time Chamber",      dark: true  },
-  { src: null,                           alt: "Eix Clot",          dark: false },  // pendent logo oficial
+  { src: "/logos/westfield.svg",        alt: "Westfield Glòries", dark: false,           instagram: "https://www.instagram.com/westfieldglories/" },
+  { src: "/cb-grup-barna-logo-192.png", alt: "CB Grup Barna",     dark: false, featured: true, instagram: "https://www.instagram.com/cbgrupbarna/" },
+  { src: "/logos/timechamber.webp",     alt: "Time Chamber",      dark: true,            instagram: "https://www.instagram.com/timechamber_es/" },
+  { src: null,                           alt: "Eix Clot",          dark: false,           instagram: "https://www.instagram.com/eixclot/" },
 ];
 
 function getCountdown(target: Date) {
@@ -52,26 +53,32 @@ export default function EarlyBirdBanner() {
 
   return (
     <div className="early-bird-bar" role="banner">
-      {/* Co-organizer logos — esquerra */}
+      {/* Co-organizer logos — esquerra, clicar → Instagram */}
       <div className="eb-logos">
-        {EB_LOGOS.map((l) =>
-          l.src ? (
-            <img
-              key={l.alt}
-              src={l.src}
-              alt={l.alt}
-              className={[
-                "eb-logo",
-                l.dark     ? "eb-logo--dark"     : "",
-                l.featured ? "eb-logo--featured" : "",
-              ].filter(Boolean).join(" ")}
-            />
-          ) : (
-            <span key={l.alt} className="eb-logo-text" aria-label={l.alt}>
-              {l.alt}
-            </span>
-          )
-        )}
+        {EB_LOGOS.map((l) => (
+          <a
+            key={l.alt}
+            href={l.instagram}
+            target="_blank"
+            rel="noreferrer"
+            className="eb-logo-link"
+            aria-label={`Instagram de ${l.alt}`}
+          >
+            {l.src ? (
+              <img
+                src={l.src}
+                alt={l.alt}
+                className={[
+                  "eb-logo",
+                  l.dark     ? "eb-logo--dark"     : "",
+                  l.featured ? "eb-logo--featured" : "",
+                ].filter(Boolean).join(" ")}
+              />
+            ) : (
+              <span className="eb-logo-text">{l.alt}</span>
+            )}
+          </a>
+        ))}
       </div>
 
       <span className="eb-sep" aria-hidden="true" />

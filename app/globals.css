@@ -1569,6 +1569,23 @@ html {
   flex-shrink: 0;
 }
 
+/* Wrapper cliclable de cada logo */
+.eb-logo-link {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  border-radius: 14px;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.eb-logo-link:hover {
+  opacity: 0.82;
+  transform: scale(1.06);
+}
+.eb-logo-link:focus-visible {
+  outline: 2px solid rgba(255,255,255,0.8);
+  outline-offset: 2px;
+}
+
 .eb-logo {
   width: 62px;
   height: 62px;
