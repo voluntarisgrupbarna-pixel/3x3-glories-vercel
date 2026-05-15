@@ -393,7 +393,7 @@ export default function InscripcioWizard({ initialRefCode = "" }: Props) {
         playerIds={submitResult.playerIds || []}
         disc={disc}
         pkg={pkg!}
-        teamName={state.teamName || state.captain.fullName}
+        teamName={state.teamName}
       />
     );
   }
@@ -432,7 +432,7 @@ export default function InscripcioWizard({ initialRefCode = "" }: Props) {
         <Step3Payment
           pkg={pkg}
           disc={disc}
-          teamName={state.teamName || state.captain.fullName}
+          teamName={state.teamName}
           proofFileName={state.proofFileName}
           onFile={handleFileChange}
           onPrev={prev}
