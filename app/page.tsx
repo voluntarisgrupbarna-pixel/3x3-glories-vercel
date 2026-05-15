@@ -22,7 +22,7 @@ export default function Home() {
         <SlideDos />
 
         {/* === Secció informativa indexable (SEO) === */}
-        <section id="torneig" className="event-info-section" aria-label="Sobre el torneig 3×3">
+        <section className="event-info-section" aria-label="Sobre el torneig 3×3">
           <div className="event-info-inner">
             <h2>El torneig 3×3 més potent de Barcelona</h2>
             <p>

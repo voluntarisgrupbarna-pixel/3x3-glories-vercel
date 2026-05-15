@@ -1,5 +1,7 @@
 "use client";
 
+import { useShareGate } from "./ShareGate";
+
 const INFO_CARDS = [
   {
     icon: (
@@ -44,20 +46,18 @@ const INFO_CARDS = [
 ];
 
 export default function SlideDos() {
-  function handleShare() {
-    if (typeof navigator !== "undefined" && navigator.share) {
-      navigator.share({
-        title: "3×3 Westfield Glòries 2026",
-        text: "El torneig urbà més potent de Barcelona — 6 i 7 de juny 2026",
-        url: window.location.href,
-      });
-    } else {
-      navigator.clipboard?.writeText(window.location.href);
-    }
-  }
+  const { trigger: handleShare, modal: shareModal } = useShareGate({
+    shareData: {
+      title: "3×3 Westfield Glòries 2026",
+      text: "El torneig urbà més potent de Barcelona — 6 i 7 de juny 2026",
+      url: typeof window !== "undefined" ? window.location.href : "https://cbgrupbarna-3x3timechamber.com/",
+    },
+    origin: "share-slidedos",
+  });
 
   return (
     <section className="slide-dos" id="torneig" aria-label="El torneig 3×3 Westfield Glòries">
+      {shareModal}
       <div className="slide-dos-inner">
         {/* Columna esquerra */}
         <div className="slide-dos-left">

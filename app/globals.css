@@ -1355,6 +1355,174 @@ html {
   scroll-padding-top: 120px;
 }
 
+/* === ShareGate modal (captura abans de compartir) === */
+.share-gate-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(5, 5, 5, 0.72);
+  backdrop-filter: blur(8px);
+  animation: shareGateFadeIn 0.2s ease;
+}
+
+@keyframes shareGateFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.share-gate-panel {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  background: #0c1020;
+  border: 1px solid rgba(255, 55, 95, 0.32);
+  border-radius: 18px;
+  padding: 28px 24px 22px;
+  color: #fff7ef;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 55, 95, 0.18);
+  animation: shareGateSlide 0.28s ease;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+@keyframes shareGateSlide {
+  from { transform: translateY(12px); opacity: 0; }
+  to   { transform: translateY(0);   opacity: 1; }
+}
+
+.share-gate-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.04);
+  color: #fff7ef;
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.share-gate-close:hover { background: rgba(255, 255, 255, 0.1); }
+
+.share-gate-title {
+  margin: 0 0 6px;
+  font-size: 19px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.share-gate-sub {
+  margin: 0 0 18px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: rgba(255, 247, 239, 0.7);
+}
+
+.share-gate-form { display: flex; flex-direction: column; gap: 12px; }
+
+.share-gate-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255, 247, 239, 0.85);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.share-gate-field input {
+  padding: 11px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: #fff7ef;
+  font-size: 14px;
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 500;
+}
+
+.share-gate-field input:focus {
+  outline: none;
+  border-color: #ff375f;
+  box-shadow: 0 0 0 3px rgba(255, 55, 95, 0.18);
+}
+
+.share-gate-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: rgba(255, 247, 239, 0.72);
+  cursor: pointer;
+}
+
+.share-gate-consent input[type="checkbox"] {
+  margin-top: 2px;
+  width: 16px;
+  height: 16px;
+  accent-color: #ff375f;
+  flex-shrink: 0;
+}
+
+.share-gate-consent a { color: #ff8aa0; text-decoration: underline; }
+
+.share-gate-error {
+  padding: 9px 12px;
+  border-radius: 8px;
+  background: rgba(255, 55, 95, 0.15);
+  border: 1px solid rgba(255, 55, 95, 0.4);
+  color: #ffb7c4;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.share-gate-submit {
+  margin-top: 4px;
+  padding: 13px 16px;
+  border: none;
+  border-radius: 999px;
+  background: #ff1f3a;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.2s ease;
+}
+
+.share-gate-submit:hover:not(:disabled) { background: #ff375f; transform: translateY(-1px); }
+.share-gate-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.share-gate-success { text-align: center; padding: 14px 0 8px; }
+
+.share-gate-success-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #21c7a8, #1aa589);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 32px;
+  font-weight: 900;
+  margin: 0 auto 14px;
+  box-shadow: 0 8px 30px rgba(33, 199, 168, 0.4);
+}
+
+.share-gate-success h3 { margin: 0 0 6px; font-size: 20px; font-weight: 800; }
+.share-gate-success p { margin: 0; font-size: 13px; color: rgba(255, 247, 239, 0.72); }
+
 /* === Early Bird Banner (permanent) === */
 .early-bird-bar {
   position: fixed;
