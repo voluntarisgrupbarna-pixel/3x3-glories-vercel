@@ -4166,10 +4166,13 @@ a {
 }
 
 .hero-festival-links {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 24px;
-  padding: 10px 22px;
+  gap: 18px;
+  padding: 8px 8px 8px 22px;
+  margin-left: auto;             /* força alineació a la dreta */
+  flex: 0 0 auto;                /* no creix */
+  width: auto;
   border-radius: 999px;
   background: rgba(5, 5, 5, 0.62);
   backdrop-filter: blur(14px);
@@ -4179,10 +4182,11 @@ a {
 
 .hero-festival-link {
   color: #ffffff;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
   text-decoration: none;
   letter-spacing: 0.01em;
+  white-space: nowrap;
   transition: color 0.2s ease, transform 0.2s ease;
 }
 
@@ -4192,15 +4196,16 @@ a {
 }
 
 .hero-festival-nav-cta {
-  padding: 11px 24px;
+  padding: 10px 20px;
   border-radius: 999px;
   background: #ff1f3a;
   color: #fff;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 900;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   text-decoration: none;
+  white-space: nowrap;
   transition: transform 0.2s ease, background 0.2s ease;
 }
 
