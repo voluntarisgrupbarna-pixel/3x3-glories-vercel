@@ -4099,70 +4099,61 @@ a {
   z-index: 5;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   gap: 24px;
-  padding: 18px 32px;
-  transition: background 0.3s ease, backdrop-filter 0.3s ease, border-color 0.3s ease;
-  border-bottom: 1px solid transparent;
+  padding: 22px 40px;
+  background: rgba(5, 5, 5, 0.46);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background 0.3s ease, backdrop-filter 0.3s ease, border-color 0.3s ease, padding 0.3s ease;
 }
 
 .hero-festival-nav-scrolled {
-  background: rgba(5, 5, 5, 0.78);
+  background: rgba(5, 5, 5, 0.88);
   backdrop-filter: blur(14px);
-  border-bottom-color: rgba(255, 255, 255, 0.06);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+  padding: 14px 40px;
 }
 
 .hero-festival-logos {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .hero-festival-logo {
   display: grid;
   place-items: center;
-  width: 56px;
-  height: 56px;
-  border-radius: 14px;
-  background: #fff7ef;
+  width: 76px;
+  height: 76px;
+  border-radius: 16px;
+  background: #ffffff;
   color: #050505;
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 900;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   text-align: center;
   line-height: 1.05;
-  padding: 4px;
-  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.35);
-  border: 2px solid rgba(255, 255, 255, 0.92);
+  padding: 6px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  border: 2px solid rgba(255, 255, 255, 0.98);
+  overflow: hidden;
 }
 
-.hero-festival-logo-westfield {
-  background: #fff7ef;
-  color: #c0162e;
-  font-size: 8px;
-  letter-spacing: 0;
-}
-
-.hero-festival-logo-grupbarna {
-  background: #2e7d32;
-  color: #fff7ef;
-}
-
-.hero-festival-logo-timechamber {
-  background: #050505;
-  color: #fff7ef;
-  font-size: 8px;
-}
-
+/* Tots els logos amb fons blanc consistent — aspecte de "stickers" */
+.hero-festival-logo-westfield,
+.hero-festival-logo-grupbarna,
+.hero-festival-logo-timechamber,
 .hero-festival-logo-eixclot {
-  background: #fff7ef;
-  color: #ff375f;
-  font-size: 8px;
+  background: #ffffff;
 }
 
 .hero-festival-logo span {
   display: block;
+  color: #050505;
+  font-size: 10px;
+  font-weight: 900;
 }
 
 .hero-festival-logo-img {
@@ -4172,11 +4163,6 @@ a {
   padding: 6px;
 }
 
-.hero-festival-logo-westfield {
-  background: transparent;
-  border-color: rgba(219, 8, 18, 0.5);
-}
-
 .hero-festival-links {
   display: flex;
   align-items: center;
@@ -4184,15 +4170,17 @@ a {
 }
 
 .hero-festival-link {
-  color: rgba(255, 247, 239, 0.86);
-  font-size: 15px;
+  color: #ffffff;
+  font-size: 16px;
   font-weight: 700;
   text-decoration: none;
-  transition: color 0.2s ease;
+  letter-spacing: 0.01em;
+  transition: color 0.2s ease, transform 0.2s ease;
 }
 
 .hero-festival-link:hover {
-  color: #ff375f;
+  color: #eaff00;
+  transform: translateY(-1px);
 }
 
 .hero-festival-nav-cta {
@@ -4578,9 +4566,9 @@ a {
   }
 
   .hero-festival-logo {
-    width: 44px;
-    height: 44px;
-    border-radius: 11px;
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
   }
 
   .hero-festival-links {
@@ -4973,3 +4961,347 @@ a {
     justify-content: center;
   }
 }
+
+/* ══════════════════════════════════════════════════════════════
+   STICKY CTA BAR — Pack Rival + Inscriure'm sol (totes les pàgines)
+══════════════════════════════════════════════════════════════ */
+.sticky-cta-bar {
+  position: fixed;
+  left: 14px;
+  bottom: 14px;
+  z-index: 18;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sticky-cta-rival,
+.sticky-cta-solo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  min-width: 170px;
+}
+
+.sticky-cta-rival {
+  background: rgba(20, 4, 8, 0.88);
+  border: 1.5px solid #ff375f;
+  color: #fff7ef;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 6px 24px rgba(255, 55, 95, 0.22);
+}
+
+.sticky-cta-solo {
+  background: rgba(4, 18, 14, 0.88);
+  border: 1.5px solid #21c7a8;
+  color: #fff7ef;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 6px 24px rgba(33, 199, 168, 0.18);
+}
+
+.sticky-cta-rival:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 32px rgba(255, 55, 95, 0.38);
+}
+
+.sticky-cta-solo:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 32px rgba(33, 199, 168, 0.34);
+}
+
+.sticky-cta-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.sticky-cta-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
+}
+
+.sticky-cta-text strong {
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.sticky-cta-rival .sticky-cta-text strong { color: #ff7a95; }
+.sticky-cta-solo  .sticky-cta-text strong { color: #5eecd8; }
+
+.sticky-cta-text em {
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255, 247, 239, 0.55);
+  line-height: 1.2;
+}
+
+@media (max-width: 480px) {
+  .sticky-cta-rival,
+  .sticky-cta-solo {
+    padding: 8px 11px;
+    min-width: 148px;
+    gap: 8px;
+  }
+  .sticky-cta-icon { font-size: 17px; }
+  .sticky-cta-text strong { font-size: 12px; }
+  .sticky-cta-text em { font-size: 10px; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   WIZARD — BLOC DE DESCOMPTES (Step 1)
+══════════════════════════════════════════════════════════════ */
+.wizard-discount-block {
+  margin: 28px 0 0;
+  padding: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.wizard-discount-title {
+  margin: 0 0 4px;
+  font-size: 16px;
+  font-weight: 800;
+  color: #fff7ef;
+}
+
+.wizard-discount-opt {
+  font-weight: 400;
+  color: rgba(255, 247, 239, 0.48);
+  font-size: 13px;
+}
+
+.wizard-discount-hint {
+  margin: 0 0 16px;
+  font-size: 13px;
+  color: rgba(255, 247, 239, 0.52);
+}
+
+.wizard-discount-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.wizard-discount-option {
+  padding: 14px;
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  cursor: pointer;
+  transition: border-color 0.18s ease, background 0.18s ease;
+  user-select: none;
+}
+
+.wizard-discount-option:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.wizard-discount-option--active {
+  border-color: #ff375f;
+  background: rgba(255, 55, 95, 0.07);
+}
+
+.wizard-discount-option-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.wizard-discount-option-head > div {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wizard-discount-option-head strong {
+  font-size: 14px;
+  font-weight: 800;
+  color: #fff7ef;
+}
+
+.wizard-discount-pct {
+  flex-shrink: 0;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1;
+  text-align: center;
+}
+
+.wizard-discount-pct--green { background: rgba(37, 211, 102, 0.14); color: #25d366; }
+.wizard-discount-pct--blue  { background: rgba(99, 179, 237, 0.14); color: #63b3ed; }
+.wizard-discount-pct--red   { background: rgba(255, 55, 95, 0.14);  color: #ff375f; }
+
+.wizard-discount-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.wizard-discount-badge--fire  { background: rgba(255, 150, 50, 0.16); color: #ffb347; }
+.wizard-discount-badge--insta { background: rgba(221, 42, 123, 0.16); color: #f06292; }
+.wizard-discount-badge--rival { background: rgba(255, 55, 95, 0.16);  color: #ff7a95; }
+
+.wizard-discount-radio {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.28);
+  transition: border-color 0.18s ease, background 0.18s ease;
+}
+
+.wizard-discount-option--active .wizard-discount-radio {
+  border-color: #ff375f;
+  background: #ff375f;
+  box-shadow: inset 0 0 0 3px #0d0b10;
+}
+
+.wizard-discount-desc {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: rgba(255, 247, 239, 0.56);
+  line-height: 1.45;
+}
+
+.wizard-discount-pending {
+  margin: 6px 0 0;
+  font-size: 12px;
+  color: rgba(255, 179, 71, 0.82);
+}
+
+/* Social actions (dins opció B) */
+.wizard-discount-social-actions {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.wizard-social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 16px;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  text-decoration: none;
+  transition: opacity 0.18s ease;
+}
+
+.wizard-social-btn--wa  { background: #25d366; color: #07120c; }
+.wizard-social-btn--ig  { background: linear-gradient(135deg, #f58529, #dd2a7b, #8134af); color: #fff; }
+.wizard-social-btn:hover { opacity: 0.86; }
+
+.wizard-social-confirm {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(37, 211, 102, 0.07);
+  border: 1px solid rgba(37, 211, 102, 0.18);
+  cursor: pointer;
+  font-size: 13px;
+  color: rgba(255, 247, 239, 0.8);
+  accent-color: #25d366;
+  line-height: 1.4;
+}
+
+/* Rival code input (dins opció C) */
+.wizard-discount-rival-input {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.wizard-rival-code-input {
+  padding: 10px 14px;
+  border: 1.5px solid rgba(255, 255, 255, 0.18);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.28);
+  color: #fff7ef;
+  font-family: monospace;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  width: 100%;
+  transition: border-color 0.18s ease;
+}
+
+.wizard-rival-code-input:focus {
+  outline: none;
+  border-color: #ff375f;
+}
+
+.wizard-rival-code-input--valid { border-color: #25d366; }
+.wizard-rival-code-ok   { font-size: 13px; font-weight: 700; color: #25d366; }
+.wizard-rival-code-hint { font-size: 12px; color: rgba(255, 247, 239, 0.46); }
+
+/* Resum descompte actiu */
+.wizard-discount-summary {
+  margin-top: 16px;
+  padding: 13px 16px;
+  border-radius: 10px;
+  background: rgba(255, 55, 95, 0.07);
+  border: 1px solid rgba(255, 55, 95, 0.22);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 14px;
+  color: rgba(255, 247, 239, 0.68);
+}
+
+.wizard-discount-saving { color: #25d366; font-weight: 700; }
+.wizard-discount-final  { font-size: 18px; font-weight: 900; color: #ff375f; }
+
+/* Preu tatxat + final a la targeta del paquet */
+.wizard-pkg-price-block {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.wizard-pkg-price-old  { font-size: 14px; color: rgba(255, 247, 239, 0.38); text-decoration: line-through; }
+.wizard-pkg-price-final { color: #ff375f !important; }
+
+/* ══════════════════════════════════════════════════════════════
+   WIZARD — STEP 3 PAGAMENT — files descompte
+══════════════════════════════════════════════════════════════ */
+.wizard-payment-base-old { color: rgba(255, 247, 239, 0.38); font-weight: 400; }
+.wizard-payment-label-discount { color: #25d366 !important; }
+.wizard-payment-discount { color: #25d366; font-weight: 700; }
+
+.wizard-payment-row-total {
+  margin-top: 4px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.wizard-payment-final { font-size: 22px !important; color: #ff375f !important; }

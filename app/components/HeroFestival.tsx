@@ -6,7 +6,7 @@ const ORGANIZERS = [
   { id: "westfield",    name: "Westfield Glòries", short: "Westfield",    logo: "/logos/westfield.svg" },
   { id: "grupbarna",   name: "CB Grup Barna",      short: "Grup Barna",   logo: "/cb-grup-barna-logo-192.png" },
   { id: "timechamber", name: "Time Chamber",        short: "TIME Chamber", logo: "/logos/timechamber.webp" },
-  { id: "eixclot",     name: "Eix Clot",            short: "eix clot",     logo: null },
+  { id: "eixclot",     name: "Eix Clot",            short: "eix clot",     logo: "/logos/eix-clot.png" },
 ];
 
 const STATS = [
