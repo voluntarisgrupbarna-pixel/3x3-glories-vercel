@@ -81,5 +81,26 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.6,
       alternates: langs("/equip"),
     },
+    {
+      url: `${SITE_URL}/torneo-3x3-femenino-barcelona`,
+      lastModified,
+      changeFrequency: "monthly",
+      priority: 0.7,
+      alternates: langs("/torneo-3x3-femenino-barcelona"),
+    },
+    {
+      url: `${SITE_URL}/torneo-3x3-senior-fiba-barcelona`,
+      lastModified,
+      changeFrequency: "monthly",
+      priority: 0.7,
+      alternates: langs("/torneo-3x3-senior-fiba-barcelona"),
+    },
+    {
+      url: `${SITE_URL}/es/torneo-3x3-barcelona`,
+      lastModified,
+      changeFrequency: "monthly",
+      priority: 0.7,
+      alternates: langs("/es/torneo-3x3-barcelona"),
+    },
   ];
 }
