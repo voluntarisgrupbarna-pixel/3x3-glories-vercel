@@ -79,7 +79,7 @@ export default function EquipPage() {
           {[
             { any: "2023", ed: "1a edició", nota: "Torneig pilot al barri del Clot" },
             { any: "2024", ed: "2a edició", nota: "Incorporació de punts FIBA" },
-            { any: "2025", ed: "3a edició", nota: "3 seus · 2.000 € prize money" },
+            { any: "2025", ed: "3a edició", nota: "3 seus · 2.000 € premi en metàl·lic" },
             { any: "2026", ed: "4a edició", nota: "6-7 juny · Westfield Glòries" },
           ].map((item) => (
             <div key={item.any} className="page-card">

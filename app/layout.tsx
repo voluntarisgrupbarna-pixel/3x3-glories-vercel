@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     template: "%s | 3×3 Westfield Glòries",
   },
   description:
-    "El torneig 3×3 més potent de Barcelona. Punts FIBA, 2.000€ de prize money (1.000€ Sèniors Masculí + 1.000€ Sèniors Femení). 6-7 Juny 2026 al Clot-Glòries. Inscriu-te ja!",
+    "El torneig 3×3 més potent de Barcelona. Punts FIBA, 2.000€ de premi en metàl·lic (1.000€ Sèniors Masculí + 1.000€ Sèniors Femení). 6-7 Juny 2026 al Clot-Glòries. Inscriu-te ja!",
   keywords: [
     "3x3 Barcelona",
     "torneig 3x3 FIBA",
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     "basquet de carrer Barcelona",
     "CB Grup Barna",
     "Time Chamber",
-    "prize money 3x3",
+    "premi en metàl·lic 3x3",
     "ranking FIBA 3x3",
     "Sant Martí",
     "Clot",
@@ -64,7 +64,7 @@ export const metadata: Metadata = {
     siteName: SITE_NAME,
     title: "3×3 Westfield Glòries 2026 · Torneig FIBA Barcelona",
     description:
-      "El torneig 3×3 més potent de Barcelona. Punts FIBA, 2.000€ de prize money (1.000€ Sèniors Masculí + 1.000€ Sèniors Femení). 6-7 Juny 2026 al Clot-Glòries. Inscriu-te ja!",
+      "El torneig 3×3 més potent de Barcelona. Punts FIBA, 2.000€ de premi en metàl·lic (1.000€ Sèniors Masculí + 1.000€ Sèniors Femení). 6-7 Juny 2026 al Clot-Glòries. Inscriu-te ja!",
     images: [
       {
         url: OG_IMAGE,
@@ -81,7 +81,7 @@ export const metadata: Metadata = {
     creator: "@cbgrupbarna",
     title: "3×3 Westfield Glòries 2026 · Barcelona",
     description:
-      "Torneig 3×3 FIBA · 2.000€ prize money (1.000€ Sèniors M + 1.000€ Sèniors F) · 6-7 Juny 2026. Places limitades — inscriu-te ja!",
+      "Torneig 3×3 FIBA · 2.000€ premi en metàl·lic (1.000€ Sèniors M + 1.000€ Sèniors F) · 6-7 Juny 2026. Places limitades — inscriu-te ja!",
     images: [{ url: OG_IMAGE, alt: "3×3 Westfield Glòries 2026 — Torneig urbà a Barcelona, 6-7 Juny" }],
   },
   icons: {
@@ -132,7 +132,7 @@ const jsonLdEvent = {
   name: "3×3 Westfield Glòries 2026",
   alternateName: ["Torneig 3×3 FIBA Barcelona", "3x3 Glories Barcelona", "Torneo 3x3 Westfield Glòries"],
   description:
-    "Torneig de bàsquet 3×3 amb punts FIBA i 2.000€ de prize money. 10 categories de Premini a Sènior Pro · 3 seus al barri del Clot-Glòries · Barcelona. 4a edició consecutiva (2023–2026).",
+    "Torneig de bàsquet 3×3 amb punts FIBA i 2.000€ de premi en metàl·lic. 10 categories de Premini a Sènior Pro · 3 seus al barri del Clot-Glòries · Barcelona. 4a edició consecutiva (2023–2026).",
   startDate: "2026-06-06T09:00:00+02:00",
   endDate: "2026-06-07T20:00:00+02:00",
   eventStatus: "https://schema.org/EventScheduled",
@@ -266,7 +266,7 @@ const jsonLdFaq = {
       name: "Què és el 3×3 Westfield Glòries?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "És el torneig oficial de bàsquet 3×3 amb punts FIBA del barri del Clot-Glòries de Barcelona, organitzat per CB Grup Barna, Time Chamber i Eix Clot. La 4a edició es disputa el 6 i 7 de juny de 2026 amb 2.000 € de prize money per a les categories Sènior Masculí i Sènior Femení (1.000 € cadascuna), i trofeus i medalles per a la resta de categories.",
+        text: "És el torneig oficial de bàsquet 3×3 amb punts FIBA del barri del Clot-Glòries de Barcelona, organitzat per CB Grup Barna, Time Chamber i Eix Clot. La 4a edició es disputa el 6 i 7 de juny de 2026 amb 2.000 € de premi en metàl·lic per a les categories Sènior Masculí i Sènior Femení (1.000 € cadascuna), i trofeus i medalles per a la resta de categories.",
       },
     },
     {

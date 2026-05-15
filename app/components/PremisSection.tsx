@@ -5,12 +5,12 @@ export default function PremisSection() {
     <section id="premis" className="premis-section">
       <div className="section-inner">
         <header className="section-header">
-          <span className="section-kicker">Edició 2026 · Prize Money</span>
+          <span className="section-kicker">Edició 2026 · Premi en Metàl·lic</span>
           <h2 className="section-title">
             PREMIS <span className="accent">&amp; TROFEUS</span>
           </h2>
           <div className="prize-total-badge">
-            <span className="prize-total-label">Total Prize Money</span>
+            <span className="prize-total-label">Total Premi en Metàl·lic</span>
             <span className="prize-total-amount">2.000€</span>
           </div>
           <p className="section-desc">

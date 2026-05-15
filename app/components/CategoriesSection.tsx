@@ -14,7 +14,7 @@ export default function CategoriesSection() {
           <div className="day-card day-card--saturday">
             <p className="day-label">Dissabte 6 de Juny</p>
             <p className="day-cats">Sèniors · Veterans · Màgics</p>
-            <p className="day-note">Masculí i Femení · Prize Money + Punts FIBA</p>
+            <p className="day-note">Masculí i Femení · Premi en Metàl·lic + Punts FIBA</p>
           </div>
           <div className="day-card day-card--sunday">
             <p className="day-label">Diumenge 7 de Juny</p>

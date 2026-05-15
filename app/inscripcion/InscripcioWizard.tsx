@@ -504,7 +504,7 @@ function Step1Social({
         <div className="wizard-social-actions">
           <a
             href={`https://wa.me/?text=${encodeURIComponent(
-              "Vine al 3×3 Westfield Glòries 2026! Torneig FIBA a Barcelona el 6-7 juny. 2.000€ prize money i totes les categories. Inscriu-te: https://cbgrupbarna-3x3timechamber.com/inscripcion 🏀"
+              "Vine al 3×3 Westfield Glòries 2026! Torneig FIBA a Barcelona el 6-7 juny. 2.000€ premi en metàl·lic i totes les categories. Inscriu-te: https://cbgrupbarna-3x3timechamber.com/inscripcion 🏀"
             )}`}
             target="_blank"
             rel="noopener noreferrer"

@@ -68,7 +68,7 @@ export default function CategoryBars() {
 
         <p className="catbars-footer">
           Actualització cada 30s · Només <strong>Sèniors Masculí</strong> i{" "}
-          <strong>Sèniors Femení</strong> reben prize money (1.000€ cadascun) i atorguen punts
+          <strong>Sèniors Femení</strong> reben premi en metàl·lic (1.000€ cadascun) i atorguen punts
           FIBA. La resta de categories: trofeus i medalles.
         </p>
       </div>

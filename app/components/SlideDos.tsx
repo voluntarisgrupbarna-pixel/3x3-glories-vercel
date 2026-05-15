@@ -103,7 +103,7 @@ function CalendarModal({ onClose }: { onClose: () => void }) {
                   <li key={cat.nom} className="cal-cat">
                     <span className="cal-cat-dot" />
                     {cat.nom}
-                    {cat.fiba && <span className="cal-fiba-badge">FIBA · Prize Money</span>}
+                    {cat.fiba && <span className="cal-fiba-badge">FIBA · Premi en Metàl·lic</span>}
                   </li>
                 ))}
               </ul>
@@ -150,7 +150,7 @@ export default function SlideDos() {
             El <strong>3×3 Westfield Glòries</strong> organitzat per <strong>CB Grup Barna</strong>, <strong>Time Chamber</strong> i <strong>Eix Clot</strong> torna amb més equips, més categories i més espectacle.
           </p>
           <p className="slide-dos-desc">
-            Tres seus de competició oficial FIBA al barri del Clot-Glòries. Des de Premini fins a Sènior Pro amb Prize Money i punts per al rànquing mundial.
+            Tres seus de competició oficial FIBA al barri del Clot-Glòries. Des de Premini fins a Sènior Pro amb Premi en Metàl·lic i punts per al rànquing mundial.
           </p>
 
           <div className="slide-dos-info-grid">

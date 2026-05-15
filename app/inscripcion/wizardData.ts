@@ -64,7 +64,7 @@ export const PACKAGES: Package[] = [
     maxPlayers: 4,
     isTeam: true,
     description:
-      "Sènior Masculí o Femení. 4 jugadors. Punts FIBA 3×3 + prize money. (5 jugadors: 90 €, contacta amb nosaltres.)",
+      "Sènior Masculí o Femení. 4 jugadors. Punts FIBA 3×3 + premi en metàl·lic. (5 jugadors: 90 €, contacta amb nosaltres.)",
   },
 ];
 

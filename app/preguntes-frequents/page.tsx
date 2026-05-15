@@ -5,7 +5,7 @@ import { faqs } from "../data/faqs";
 export const metadata: Metadata = {
   title: "Preguntes freqüents | 3×3 Westfield Glòries 2026",
   description:
-    "Totes les respostes sobre el torneig 3×3 Westfield Glòries de Barcelona: inscripció, categories, prize money, punts FIBA, seus, dates i format. Edició 2026.",
+    "Totes les respostes sobre el torneig 3×3 Westfield Glòries de Barcelona: inscripció, categories, premi en metàl·lic, punts FIBA, seus, dates i format. Edició 2026.",
   alternates: {
     canonical: "/preguntes-frequents",
   },

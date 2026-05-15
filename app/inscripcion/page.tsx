@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Inscripció al 3×3 Barcelona — Westfield Glòries 2026",
     description:
-      "Apunta el teu equip al torneig 3×3 FIBA de Barcelona. 6-7 juny 2026 al Clot-Glòries. Des de 75 €. 2.000 € prize money Sèniors. Places limitades.",
+      "Apunta el teu equip al torneig 3×3 FIBA de Barcelona. 6-7 juny 2026 al Clot-Glòries. Des de 75 €. 2.000 € premi en metàl·lic Sèniors. Places limitades.",
   },
 };
 
@@ -81,12 +81,12 @@ export default async function InscripcionPage({ searchParams }: InscripcionPageP
           <span className="insc-hero-kicker">4a edició · 6-7 Juny 2026 · Clot-Glòries, Barcelona</span>
           <h1 className="insc-hero-title">Inscriu el teu equip</h1>
           <p className="insc-hero-sub">
-            El torneig 3×3 FIBA més potent de Barcelona — 10 categories, 3 seus, 2.000€ prize money
+            El torneig 3×3 FIBA més potent de Barcelona — 10 categories, 3 seus, 2.000€ premi en metàl·lic
           </p>
           <div className="insc-hero-chips">
             <span>🔥 Early Bird −10%</span>
             <span>🏀 Des de 75€</span>
-            <span>🏆 FIBA · Prize Money</span>
+            <span>🏆 FIBA · Premi en Metàl·lic</span>
             <span>📍 3 seus al Clot</span>
           </div>
         </div>
@@ -150,7 +150,7 @@ export default async function InscripcionPage({ searchParams }: InscripcionPageP
           <div className="insc-prize-body">
             <span className="insc-prize-kicker">Sènior Masculí &amp; Femení</span>
             <p className="insc-prize-amount">2.000€</p>
-            <p className="insc-prize-label">Prize Money</p>
+            <p className="insc-prize-label">Premi en Metàl·lic</p>
             <p className="insc-prize-desc">
               Les categories Sènior M/F opten a <strong>1.000 € cadascuna</strong>. A més, el torneig és
               oficial de FIBA 3×3 — els jugadors sumen punts al rànquing mundial individual per accedir a
