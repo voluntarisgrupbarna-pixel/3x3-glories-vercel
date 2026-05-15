@@ -5,7 +5,18 @@ const SITE_URL = "https://cbgrupbarna-3x3timechamber.com";
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
-      { userAgent: "*", allow: "/" },
+      {
+        userAgent: "*",
+        allow: "/",
+        disallow: [
+          "/check-in",
+          "/check-in/",
+          "/api/",
+          "/jugador/",
+          "/data",
+          "/data/",
+        ],
+      },
       { userAgent: "GPTBot", allow: "/" },
       { userAgent: "ChatGPT-User", allow: "/" },
       { userAgent: "OAI-SearchBot", allow: "/" },

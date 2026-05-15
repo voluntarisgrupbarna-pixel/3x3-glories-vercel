@@ -82,6 +82,27 @@ export default function sitemap(): MetadataRoute.Sitemap {
       alternates: langs("/equip"),
     },
     {
+      url: `${SITE_URL}/3x3-barna`,
+      lastModified,
+      changeFrequency: "weekly",
+      priority: 0.95,
+      alternates: langs("/3x3-barna"),
+    },
+    {
+      url: `${SITE_URL}/3x3-barcelona`,
+      lastModified,
+      changeFrequency: "weekly",
+      priority: 0.95,
+      alternates: langs("/3x3-barcelona"),
+    },
+    {
+      url: `${SITE_URL}/torneig-3x3-barcelona`,
+      lastModified,
+      changeFrequency: "weekly",
+      priority: 0.9,
+      alternates: langs("/torneig-3x3-barcelona"),
+    },
+    {
       url: `${SITE_URL}/torneo-3x3-femenino-barcelona`,
       lastModified,
       changeFrequency: "monthly",

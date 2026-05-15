@@ -16,26 +16,33 @@ const LOGO_512 = `${SITE_URL}/cb-grup-barna-logo-512.png`;
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Torneig 3×3 Barcelona 2026 — Westfield Glòries · FIBA · 2.000€ premis",
-    template: "%s | 3×3 Westfield Glòries",
+    default: "3×3 Barna 2026 — Torneig Westfield Glòries · FIBA · 2.000€ premis",
+    template: "%s | 3×3 Barna · Westfield Glòries",
   },
   description:
-    "El torneig 3×3 més potent de Barcelona. Punts FIBA, 2.000€ de premi en metàl·lic (1.000€ Sèniors Masculí + 1.000€ Sèniors Femení). 6-7 Juny 2026 al Clot-Glòries. Inscriu-te ja!",
+    "3×3 Barna 2026 — el torneig 3×3 FIBA més potent de Barcelona. 2.000€ premi en metàl·lic, 10 categories, 3 seus al Clot-Glòries. 6-7 Juny 2026. Inscriu-te ja des de 75€!",
   keywords: [
+    "3x3 barna",
+    "3x3 barna 2026",
+    "torneig 3x3 barna",
+    "torneo 3x3 barna",
     "3x3 Barcelona",
+    "3x3 Barcelona 2026",
     "torneig 3x3 FIBA",
+    "torneig 3x3 Barcelona",
     "Westfield Glòries",
     "basquet 3x3",
-    "basquet de carrer Barcelona",
+    "bàsquet de carrer Barcelona",
+    "basquet barna",
     "CB Grup Barna",
     "Time Chamber",
     "premi en metàl·lic 3x3",
     "ranking FIBA 3x3",
     "Sant Martí",
-    "Clot",
-    "Barcelona basquet",
+    "Clot-Glòries",
     "torneo baloncesto 3x3 Barcelona",
     "3x3 FIBA Barcelona 2026",
+    "3x3 carrer Barcelona",
   ],
   authors: [{ name: "CB Grup Barna" }, { name: "Time Chamber" }, { name: "Eix Clot" }],
   publisher: "CB Grup Barna",
@@ -63,9 +70,9 @@ export const metadata: Metadata = {
     locale: "ca_ES",
     url: SITE_URL,
     siteName: SITE_NAME,
-    title: "3×3 Westfield Glòries 2026 · Torneig FIBA Barcelona",
+    title: "3×3 Barna 2026 · Torneig Westfield Glòries · FIBA Barcelona",
     description:
-      "El torneig 3×3 més potent de Barcelona. Punts FIBA, 2.000€ de premi en metàl·lic (1.000€ Sèniors Masculí + 1.000€ Sèniors Femení). 6-7 Juny 2026 al Clot-Glòries. Inscriu-te ja!",
+      "3×3 Barna 2026 — el torneig 3×3 FIBA més potent de Barcelona. 2.000€ premi en metàl·lic, 10 categories, 3 seus al Clot-Glòries. 6-7 Juny 2026. Inscriu-te ja des de 75€!",
     images: [
       {
         url: OG_IMAGE,
@@ -131,7 +138,7 @@ const jsonLdEvent = {
   "@context": "https://schema.org",
   "@type": "SportsEvent",
   name: "3×3 Westfield Glòries 2026",
-  alternateName: ["Torneig 3×3 FIBA Barcelona", "3x3 Glories Barcelona", "Torneo 3x3 Westfield Glòries"],
+  alternateName: ["3x3 Barna", "3x3 Barna 2026", "Torneig 3×3 FIBA Barna", "Torneig 3×3 FIBA Barcelona", "3x3 Glories Barcelona", "Torneo 3x3 Westfield Glòries", "Torneo 3x3 Barna"],
   description:
     "Torneig de bàsquet 3×3 amb punts FIBA i 2.000€ de premi en metàl·lic. 10 categories de Premini a Sènior Pro · 3 seus al barri del Clot-Glòries · Barcelona. 4a edició consecutiva (2023–2026).",
   startDate: "2026-06-06T09:00:00+02:00",
@@ -213,6 +220,10 @@ const jsonLdEvent = {
   performer: { "@type": "PerformingGroup", name: "Equips participants 3×3" },
   award:
     "Prize money 2.000€: Sèniors Masculí 1.000€ · Sèniors Femení 1.000€. Veterans M/F i categories formatives reben trofeus i medalles. + Punts FIBA 3×3 + Premis dels comerços col·laboradors",
+  speakable: {
+    "@type": "SpeakableSpecification",
+    cssSelector: [".hero-festival-title", ".hero-festival-subtitle", ".hero-festival-meta-item"],
+  },
 };
 
 // JSON-LD: SportsOrganization amb logo accessible (clau per al Knowledge Graph)
@@ -245,6 +256,58 @@ const jsonLdOrg = {
   telephone: "+34688265230",
   email: "voluntaris@grupbarna.info",
   sameAs: ["https://www.instagram.com/cbgrupbarna/", "https://cbgrupbarna.com"],
+};
+
+// JSON-LD: VideoObject — carrusel de vídeo a Google (reel @cbgrupbarna)
+const jsonLdVideo = {
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  "@id": `${SITE_URL}/#hero-video`,
+  name: "3×3 Westfield Glòries 2025 — Highlights 3a edició",
+  description:
+    "Ambient, partits i jugades destacades de la 3a edició del Torneig 3×3 FIBA de Barcelona al Clot-Glòries. Organitzat per CB Grup Barna, Time Chamber i Eix Clot.",
+  thumbnailUrl: `${SITE_URL}/videos/hero-ig-poster.jpg`,
+  uploadDate: "2025-06-10T00:00:00+02:00",
+  duration: "PT0M62S",
+  contentUrl: `${SITE_URL}/videos/hero-ig.mp4`,
+  embedUrl: "https://www.instagram.com/reel/DJNKYiuMOGm/",
+  inLanguage: "ca-ES",
+  isFamilyFriendly: true,
+  genre: "Sports",
+  publisher: {
+    "@type": "SportsOrganization",
+    name: "CB Grup Barna",
+    logo: { "@type": "ImageObject", url: LOGO_512, width: 512, height: 512 },
+    url: "https://cbgrupbarna.com",
+  },
+  about: {
+    "@type": "SportsEvent",
+    name: "3×3 Westfield Glòries 2025",
+    startDate: "2025-06-07",
+    location: { "@type": "Place", name: "Westfield Glòries", address: { "@type": "PostalAddress", addressLocality: "Barcelona", addressCountry: "ES" } },
+  },
+  sameAs: "https://www.instagram.com/reel/DJNKYiuMOGm/",
+};
+
+// JSON-LD: ItemList — 10 categories (rich list a SERP per a búsquedes de categories)
+const jsonLdCategories = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: "Categories del Torneig 3×3 Westfield Glòries 2026",
+  description: "10 categories de competició: de Premini a Sènior Pro FIBA, Veterans i categoria inclusiva Màgics.",
+  numberOfItems: 10,
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Premini · nascuts 2016–2017 · 75–90€/equip", url: `${SITE_URL}/inscripcion` },
+    { "@type": "ListItem", position: 2, name: "Mini · nascuts 2014–2015 · 75–90€/equip", url: `${SITE_URL}/inscripcion` },
+    { "@type": "ListItem", position: 3, name: "Infantil · nascuts 2012–2013 · 75–90€/equip", url: `${SITE_URL}/inscripcion` },
+    { "@type": "ListItem", position: 4, name: "Cadet · nascuts 2010–2011 · 75–90€/equip", url: `${SITE_URL}/inscripcion` },
+    { "@type": "ListItem", position: 5, name: "Júnior · nascuts 2008–2009 · 75–90€/equip", url: `${SITE_URL}/inscripcion` },
+    { "@type": "ListItem", position: 6, name: "Sub-23 · nascuts 2003–2007 · 75–90€/equip", url: `${SITE_URL}/inscripcion` },
+    { "@type": "ListItem", position: 7, name: "Sènior Masculí FIBA · 1.000€ premi en metàl·lic · 85–105€/equip", url: `${SITE_URL}/torneo-3x3-senior-fiba-barcelona` },
+    { "@type": "ListItem", position: 8, name: "Sènior Femení FIBA · 1.000€ premi en metàl·lic · 85–105€/equip", url: `${SITE_URL}/torneo-3x3-femenino-barcelona` },
+    { "@type": "ListItem", position: 9, name: "Veterans Masculí · nascuts fins 1986 · 75–90€/equip", url: `${SITE_URL}/torneo-3x3-veteranos-barcelona` },
+    { "@type": "ListItem", position: 10, name: "Veterans Femení · nascuts fins 1986 · 75–90€/equip", url: `${SITE_URL}/torneo-3x3-veteranos-barcelona` },
+  ],
 };
 
 // JSON-LD: WebSite
@@ -364,7 +427,7 @@ const jsonLdSeries = {
   "@context": "https://schema.org",
   "@type": "EventSeries",
   name: "3×3 Westfield Glòries",
-  alternateName: "Torneig 3×3 FIBA Clot-Glòries Barcelona",
+  alternateName: ["Torneig 3×3 FIBA Clot-Glòries Barcelona", "3x3 Barna", "Torneig 3x3 Barna"],
   description:
     "Sèrie anual de torneig de bàsquet 3×3 oficial FIBA al barri del Clot-Glòries de Barcelona, organitzat per CB Grup Barna · Time Chamber · Eix Clot des de 2023. 4 edicions consecutives (2023–2026).",
   startDate: "2023-06-01",
@@ -441,6 +504,18 @@ export default function RootLayout({
           type="application/ld+json"
           strategy="beforeInteractive"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }}
+        />
+        <Script
+          id="ld-video"
+          type="application/ld+json"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdVideo) }}
+        />
+        <Script
+          id="ld-categories"
+          type="application/ld+json"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdCategories) }}
         />
         {/* Clarity: skip analytics on localhost and ?noclarity=1 */}
         <Script

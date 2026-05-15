@@ -1,21 +1,84 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import Link from "next/link";
 import ReferralCard from "../components/ReferralCard";
 import InscripcioWizard from "./InscripcioWizard";
 import QueueGate from "./QueueGate";
 
+const SITE_URL = "https://cbgrupbarna-3x3timechamber.com";
+
 export const metadata: Metadata = {
-  title: "Inscripció d'equip | 3×3 Westfield Glòries 2026",
+  title: "Inscriu el teu equip — 3×3 Westfield Glòries 2026 · Des de 75€",
   description:
-    "Inscriu el teu equip al 3×3 Westfield Glòries 2026. Torneig FIBA a Barcelona, 6-7 juny. Des de 75 €. De Premini a Sènior i Veterans. Places limitades.",
+    "Places limitades. Des de 75€/equip. 10 categories de Premini a Sènior FIBA. Confirma en menys de 24h. 6-7 juny 2026 · Westfield Glòries, Barcelona.",
   alternates: {
     canonical: "/inscripcion",
   },
   openGraph: {
-    title: "Inscripció al 3×3 Barcelona — Westfield Glòries 2026",
+    title: "Inscripció — 3×3 Westfield Glòries 2026 · Des de 75€",
     description:
-      "Apunta el teu equip al torneig 3×3 FIBA de Barcelona. 6-7 juny 2026 al Clot-Glòries. Des de 75 €. 2.000 € premi en metàl·lic Sèniors. Places limitades.",
+      "Places al 64%. Des de 75€ per equip. 10 categories, punts FIBA Sèniors, 2.000€ de premi. Inscripció en 10 min · Confirmació en 24h.",
   },
+};
+
+// JSON-LD: HowTo — procés d'inscripció en 5 passos (rich result a Google SERP)
+const jsonLdHowTo = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  name: "Com inscriure un equip al 3×3 Westfield Glòries 2026",
+  description:
+    "Procés d'inscripció online en 5 passos. Temps estimat: 10 minuts. Cost: des de 75€ per equip (3–5 jugadors). Confirmació en menys de 24h per email i WhatsApp.",
+  image: `${SITE_URL}/og-image.png`,
+  totalTime: "PT10M",
+  estimatedCost: {
+    "@type": "MonetaryAmount",
+    currency: "EUR",
+    minValue: "75",
+    maxValue: "105",
+  },
+  supply: [
+    { "@type": "HowToSupply", name: "Dades dels 3–5 jugadors (nom, cognoms, any de naixement)" },
+    { "@type": "HowToSupply", name: "Email i telèfon del capità de l'equip" },
+    { "@type": "HowToSupply", name: "App bancària per al pagament per transferència" },
+  ],
+  step: [
+    {
+      "@type": "HowToStep",
+      position: 1,
+      name: "Escull la categoria",
+      text: "Selecciona la categoria del teu equip: Premini, Mini, Infantil, Cadet, Júnior, Sub-23, Sènior M/F (FIBA) o Veterans M/F. Comprova els anys de naixement requerits per a cada categoria.",
+      url: `${SITE_URL}/inscripcion`,
+      image: `${SITE_URL}/hero-bg-1.webp`,
+    },
+    {
+      "@type": "HowToStep",
+      position: 2,
+      name: "Dades de l'equip i el capità",
+      text: "Introdueix el nom de l'equip i les dades del capità: nom complet, email i telèfon de contacte. El capità rebrà tota la comunicació del torneig.",
+      url: `${SITE_URL}/inscripcion`,
+    },
+    {
+      "@type": "HowToStep",
+      position: 3,
+      name: "Afegeix els jugadors (3–5)",
+      text: "Afegeix de 3 a 5 jugadors: nom, cognoms i any de naixement. El mínim per jugar és 3 jugadors; el màxim 5 (3 titulars + fins a 2 suplents).",
+      url: `${SITE_URL}/inscripcion`,
+    },
+    {
+      "@type": "HowToStep",
+      position: 4,
+      name: "Samarretes oficials (opcional)",
+      text: "Si vols, comanda samarretes oficials del torneig a 25€ cadascuna. Disponible per als jugadors de l'equip.",
+      url: `${SITE_URL}/inscripcion`,
+    },
+    {
+      "@type": "HowToStep",
+      position: 5,
+      name: "Pagament per transferència bancària",
+      text: "Escaneges el codi QR pre-omplert amb l'import exacte i el codi de l'equip. La transferència es fa des de l'app del teu banc en menys de 2 minuts. Confiració de plaça en menys de 24h per email i WhatsApp.",
+      url: `${SITE_URL}/inscripcion`,
+    },
+  ],
 };
 
 const categories = [
@@ -61,6 +124,13 @@ export default async function InscripcionPage({ searchParams }: InscripcionPageP
   const waLink = `https://wa.me/34698425153?text=${encodeURIComponent(waBaseMsg)}`;
 
   return (
+    <>
+      <Script
+        id="ld-howto-inscripcio"
+        type="application/ld+json"
+        strategy="beforeInteractive"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdHowTo) }}
+      />
     <QueueGate>
     <div className="page-shell">
       {/* Nav */}
@@ -241,5 +311,6 @@ export default async function InscripcionPage({ searchParams }: InscripcionPageP
       </main>
     </div>
     </QueueGate>
+    </>
   );
 }
