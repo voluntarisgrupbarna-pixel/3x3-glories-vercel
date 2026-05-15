@@ -387,49 +387,6 @@ export default function RootLayout({
       <body>
         {children}
         <Script
-          id="utm-tracking"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function(){
-                try{
-                  var params = new URLSearchParams(location.search);
-                  var src = params.get('utm_source');
-                  if(!src) return;
-                  var data = {
-                    source: src,
-                    medium: params.get('utm_medium') || '',
-                    campaign: params.get('utm_campaign') || '',
-                    content: params.get('utm_content') || '',
-                    term: params.get('utm_term') || '',
-                    landing: location.pathname,
-                    ts: Date.now()
-                  };
-                  // Persisteix per a conversions multi-pàgina (90 dies)
-                  try { localStorage.setItem('utm_first', localStorage.getItem('utm_first') || JSON.stringify(data)); } catch(e){}
-                  try { localStorage.setItem('utm_last', JSON.stringify(data)); } catch(e){}
-                  // Emet event per dashboards
-                  if(typeof gtag==='function'){
-                    gtag('event','campaign_visit',{
-                      event_category:'utm',
-                      source: data.source,
-                      medium: data.medium,
-                      campaign: data.campaign
-                    });
-                  }
-                  if(typeof fbq==='function'){
-                    fbq('trackCustom','CampaignVisit',{ source: data.source, campaign: data.campaign });
-                  }
-                  // TikTok pixel suport (si està carregat)
-                  if(typeof ttq!=='undefined' && ttq.track){
-                    ttq.track('ViewContent',{ content_name: data.campaign || data.source });
-                  }
-                }catch(e){}
-              })();
-            `,
-          }}
-        />
-        <Script
           id="tracking-conversions"
           strategy="afterInteractive"
           dangerouslySetInnerHTML={{
@@ -441,12 +398,10 @@ export default function RootLayout({
                 if(href.includes('/inscripcion')||href.includes('/inscripcio')){
                   if(typeof gtag==='function')gtag('event','click_inscripcion',{event_category:'conversion'});
                   if(typeof fbq==='function')fbq('track','Lead',{content_name:'Inscripcion 3x3'});
-                  if(typeof ttq!=='undefined' && ttq.track)ttq.track('Lead',{content_name:'Inscripcion 3x3'});
                 }
                 if(href.includes('wa.me')||href.includes('whatsapp')){
                   if(typeof gtag==='function')gtag('event','click_whatsapp',{event_category:'conversion'});
                   if(typeof fbq==='function')fbq('track','Contact',{content_name:'WhatsApp 3x3'});
-                  if(typeof ttq!=='undefined' && ttq.track)ttq.track('Contact',{content_name:'WhatsApp 3x3'});
                 }
               });
             `,
