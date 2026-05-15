@@ -175,8 +175,10 @@ function handleInscripcio(payload) {
   if (!sheetId) throw new Error("SHEET_ID not configured");
   if (!folderId) throw new Error("DRIVE_FOLDER_ID not configured");
 
-  // 1. Justificant a Drive
-  const proofUrl = saveProofFile(payload, folderId);
+  // 1. Justificant a Drive — opcional: si no hi ha base64 es deixa buit
+  const proofUrl = (payload.proof && payload.proof.base64)
+    ? saveProofFile(payload, folderId)
+    : "";
 
   // 2. Sheet (equip + jugadors)
   const teamSheetRowNum = writeTeamToSheet(payload, proofUrl, sheetId);
@@ -201,7 +203,7 @@ function validatePayload(p) {
   if (!p.teamId) throw new Error("Missing teamId");
   if (!p.captain || !p.captain.fullName) throw new Error("Missing captain");
   if (!Array.isArray(p.players) || p.players.length === 0) throw new Error("Missing players");
-  if (!p.proof || !p.proof.base64) throw new Error("Missing proof");
+  // proof.base64 és OPCIONAL — l'usuari pot enviar-lo per WA
 }
 
 function verifySecret(payload) {
@@ -238,47 +240,50 @@ function saveProofFile(payload, folderId) {
 // ===== SHEETS =====
 
 const TEAM_HEADERS = [
-  "Timestamp",
-  "TeamID",
-  "Status",
-  "Package",
-  "Price (€)",
-  "Team Name",
-  "Category",
-  "Captain Name",
-  "Captain DNI",
-  "Captain Phone",
-  "Captain Email",
-  "Has Tutor",
-  "Tutor Name",
-  "Tutor DNI",
-  "Tutor Phone",
-  "Tutor Email",
-  "Num Players",
-  "RGPD Consent",
-  "Image Rights",
-  "Ref Code",
-  "Proof File",
-  "Proof URL",
-  "JotForm ID",
-  "QRs Sent",
-  "Notes",
+  "Timestamp",        // A — data d'inscripció
+  "TeamID",           // B — T3X3-2026-XXXXX
+  "Status",           // C — pending_payment / confirmed / cancelled
+  "Package",          // D — Equip 4 jugadors / Equip 5 jugadors / Sènior Pro / Individual
+  "Category",         // E — Premini Masculí, Cadet Femení, Sènior Masculí…
+  "Team Name",        // F — nom de l'equip
+  "Preu Base (€)",    // G — preu sense descomptes
+  "Descompte (€)",    // H — total descompte aplicat
+  "Preu Final (€)",   // I — el que han de pagar
+  "Tipus Descompte",  // J — earlybird / social / rival / earlybird+social…
+  "Early Bird",       // K — Sí / No
+  "Social Share",     // L — Sí / No (han compartit WA + IG)
+  "Codi Rival",       // M — RIVAL-XXXXXX o buit
+  "Captain Name",     // N
+  "Captain Phone",    // O
+  "Captain Email",    // P
+  "Captain Shirt",    // Q — talla samarreta capità
+  "Has Tutor",        // R — TRUE si categoria formativa (menor)
+  "Tutor Name",       // S — adult responsable (si menor)
+  "Tutor Phone",      // T
+  "Tutor Email",      // U
+  "Num Players",      // V
+  "RGPD Consent",     // W
+  "Image Rights",     // X
+  "Proof File",       // Y — nom del fitxer justificant (buit si no s'ha pujat)
+  "Proof URL",        // Z — URL Drive (buit si no hi ha justificant)
+  "JotForm ID",       // AA
+  "QRs Sent",         // AB
+  "Notes",            // AC
 ];
 
 const PLAYER_HEADERS = [
-  "Timestamp",
-  "PlayerID",
-  "TeamID",
-  "Full Name",
-  "Birth Date",
-  "Gender",
-  "Position",
-  "Level",
-  "Shirt Size",
-  "Dorsal",
-  "Federated",
-  "Federation Key",
-  "Image Rights",
+  "Timestamp",     // A
+  "PlayerID",      // B — T3X3-2026-XXXXX-J01
+  "TeamID",        // C
+  "Full Name",     // D — nom i cognoms
+  "Club",          // E — club d'origen (opcional)
+  "Category",      // F — categoria individual del jugador
+  "Birth Year",    // G — any de naixement (4 dígits)
+  "Gender",        // H — Masculí / Femení / Altre
+  "Phone",         // I — telèfon del jugador
+  "Email",         // J — email (opcional per a menors)
+  "Shirt Size",    // K — talla samarreta (opcional)
+  "Image Rights",  // L — TRUE / FALSE
 ];
 
 function ensureSheet(ss, name, headers) {
@@ -302,31 +307,35 @@ function writeTeamToSheet(payload, proofUrl, sheetId) {
   const sheet = ensureSheet(ss, "Inscripcions", TEAM_HEADERS);
 
   const row = [
-    new Date(payload.submittedAt || new Date()),
-    payload.teamId,
-    "pending_payment",
-    payload.packageTitle || payload.packageKey || "",
-    payload.packagePrice || "",
-    payload.teamName || "",
-    payload.category || "",
-    payload.captain.fullName || "",
-    payload.captain.dni || "",
-    payload.captain.phone || "",
-    payload.captain.email || "",
-    !!payload.tutor,
-    payload.tutor ? payload.tutor.fullName || "" : "",
-    payload.tutor ? payload.tutor.dni || "" : "",
-    payload.tutor ? payload.tutor.phone || "" : "",
-    payload.tutor ? payload.tutor.email || "" : "",
-    payload.players.length,
-    !!payload.rgpdConsent,
-    !!payload.imageRightsConsent,
-    payload.refCode || "",
-    (payload.proof && payload.proof.fileName) || "",
-    proofUrl,
-    "",
-    false,
-    "",
+    new Date(payload.submittedAt || new Date()),              // Timestamp
+    payload.teamId,                                            // TeamID
+    "pending_payment",                                         // Status
+    payload.packageTitle || payload.packageKey || "",          // Package
+    payload.category || "",                                    // Category
+    payload.teamName || "",                                    // Team Name
+    payload.packagePrice || 0,                                 // Preu Base (€)
+    payload.discountAmount || 0,                               // Descompte (€)
+    payload.finalPrice || payload.packagePrice || 0,           // Preu Final (€)
+    payload.discountType || "",                                // Tipus Descompte
+    payload.earlyBirdApplied ? "Sí" : "No",                   // Early Bird
+    payload.socialShareDone  ? "Sí" : "No",                   // Social Share
+    payload.refCode || payload.rivalCode || "",                // Codi Rival
+    payload.captain.fullName || "",                            // Captain Name
+    payload.captain.phone    || "",                            // Captain Phone
+    payload.captain.email    || "",                            // Captain Email
+    payload.captain.shirtSize || "",                           // Captain Shirt
+    !!payload.tutor,                                           // Has Tutor
+    payload.tutor ? payload.tutor.fullName || "" : "",         // Tutor Name
+    payload.tutor ? payload.tutor.phone    || "" : "",         // Tutor Phone
+    payload.tutor ? payload.tutor.email    || "" : "",         // Tutor Email
+    payload.players.length,                                    // Num Players
+    !!payload.rgpdConsent,                                     // RGPD Consent
+    !!payload.imageRightsConsent,                              // Image Rights
+    (payload.proof && payload.proof.fileName) || "",           // Proof File
+    proofUrl,                                                  // Proof URL
+    "",                                                        // JotForm ID
+    false,                                                     // QRs Sent
+    "",                                                        // Notes
   ];
 
   sheet.appendRow(row);
@@ -341,20 +350,21 @@ function writePlayersToSheet(payload, sheetId) {
     const playerId =
       (payload.playerIds && payload.playerIds[idx]) ||
       payload.teamId + "-J" + String(idx + 1).padStart(2, "0");
+    // birthYear pot venir directament o es deriva de birthDate (YYYY-01-01)
+    const birthYear = p.birthYear || (p.birthDate ? String(p.birthDate).slice(0, 4) : "");
     const row = [
-      new Date(payload.submittedAt || new Date()),
-      playerId,
-      payload.teamId,
-      p.fullName || "",
-      p.birthDate || "",
-      p.gender || "",
-      p.position || "",
-      p.level || "",
-      p.shirtSize || "",
-      p.dorsal || "",
-      !!p.federated,
-      p.federationKey || "",
-      !!p.imageRights,
+      new Date(payload.submittedAt || new Date()),  // Timestamp
+      playerId,                                      // PlayerID
+      payload.teamId,                                // TeamID
+      p.fullName   || "",                            // Full Name
+      p.club       || "",                            // Club (opcional)
+      p.category   || payload.category || "",        // Category
+      birthYear,                                     // Birth Year
+      p.gender     || "",                            // Gender
+      p.phone      || "",                            // Phone
+      p.email      || "",                            // Email (opcional)
+      p.shirtSize  || "",                            // Shirt Size (opcional)
+      !!p.imageRights,                               // Image Rights
     ];
     sheet.appendRow(row);
   });
@@ -381,19 +391,21 @@ const JOTFORM_QUESTION_MAP = {
   teamId: 3,
   packageTitle: 4,
   packagePrice: 5,
-  teamName: 6,
-  category: 7,
-  captainFullName: 8,
-  captainDNI: 9,
-  captainPhone: 10,
-  captainEmail: 11,
-  tutorFullName: 12,
-  tutorPhone: 13,
-  numPlayers: 14,
-  proofUrl: 15,
-  playersJson: 16,
-  refCode: 17,
-  submittedAt: 18,
+  finalPrice: 6,
+  discountType: 7,
+  teamName: 8,
+  category: 9,
+  captainFullName: 10,
+  captainPhone: 11,
+  captainEmail: 12,
+  captainShirt: 13,
+  tutorFullName: 14,
+  tutorPhone: 15,
+  numPlayers: 16,
+  proofUrl: 17,
+  playersJson: 18,
+  refCode: 19,
+  submittedAt: 20,
 };
 
 function sendToJotForm(payload) {
@@ -412,22 +424,24 @@ function sendToJotForm(payload) {
     submission["submission[" + qid + "]"] = String(val == null ? "" : val);
   }
 
-  s("teamId", payload.teamId);
-  s("packageTitle", payload.packageTitle);
-  s("packagePrice", payload.packagePrice);
-  s("teamName", payload.teamName);
-  s("category", payload.category);
+  s("teamId",        payload.teamId);
+  s("packageTitle",  payload.packageTitle);
+  s("packagePrice",  payload.packagePrice);
+  s("finalPrice",    payload.finalPrice || payload.packagePrice);
+  s("discountType",  payload.discountType || "");
+  s("teamName",      payload.teamName);
+  s("category",      payload.category);
   s("captainFullName", payload.captain.fullName);
-  s("captainDNI", payload.captain.dni);
-  s("captainPhone", payload.captain.phone);
-  s("captainEmail", payload.captain.email);
+  s("captainPhone",  payload.captain.phone);
+  s("captainEmail",  payload.captain.email);
+  s("captainShirt",  payload.captain.shirtSize || "");
   s("tutorFullName", payload.tutor ? payload.tutor.fullName : "");
-  s("tutorPhone", payload.tutor ? payload.tutor.phone : "");
-  s("numPlayers", payload.players.length);
-  s("proofUrl", payload.proofUrl || ""); // proofUrl s'afegeix abans de cridar aquesta funció si cal
-  s("playersJson", JSON.stringify(payload.players));
-  s("refCode", payload.refCode || "");
-  s("submittedAt", payload.submittedAt);
+  s("tutorPhone",    payload.tutor ? payload.tutor.phone    : "");
+  s("numPlayers",    payload.players.length);
+  s("proofUrl",      payload.proofUrl || "");
+  s("playersJson",   JSON.stringify(payload.players));
+  s("refCode",       payload.refCode || "");
+  s("submittedAt",   payload.submittedAt);
 
   const url = "https://api.jotform.com/form/" + formId + "/submissions?apiKey=" + apiKey;
   const response = UrlFetchApp.fetch(url, {
@@ -447,18 +461,23 @@ function sendToJotForm(payload) {
 // ===== ABANDONED LEADS =====
 
 const ABANDONED_HEADERS = [
-  "Timestamp",
-  "Reason",
-  "Step",
-  "Package",
-  "Price (€)",
-  "Team Name",
-  "Category",
-  "Captain Name",
-  "Captain Phone",
-  "Captain Email",
-  "Status",
-  "Notes",
+  "Timestamp",       // A
+  "Reason",          // B — step2_done / step3_done / step4_done / beforeunload / hidden
+  "Step #",          // C — número de pas (1–5)
+  "Step Label",      // D — Descompte / Equip / Pagament / Jugadors / Confirma
+  "Package",         // E
+  "Preu Base (€)",   // F
+  "Preu Final (€)",  // G — amb descomptes aplicats
+  "Team Name",       // H
+  "Category",        // I
+  "Captain Name",    // J
+  "Captain Phone",   // K
+  "Captain Email",   // L
+  "Justificant",     // M — Sí / No
+  "Early Bird",      // N — Sí / No
+  "Social Done",     // O — Sí / No
+  "Status",          // P — Pendent / Contactat / Inscrit / Descartat
+  "Notes",           // Q — espai follow-up manual
 ];
 
 function handleAbandoned(payload) {
@@ -473,20 +492,31 @@ function handleAbandoned(payload) {
 function writeAbandonedToSheet(payload, sheetId) {
   const ss = SpreadsheetApp.openById(sheetId);
   const sheet = ensureSheet(ss, "Abandonaments", ABANDONED_HEADERS);
-  sheet.appendRow([
+  const lastRow = sheet.appendRow([
     new Date(payload.abandonedAt || new Date()),
-    payload.reason || "",
-    payload.step || "",
+    payload.reason     || "",
+    payload.step       || "",
+    payload.stepLabel  || "",
     payload.packageTitle || payload.packageKey || "",
     payload.packagePrice || "",
-    payload.teamName || "",
-    payload.category || "",
-    payload.captainName || "",
+    payload.finalPrice   || payload.packagePrice || "",
+    payload.teamName   || "",
+    payload.category   || "",
+    payload.captainName  || "",
     payload.captainPhone || "",
     payload.captainEmail || "",
+    payload.proofUploaded    ? "Sí" : "No",
+    payload.earlyBirdApplied ? "Sí" : "No",
+    payload.socialShareDone  ? "Sí" : "No",
     "Pendent",
     "",
   ]);
+  // Format data + preus
+  const row = sheet.getLastRow();
+  sheet.getRange(row, 1).setNumberFormat("dd/mm/yyyy hh:mm");
+  sheet.getRange(row, 6).setNumberFormat("0.00");
+  sheet.getRange(row, 7).setNumberFormat("0.00");
+  return lastRow;
 }
 
 // ===== LEADS (Share Gate / WhatsApp widget / qualsevol captura) =====
@@ -561,7 +591,7 @@ function setupLeadsDashboard() {
   // ── Configura Status a Leads (columna J = 10) i Abandonaments (col K = 11) ─
   [
     { name: "Leads",         col: 10 },
-    { name: "Abandonaments", col: 11 },
+    { name: "Abandonaments", col: 16 },  // columna P = Status
   ].forEach(function (cfg) {
     var sheet = ss.getSheetByName(cfg.name);
     if (!sheet) return;
@@ -626,8 +656,8 @@ function setupLeadsDashboard() {
     ["% conversió",        "=IFERROR(COUNTIF(Leads!J2:J,\"Inscrit\")/COUNTA(Leads!A2:A),0)", "", "", ""],
     ["", "", "", "", ""],
     ["RESUM ABANDONAMENTS", "", "", "", ""],
-    ["Total abandons",     "=COUNTA(Abandonaments!A2:A)",                                                "Pendents", "=COUNTIF(Abandonaments!K2:K,\"Pendent\")", ""],
-    ["Recuperats (Inscrits)", "=COUNTIF(Abandonaments!K2:K,\"Inscrit\")",                                "% recup.", "=IFERROR(COUNTIF(Abandonaments!K2:K,\"Inscrit\")/COUNTA(Abandonaments!A2:A),0)", ""],
+    ["Total abandons",     "=COUNTA(Abandonaments!A2:A)",                                                "Pendents", "=COUNTIF(Abandonaments!P2:P,\"Pendent\")", ""],
+    ["Recuperats (Inscrits)", "=COUNTIF(Abandonaments!P2:P,\"Inscrit\")",                                "% recup.", "=IFERROR(COUNTIF(Abandonaments!P2:P,\"Inscrit\")/COUNTA(Abandonaments!A2:A),0)", ""],
     ["", "", "", "", ""],
     ["RESUM INSCRIPCIONS", "", "", "", ""],
     ["Total equips",       "=COUNTA(Inscripcions!A2:A)",                     "Total jugadors", "=COUNTA(Jugadors!A2:A)", ""],
@@ -678,6 +708,52 @@ function writeLeadToSheet(payload, sheetId) {
     payload.utm_medium || "",
     payload.utm_campaign || "",
   ]);
+}
+
+// ===== MIGRACIÓ COLUMNES =====
+
+/**
+ * MIGRA les pestanyes Inscripcions i Jugadors afegint les columnes noves
+ * que falten al final (sense tocar dades existents).
+ * Executa UNA VEGADA des de l'editor si el Sheet ja existia amb capçaleres antigues.
+ */
+function migrateSheetColumns() {
+  var sheetId = PropertiesService.getScriptProperties().getProperty("SHEET_ID");
+  if (!sheetId) throw new Error("SHEET_ID not configured — executa syncSheetIdToCentralized primer");
+  var ss = SpreadsheetApp.openById(sheetId);
+
+  function addMissingCols(sheetName, allHeaders) {
+    var sheet = ss.getSheetByName(sheetName);
+    if (!sheet) {
+      Logger.log(sheetName + " no existeix — es crearà automàticament a la propera inscripció");
+      return;
+    }
+    var lastCol = sheet.getLastColumn();
+    var existing = sheet.getRange(1, 1, 1, lastCol).getValues()[0].map(function(h) { return String(h).trim(); });
+    allHeaders.forEach(function(h) {
+      var cleanH = h.replace(/\/\/.*/, "").trim(); // elimina comentaris inline
+      if (!existing.includes(cleanH)) {
+        var nextCol = sheet.getLastColumn() + 1;
+        var cell = sheet.getRange(1, nextCol);
+        cell.setValue(cleanH).setFontWeight("bold").setBackground("#1a1a1a").setFontColor("#ff375f");
+        existing.push(cleanH);
+        Logger.log(sheetName + ": Columna nova '" + cleanH + "' afegida a col " + nextCol);
+      }
+    });
+  }
+
+  // Strip comments from header strings
+  var cleanTeam = TEAM_HEADERS.map(function(h) { return h.replace(/\/\/.*/, "").trim(); });
+  var cleanPlayer = PLAYER_HEADERS.map(function(h) { return h.replace(/\/\/.*/, "").trim(); });
+  var cleanAbandoned = ABANDONED_HEADERS.map(function(h) { return h.replace(/\/\/.*/, "").trim(); });
+
+  addMissingCols("Inscripcions", cleanTeam);
+  addMissingCols("Jugadors",     cleanPlayer);
+  addMissingCols("Abandonaments",cleanAbandoned);
+
+  Logger.log("✅ Migració completada. Comprova el Sheet:");
+  Logger.log(ss.getUrl());
+  return { ok: true, sheetUrl: ss.getUrl() };
 }
 
 // ===== SETUP & TEST HELPERS =====

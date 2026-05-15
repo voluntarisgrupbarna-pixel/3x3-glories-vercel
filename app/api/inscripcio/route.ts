@@ -73,9 +73,7 @@ export async function POST(req: NextRequest) {
     if (!payload.packageKey || !payload.captain?.fullName || !payload.players?.length) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
-    if (!payload.proof?.base64) {
-      return NextResponse.json({ error: "Missing payment proof" }, { status: 400 });
-    }
+    // proof.base64 és OPCIONAL: la gent pot enviar sense justificant i fer-ho per WA
     if (!payload.rgpdConsent || !payload.imageRightsConsent) {
       return NextResponse.json({ error: "Consents required" }, { status: 400 });
     }
