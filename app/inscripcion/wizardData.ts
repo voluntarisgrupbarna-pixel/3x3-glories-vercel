@@ -71,6 +71,7 @@ export const PACKAGES: Package[] = [
 export const CATEGORIES = [
   "Premini (2016-2017)",
   "Mini (2014-2015)",
+  "Preinfantil (2013)",
   "Infantil (2012-2013)",
   "Cadet (2010-2011)",
   "Júnior (2008-2009)",

@@ -572,34 +572,6 @@ function Step1Discounts({
         </div>
       </div>
 
-      {/* Rival code */}
-      <div className={`wizard-discount-block${rivalValid ? " wizard-discount-block--active" : ""}`}>
-        <div className="wizard-discount-head">
-          <span className="wizard-discount-pct wizard-discount-pct--rival">🏀 −5 €</span>
-          <div>
-            <strong>Codi rival</strong>
-            {rivalValid && <span className="wizard-discount-status wizard-discount-status--on">Codi vàlid ✓</span>}
-          </div>
-        </div>
-        <p className="wizard-discount-desc">
-          Si un equip rival t&apos;ha convidat, introdueix el seu codi per obtenir −5 €.
-        </p>
-        <input
-          type="text"
-          value={rivalCode}
-          onChange={(e) => onRivalCode(e.target.value)}
-          placeholder="RIVAL-ABCDE (deixa en blanc si no en tens)"
-          maxLength={20}
-          className={`wizard-rival-code-input${rivalValid ? " wizard-rival-code-input--valid" : ""}`}
-        />
-        {rivalValid
-          ? <span className="wizard-rival-code-ok">✓ Codi vàlid — −5 € aplicats</span>
-          : rivalCode.length > 0
-            ? <span className="wizard-rival-code-hint">Format incorrecte. Ha de ser RIVAL-XXXXX</span>
-            : null
-        }
-      </div>
-
       <div className="wizard-nav" style={{ marginTop: 28 }}>
         <button type="button" className="wizard-btn wizard-btn-primary" onClick={onNext}>
           Continuar al formulari →
