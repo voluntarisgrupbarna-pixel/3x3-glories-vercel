@@ -6,7 +6,7 @@
  */
 
 const SITE_URL = "https://cbgrupbarna-3x3timechamber.com";
-const INDEX_NOW_KEY = "693d7921d4574129bb63bb26ad001dfd";
+const INDEX_NOW_KEY = "b09dfdee2daf4e85ba6524daf7533e28";
 const KEY_LOCATION = `${SITE_URL}/${INDEX_NOW_KEY}.txt`;
 
 const URLS = [
