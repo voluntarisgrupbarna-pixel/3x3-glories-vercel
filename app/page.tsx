@@ -45,35 +45,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* === Porta un rival === */}
-      <section className="rival-cta-section" aria-label="Porta un rival">
-        <div className="rival-cta-inner">
-          <span className="rival-cta-tag">Pack rival · −5 € cada un</span>
-          <h2>Ja tens equip? Porta&apos;n un de rival</h2>
-          <p>
-            Convida un altre equip a venir al 3×3 i estalvieu <strong>5 € cada un</strong>. Sense límit
-            d&apos;equips. Genera un codi únic i envia&apos;l per WhatsApp en un clic.
-          </p>
-          <Link href="/porta-un-rival" className="rival-cta-btn">
-            Generar repte WhatsApp →
-          </Link>
-        </div>
-      </section>
-
-      {/* === Inscripció individual === */}
-      <section className="solo-cta-section" aria-label="Inscripció individual">
-        <div className="solo-cta-inner">
-          <span className="solo-cta-tag">Inscripció individual · 20 €</span>
-          <h2>Vens sense equip? Apunta&apos;t sol</h2>
-          <p>
-            No tens equip? Apunta&apos;t individualment per <strong>20 €</strong> i et col·loquem en un equip
-            una setmana abans del torneig. Inclou samarreta oficial, dorsal i accés als 2 dies.
-          </p>
-          <Link href="/inscripcio-individual" className="solo-cta-btn">
-            Inscriure&apos;m sol →
-          </Link>
-        </div>
-      </section>
 
       <WhatsAppLeadWidget />
     </>

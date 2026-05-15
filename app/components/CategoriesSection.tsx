@@ -18,7 +18,7 @@ export default function CategoriesSection() {
           </div>
           <div className="day-card day-card--sunday">
             <p className="day-label">Diumenge 7 de Juny</p>
-            <p className="day-cats">Junior · Cadet · Infantil · Premini · Mini · Escola</p>
+            <p className="day-cats">Júnior · Cadet · Infantil · Preinfantil · Mini · Premini</p>
             <p className="day-note">Categories formatives · Trofeus i medalles</p>
           </div>
         </div>

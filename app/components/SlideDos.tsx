@@ -19,12 +19,12 @@ const PROGRAM = [
     dia: "Diumenge 7 de Juny",
     dateShort: "7 Jun",
     categories: [
-      { nom: "Premini",  fiba: false },
-      { nom: "Mini",     fiba: false },
-      { nom: "Infantil", fiba: false },
-      { nom: "Cadet",    fiba: false },
-      { nom: "Júnior",   fiba: false },
-      { nom: "Sub-23",   fiba: false },
+      { nom: "Júnior",      fiba: false },
+      { nom: "Cadet",       fiba: false },
+      { nom: "Infantil",    fiba: false },
+      { nom: "Preinfantil", fiba: false },
+      { nom: "Mini",        fiba: false },
+      { nom: "Premini",     fiba: false },
     ],
   },
 ];

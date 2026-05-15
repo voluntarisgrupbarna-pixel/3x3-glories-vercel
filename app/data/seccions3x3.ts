@@ -5,6 +5,7 @@ export const CATEGORIES = [
   { name: "U18 JUNIOR",           gender: "♂ ♀", desc: "Categoria juvenil d'alt nivell",                   badge: "JUVENIL",      badgeColor: "#3b82f6", price: "75€ (4 jug.)", day: 7, dayColor: "#60a5fa" },
   { name: "U16 CADET",            gender: "♂",   desc: "Competició formativa d'elit",                      badge: "FORMACIÓ",     badgeColor: "#10b981", price: "75€ (4 jug.)", day: 7, dayColor: "#60a5fa" },
   { name: "U14 INFANTIL",         gender: "♂",   desc: "Primer pas cap a la competició",                   badge: "FORMACIÓ",     badgeColor: "#8b5cf6", price: "75€ (4 jug.)", day: 7, dayColor: "#60a5fa" },
+  { name: "U12 PREINFANTIL",      gender: "♂",   desc: "Iniciació a la competició organitzada",            badge: "FORMACIÓ",     badgeColor: "#f59e0b", price: "75€ (4 jug.)", day: 7, dayColor: "#60a5fa" },
   { name: "PREMINI · BENJ · ALEV",gender: "♂",   desc: "Iniciació i diversió garantida",                   badge: "INICIACIÓ",    badgeColor: "#94a3b8", price: "75€ (4 jug.)", day: 7, dayColor: "#60a5fa" },
 ] as const;
 

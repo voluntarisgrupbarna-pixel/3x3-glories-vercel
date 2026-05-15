@@ -3,6 +3,7 @@ import Script from "next/script";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import StickyCtaBar from "./components/StickyCtaBar";
+import SiteNav from "./components/SiteNav";
 
 const inter = Inter({ subsets: ["latin"], display: "swap" });
 
@@ -459,6 +460,7 @@ export default function RootLayout({
         />
       </head>
       <body>
+        <SiteNav />
         <StickyCtaBar />
         {children}
         <Script
