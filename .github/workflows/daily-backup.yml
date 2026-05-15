@@ -1,0 +1,50 @@
+name: Daily backup tag
+
+# Crea automàticament un tag diari del main perquè mai més perdem
+# l'estat estable. Si vols restaurar, busca un tag "daily-YYYY-MM-DD"
+# i fes: git checkout daily-YYYY-MM-DD
+#
+# També mantenim els últims 30 dies; els antics es netegen automàticament.
+
+on:
+  schedule:
+    # 22:00 UTC cada dia = 00:00 hora Catalunya (estiu) / 23:00 (hivern)
+    - cron: "0 22 * * *"
+  workflow_dispatch: # També executable manualment des de Actions
+
+permissions:
+  contents: write
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+
+      - name: Create daily tag
+        run: |
+          TAG="daily-$(date -u +%Y-%m-%d)"
+          # Si el tag ja existeix, sortir net (idempotent)
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists, skipping"
+            exit 0
+          fi
+          git tag -a "$TAG" -m "Backup automàtic del main · $(date -u +%Y-%m-%d %H:%M UTC)"
+          git push origin "$TAG"
+          echo "Tagged $(git rev-parse --short HEAD) as $TAG"
+
+      - name: Prune daily tags older than 30 days
+        run: |
+          CUTOFF=$(date -u -d '30 days ago' +%Y-%m-%d 2>/dev/null || date -u -v-30d +%Y-%m-%d)
+          for tag in $(git tag -l "daily-*"); do
+            DATE="${tag#daily-}"
+            if [[ "$DATE" < "$CUTOFF" ]]; then
+              echo "Deleting old tag $tag"
+              git push --delete origin "$tag" || true
+              git tag -d "$tag" || true
+            fi
+          done
