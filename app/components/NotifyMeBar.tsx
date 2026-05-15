@@ -15,13 +15,13 @@ export default function NotifyMeBar() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: "",
+          name: "Avisa'm",   // placeholder — no demana nom per no friccionar
           email,
           phone: "",
           interest: "notifica-places",
           question: "avisar-places",
           origin: "notify-bar",
-          rgpd: true,
+          consent: true,     // acceptació implícita al fer submit
         }),
       });
       setStatus("done");
