@@ -21,41 +21,6 @@ export default function Home() {
         {/* === SLIDE DOS — rèplica del disseny original: el torneig === */}
         <SlideDos />
 
-        {/* === Secció informativa indexable (SEO) === */}
-        <section className="event-info-section" aria-label="Sobre el torneig 3×3">
-          <div className="event-info-inner">
-            <h2>El torneig 3×3 més potent de Barcelona</h2>
-            <p>
-              El <strong>3×3 Westfield Glòries</strong> és el torneig oficial de bàsquet 3×3 amb punts FIBA
-              del barri del Clot-Glòries de Barcelona. La <strong>4a edició</strong> se celebra els dies{" "}
-              <strong>6 i 7 de juny de 2026</strong> amb <strong>2.000 € de prize money</strong> per als
-              equips Sèniors Masculí i Sèniors Femení, i punts pel rànquing mundial de FIBA 3×3.
-            </p>
-            <div className="event-info-grid">
-              <div>
-                <strong>Categories</strong>
-                <span>
-                  Premini · Mini · Infantil · Cadet · Júnior · Sub-23 · Sènior Pro · Veterans M/F
-                </span>
-              </div>
-              <div>
-                <strong>Prize money</strong>
-                <span>2.000 € Sèniors M/F · Trofeus i medalles per a totes les categories</span>
-              </div>
-              <div>
-                <strong>Seus</strong>
-                <span>Westfield Glòries · La Nau del Clot · Rambleta del Clot</span>
-              </div>
-              <div>
-                <strong>Inscripció</strong>
-                <span>Equips: 75–90 € · Sènior Pro: 85–90 € · Individual: 20 €</span>
-              </div>
-            </div>
-            <a href="/inscripcion" className="event-info-cta">
-              Inscriu el teu equip al 3×3 Barcelona →
-            </a>
-          </div>
-        </section>
 
         {/* === Occupancy Grid — categories fill === */}
         <OccupancyGrid />
