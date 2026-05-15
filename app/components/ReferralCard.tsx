@@ -1,23 +1,27 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useShareGate } from "./ShareGate";
 
 const SHARE_URL = "https://cbgrupbarna-3x3timechamber.com";
 const DEADLINE = new Date("2026-05-21T00:00:00+02:00");
 const REFERRAL_CODE = "AMIC5";
 
-function buildShareUrl() {
-  const text = [
-    "🏀 Juga el 3x3 a Westfield Glòries!",
-    "CB Grup Barna organitza el torneig de bàsquet 3x3 urbà el 6-7 de juny.",
-    `Inscriu el teu equip 👉 ${SHARE_URL}`,
-  ].join("\n");
-  return `https://wa.me/?text=${encodeURIComponent(text)}`;
-}
+const SHARE_TEXT = "🏀 Juga el 3x3 a Westfield Glòries! CB Grup Barna organitza el torneig 6-7 de juny.";
 
 export default function ReferralCard() {
   const [shareCount, setShareCount] = useState(0);
   const [isEarlyBird, setIsEarlyBird] = useState(false);
+
+  // ShareGate captura el contacte abans de compartir → /api/lead → Sheet "Leads"
+  const { trigger: openShareGate, modal: shareModal } = useShareGate({
+    shareData: {
+      title: "3×3 Westfield Glòries 2026",
+      text: SHARE_TEXT,
+      url: SHARE_URL,
+    },
+    origin: "share-referral",
+  });
 
   useEffect(() => {
     const stored = parseInt(localStorage.getItem("share_count_3x3") ?? "0", 10);
@@ -29,13 +33,14 @@ export default function ReferralCard() {
     const next = Math.min(shareCount + 1, 5);
     setShareCount(next);
     localStorage.setItem("share_count_3x3", String(next));
-    window.open(buildShareUrl(), "_blank", "noreferrer");
+    openShareGate();
   }
 
   const referralUnlocked = shareCount >= 5;
 
   return (
     <div className="discount-card">
+      {shareModal}
       <p className="discount-card-title">Descomptes disponibles</p>
 
       {isEarlyBird && (

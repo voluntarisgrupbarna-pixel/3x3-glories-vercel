@@ -515,6 +515,145 @@ function handleLead(payload) {
   return { ok: true };
 }
 
+/**
+ * Sincronitza el SHEET_ID amb el Sheet centralitzat d'Ana
+ * (1MG5_8cmeKOe5Jz8BWiJ2e1K669EcIdNNHN1gFGI2uPA).
+ * Executar UN COP des de l'editor d'Apps Script. També crea les pestanyes
+ * Inscripcions/Jugadors/Abandonaments/Leads si encara no existeixen.
+ */
+function syncSheetIdToCentralized() {
+  var TARGET_SHEET_ID = "1MG5_8cmeKOe5Jz8BWiJ2e1K669EcIdNNHN1gFGI2uPA";
+  PropertiesService.getScriptProperties().setProperty("SHEET_ID", TARGET_SHEET_ID);
+  Logger.log("SHEET_ID actualitzat a: " + TARGET_SHEET_ID);
+
+  // Assegura les 4 pestanyes amb capçaleres
+  var ss = SpreadsheetApp.openById(TARGET_SHEET_ID);
+  ensureSheet(ss, "Inscripcions",    TEAM_HEADERS);
+  ensureSheet(ss, "Jugadors",        PLAYER_HEADERS);
+  ensureSheet(ss, "Abandonaments",   ABANDONED_HEADERS);
+  ensureSheet(ss, "Leads",           LEAD_HEADERS);
+
+  Logger.log("Pestanyes assegurades: Inscripcions, Jugadors, Abandonaments, Leads");
+  return {
+    ok: true,
+    sheetId: TARGET_SHEET_ID,
+    sheetUrl: ss.getUrl(),
+  };
+}
+
+/**
+ * Afegeix validació + format condicional a la columna Status de Leads i
+ * Abandonaments, i crea (o refresca) una pestanya "Dashboard" amb resums.
+ * Executar UN COP després de syncSheetIdToCentralized.
+ */
+function setupLeadsDashboard() {
+  var sheetId = PropertiesService.getScriptProperties().getProperty("SHEET_ID");
+  if (!sheetId) throw new Error("SHEET_ID not configured — exec syncSheetIdToCentralized abans");
+  var ss = SpreadsheetApp.openById(sheetId);
+
+  var STATUS_OPTIONS = ["Pendent", "Contactat", "Inscrit", "Descartat", "Spam"];
+
+  // ── Configura Status a Leads (columna J = 10) i Abandonaments (col K = 11) ─
+  [
+    { name: "Leads",         col: 10 },
+    { name: "Abandonaments", col: 11 },
+  ].forEach(function (cfg) {
+    var sheet = ss.getSheetByName(cfg.name);
+    if (!sheet) return;
+
+    var range = sheet.getRange(2, cfg.col, 1000, 1); // 1000 files de marge
+
+    // Validació: dropdown amb les 5 opcions
+    var rule = SpreadsheetApp.newDataValidation()
+      .requireValueInList(STATUS_OPTIONS, true)
+      .setAllowInvalid(false)
+      .build();
+    range.setDataValidation(rule);
+
+    // Format condicional per color
+    var rules = sheet.getConditionalFormatRules();
+    var newRules = rules.filter(function (r) {
+      return r.getRanges().every(function (rg) {
+        return rg.getColumn() !== cfg.col;
+      });
+    });
+
+    var colorMap = [
+      { val: "Pendent",   bg: "#fff3bf", fg: "#7a5c00" },
+      { val: "Contactat", bg: "#cfe2ff", fg: "#003a8c" },
+      { val: "Inscrit",   bg: "#d3f9d8", fg: "#2b8a3e" },
+      { val: "Descartat", bg: "#e9ecef", fg: "#495057" },
+      { val: "Spam",      bg: "#f8d7da", fg: "#842029" },
+    ];
+
+    colorMap.forEach(function (c) {
+      newRules.push(
+        SpreadsheetApp.newConditionalFormatRule()
+          .whenTextEqualTo(c.val)
+          .setBackground(c.bg)
+          .setFontColor(c.fg)
+          .setBold(true)
+          .setRanges([range])
+          .build()
+      );
+    });
+
+    sheet.setConditionalFormatRules(newRules);
+  });
+
+  // ── Crea/refresca la pestanya Dashboard ─────────────────────────────────
+  var dash = ss.getSheetByName("Dashboard");
+  if (!dash) {
+    dash = ss.insertSheet("Dashboard", 0); // primera pestanya
+  } else {
+    dash.clear();
+  }
+
+  dash.getRange("A1").setValue("📊 Dashboard 3×3 Westfield Glòries 2026").setFontWeight("bold").setFontSize(16).setFontColor("#ff375f");
+  dash.getRange("A1:E1").merge();
+
+  var rows = [
+    ["", "", "", "", ""],
+    ["RESUM LEADS", "", "", "", ""],
+    ["Total leads",        "=COUNTA(Leads!A2:A)",                            "Pendents",  "=COUNTIF(Leads!J2:J,\"Pendent\")",  ""],
+    ["Contactats",         "=COUNTIF(Leads!J2:J,\"Contactat\")",             "Inscrits",  "=COUNTIF(Leads!J2:J,\"Inscrit\")",  ""],
+    ["Descartats",         "=COUNTIF(Leads!J2:J,\"Descartat\")",             "Spam",      "=COUNTIF(Leads!J2:J,\"Spam\")",     ""],
+    ["% conversió",        "=IFERROR(COUNTIF(Leads!J2:J,\"Inscrit\")/COUNTA(Leads!A2:A),0)", "", "", ""],
+    ["", "", "", "", ""],
+    ["RESUM ABANDONAMENTS", "", "", "", ""],
+    ["Total abandons",     "=COUNTA(Abandonaments!A2:A)",                                                "Pendents", "=COUNTIF(Abandonaments!K2:K,\"Pendent\")", ""],
+    ["Recuperats (Inscrits)", "=COUNTIF(Abandonaments!K2:K,\"Inscrit\")",                                "% recup.", "=IFERROR(COUNTIF(Abandonaments!K2:K,\"Inscrit\")/COUNTA(Abandonaments!A2:A),0)", ""],
+    ["", "", "", "", ""],
+    ["RESUM INSCRIPCIONS", "", "", "", ""],
+    ["Total equips",       "=COUNTA(Inscripcions!A2:A)",                     "Total jugadors", "=COUNTA(Jugadors!A2:A)", ""],
+    ["", "", "", "", ""],
+    ["LEADS PER ORIGIN (top 10)", "", "", "", ""],
+    ["Origin", "Total", "", "", ""],
+    ["=QUERY(Leads!B2:B,\"select B, count(B) where B is not null group by B order by count(B) desc limit 10 label B 'Origin', count(B) 'Total'\",0)", "", "", "", ""],
+  ];
+
+  dash.getRange(2, 1, rows.length, 5).setValues(rows);
+
+  // Format
+  dash.getRange("A3").setFontWeight("bold").setBackground("#1a1a1a").setFontColor("#ff375f");
+  dash.getRange("A9").setFontWeight("bold").setBackground("#1a1a1a").setFontColor("#ff375f");
+  dash.getRange("A13").setFontWeight("bold").setBackground("#1a1a1a").setFontColor("#ff375f");
+  dash.getRange("A16").setFontWeight("bold").setBackground("#1a1a1a").setFontColor("#ff375f");
+  dash.getRange("A17:B17").setFontWeight("bold");
+
+  // % conversió i % recup. com a percentatge
+  dash.getRange("B7").setNumberFormat("0.0%");
+  dash.getRange("D10").setNumberFormat("0.0%");
+
+  dash.setColumnWidth(1, 220);
+  dash.setColumnWidth(2, 140);
+  dash.setColumnWidth(3, 180);
+  dash.setColumnWidth(4, 140);
+
+  Logger.log("Dashboard creat. Status amb validació + format condicional aplicat.");
+  return { ok: true, dashboardUrl: ss.getUrl() + "#gid=" + dash.getSheetId() };
+}
+
 function writeLeadToSheet(payload, sheetId) {
   const ss = SpreadsheetApp.openById(sheetId);
   const sheet = ensureSheet(ss, "Leads", LEAD_HEADERS);
