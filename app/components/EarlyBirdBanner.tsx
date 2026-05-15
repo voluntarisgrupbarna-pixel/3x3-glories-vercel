@@ -21,20 +21,16 @@ function getCountdown(target: Date) {
 
 export default function EarlyBirdBanner() {
   const [countdown, setCountdown] = useState<ReturnType<typeof getCountdown> | null>(null);
-  const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== "undefined" && localStorage.getItem("eb_dismissed") === "1") {
-      setDismissed(true);
-      return;
-    }
     setCountdown(getCountdown(DEADLINE));
     const id = setInterval(() => setCountdown(getCountdown(DEADLINE)), 1000);
     return () => clearInterval(id);
   }, []);
 
   useEffect(() => {
-    if (countdown && countdown.diff > 0 && !dismissed) {
+    // Sempre afegim la classe perquè el banner és permanent (mentre l'oferta sigui vigent)
+    if (countdown && countdown.diff > 0) {
       document.documentElement.classList.add("has-eb-banner");
     } else {
       document.documentElement.classList.remove("has-eb-banner");
@@ -42,14 +38,9 @@ export default function EarlyBirdBanner() {
     return () => {
       document.documentElement.classList.remove("has-eb-banner");
     };
-  }, [countdown, dismissed]);
+  }, [countdown]);
 
-  function dismiss() {
-    setDismissed(true);
-    localStorage.setItem("eb_dismissed", "1");
-  }
-
-  if (!countdown || countdown.diff <= 0 || dismissed) return null;
+  if (!countdown || countdown.diff <= 0) return null;
 
   const { days, hours, minutes, seconds } = countdown;
 
@@ -70,11 +61,11 @@ export default function EarlyBirdBanner() {
 
       <span className="eb-sep" aria-hidden="true" />
 
-      {/* Promo Early Bird — centre */}
+      {/* Promo Early Bird — centre, descompte MOLT més gran */}
       <div className="eb-promo">
-        <span className="eb-dot" aria-hidden="true">●</span>
         <span className="eb-flame" aria-hidden="true">🔥</span>
-        <span className="eb-text"><strong>EARLY BIRD</strong> · <strong>−10%</strong> · ACABA EN</span>
+        <span className="eb-discount-big" aria-label="Descompte del 10 per cent">−10%</span>
+        <span className="eb-text"><strong>EARLY BIRD</strong> · ACABA EN</span>
         <span className="eb-timer">
           <span>{String(days).padStart(1, "0")}D</span>
           <span>{String(hours).padStart(2, "0")}H</span>
@@ -83,10 +74,7 @@ export default function EarlyBirdBanner() {
         </span>
       </div>
 
-      {/* Tanca — dreta */}
-      <button className="eb-dismiss" type="button" onClick={dismiss} aria-label="Tancar banner">
-        ×
-      </button>
+      {/* No es pot tancar — banner permanent fins el deadline */}
     </div>
   );
 }

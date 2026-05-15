@@ -7,6 +7,7 @@ import HeroFestival from "./components/HeroFestival";
 import OccupancyGrid from "./components/OccupancyGrid";
 import CategoryBars from "./components/CategoryBars";
 import WhatsAppLeadWidget from "./components/WhatsAppLeadWidget";
+import SlideDos from "./components/SlideDos";
 import { faqs } from "./data/faqs";
 
 export default function Home() {
@@ -18,7 +19,7 @@ export default function Home() {
         <HeroFestival />
 
         {/* === Secció informativa indexable (SEO) === */}
-        <section className="event-info-section" aria-label="Sobre el torneig 3×3">
+        <section id="torneig" className="event-info-section" aria-label="Sobre el torneig 3×3">
           <div className="event-info-inner">
             <h2>El torneig 3×3 més potent de Barcelona</h2>
             <p>
