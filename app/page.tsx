@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import EarlyBirdBanner from "./components/EarlyBirdBanner";
-import HeroFestival from "./components/HeroFestival";
 import WhatsAppLeadWidget from "./components/WhatsAppLeadWidget";
 import { faqs } from "./data/faqs";
 
@@ -12,8 +11,37 @@ export default function Home() {
     <>
       <EarlyBirdBanner />
       <main className="experience-shell">
-        {/* === HERO FESTIVAL — primer impacte amb foto + nav + stats + IG === */}
-        <HeroFestival />
+        {/* === HERO simple amb foto fons === */}
+        <section className="hero-simple" aria-label="3×3 Westfield Glòries 2026">
+          <div className="hero-simple-bg" aria-hidden="true">
+            <img
+              src="/hero-bg.jpg"
+              alt=""
+              width={1920}
+              height={1080}
+              fetchPriority="high"
+              loading="eager"
+            />
+            <div className="hero-simple-tint" />
+          </div>
+          <div className="hero-simple-overlay">
+            <span className="hero-simple-kicker">CB GRUP BARNA × TIME CHAMBER × EIX CLOT</span>
+            <h1 className="hero-simple-title">
+              3×3 <em>Westfield Glòries</em> 2026
+            </h1>
+            <p className="hero-simple-sub">
+              6 i 7 de juny · 3 seus al Clot-Glòries · Punts FIBA · <strong>2.000 € prize money</strong>
+            </p>
+            <div className="hero-simple-actions">
+              <a href="/inscripcion" className="hero-simple-cta-primary">
+                Inscriu el teu equip →
+              </a>
+              <a href="/porta-un-rival" className="hero-simple-cta-secondary">
+                Porta un rival · −5 €
+              </a>
+            </div>
+          </div>
+        </section>
 
         {/* === Secció informativa indexable (SEO) === */}
         <section className="event-info-section" aria-label="Sobre el torneig 3×3">

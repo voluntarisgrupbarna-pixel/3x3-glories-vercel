@@ -23,6 +23,12 @@ function doPost(e) {
       return jsonResponse({ ok: false, error: "No body" });
     }
     const payload = JSON.parse(e.postData.contents);
+
+    if (payload.action === "abandoned") {
+      const result = handleAbandoned(payload);
+      return jsonResponse(result);
+    }
+
     const result = handleInscripcio(payload);
     return jsonResponse(result);
   } catch (err) {
@@ -426,6 +432,51 @@ function sendToJotForm(payload) {
   }
   const json = JSON.parse(response.getContentText());
   return (json.content && json.content.submissionID) || null;
+}
+
+// ===== ABANDONED LEADS =====
+
+const ABANDONED_HEADERS = [
+  "Timestamp",
+  "Reason",
+  "Step",
+  "Package",
+  "Price (€)",
+  "Team Name",
+  "Category",
+  "Captain Name",
+  "Captain Phone",
+  "Captain Email",
+  "Status",
+  "Notes",
+];
+
+function handleAbandoned(payload) {
+  verifySecret(payload);
+  const props = PropertiesService.getScriptProperties();
+  const sheetId = props.getProperty("SHEET_ID");
+  if (!sheetId) throw new Error("SHEET_ID not configured");
+  writeAbandonedToSheet(payload, sheetId);
+  return { ok: true };
+}
+
+function writeAbandonedToSheet(payload, sheetId) {
+  const ss = SpreadsheetApp.openById(sheetId);
+  const sheet = ensureSheet(ss, "Abandonaments", ABANDONED_HEADERS);
+  sheet.appendRow([
+    new Date(payload.abandonedAt || new Date()),
+    payload.reason || "",
+    payload.step || "",
+    payload.packageTitle || payload.packageKey || "",
+    payload.packagePrice || "",
+    payload.teamName || "",
+    payload.category || "",
+    payload.captainName || "",
+    payload.captainPhone || "",
+    payload.captainEmail || "",
+    "Pendent",
+    "",
+  ]);
 }
 
 // ===== SETUP & TEST HELPERS =====

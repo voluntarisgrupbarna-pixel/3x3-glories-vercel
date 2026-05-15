@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   PACKAGES,
   CATEGORIES,
@@ -107,6 +107,58 @@ export default function InscripcioWizard({ initialRefCode }: Props) {
     error?: string;
   }>(null);
 
+  // Refs per capturar abandons — els handlers d'events llegeixen sempre l'estat més recent
+  const stateRef = useRef(state);
+  const submitResultRef = useRef(submitResult);
+  const abandonedSentRef = useRef(false);
+  useEffect(() => { stateRef.current = state; });
+  useEffect(() => { submitResultRef.current = submitResult; });
+
+  function sendAbandonedLead(reason: string) {
+    if (abandonedSentRef.current) return;
+    if (submitResultRef.current?.ok === true) return;
+    const s = stateRef.current;
+    if (!s.captain.email && !s.captain.phone) return;
+    abandonedSentRef.current = true;
+    const currentPkg = PACKAGES.find((p) => p.key === s.packageKey) || null;
+    const body = JSON.stringify({
+      action: "abandoned",
+      abandonedAt: new Date().toISOString(),
+      reason,
+      step: s.step,
+      packageKey: s.packageKey || "",
+      packageTitle: currentPkg?.title || "",
+      packagePrice: currentPkg?.price || 0,
+      teamName: s.teamName,
+      category: s.category,
+      captainName: s.captain.fullName,
+      captainPhone: s.captain.phone,
+      captainEmail: s.captain.email,
+    });
+    if (reason === "beforeunload") {
+      navigator.sendBeacon("/api/abandoned", new Blob([body], { type: "application/json" }));
+    } else {
+      fetch("/api/abandoned", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body,
+      }).catch(() => {});
+    }
+  }
+
+  useEffect(() => {
+    const onUnload = () => sendAbandonedLead("beforeunload");
+    const onVisibility = () => {
+      if (document.visibilityState === "hidden") sendAbandonedLead("hidden");
+    };
+    window.addEventListener("beforeunload", onUnload);
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      window.removeEventListener("beforeunload", onUnload);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   const pkg: Package | null = useMemo(
     () => PACKAGES.find((p) => p.key === state.packageKey) || null,
     [state.packageKey],
@@ -155,6 +207,9 @@ export default function InscripcioWizard({ initialRefCode }: Props) {
   }
 
   function next() {
+    if (state.step === 2) {
+      sendAbandonedLead("step2_advance");
+    }
     setState((prev) => ({ ...prev, step: Math.min(5, prev.step + 1) }));
   }
 
