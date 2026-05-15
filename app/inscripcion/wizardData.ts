@@ -87,7 +87,7 @@ export const SHIRT_SIZES = ["XS", "S", "M", "L", "XL", "XXL"];
 export const GENDERS = ["Masculí", "Femení", "Altre"];
 
 export const IBAN_INFO = {
-  iban: "ES98 0049 1500 0826 1097 0382",
+  iban: "ES25 0182 1797 3002 0387 8558",
   beneficiary: "CB Grup Barna",
 };
 

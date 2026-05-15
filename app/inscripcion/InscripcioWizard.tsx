@@ -269,10 +269,10 @@ export default function InscripcioWizard({ initialRefCode }: Props) {
     if (pkg.isTeam && !state.teamName.trim()) return false;
     if (!state.category) return false;
     const c = state.captain;
-    if (!c.fullName.trim() || !c.phone.trim() || !c.email.trim() || !c.dni.trim()) return false;
+    if (!c.fullName.trim() || !c.phone.trim() || !c.email.trim()) return false;
     if (state.needsTutor) {
       const t = state.tutor;
-      if (!t.fullName.trim() || !t.phone.trim() || !t.email.trim() || !t.dni.trim()) return false;
+      if (!t.fullName.trim() || !t.phone.trim() || !t.email.trim()) return false;
     }
     return true;
   }, [pkg, state.teamName, state.category, state.captain, state.tutor, state.needsTutor]);
@@ -745,10 +745,10 @@ function ContactFields({
           onChange={(e) => onChange("fullName", e.target.value)} required maxLength={80} />
       </div>
       <div className="wizard-field">
-        <label htmlFor={`${prefix}-dni`}>DNI/NIE *</label>
+        <label htmlFor={`${prefix}-dni`}>DNI/NIE <span style={{fontWeight:400,color:"#888"}}>(opcional)</span></label>
         <input id={`${prefix}-dni`} type="text" value={value.dni}
           onChange={(e) => onChange("dni", e.target.value.toUpperCase())}
-          required maxLength={20} placeholder="12345678A" />
+          maxLength={20} placeholder="12345678A" />
       </div>
       <div className="wizard-field">
         <label htmlFor={`${prefix}-phone`}>Telèfon (WhatsApp) *</label>
