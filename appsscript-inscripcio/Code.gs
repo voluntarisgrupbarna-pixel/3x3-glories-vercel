@@ -29,6 +29,11 @@ function doPost(e) {
       return jsonResponse(result);
     }
 
+    if (payload.action === "lead") {
+      const result = handleLead(payload);
+      return jsonResponse(result);
+    }
+
     const result = handleInscripcio(payload);
     return jsonResponse(result);
   } catch (err) {
@@ -476,6 +481,58 @@ function writeAbandonedToSheet(payload, sheetId) {
     payload.captainEmail || "",
     "Pendent",
     "",
+  ]);
+}
+
+// ===== LEADS (Share Gate / WhatsApp widget / qualsevol captura) =====
+// Tots els leads que NO són una inscripció completa: gent que ha compartit,
+// gent que ha demanat info per WhatsApp, gent que ha donat el seu contacte
+// per veure descomptes, etc.
+
+const LEAD_HEADERS = [
+  "Timestamp",
+  "Origin",       // ex: share-slidedos, share-rival, wa-widget, footer-form
+  "Nom",
+  "Email",
+  "Telèfon",
+  "Interès",      // ex: "Comparteix el 3×3", "Vol info inscripció"
+  "Pregunta",
+  "Missatge",
+  "Consent",      // TRUE/FALSE
+  "Status",       // Pendent / Contactat / Inscrit / Descartat
+  "Notes",        // espai per al follow-up manual d'Ana
+  "UTM Source",
+  "UTM Medium",
+  "UTM Campaign",
+];
+
+function handleLead(payload) {
+  verifySecret(payload);
+  const props = PropertiesService.getScriptProperties();
+  const sheetId = props.getProperty("SHEET_ID");
+  if (!sheetId) throw new Error("SHEET_ID not configured");
+  writeLeadToSheet(payload, sheetId);
+  return { ok: true };
+}
+
+function writeLeadToSheet(payload, sheetId) {
+  const ss = SpreadsheetApp.openById(sheetId);
+  const sheet = ensureSheet(ss, "Leads", LEAD_HEADERS);
+  sheet.appendRow([
+    new Date(payload.timestamp || new Date()),
+    payload.origin || "",
+    payload.name || "",
+    payload.email || "",
+    payload.phone || "",
+    payload.interest || "",
+    payload.question || "",
+    payload.message || "",
+    payload.consent === true ? "TRUE" : "FALSE",
+    "Pendent",
+    "",
+    payload.utm_source || "",
+    payload.utm_medium || "",
+    payload.utm_campaign || "",
   ]);
 }
 

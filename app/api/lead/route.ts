@@ -11,9 +11,36 @@ type LeadPayload = {
   origin?: string;
 };
 
-const WEBHOOK_URL    = process.env.APPS_SCRIPT_WEBHOOK_URL ?? "";
-const SUPABASE_URL   = process.env.SUPABASE_URL ?? "";
-const SUPABASE_KEY   = process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
+const WEBHOOK_URL     = process.env.APPS_SCRIPT_WEBHOOK_URL ?? "";
+const INSCRIPCIO_URL  = process.env.APPSCRIPT_INSCRIPCIO_URL ?? "";
+const APPSCRIPT_SECRET = process.env.APPSCRIPT_SECRET ?? "";
+const SUPABASE_URL    = process.env.SUPABASE_URL ?? "";
+const SUPABASE_KEY    = process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
+
+// ── Escriu al Sheet d'Inscripcions (pestanya "Leads") via Apps Script ─────────
+// Aquest és el Sheet centralitzat d'Ana on hi va tot el seguiment de venda.
+async function saveLeadToInscripcioSheet(
+  payload: Record<string, unknown>,
+): Promise<void> {
+  if (!INSCRIPCIO_URL) return;
+
+  try {
+    // No bloquejant: fire-and-forget amb log si falla
+    fetch(INSCRIPCIO_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "lead",
+        secret: APPSCRIPT_SECRET,
+        timestamp: new Date().toISOString(),
+        ...payload,
+      }),
+      redirect: "follow",
+    }).catch((err) => console.error("[lead/sheet] Apps Script fetch failed", err));
+  } catch (err) {
+    console.error("[lead/sheet] error", err);
+  }
+}
 
 // ── Escriu el lead a Supabase (MailingBarna v4) ──────────────────────────────
 // No bloqueja la resposta principal si falla (fire-and-forget amb log d'error).
@@ -68,11 +95,24 @@ export async function POST(request: NextRequest) {
   const consent = Boolean(payload.consent);
   const origin  = (payload.origin ?? "Web 3x3").trim();
 
-  if (!name || !email || !phone || !consent) {
-    return NextResponse.json({ error: "Falten dades obligatòries." }, { status: 400 });
+  // Nom + consent + (email O telèfon) — no cal tenir-los tots dos
+  if (!name || (!email && !phone) || !consent) {
+    return NextResponse.json({ error: "Falten dades obligatòries (nom, consent, email o telèfon)." }, { status: 400 });
   }
 
-  // ── 1. Apps Script (canal principal, ja existent) ─────────────────────────
+  // ── 0. Sheet centralitzat (pestanya "Leads") — captura sempre, fire-and-forget ─
+  saveLeadToInscripcioSheet({
+    name,
+    email,
+    phone,
+    interest: (payload.interest ?? "").trim(),
+    question: (payload.question ?? "").trim(),
+    message:  (payload.message  ?? "").trim(),
+    consent,
+    origin,
+  });
+
+  // ── 1. Apps Script MailingBarna (canal secundari) ─ fire-and-forget ──────
   if (WEBHOOK_URL) {
     const body = JSON.stringify({
       action:       "whatsapp_lead",
@@ -86,18 +126,12 @@ export async function POST(request: NextRequest) {
       acceptaRgpd:  true,
     });
 
-    const response = await fetch(WEBHOOK_URL, {
+    fetch(WEBHOOK_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body,
       redirect: "follow",
-    });
-
-    if (!response.ok) {
-      // Si Apps Script falla, intentem igualment Supabase però retornem error
-      saveLeadToSupabase(name, email, phone, origin).catch(console.error);
-      return NextResponse.json({ error: "No s'ha pogut guardar el contacte." }, { status: 502 });
-    }
+    }).catch((err) => console.error("[lead/mailingbarna] fetch failed", err));
   }
 
   // ── 2. Supabase / MailingBarna v4 (dual-write, no bloquejant) ─────────────
