@@ -133,18 +133,26 @@ export default function InscripcioWizard({ initialRefCode = "" }: Props) {
 
   const stateRef = useRef(state);
   const submitResultRef = useRef(submitResult);
-  const abandonedSentRef = useRef(false);
+  const abandonedEventsSent = useRef<Set<string>>(new Set());
   useEffect(() => { stateRef.current = state; });
   useEffect(() => { submitResultRef.current = submitResult; });
 
   // ── Abandoned lead capture ─────────────────────────────────────────────
+  // Captura per cada pas — deduplicat per reason (permet múltiples events per sessió)
   function sendAbandonedLead(reason: string) {
-    if (abandonedSentRef.current) return;
     if (submitResultRef.current?.ok === true) return;
+    if (abandonedEventsSent.current.has(reason)) return;
     const s = stateRef.current;
     if (!s.captain.email && !s.captain.phone) return;
-    abandonedSentRef.current = true;
+    abandonedEventsSent.current.add(reason);
     const currentPkg = PACKAGES.find((p) => p.key === s.packageKey) || null;
+    const disc = currentPkg
+      ? calcDiscount(currentPkg.price, {
+          earlyBird: isEarlyBirdActive(),
+          social: s.socialShareDone,
+          rivalValid: /^RIVAL-[A-Z0-9]{3,}$/i.test(s.rivalCode.trim()),
+        })
+      : null;
     const body = JSON.stringify({
       action: "abandoned",
       abandonedAt: new Date().toISOString(),
@@ -158,6 +166,10 @@ export default function InscripcioWizard({ initialRefCode = "" }: Props) {
       captainName: s.captain.fullName,
       captainPhone: s.captain.phone,
       captainEmail: s.captain.email,
+      finalPrice: disc?.finalPrice ?? currentPkg?.price ?? 0,
+      proofUploaded: s.proofBase64.length > 0,
+      earlyBirdApplied: isEarlyBirdActive(),
+      socialShareDone: s.socialShareDone,
     });
     if (reason === "beforeunload") {
       navigator.sendBeacon("/api/abandoned", new Blob([body], { type: "application/json" }));
@@ -301,20 +313,25 @@ export default function InscripcioWizard({ initialRefCode = "" }: Props) {
     if (!pkg) return false;
     if (pkg.isTeam && !state.teamName.trim()) return false;
     const c = state.captain;
-    if (!c.fullName.trim() || !c.phone.trim() || !c.email.trim() || !c.shirtSize) return false;
+    // Mínim: nom + telèfon + email (sense talla — la recollim als jugadors)
+    if (!c.fullName.trim() || !c.phone.trim() || !c.email.trim()) return false;
     if (state.needsTutor) {
       const t = state.tutor;
-      if (!t.fullName.trim() || !t.phone.trim() || !t.email.trim()) return false;
+      // Nom + telèfon obligatoris; email opcional per a tutors de menors
+      if (!t.fullName.trim() || !t.phone.trim()) return false;
     }
     return true;
   }, [pkg, state.packageKey, state.category, state.teamName, state.captain, state.tutor, state.needsTutor]);
 
-  const canAdvanceStep3 = state.proofBase64.length > 0;
+  // Justificant OPCIONAL — la gent pot continuar sense i enviar-lo per WA
+  const canAdvanceStep3 = true;
 
   const canAdvanceStep4 = useMemo(() => {
     if (!state.players.length) return false;
+    // Mínim: nom + categoria + any de naixement + gènere + telèfon
+    // Club, talla i email són opcionals per agilitzar
     return state.players.every(
-      (p) => p.fullName.trim() && p.club.trim() && p.category && p.birthYear.trim() && p.gender && p.phone.trim() && p.shirtSize,
+      (p) => p.fullName.trim() && p.category && p.birthYear.trim() && p.gender && p.phone.trim(),
     );
   }, [state.players]);
 
@@ -418,7 +435,7 @@ export default function InscripcioWizard({ initialRefCode = "" }: Props) {
           setTeamName={(v) => update("teamName", v)}
           setCategory={handleCategoryChange}
           onPrev={prev}
-          onNext={() => { sendAbandonedLead("step2_advance"); next(); }}
+          onNext={() => { sendAbandonedLead("step2_done"); next(); }}
           canAdvance={canAdvanceStep2}
         />
       )}
@@ -431,7 +448,7 @@ export default function InscripcioWizard({ initialRefCode = "" }: Props) {
           proofFileName={state.proofFileName}
           onFile={handleFileChange}
           onPrev={prev}
-          onNext={next}
+          onNext={() => { sendAbandonedLead("step3_done"); next(); }}
           canAdvance={canAdvanceStep3}
         />
       )}
@@ -445,7 +462,7 @@ export default function InscripcioWizard({ initialRefCode = "" }: Props) {
           addPlayer={addPlayer}
           removePlayer={removePlayer}
           onPrev={prev}
-          onNext={next}
+          onNext={() => { sendAbandonedLead("step4_done"); next(); }}
           canAdvance={canAdvanceStep4}
         />
       )}
@@ -886,7 +903,7 @@ function Step3Payment({
 
       <div className="wizard-field wizard-field-full">
         <label htmlFor="proof">
-          Justificant de la transferència *{" "}
+          Justificant de la transferència{" "}
           <span style={{ fontWeight: 400, color: "#888" }}>JPG, PNG o PDF · màx. 5 MB</span>
         </label>
         <input
@@ -897,7 +914,11 @@ function Step3Payment({
         />
         {proofFileName
           ? <p className="wizard-help wizard-help-success">✓ Fitxer adjuntat: <strong>{proofFileName}</strong></p>
-          : <p className="wizard-help">Si encara no has fet la transferència, fes-la ara i adjunta el rebut.</p>
+          : (
+            <p className="wizard-help">
+              📎 Adjunta el comprovant si ja has fet la transferència. Si encara no, <strong>continua igualment</strong> — envia&apos;l per WhatsApp al <a href="https://wa.me/34698425153" target="_blank" rel="noreferrer" style={{ color: "#25d366" }}>+34 698 425 153</a> i validem igualment.
+            </p>
+          )
         }
       </div>
 
@@ -956,8 +977,8 @@ function Step4Players({
               <input type="text" value={p.fullName} onChange={(e) => updatePlayer(idx, { fullName: e.target.value })} required maxLength={80} />
             </div>
             <div className="wizard-field">
-              <label>Club d&apos;origen *</label>
-              <input type="text" value={p.club} onChange={(e) => updatePlayer(idx, { club: e.target.value })} placeholder="CB Grup Barna, Sense club…" required maxLength={60} />
+              <label>Club d&apos;origen <span style={{ fontWeight: 400, color: "#888" }}>(opcional)</span></label>
+              <input type="text" value={p.club} onChange={(e) => updatePlayer(idx, { club: e.target.value })} placeholder="CB Grup Barna, Sense club…" maxLength={60} />
             </div>
             <div className="wizard-field">
               <label>Categoria *</label>
@@ -990,14 +1011,14 @@ function Step4Players({
               <input type="tel" value={p.phone} onChange={(e) => updatePlayer(idx, { phone: e.target.value })} placeholder="+34 600 000 000" required maxLength={20} />
             </div>
             <div className="wizard-field">
-              <label>Talla samarreta *</label>
-              <select value={p.shirtSize} onChange={(e) => updatePlayer(idx, { shirtSize: e.target.value })} required>
+              <label>Talla samarreta <span style={{ fontWeight: 400, color: "#888" }}>(opcional)</span></label>
+              <select value={p.shirtSize} onChange={(e) => updatePlayer(idx, { shirtSize: e.target.value })}>
                 <option value="">Talla…</option>
                 {SHIRT_SIZES.map((s) => <option key={s} value={s}>{s}</option>)}
               </select>
             </div>
             <div className="wizard-field">
-              <label>Email <span style={{ fontWeight: 400, color: "#888" }}>(opcional per a menors)</span></label>
+              <label>Email <span style={{ fontWeight: 400, color: "#888" }}>(opcional)</span></label>
               <input type="email" value={p.email} onChange={(e) => updatePlayer(idx, { email: e.target.value })} placeholder="jugador@email.com" maxLength={100} />
             </div>
           </div>
