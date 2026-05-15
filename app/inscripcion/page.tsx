@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import Link from "next/link";
-import ReferralCard from "../components/ReferralCard";
 import InscripcioWizard from "./InscripcioWizard";
 import QueueGate from "./QueueGate";
 
@@ -258,8 +257,6 @@ export default async function InscripcionPage({ searchParams }: InscripcionPageP
         <p style={{ fontSize: 14, color: "rgba(255,247,239,0.5)", marginTop: 8 }}>
           Samarreta addicional (acompanyant o recanvi): 25 €/u.
         </p>
-
-        <ReferralCard />
 
         <hr className="page-divider" />
 
