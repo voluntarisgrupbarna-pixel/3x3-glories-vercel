@@ -61,7 +61,7 @@ export default function TorneoESPage() {
 
         <div className="insc-hero">
           <img
-            src="/hero-bg-1.jpg"
+            src="/hero-bg-1.webp"
             alt="Equipos compitiendo en el Torneo 3x3 Barcelona 2026 en Westfield Glòries"
             className="insc-hero-img"
           />

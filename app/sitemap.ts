@@ -102,5 +102,26 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
       alternates: langs("/es/torneo-3x3-barcelona"),
     },
+    {
+      url: `${SITE_URL}/torneo-3x3-veteranos-barcelona`,
+      lastModified,
+      changeFrequency: "monthly",
+      priority: 0.7,
+      alternates: langs("/torneo-3x3-veteranos-barcelona"),
+    },
+    {
+      url: `${SITE_URL}/3x3-inclusivo-barcelona-magics`,
+      lastModified,
+      changeFrequency: "monthly",
+      priority: 0.7,
+      alternates: langs("/3x3-inclusivo-barcelona-magics"),
+    },
+    {
+      url: `${SITE_URL}/horarios-3x3-barcelona-2026`,
+      lastModified,
+      changeFrequency: "weekly",
+      priority: 0.8,
+      alternates: langs("/horarios-3x3-barcelona-2026"),
+    },
   ];
 }

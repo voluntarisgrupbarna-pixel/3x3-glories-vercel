@@ -45,7 +45,7 @@ export default function SeniorFibaPage() {
 
         <div className="insc-hero">
           <img
-            src="/hero-bg-3.jpg"
+            src="/hero-bg-3.webp"
             alt="Jugadors Sènior competint al Torneig 3×3 FIBA Barcelona 2026 a Westfield Glòries"
             className="insc-hero-img"
           />
@@ -69,7 +69,7 @@ export default function SeniorFibaPage() {
 
           <div className="insc-prize">
             <div className="insc-prize-img-wrap">
-              <img src="/hero-bg-1.jpg" alt="Finals Sènior al Westfield Glòries Barcelona" className="insc-prize-img" />
+              <img src="/hero-bg-1.webp" alt="Finals Sènior al Westfield Glòries Barcelona" className="insc-prize-img" />
               <div className="insc-prize-img-overlay" />
               <span className="insc-prize-fiba">FIBA Official</span>
             </div>

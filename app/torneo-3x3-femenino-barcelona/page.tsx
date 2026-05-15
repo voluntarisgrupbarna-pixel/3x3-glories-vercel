@@ -51,7 +51,7 @@ export default function FemeniPage() {
 
         <div className="insc-hero">
           <img
-            src="/hero-bg-3.jpg"
+            src="/hero-bg-3.webp"
             alt="Jugadora encistellant al Torneig 3×3 Femení Barcelona 2026 a Westfield Glòries"
             className="insc-hero-img"
           />
