@@ -14,7 +14,7 @@ const EB_LOGOS: Array<{
   { src: "/logos/westfield.svg",        alt: "Westfield Glòries", dark: false,           instagram: "https://www.instagram.com/westfieldglories/" },
   { src: "/cb-grup-barna-logo-192.png", alt: "CB Grup Barna",     dark: false, featured: true, instagram: "https://www.instagram.com/cbgrupbarna/" },
   { src: "/logos/timechamber.webp",     alt: "Time Chamber",      dark: true,            instagram: "https://www.instagram.com/timechamber_es/" },
-  { src: null,                           alt: "Eix Clot",          dark: false,           instagram: "https://www.instagram.com/eixclot/" },
+  { src: "/logos/eix-clot-oficial.png",  alt: "Eix Clot",          dark: false,           instagram: "https://www.instagram.com/eixclot/" },
 ];
 
 function getCountdown(target: Date) {
