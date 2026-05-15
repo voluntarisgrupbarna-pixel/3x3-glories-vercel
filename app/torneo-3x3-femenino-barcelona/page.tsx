@@ -28,7 +28,7 @@ const jsonLdBreadcrumb = {
 const WA = `https://wa.me/34698425153?text=${encodeURIComponent("Hola! Vull inscriure el meu equip femení al 3x3 Westfield Glòries 2026.")}`;
 
 const CATS_FEMENINES = [
-  { name: "Sènior Femení", any: "fins 2002", preu: "85–105€", fiba: true },
+  { name: "Sènior Femení", any: "fins 2002", preu: "85–90€", fiba: true },
   { name: "Veterans Femení", any: "fins 1986 (+38 anys)", preu: "75–90€", fiba: false },
   { name: "Màgics · Inclusiva", any: "Mixta, tots els nivells", preu: "75€", fiba: false },
 ];
