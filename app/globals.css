@@ -5749,6 +5749,7 @@ html {
 
 .wizard-social-btn--wa  { background: #25d366; color: #07120c; }
 .wizard-social-btn--ig  { background: linear-gradient(135deg, #f58529, #dd2a7b, #8134af); color: #fff; }
+.wizard-social-btn--done { background: rgba(37, 211, 102, 0.15); color: #25d366; border: 1px solid #25d366; }
 .wizard-social-btn:hover { opacity: 0.86; }
 
 .wizard-social-confirm {

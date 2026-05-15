@@ -494,6 +494,67 @@ function Stepper({ currentStep, isIndividual }: { currentStep: number; isIndivid
   );
 }
 
+// ── Social Discount Block ──────────────────────────────────────────────────
+// El descompte s'activa automàticament quan l'usuari clica els dos botons.
+// Sense checkbox — el sistema ho detecta pels clics reals.
+
+function SocialDiscountBlock({
+  socialShareDone,
+  onSocialDone,
+}: {
+  socialShareDone: boolean;
+  onSocialDone: (v: boolean) => void;
+}) {
+  const [waClicked, setWaClicked] = useState(false);
+  const [igClicked, setIgClicked] = useState(false);
+
+  function handleWa() {
+    setWaClicked(true);
+    if (igClicked) onSocialDone(true);
+  }
+
+  function handleIg() {
+    setIgClicked(true);
+    if (waClicked) onSocialDone(true);
+  }
+
+  return (
+    <div className={`wizard-discount-block${socialShareDone ? " wizard-discount-block--active" : ""}`}>
+      <div className="wizard-discount-head">
+        <span className="wizard-discount-pct wizard-discount-pct--blue">📲 −5 %</span>
+        <div>
+          <strong>Descompte social</strong>
+          {socialShareDone && <span className="wizard-discount-status wizard-discount-status--on">Activat ✓</span>}
+        </div>
+      </div>
+      <p className="wizard-discount-desc">
+        Comparteix el torneig amb 5 amics per WhatsApp i segueix <strong>@cbgrupbarna</strong> a Instagram. El descompte s&apos;activa automàticament.
+      </p>
+      <div className="wizard-social-actions">
+        <a
+          href={`https://wa.me/?text=${encodeURIComponent("Vine al 3×3 Westfield Glòries 2026! Torneig FIBA a Barcelona el 6-7 juny. 2.000€ premi en metàl·lic. Inscriu-te: https://cbgrupbarna-3x3timechamber.com/inscripcion 🏀")}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`wizard-social-btn wizard-social-btn--wa${waClicked ? " wizard-social-btn--done" : ""}`}
+          onClick={handleWa}
+        >
+          {waClicked ? "✓ Compartit per WhatsApp" : "📲 Comparteix per WhatsApp"}
+        </a>
+        <a
+          href="https://www.instagram.com/cbgrupbarna/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`wizard-social-btn wizard-social-btn--ig${igClicked ? " wizard-social-btn--done" : ""}`}
+          onClick={handleIg}
+        >
+          {igClicked ? "✓ Seguint @cbgrupbarna" : "📸 Segueix @cbgrupbarna a Instagram"}
+        </a>
+        {socialShareDone && <p className="wizard-social-ok">✅ Descompte social del 5 % activat!</p>}
+      </div>
+    </div>
+  );
+}
+
 // ── Step 1 — Descomptes (pre-form) ────────────────────────────────────────
 
 function Step1Discounts({
@@ -536,41 +597,7 @@ function Step1Discounts({
       </div>
 
       {/* Social share */}
-      <div className={`wizard-discount-block${socialShareDone ? " wizard-discount-block--active" : ""}`}>
-        <div className="wizard-discount-head">
-          <span className="wizard-discount-pct wizard-discount-pct--blue">📲 −5 %</span>
-          <div>
-            <strong>Descompte social</strong>
-            {socialShareDone && <span className="wizard-discount-status wizard-discount-status--on">Activat ✓</span>}
-          </div>
-        </div>
-        <p className="wizard-discount-desc">
-          Comparteix el torneig amb 5 amics per WhatsApp i segueix <strong>@cbgrupbarna</strong> a Instagram.
-        </p>
-        <div className="wizard-social-actions">
-          <a
-            href={`https://wa.me/?text=${encodeURIComponent("Vine al 3×3 Westfield Glòries 2026! Torneig FIBA a Barcelona el 6-7 juny. 2.000€ premi en metàl·lic. Inscriu-te: https://cbgrupbarna-3x3timechamber.com/inscripcion 🏀")}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="wizard-social-btn wizard-social-btn--wa"
-          >
-            📲 Comparteix per WhatsApp
-          </a>
-          <a
-            href="https://www.instagram.com/cbgrupbarna/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="wizard-social-btn wizard-social-btn--ig"
-          >
-            📸 Segueix @cbgrupbarna
-          </a>
-          <label className="wizard-social-confirm">
-            <input type="checkbox" checked={socialShareDone} onChange={(e) => onSocialDone(e.target.checked)} />
-            <span>Ho he fet — activa el −5 % ✓</span>
-          </label>
-          {socialShareDone && <p className="wizard-social-ok">✅ Descompte social del 5 % activat!</p>}
-        </div>
-      </div>
+      <SocialDiscountBlock socialShareDone={socialShareDone} onSocialDone={onSocialDone} />
 
       <div className="wizard-nav" style={{ marginTop: 28 }}>
         <button type="button" className="wizard-btn wizard-btn-primary" onClick={onNext}>
