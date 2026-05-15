@@ -3093,6 +3093,89 @@ html {
   letter-spacing: 0.05em;
 }
 
+/* IBAN box (step 2 nou) */
+.wizard-iban-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 6px 18px;
+  border: 2px solid rgba(255, 55, 95, 0.5);
+  border-radius: 12px;
+  background: rgba(255, 55, 95, 0.06);
+  margin-bottom: 8px;
+}
+
+.wizard-iban-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.wizard-iban-row:last-child {
+  border-bottom: none;
+}
+
+.wizard-iban-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.5);
+  min-width: 80px;
+}
+
+.wizard-iban-value-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.wizard-iban-mono {
+  font-family: ui-monospace, "SF Mono", Menlo, Monaco, monospace;
+  font-size: 15px;
+  letter-spacing: 0.06em;
+}
+
+.wizard-iban-amount {
+  font-size: 22px;
+  font-weight: 900;
+  color: #ff375f;
+}
+
+.wizard-iban-discount-badge {
+  font-size: 11px;
+  background: rgba(255, 55, 95, 0.2);
+  color: #ff375f;
+  border-radius: 20px;
+  padding: 2px 8px;
+  font-weight: 700;
+}
+
+.wizard-copy-btn {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+
+.wizard-copy-btn:hover {
+  background: rgba(255, 55, 95, 0.2);
+  color: #ff375f;
+  border-color: #ff375f;
+}
+
 /* Player cards */
 .wizard-player-card {
   padding: 18px;
