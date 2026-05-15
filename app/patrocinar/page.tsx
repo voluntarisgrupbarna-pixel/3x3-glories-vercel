@@ -121,7 +121,7 @@ export default function PatrocinarPage() {
         {/* Hero */}
         <div className="insc-hero">
           <img
-            src="/hero-bg-2.jpg"
+            src="/hero-bg-2.webp"
             alt="Pista del Torneig 3×3 Westfield Glòries al barri del Clot-Glòries de Barcelona"
             className="insc-hero-img"
           />
