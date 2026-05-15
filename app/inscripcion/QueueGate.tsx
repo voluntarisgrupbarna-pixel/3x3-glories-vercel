@@ -2,11 +2,35 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const TOTAL_WAIT_MS = 9_000;   // 9 s reals — sembla prou
-const DONE_HOLD_MS  = 1_400;   // 1.4 s mostrant "✅ Plaça reservada!"
+const TOTAL_WAIT_MS = 12_000;
+const DONE_HOLD_MS  = 1_400;
 
 function randomInt(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+const TOAST_TEAMS = [
+  { team: "Lleons del Clot",          cat: "Cadet Masc." },
+  { team: "Falcons de Gràcia",        cat: "Sènior Masc." },
+  { team: "Tigres de Sarrià",         cat: "Júnior Masc." },
+  { team: "Panteres de l'Eixample",   cat: "Sènior Fem." },
+  { team: "Àguiles de Nou Barris",    cat: "Veterans Masc." },
+  { team: "Llops de Sants",           cat: "Sub-23 Masc." },
+  { team: "Corsaris de Poblenou",     cat: "Infantil Masc." },
+  { team: "Dracs de Sant Andreu",     cat: "Cadet Fem." },
+  { team: "Búfals de Sant Martí",     cat: "Sènior Masc." },
+  { team: "Tornados del Guinardó",    cat: "Veterans Fem." },
+  { team: "Estels de Les Corts",      cat: "Júnior Fem." },
+  { team: "Balenes de la Barceloneta",cat: "Sub-23 Masc." },
+  { team: "Pumes de la Sagrera",      cat: "Infantil Fem." },
+  { team: "Falcons de Badalona",      cat: "Sènior Masc." },
+  { team: "Tigres de l'Hospitalet",   cat: "Veterans Masc." },
+  { team: "Condors de Horta",         cat: "Premini Masc." },
+];
+
+interface Toast {
+  id: number;
+  text: string;
 }
 
 interface Props {
@@ -14,25 +38,33 @@ interface Props {
 }
 
 export default function QueueGate({ children }: Props) {
-  const [phase, setPhase] = useState<"queue" | "done" | "form">("queue");
-  const [progress, setProgress] = useState(0);
-  const [position, setPosition] = useState<number | null>(null);
+  const [phase, setPhase]         = useState<"queue" | "done" | "form">("queue");
+  const [progress, setProgress]   = useState(0);
+  const [position, setPosition]   = useState<number | null>(null);
   const [connected, setConnected] = useState<number | null>(null);
-  const startRef  = useRef<number | null>(null);
-  const rafRef    = useRef<number | null>(null);
-  const posTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const [registered, setRegistered] = useState<number | null>(null);
+  const [toasts, setToasts]       = useState<Toast[]>([]);
+
+  const startRef    = useRef<number | null>(null);
+  const rafRef      = useRef<number | null>(null);
+  const posTimers   = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const toastTimer  = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const toastIdRef  = useRef(0);
+  const usedTeams   = useRef<Set<number>>(new Set());
 
   useEffect(() => {
-    // Skip queue si ja s'ha fet en aquesta sessió
     if (sessionStorage.getItem("queuePassed") === "1") {
       setPhase("form");
       return;
     }
 
-    const initPos       = randomInt(4, 7);
-    const initConnected = randomInt(38, 71);
+    const initPos        = randomInt(4, 7);
+    const initConnected  = randomInt(84, 143);
+    const initRegistered = randomInt(24, 32);
+
     setPosition(initPos);
     setConnected(initConnected);
+    setRegistered(initRegistered);
 
     // Decrementar posició de forma natural
     let pos = initPos;
@@ -41,17 +73,43 @@ export default function QueueGate({ children }: Props) {
       const t = setTimeout(() => {
         pos -= 1;
         setPosition(pos);
-        // Fluctuació lleugera de "connectats"
-        setConnected((c) => (c !== null ? c + randomInt(-3, 5) : c));
+        setConnected((c) => (c !== null ? c + randomInt(-4, 6) : c));
       }, delay);
       posTimers.current.push(t);
     }
 
+    // Toasts encadenats de forma recursiva per variar intervals
+    const fireToast = () => {
+      let idx: number;
+      let attempts = 0;
+      do {
+        idx = randomInt(0, TOAST_TEAMS.length - 1);
+        attempts++;
+      } while (usedTeams.current.has(idx) && attempts < 20);
+      usedTeams.current.add(idx);
+
+      const { team, cat } = TOAST_TEAMS[idx];
+      const id = ++toastIdRef.current;
+      setToasts((prev) => [...prev.slice(-2), { id, text: `${team} · ${cat}` }]);
+      setRegistered((r) => (r !== null ? r + 1 : r));
+
+      setTimeout(() => {
+        setToasts((prev) => prev.filter((t) => t.id !== id));
+      }, 3_500);
+
+      if (usedTeams.current.size < TOAST_TEAMS.length) {
+        toastTimer.current = setTimeout(fireToast, randomInt(2_200, 3_800));
+      }
+    };
+
+    // Primer toast als 1.8s
+    toastTimer.current = setTimeout(fireToast, 1_800);
+
     // Barra de progrés via rAF
     startRef.current = performance.now();
     const tick = (now: number) => {
-      const elapsed  = now - (startRef.current ?? now);
-      const pct      = Math.min(100, (elapsed / TOTAL_WAIT_MS) * 100);
+      const elapsed = now - (startRef.current ?? now);
+      const pct     = Math.min(100, (elapsed / TOTAL_WAIT_MS) * 100);
       setProgress(pct);
 
       if (pct < 100) {
@@ -65,7 +123,8 @@ export default function QueueGate({ children }: Props) {
     rafRef.current = requestAnimationFrame(tick);
 
     return () => {
-      if (rafRef.current)    cancelAnimationFrame(rafRef.current);
+      if (rafRef.current)   cancelAnimationFrame(rafRef.current);
+      if (toastTimer.current) clearTimeout(toastTimer.current);
       posTimers.current.forEach(clearTimeout);
     };
   }, []);
@@ -76,21 +135,43 @@ export default function QueueGate({ children }: Props) {
 
   return (
     <div className="queue-overlay">
+
+      {/* Toasts — inscripcions en temps real */}
+      <div className="queue-toasts" aria-live="polite" aria-atomic="false">
+        {toasts.map((t) => (
+          <div key={t.id} className="queue-toast">
+            <span className="queue-toast-ball" aria-hidden="true">🏀</span>
+            <span className="queue-toast-text">
+              <strong>Nou equip inscrit!</strong>
+              <br />{t.text}
+            </span>
+          </div>
+        ))}
+      </div>
+
       <div className="queue-card">
 
-        {/* Icona central */}
+        {/* Indicador live */}
+        {!isDone && (
+          <div className="queue-live">
+            <span className="queue-live-dot" />
+            EN VIU
+          </div>
+        )}
+
+        {/* Icona */}
         <div className={`queue-icon${isDone ? " queue-icon--done" : ""}`}>
           {isDone ? "✅" : "🏀"}
         </div>
 
         {/* Títol */}
         <h2 className="queue-title">
-          {isDone ? "Plaça reservada!" : "Preparant la teva inscripció…"}
+          {isDone ? "Plaça reservada!" : "Reservant el teu lloc…"}
         </h2>
         <p className="queue-sub">
           {isDone
             ? "Ja pots completar el formulari."
-            : "Moltes persones volen inscriure's al mateix temps. Estem reservant el teu lloc."}
+            : "Hi ha molta demanda. Estem garantint el teu lloc abans que s'acabi."}
         </p>
 
         {/* Barra progrés */}
@@ -103,16 +184,21 @@ export default function QueueGate({ children }: Props) {
 
         {!isDone && (
           <>
-            {/* Posició a la cua */}
+            {/* 3 stats */}
             <div className="queue-stats">
               <div className="queue-stat">
                 <span className="queue-stat-value">#{position ?? "…"}</span>
-                <span className="queue-stat-label">posició a la cua</span>
+                <span className="queue-stat-label">posició</span>
               </div>
               <div className="queue-stat-divider" />
               <div className="queue-stat">
                 <span className="queue-stat-value">{connected ?? "…"}</span>
-                <span className="queue-stat-label">persones connectades ara</span>
+                <span className="queue-stat-label">connectats ara</span>
+              </div>
+              <div className="queue-stat-divider" />
+              <div className="queue-stat">
+                <span className="queue-stat-value">{registered ?? "…"}</span>
+                <span className="queue-stat-label">inscrits avui</span>
               </div>
             </div>
 

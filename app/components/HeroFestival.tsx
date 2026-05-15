@@ -19,9 +19,9 @@ const STATS = [
 const EVENT_DATE = new Date("2026-06-06T09:00:00+02:00");
 
 const HERO_SLIDES = [
-  { src: "/hero-bg-1.jpg", alt: "Públic i equips al Torneig 3×3 Barcelona 2026 a Westfield Glòries, Clot-Glòries" },
-  { src: "/hero-bg-2.jpg", alt: "Pista exterior del Torneig 3×3 FIBA al barri del Clot-Glòries de Barcelona" },
-  { src: "/hero-bg-3.jpg", alt: "Jugadora encistellant al Torneig 3×3 Westfield Glòries Barcelona 2026" },
+  { src: "/hero-bg-1.webp", alt: "Públic i equips al Torneig 3×3 Barcelona 2026 a Westfield Glòries, Clot-Glòries" },
+  { src: "/hero-bg-2.webp", alt: "Pista exterior del Torneig 3×3 FIBA al barri del Clot-Glòries de Barcelona" },
+  { src: "/hero-bg-3.webp", alt: "Jugadora encistellant al Torneig 3×3 Westfield Glòries Barcelona 2026" },
 ];
 const SLIDE_INTERVAL_MS = 5000;
 
