@@ -21,7 +21,8 @@ type ContactPerson = {
   fullName: string;
   phone: string;
   email: string;
-  dni: string;
+  shirtSize?: string;
+  dni?: string; // deprecated, no es recull al formulari
 };
 
 type Payload = {

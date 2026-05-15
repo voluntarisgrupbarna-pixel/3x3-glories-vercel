@@ -337,9 +337,9 @@ export default function InscripcioWizard({ initialRefCode = "" }: Props) {
         packagePrice: pkg.price,
         teamName: state.teamName || state.captain.fullName,
         category: state.category,
-        captain: { fullName: state.captain.fullName, phone: state.captain.phone, email: state.captain.email, shirtSize: state.captain.shirtSize, dni: "" },
+        captain: { fullName: state.captain.fullName, phone: state.captain.phone, email: state.captain.email, shirtSize: state.captain.shirtSize },
         tutor: state.needsTutor
-          ? { fullName: state.tutor.fullName, phone: state.tutor.phone, email: state.tutor.email, shirtSize: "", dni: "" }
+          ? { fullName: state.tutor.fullName, phone: state.tutor.phone, email: state.tutor.email, shirtSize: "" }
           : null,
         players: players.map((p) => ({
           fullName: p.fullName,
