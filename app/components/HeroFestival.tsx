@@ -10,11 +10,13 @@ const ORGANIZERS = [
 ];
 
 const STATS = [
-  { value: "1000M+", label: "Impressions digitals" },
-  { value: "10M+", label: "Seguidors FIBA 3×3" },
-  { value: "37%", label: "Creixement anual" },
-  { value: "2021", label: "Debut olímpic Tòquio" },
+  { value: "180+", label: "Equips a 2 edicions" },
+  { value: "800+", label: "Jugadors/es totals" },
+  { value: "2.4M+", label: "Impressions potencials" },
+  { value: "25%", label: "Creixement 2024→2025" },
 ];
+
+const EVENT_DATE = new Date("2026-06-06T09:00:00+02:00");
 
 const NAV_LINKS = [
   { href: "#torneig", label: "Torneig" },
@@ -25,13 +27,29 @@ const NAV_LINKS = [
   { href: "#sponsors", label: "Sponsors" },
 ];
 
+function getCountdown(target: Date) {
+  const diff = Math.max(0, target.getTime() - Date.now());
+  const days = Math.floor(diff / 86_400_000);
+  const hours = Math.floor((diff % 86_400_000) / 3_600_000);
+  const minutes = Math.floor((diff % 3_600_000) / 60_000);
+  const seconds = Math.floor((diff % 60_000) / 1_000);
+  return { days, hours, minutes, seconds };
+}
+
 export default function HeroFestival() {
   const [scrolled, setScrolled] = useState(false);
+  const [countdown, setCountdown] = useState<ReturnType<typeof getCountdown> | null>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    setCountdown(getCountdown(EVENT_DATE));
+    const id = setInterval(() => setCountdown(getCountdown(EVENT_DATE)), 1000);
+    return () => clearInterval(id);
   }, []);
 
   return (
@@ -73,7 +91,7 @@ export default function HeroFestival() {
       {/* Left panel */}
       <div className="hero-festival-panel">
         <span className="hero-festival-chip">
-          <span className="hero-festival-chip-dot" /> 4a edició · Inscripcions obertes
+          <span className="hero-festival-chip-dot" /> 3a edició · Inscripcions obertes
         </span>
 
         <h1 className="hero-festival-title">3×3 Westfield Glòries</h1>
@@ -107,6 +125,10 @@ export default function HeroFestival() {
           </a>
         </div>
 
+        <a href="/inscripcion/solo" className="hero-festival-solo-cta">
+          <span aria-hidden="true">👤</span> No tens equip? Apunta&apos;t sol per <strong>20€</strong> · t&apos;assignem un equip <span aria-hidden="true">→</span>
+        </a>
+
         <div className="hero-festival-stats">
           {STATS.map((s) => (
             <div key={s.label} className="hero-festival-stat">
@@ -117,7 +139,7 @@ export default function HeroFestival() {
         </div>
 
         <div className="hero-festival-progress">
-          <span className="hero-festival-progress-icon">⚡</span> 75% de places ocupades
+          <span className="hero-festival-progress-icon">🔥</span> <strong>60%</strong> ocupat · <strong>74</strong> places lliures
         </div>
       </div>
 
@@ -152,10 +174,30 @@ export default function HeroFestival() {
         </div>
       </a>
 
-      {/* Bottom banner */}
-      <div className="hero-festival-bottom" aria-hidden="true">
-        <span>EDICIÓ 2026 · PROPERAMENT!</span>
-      </div>
+      {/* Bottom countdown */}
+      {countdown && (
+        <div className="hero-festival-countdown" aria-label="Compte enrere fins al torneig">
+          <div className="hero-festival-countdown-box">
+            <span className="hero-festival-countdown-value">{String(countdown.days).padStart(2, "0")}</span>
+            <span className="hero-festival-countdown-label">DIES</span>
+          </div>
+          <span className="hero-festival-countdown-sep">:</span>
+          <div className="hero-festival-countdown-box">
+            <span className="hero-festival-countdown-value">{String(countdown.hours).padStart(2, "0")}</span>
+            <span className="hero-festival-countdown-label">HORES</span>
+          </div>
+          <span className="hero-festival-countdown-sep">:</span>
+          <div className="hero-festival-countdown-box">
+            <span className="hero-festival-countdown-value">{String(countdown.minutes).padStart(2, "0")}</span>
+            <span className="hero-festival-countdown-label">MIN</span>
+          </div>
+          <span className="hero-festival-countdown-sep">:</span>
+          <div className="hero-festival-countdown-box">
+            <span className="hero-festival-countdown-value">{String(countdown.seconds).padStart(2, "0")}</span>
+            <span className="hero-festival-countdown-label">SEG</span>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
