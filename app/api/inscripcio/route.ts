@@ -42,6 +42,12 @@ type Payload = {
   imageRightsConsent: boolean;
   refCode: string | null;
   submittedAt: string;
+  // Descomptes (acumulables, pot ser "earlybird+social+rival" o combinació)
+  discountType: string | null;
+  discountAmount: number;
+  finalPrice: number;
+  socialShareDone?: boolean;
+  earlyBirdApplied?: boolean;
 };
 
 // IDs deterministes + curts: T3X3-2026-<5 chars random>
@@ -98,6 +104,21 @@ export async function POST(req: NextRequest) {
       playerIds,
       secret: scriptSecret || "",
       receivedAt: new Date().toISOString(),
+      // Camps normalitzats per Apps Script (compatibilitat)
+      nomEquip: payload.teamName,
+      midaEquip: String(payload.players.length),
+      capCategoria: payload.category,
+      capNom: payload.captain.fullName,
+      capEmail: payload.captain.email,
+      capTelefon: payload.captain.phone,
+      capDNI: payload.captain.dni,
+      tutorNom: payload.tutor?.fullName || "",
+      tutorTelefon: payload.tutor?.phone || "",
+      total: payload.finalPrice ?? payload.packagePrice,
+      discountType: payload.discountType ?? null,
+      discountAmount: payload.discountAmount ?? 0,
+      finalPrice: payload.finalPrice ?? payload.packagePrice,
+      rivalCode: payload.refCode ?? null,
     };
 
     if (scriptUrl) {

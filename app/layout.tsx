@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import StickyCtaBar from "./components/StickyCtaBar";
 
 const inter = Inter({ subsets: ["latin"], display: "swap" });
 
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
     template: "%s | 3×3 Westfield Glòries",
   },
   description:
-    "El torneig 3×3 més potent de Barcelona. Punts FIBA, 2.400€ prize money (1.000€ per cada Sèniors M/F + 200€ Veterans M/F). 6-7 Juny 2026 al Clot-Glòries. Inscriu-te ja!",
+    "El torneig 3×3 més potent de Barcelona. Punts FIBA, 2.000€ de prize money (1.000€ Sèniors Masculí + 1.000€ Sèniors Femení). 6-7 Juny 2026 al Clot-Glòries. Inscriu-te ja!",
   keywords: [
     "3x3 Barcelona",
     "torneig 3x3 FIBA",
@@ -31,6 +32,8 @@ export const metadata: Metadata = {
     "Sant Martí",
     "Clot",
     "Barcelona basquet",
+    "torneo baloncesto 3x3 Barcelona",
+    "3x3 FIBA Barcelona 2026",
   ],
   authors: [{ name: "CB Grup Barna" }, { name: "Time Chamber" }, { name: "Eix Clot" }],
   publisher: "CB Grup Barna",
@@ -60,7 +63,7 @@ export const metadata: Metadata = {
     siteName: SITE_NAME,
     title: "3×3 Westfield Glòries 2026 · Torneig FIBA Barcelona",
     description:
-      "El torneig 3×3 més potent de Barcelona. Punts FIBA, 2.400€ prize money (1.000€ Sèniors M/F + 200€ Veterans M/F). 6-7 Juny 2026 al Clot-Glòries. Inscriu-te ja!",
+      "El torneig 3×3 més potent de Barcelona. Punts FIBA, 2.000€ de prize money (1.000€ Sèniors Masculí + 1.000€ Sèniors Femení). 6-7 Juny 2026 al Clot-Glòries. Inscriu-te ja!",
     images: [
       {
         url: OG_IMAGE,
@@ -77,7 +80,7 @@ export const metadata: Metadata = {
     creator: "@cbgrupbarna",
     title: "3×3 Westfield Glòries 2026 · Barcelona",
     description:
-      "Torneig 3×3 FIBA · 2.400€ prize money (Sèniors M/F · Veterans M/F) · 6-7 Juny 2026. Places limitades — inscriu-te ja!",
+      "Torneig 3×3 FIBA · 2.000€ prize money (1.000€ Sèniors M + 1.000€ Sèniors F) · 6-7 Juny 2026. Places limitades — inscriu-te ja!",
     images: [{ url: OG_IMAGE, alt: "3×3 Westfield Glòries 2026 — Torneig urbà a Barcelona, 6-7 Juny" }],
   },
   icons: {
@@ -126,9 +129,9 @@ const jsonLdEvent = {
   "@context": "https://schema.org",
   "@type": "SportsEvent",
   name: "3×3 Westfield Glòries 2026",
-  alternateName: "Torneig 3×3 FIBA Barcelona",
+  alternateName: ["Torneig 3×3 FIBA Barcelona", "3x3 Glories Barcelona", "Torneo 3x3 Westfield Glòries"],
   description:
-    "Torneig de bàsquet 3×3 amb punts FIBA i prize money. Categories de Premini a Senior Pro · 3 seus al barri del Clot-Glòries · Barcelona.",
+    "Torneig de bàsquet 3×3 amb punts FIBA i 2.000€ de prize money. 10 categories de Premini a Sènior Pro · 3 seus al barri del Clot-Glòries · Barcelona. 4a edició consecutiva (2023–2026).",
   startDate: "2026-06-06T09:00:00+02:00",
   endDate: "2026-06-07T20:00:00+02:00",
   eventStatus: "https://schema.org/EventScheduled",
@@ -175,8 +178,8 @@ const jsonLdEvent = {
     {
       "@type": "SportsOrganization",
       name: "CB Grup Barna",
-      url: "https://www.instagram.com/cbgrupbarna/",
-      sameAs: "https://www.instagram.com/cbgrupbarna/",
+      url: "https://cbgrupbarna.com",
+      sameAs: ["https://www.instagram.com/cbgrupbarna/", "https://cbgrupbarna.com"],
     },
     { "@type": "Organization", name: "Time Chamber", url: "https://timechamber.es" },
     { "@type": "Organization", name: "Eix Clot" },
@@ -187,7 +190,7 @@ const jsonLdEvent = {
       name: "Inscripció equip 3×3",
       url: `${SITE_URL}/inscripcion`,
       lowPrice: "75",
-      highPrice: "90",
+      highPrice: "105",
       priceCurrency: "EUR",
       offerCount: "10",
       availability: "https://schema.org/InStock",
@@ -216,8 +219,9 @@ const jsonLdOrg = {
   "@type": "SportsOrganization",
   "@id": `${SITE_URL}/#cb-grup-barna`,
   name: "CB Grup Barna",
-  alternateName: ["Club Bàsquet Grup Barna", "Grup Barna"],
-  url: SITE_URL,
+  alternateName: ["Club Bàsquet Grup Barna", "Grup Barna", "Club Baloncesto Grup Barna"],
+  url: "https://cbgrupbarna.com",
+  foundingDate: "1965",
   logo: {
     "@type": "ImageObject",
     url: LOGO_512,
@@ -247,11 +251,11 @@ const jsonLdWebsite = {
   "@type": "WebSite",
   name: SITE_NAME,
   url: SITE_URL,
-  inLanguage: "ca-ES",
-  publisher: { "@type": "SportsOrganization", name: "CB Grup Barna" },
+  inLanguage: ["ca-ES", "es-ES"],
+  publisher: { "@type": "SportsOrganization", name: "CB Grup Barna", url: "https://cbgrupbarna.com" },
 };
 
-// JSON-LD: FAQPage (long-tail SEO + rich results)
+// JSON-LD: FAQPage — 10 preguntes completes (GEO: cobertura long-tail màxima)
 const jsonLdFaq = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
@@ -261,8 +265,7 @@ const jsonLdFaq = {
       name: "Què és el 3×3 Westfield Glòries?",
       acceptedAnswer: {
         "@type": "Answer",
-        text:
-          "És el torneig oficial de bàsquet 3×3 amb punts FIBA del barri del Clot-Glòries de Barcelona, organitzat per CB Grup Barna · Time Chamber · Eix Clot. La 4a edició es disputa el 6 i 7 de juny de 2026 amb 2.000€ de prize money (1.000€ per cada Sèniors Masculí i Sèniors Femení; la resta de categories reben trofeus i medalles) i jugadors de tota la península.",
+        text: "És el torneig oficial de bàsquet 3×3 amb punts FIBA del barri del Clot-Glòries de Barcelona, organitzat per CB Grup Barna, Time Chamber i Eix Clot. La 4a edició es disputa el 6 i 7 de juny de 2026 amb 2.000 € de prize money per a les categories Sènior Masculí i Sènior Femení (1.000 € cadascuna), i trofeus i medalles per a la resta de categories.",
       },
     },
     {
@@ -270,8 +273,7 @@ const jsonLdFaq = {
       name: "Quan i on es juga el torneig 2026?",
       acceptedAnswer: {
         "@type": "Answer",
-        text:
-          "Es disputa el dissabte 6 i diumenge 7 de juny de 2026 a tres seus del barri del Clot-Glòries de Barcelona: Westfield Glòries (Av. Diagonal 208, seu principal), La Nau del Clot (Carrer de la Llacuna 172, pavelló oficial) i Rambleta del Clot (pista exterior).",
+        text: "Es disputa el dissabte 6 i el diumenge 7 de juny de 2026 a tres seus del barri del Clot-Glòries de Barcelona: Westfield Glòries (Av. Diagonal 208, seu principal), La Nau del Clot (Carrer de la Llacuna 172, pavelló oficial) i la Rambleta del Clot (pista exterior).",
       },
     },
     {
@@ -279,17 +281,23 @@ const jsonLdFaq = {
       name: "Com m'inscric al 3×3 Westfield Glòries?",
       acceptedAnswer: {
         "@type": "Answer",
-        text:
-          "Pel formulari online a cbgrupbarna-3x3timechamber.com/inscripcion. El procés té 5 passos: dades de l'equip, capità, jugadors (3-5), samarretes i pagament. La transferència bancària es fa amb un codi QR pre-omplert que escaneges amb l'app del banc. Confirmem la plaça en menys de 24h per email i WhatsApp.",
+        text: "Pel formulari online a cbgrupbarna-3x3timechamber.com/inscripcion. El procés té 5 passos: dades de l'equip, capità, jugadors (3-5), samarretes i pagament. La transferència bancària es fa amb un codi QR pre-omplert que escaneges amb l'app del banc. Confirmem la plaça en menys de 24h per email i WhatsApp.",
       },
     },
     {
       "@type": "Question",
-      name: "Quant costa la inscripció?",
+      name: "Quant costa la inscripció per equip?",
       acceptedAnswer: {
         "@type": "Answer",
-        text:
-          "Entre 75€ i 90€ per equip. Categories generals: 75€ equip de 4 jugadors, 90€ equip de 5 jugadors. Sènior Pro (Masculí/Femení): 85€ equip de 4 jugadors, 90€ equip de 5 jugadors. Samarretes addicionals opcionals a 25€/u. Hi ha Early Bird del 10% per inscripcions fins el 20 de maig, i un 5% addicional si comparteixes la web a 5 amics per WhatsApp (codi AMIC5).",
+        text: "Entre 75 € i 105 €. 75 € per equip de 3-4 jugadors (categories formatives), 85 € per equip de 3-4 jugadors Sèniors/Veterans, 90 € per equip de 5 jugadors (categoria general) i 105 € per equip de 5 jugadors Sèniors. Les samarretes addicionals costen 25 €/u. Hi ha un descompte del 10% per compartir el torneig a xarxes socials.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Quantes categories hi ha?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Hi ha 10 categories: Premini (2016-17), Mini (2014-15), Infantil (2012-13), Cadet (2010-11), Júnior (2008-09), Sub-23 (2003-07), Sènior Masculí, Sènior Femení, Veterans Masculí (fins 1986) i Veterans Femení (fins 1986).",
       },
     },
     {
@@ -297,8 +305,7 @@ const jsonLdFaq = {
       name: "El torneig dóna punts FIBA 3×3?",
       acceptedAnswer: {
         "@type": "Answer",
-        text:
-          "Sí. És un torneig oficial reconegut per FIBA 3×3, així que els jugadors Sèniors obtenen punts pel ranking mundial individual de FIBA 3×3 que sumen per accedir a competicions internacionals.",
+        text: "Sí. És un torneig oficial reconegut per FIBA 3×3. Els jugadors de les categories Sènior Masculí i Sènior Femení obtenen punts pel rànquing mundial individual de FIBA 3×3, que serveixen per accedir a competicions internacionals.",
       },
     },
     {
@@ -306,11 +313,72 @@ const jsonLdFaq = {
       name: "Puc inscriure'm sense equip?",
       acceptedAnswer: {
         "@type": "Answer",
-        text:
-          "Sí. La inscripció individual costa 20€ i és a /inscripcio-individual. Apuntes les teves dades, talla i posició preferida; el club t'assigna a un equip una setmana abans del torneig segons categoria d'edat i nivell. El preu inclou samarreta oficial, dorsal i accés als 2 dies.",
+        text: "Sí. La inscripció individual costa 20 € i es fa a cbgrupbarna-3x3timechamber.com/inscripcio-individual. Apuntes les teves dades, talla i posició preferida; el club t'assigna a un equip una setmana abans del torneig. El preu inclou samarreta oficial, dorsal i accés als 2 dies.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Quants jugadors pot tenir un equip?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Un equip pot tenir entre 3 i 5 jugadors (3 titulars + fins a 2 suplents). El mínim per jugar és 3 jugadors.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Hi ha pàrquing a la zona?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Sí. Westfield Glòries ofereix pàrquing gratuït durant 2 hores per als assistents al torneig. A més, es pot arribar fàcilment en metro (L1, estació Glòries) o en bus (línies de la Diagonal).",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Com contacto amb l'organització?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Pots contactar-nos a través del formulari a cbgrupbarna-3x3timechamber.com/contacte o per WhatsApp al +34 698 425 153. Resposta en menys de 24 hores en dies laborables.",
       },
     },
   ],
+};
+
+// JSON-LD: EventSeries — 4 edicions (GEO: estableix historial d'autoritat)
+const jsonLdSeries = {
+  "@context": "https://schema.org",
+  "@type": "EventSeries",
+  name: "3×3 Westfield Glòries",
+  alternateName: "Torneig 3×3 FIBA Clot-Glòries Barcelona",
+  description:
+    "Sèrie anual de torneig de bàsquet 3×3 oficial FIBA al barri del Clot-Glòries de Barcelona, organitzat per CB Grup Barna · Time Chamber · Eix Clot des de 2023. 4 edicions consecutives (2023–2026).",
+  startDate: "2023-06-01",
+  url: SITE_URL,
+  location: {
+    "@type": "Place",
+    name: "Westfield Glòries",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Av. Diagonal 208",
+      addressLocality: "Barcelona",
+      postalCode: "08018",
+      addressRegion: "Catalunya",
+      addressCountry: "ES",
+    },
+    geo: { "@type": "GeoCoordinates", latitude: 41.4048, longitude: 2.1896 },
+  },
+  organizer: {
+    "@type": "SportsOrganization",
+    name: "CB Grup Barna",
+    url: "https://cbgrupbarna.com",
+    sameAs: ["https://www.instagram.com/cbgrupbarna/", "https://cbgrupbarna.com"],
+  },
+  subEvent: [
+    { "@type": "SportsEvent", name: "3×3 Westfield Glòries 2023 — 1a edició", startDate: "2023-06-01", location: { "@type": "Place", name: "Westfield Glòries", address: { "@type": "PostalAddress", addressLocality: "Barcelona", addressCountry: "ES" } } },
+    { "@type": "SportsEvent", name: "3×3 Westfield Glòries 2024 — 2a edició", startDate: "2024-06-01", location: { "@type": "Place", name: "Westfield Glòries", address: { "@type": "PostalAddress", addressLocality: "Barcelona", addressCountry: "ES" } } },
+    { "@type": "SportsEvent", name: "3×3 Westfield Glòries 2025 — 3a edició", startDate: "2025-06-01", sameAs: "https://www.instagram.com/p/DJNKYiuMOGm/", location: { "@type": "Place", name: "Westfield Glòries", address: { "@type": "PostalAddress", addressLocality: "Barcelona", addressCountry: "ES" } } },
+    { "@type": "SportsEvent", name: "3×3 Westfield Glòries 2026 — 4a edició", startDate: "2026-06-06", endDate: "2026-06-07", url: SITE_URL, location: { "@type": "Place", name: "Westfield Glòries", address: { "@type": "PostalAddress", streetAddress: "Av. Diagonal 208", addressLocality: "Barcelona", postalCode: "08018", addressCountry: "ES" } } },
+  ],
+  sameAs: "https://www.instagram.com/cbgrupbarna/",
 };
 
 export default function RootLayout({
@@ -321,12 +389,18 @@ export default function RootLayout({
   return (
     <html lang="ca" className={inter.className}>
       <head>
-        {/* JSON-LD per a Google rich results + IAs (ChatGPT/Perplexity llegeixen schema.org) */}
+        {/* JSON-LD per a Google rich results + IAs (ChatGPT/Perplexity/Gemini llegeixen schema.org) */}
         <Script
           id="ld-event"
           type="application/ld+json"
           strategy="beforeInteractive"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdEvent) }}
+        />
+        <Script
+          id="ld-series"
+          type="application/ld+json"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdSeries) }}
         />
         <Script
           id="ld-org"
@@ -385,6 +459,7 @@ export default function RootLayout({
         />
       </head>
       <body>
+        <StickyCtaBar />
         {children}
         <Script
           id="tracking-conversions"

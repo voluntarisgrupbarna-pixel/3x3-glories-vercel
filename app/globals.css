@@ -5305,3 +5305,201 @@ a {
 }
 
 .wizard-payment-final { font-size: 22px !important; color: #ff375f !important; }
+
+/* ══════════════════════════════════════════════════════════════
+   WIZARD STEP 1 — Banners informatius + Social block
+══════════════════════════════════════════════════════════════ */
+.wizard-info-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.wizard-info-banner--fire {
+  background: rgba(255, 150, 50, 0.08);
+  border: 1.5px solid rgba(255, 150, 50, 0.3);
+}
+
+.wizard-info-banner--rival {
+  background: rgba(255, 55, 95, 0.07);
+  border: 1.5px solid rgba(255, 55, 95, 0.22);
+  margin-top: 16px;
+  margin-bottom: 0;
+}
+
+.wizard-info-banner-pct {
+  flex-shrink: 0;
+  font-size: 22px;
+  line-height: 1.2;
+}
+
+.wizard-info-banner > div { flex: 1; }
+
+.wizard-info-banner strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 800;
+  color: #fff7ef;
+  margin-bottom: 2px;
+}
+
+.wizard-info-banner p {
+  margin: 0;
+  font-size: 13px;
+  color: rgba(255, 247, 239, 0.58);
+  line-height: 1.4;
+}
+
+/* Social share block */
+.wizard-social-block {
+  padding: 20px;
+  border: 1.5px solid rgba(99, 179, 237, 0.28);
+  border-radius: 14px;
+  background: rgba(99, 179, 237, 0.05);
+  margin-bottom: 16px;
+}
+
+.wizard-social-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.wizard-social-header > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wizard-social-header strong {
+  font-size: 15px;
+  font-weight: 800;
+  color: #fff7ef;
+}
+
+.wizard-social-desc {
+  margin: 0 0 14px;
+  font-size: 13px;
+  color: rgba(255, 247, 239, 0.65);
+  line-height: 1.5;
+}
+
+.wizard-social-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.wizard-social-ok {
+  margin: 4px 0 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #25d366;
+}
+
+/* Badges descomptes actius (Step 2) */
+.wizard-active-discounts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.wizard-active-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.wizard-active-badge--eb     { background: rgba(255, 150, 50, 0.18); color: #ffb347; }
+.wizard-active-badge--social { background: rgba(221, 42, 123, 0.18); color: #f06292; }
+
+.wizard-active-badge-note {
+  font-size: 12px;
+  color: rgba(255, 247, 239, 0.45);
+}
+
+/* Rival code block (Step 4) */
+.wizard-rival-block {
+  padding: 18px;
+  border: 1.5px solid rgba(255, 55, 95, 0.22);
+  border-radius: 14px;
+  background: rgba(255, 55, 95, 0.05);
+  margin-bottom: 20px;
+}
+
+.wizard-rival-block-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.wizard-rival-block-head > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wizard-rival-block-head strong {
+  font-size: 14px;
+  font-weight: 800;
+  color: #fff7ef;
+}
+
+.wizard-rival-block-desc {
+  margin: 0 0 12px;
+  font-size: 13px;
+  color: rgba(255, 247, 239, 0.6);
+  line-height: 1.4;
+}
+
+/* Summary rows */
+.wizard-summary-row-discount {
+  background: rgba(37, 211, 102, 0.06);
+  border-radius: 6px;
+  padding: 6px 10px;
+  color: #25d366 !important;
+}
+
+.wizard-summary-row-discount span,
+.wizard-summary-row-discount strong {
+  color: #25d366 !important;
+}
+
+.wizard-summary-row-total {
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  padding-top: 10px;
+  margin-top: 4px;
+}
+
+.wizard-summary-total {
+  font-size: 18px !important;
+  color: #ff375f;
+}
+
+/* Success discount summary */
+.wizard-success-discount {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: rgba(37, 211, 102, 0.1);
+  border: 1px solid rgba(37, 211, 102, 0.25);
+  margin: 12px 0;
+  font-size: 14px;
+  flex-wrap: wrap;
+}
+
+.wizard-success-discount span { color: rgba(255, 247, 239, 0.65); }
+.wizard-success-discount strong { color: #25d366; font-weight: 800; }

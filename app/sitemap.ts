@@ -3,7 +3,7 @@ import type { MetadataRoute } from "next";
 const SITE_URL = "https://cbgrupbarna-3x3timechamber.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const lastModified = new Date("2026-05-11");
+  const lastModified = new Date("2026-05-15");
 
   return [
     {
