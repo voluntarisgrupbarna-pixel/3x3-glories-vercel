@@ -8345,6 +8345,46 @@ html {
   50%       { opacity: 1;   transform: scale(1.2); }
 }
 
+/* ── Queue extra: countdown, urgency toast, places lliures ── */
+
+.queue-countdown {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 247, 239, 0.45);
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+
+.queue-countdown strong {
+  color: rgba(255, 247, 239, 0.75);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Places lliures — vermell/taronja per urgència */
+.queue-stat-value--places {
+  color: #f97316 !important;
+}
+
+/* Posició "#→" quan és l'últim */
+.queue-stat-value--next {
+  color: #22C55E !important;
+  font-size: 32px !important;
+  animation: queue-next-pulse 0.7s ease-in-out infinite alternate;
+}
+
+@keyframes queue-next-pulse {
+  from { opacity: 0.8; transform: scale(1); }
+  to   { opacity: 1;   transform: scale(1.12); }
+}
+
+/* Toast d'urgència (categoria quasi plena) */
+.queue-toast--urgency {
+  border-left-color: #fbbf24 !important;
+  border-color: rgba(251, 191, 36, 0.3) !important;
+  background: rgba(30, 22, 5, 0.97) !important;
+}
+
 /* ===== FAQ SEARCH ===== */
 
 .faq-search-root {
