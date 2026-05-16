@@ -4,6 +4,8 @@ import EarlyBirdBanner from "./components/EarlyBirdBanner";
 import HeroFestival from "./components/HeroFestival";
 import WhatsAppLeadWidget from "./components/WhatsAppLeadWidget";
 import SlideDos from "./components/SlideDos";
+import OccupancyGrid from "./components/OccupancyGrid";
+import CategoryBars from "./components/CategoryBars";
 import UbicacionsSection from "./components/UbicacionsSection";
 import PremisSection from "./components/PremisSection";
 import CategoriesSection from "./components/CategoriesSection";
@@ -24,6 +26,12 @@ export default function Home() {
         {/* === SLIDE DOS — rèplica del disseny original: el torneig === */}
         <SlideDos />
       </main>
+
+      {/* === SLIDE 3 — Graella d'ocupació 100 places (1 quadrat = 1 equip) === */}
+      <OccupancyGrid />
+
+      {/* === SLIDE 4 — Barres per categoria amb % d'ocupació === */}
+      <CategoryBars />
 
       {/* === Ubicacions — 3 seus amb mapa === */}
       <UbicacionsSection />
