@@ -548,6 +548,8 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
         pkg={pkg!}
         teamName={state.teamName}
         waFlow={waFlow}
+        category={state.category}
+        captainName={state.captain.fullName}
       />
     );
   }
@@ -1379,6 +1381,8 @@ function SuccessPanel({
   pkg,
   teamName,
   waFlow = false,
+  category = "",
+  captainName = "",
 }: {
   teamId: string;
   playerIds: string[];
@@ -1386,10 +1390,20 @@ function SuccessPanel({
   pkg: Package;
   teamName: string;
   waFlow?: boolean;
+  category?: string;
+  captainName?: string;
 }) {
   const checkInUrl = `https://www.cbgrupbarna-3x3timechamber.com/check-in/${teamId}`;
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=10&data=${encodeURIComponent(checkInUrl)}`;
   const finalPrice = disc.finalPrice > 0 ? disc.finalPrice : pkg.price;
+  const waProofText = [
+    `Hola! Us envio el justificant de pagament.`,
+    `Equip: ${teamName || captainName} | ID: ${teamId}`,
+    category ? `Categoria: ${category}` : "",
+    `Paquet: ${pkg.title} | Import: ${finalPrice}€`,
+    captainName ? `Capità/a: ${captainName}` : "",
+  ].filter(Boolean).join("\n");
+  const waProofHref = `https://wa.me/34698425153?text=${encodeURIComponent(waProofText)}`;
 
   return (
     <div className="wizard-success">
@@ -1403,7 +1417,7 @@ function SuccessPanel({
       </p>
       {waFlow && (
         <a
-          href="https://wa.me/34698425153?text=Hola%2C%20us%20envio%20el%20justificant%20de%20pagament%20de%20l%27equip%20"
+          href={waProofHref}
           className="wizard-btn wizard-btn-primary"
           target="_blank"
           rel="noopener noreferrer"
