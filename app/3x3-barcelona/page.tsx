@@ -13,14 +13,14 @@ export const metadata: Metadata = {
   },
 };
 
-const SITE_URL = "https://cbgrupbarna-3x3timechamber.com";
+const SITE_URL = "https://www.cbgrupbarna-3x3timechamber.com";
 
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "SportsEvent",
   name: "3×3 Barcelona 2026",
   alternateName: ["3x3 Barcelona", "3x3 Barna", "Torneig 3×3 Barcelona 2026", "Torneo 3x3 Barcelona 2026", "3×3 Westfield Glòries 2026"],
-  description: "Torneig de bàsquet 3×3 FIBA a Barcelona. 10 categories de Premini a Veterans, 3 seus al barri del Clot-Glòries, 2.000€ de premi en metàl·lic Sèniors M/F, punts FIBA rànquing mundial. 4a edició, 6-7 juny 2026.",
+  description: "Torneig de bàsquet 3×3 FIBA a Barcelona. 10 categories de Premini a Veterans, 3 seus al barri del Clot-Glòries, 2.000€ de premi en metàl·lic Sèniors M/F, punts FIBA rànquing mundial. 3a edició, 6-7 juny 2026.",
   startDate: "2026-06-06T09:00:00+02:00",
   endDate: "2026-06-07T20:00:00+02:00",
   eventStatus: "https://schema.org/EventScheduled",
@@ -112,7 +112,7 @@ const jsonLdBreadcrumb = {
   ],
 };
 
-const WA = `https://wa.me/34698425153?text=${encodeURIComponent("Hola! Vull inscriure el meu equip al 3x3 Barcelona 2026. Podeu informar-me?")}`;
+const CONTACT_LINK = "/contacte?contacte=1";
 
 const CATEGORIES = [
   { emoji: "⭐", name: "Premini", any: "2016–2017", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€" },
@@ -221,7 +221,7 @@ export default function Page3x3Barcelona() {
               🏀 Inscriu el teu equip al 3×3 Barcelona
             </Link>
             <br />
-            <a href={WA} target="_blank" rel="noreferrer"
+            <a href={CONTACT_LINK}
               style={{ fontSize: "0.9rem", color: "rgba(255,247,239,0.6)", textDecoration: "underline", marginTop: 8, display: "inline-block" }}>
               Pregunta per WhatsApp →
             </a>
@@ -244,7 +244,7 @@ export default function Page3x3Barcelona() {
           <h2>Per què és el millor 3×3 de Barcelona?</h2>
           <ul>
             <li><strong>Únic torneig 3×3 FIBA oficial</strong> de Barcelona el 2026 — punts pel rànquing mundial individual.</li>
-            <li><strong>4a edició consecutiva</strong> (2023–2026) — historial demostrat. Més de 180 equips en 2 edicions.</li>
+            <li><strong>3a edició consecutiva</strong> (2023–2026) — historial demostrat. Més de 180 equips en 2 edicions.</li>
             <li><strong>2.000€ de premi en metàl·lic</strong> equiparat entre Sèniors M i F (1.000€ cadascun).</li>
             <li><strong>10 categories</strong> per a totes les edats, des de Premini (8 anys) fins a Veterans (+38).</li>
             <li><strong>Entrada gratuïta</strong> per a espectadors. Ambient de festa i bàsquet de carrer.</li>

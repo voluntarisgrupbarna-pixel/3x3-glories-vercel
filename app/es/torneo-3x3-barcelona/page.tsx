@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   },
 };
 
-const SITE_URL = "https://cbgrupbarna-3x3timechamber.com";
+const SITE_URL = "https://www.cbgrupbarna-3x3timechamber.com";
 
 const jsonLdBreadcrumb = {
   "@context": "https://schema.org",
@@ -28,7 +28,7 @@ const jsonLdBreadcrumb = {
   ],
 };
 
-const WA_EQUIPO = `https://wa.me/34698425153?text=${encodeURIComponent("Hola! Quiero inscribir un equipo al 3x3 Westfield Glòries 2026.")}`;
+const CONTACT_LINK = "/contacte?contacte=1";
 
 const CATEGORIAS = [
   { name: "Premini", año: "2016–2017", precio: "75–90 €" },
@@ -67,7 +67,7 @@ export default function TorneoESPage() {
           />
           <div className="insc-hero-overlay" />
           <div className="insc-hero-body">
-            <span className="insc-hero-kicker">4ª edición · 6-7 Junio 2026 · Clot-Glòries, Barcelona</span>
+            <span className="insc-hero-kicker">3ª edición · 6-7 Junio 2026 · Clot-Glòries, Barcelona</span>
             <h1 className="insc-hero-title">Torneo 3x3 Barcelona 2026</h1>
             <p className="insc-hero-sub">
               El torneo de baloncesto 3x3 FIBA de referencia en Barcelona — 10 categorías, 3 sedes,
@@ -210,9 +210,7 @@ export default function TorneoESPage() {
             </a>
             <br />
             <a
-              href={WA_EQUIPO}
-              target="_blank"
-              rel="noreferrer"
+              href={CONTACT_LINK}
               style={{ fontSize: "0.9rem", color: "rgba(255,247,239,0.6)", textDecoration: "underline" }}
             >
               ¿Prefieres WhatsApp? Escríbenos →

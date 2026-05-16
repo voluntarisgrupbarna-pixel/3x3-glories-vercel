@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   },
 };
 
-const SITE_URL = "https://cbgrupbarna-3x3timechamber.com";
+const SITE_URL = "https://www.cbgrupbarna-3x3timechamber.com";
 
 const jsonLdBreadcrumb = {
   "@context": "https://schema.org",
@@ -26,7 +26,7 @@ const jsonLdBreadcrumb = {
   ],
 };
 
-const WA = `https://wa.me/34698425153?text=${encodeURIComponent("Hola! Vull inscriure el meu equip Sènior al 3x3 Westfield Glòries 2026. Punts FIBA i premis. Podeu informar-me?")}`;
+const CONTACT_LINK = "/contacte?contacte=1";
 
 export default function SeniorFibaPage() {
   return (
@@ -139,7 +139,7 @@ export default function SeniorFibaPage() {
               🏀 Inscriu el teu equip Sènior
             </a>
             <br />
-            <a href={WA} target="_blank" rel="noreferrer" style={{ fontSize: "0.9rem", color: "rgba(255,247,239,0.6)", textDecoration: "underline" }}>
+            <a href={CONTACT_LINK} style={{ fontSize: "0.9rem", color: "rgba(255,247,239,0.6)", textDecoration: "underline" }}>
               Pregunta per WhatsApp →
             </a>
           </div>
@@ -149,7 +149,7 @@ export default function SeniorFibaPage() {
           <h2>Per què és el millor 3×3 Sènior de Barcelona?</h2>
           <ul>
             <li>Únic torneig 3×3 amb <strong>punts FIBA oficials</strong> a Barcelona el 2026.</li>
-            <li>4a edició consecutiva (2023–2026) — historial de creixement i continuïtat.</li>
+            <li>3a edició consecutiva (2023–2026) — historial de creixement i continuïtat.</li>
             <li>Finals a la pista del <strong>Westfield Glòries</strong> — ambient i visibilitat únics.</li>
             <li>Arbitratge oficial seguint les regles FIBA 3×3.</li>
             <li>Premi equiparat M/F — <strong>1.000€ cadascun</strong>.</li>

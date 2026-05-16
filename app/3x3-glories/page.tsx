@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   },
 };
 
-const SITE_URL = "https://cbgrupbarna-3x3timechamber.com";
+const SITE_URL = "https://www.cbgrupbarna-3x3timechamber.com";
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -29,7 +29,7 @@ const jsonLd = {
     "3x3 Glories Barcelona 2026",
   ],
   description:
-    "Torneig de bàsquet 3×3 FIBA al Westfield Glòries de Barcelona. 4a edició, 6-7 juny 2026. 10 categories de Premini a Veterans, 2.000€ de premi en metàl·lic Sèniors, punts FIBA rànquing mundial. Organitzat per CB Grup Barna i Time Chamber.",
+    "Torneig de bàsquet 3×3 FIBA al Westfield Glòries de Barcelona. 3a edició, 6-7 juny 2026. 10 categories de Premini a Veterans, 2.000€ de premi en metàl·lic Sèniors, punts FIBA rànquing mundial. Organitzat per CB Grup Barna i Time Chamber.",
   startDate: "2026-06-06T09:00:00+02:00",
   endDate: "2026-06-07T20:00:00+02:00",
   eventStatus: "https://schema.org/EventScheduled",
@@ -84,7 +84,7 @@ export default function Page3x3Glories() {
           {/* Hero text */}
           <div style={{ textAlign: "center", marginBottom: "40px" }}>
             <p style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.12em", color: "#ff5b1f", textTransform: "uppercase", marginBottom: 12 }}>
-              4a edició · 6-7 Juny 2026 · Westfield Glòries, Barcelona
+              3a edició · 6-7 Juny 2026 · Westfield Glòries, Barcelona
             </p>
             <h1 style={{ fontSize: "clamp(36px, 8vw, 64px)", fontWeight: 900, color: "#fff7ef", lineHeight: 1.1, margin: "0 0 16px" }}>
               3×3 Glòries 2026

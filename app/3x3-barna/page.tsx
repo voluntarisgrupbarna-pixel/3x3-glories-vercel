@@ -89,7 +89,7 @@ const jsonLd = {
   eventStatus: "https://schema.org/EventScheduled",
   eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
   sport: "Basketball 3x3",
-  url: "https://cbgrupbarna-3x3timechamber.com/3x3-barna",
+  url: "https://www.cbgrupbarna-3x3timechamber.com/3x3-barna",
   location: {
     "@type": "Place",
     name: "Westfield Glòries — Clot-Glòries, Barcelona",
@@ -114,7 +114,7 @@ const jsonLd = {
     lowPrice: "75",
     highPrice: "105",
     priceCurrency: "EUR",
-    url: "https://cbgrupbarna-3x3timechamber.com/inscripcion",
+    url: "https://www.cbgrupbarna-3x3timechamber.com/inscripcion",
     availability: "https://schema.org/InStock",
   },
 };
@@ -142,7 +142,7 @@ export default function Page3x3Barna() {
           {/* Hero text — dens en paraules clau */}
           <div style={{ textAlign: "center", marginBottom: "40px" }}>
             <p style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.12em", color: "#ff5b1f", textTransform: "uppercase", marginBottom: 12 }}>
-              4a edició · 6-7 Juny 2026 · Clot-Glòries, Barcelona
+              3a edició · 6-7 Juny 2026 · Clot-Glòries, Barcelona
             </p>
             <h1 style={{ fontSize: "clamp(36px, 8vw, 64px)", fontWeight: 900, color: "#fff7ef", lineHeight: 1.1, margin: "0 0 16px" }}>
               3×3 Barna 2026
@@ -219,7 +219,7 @@ export default function Page3x3Barna() {
               El <strong style={{ color: "#fff7ef" }}>3×3 Barna</strong> és el nom amb el qual la comunitat bàsquetbolística de Barcelona coneix el torneig anual organitzat per <strong style={{ color: "#fff7ef" }}>CB Grup Barna</strong>, <strong style={{ color: "#fff7ef" }}>Time Chamber</strong> i <strong style={{ color: "#fff7ef" }}>Eix Clot</strong> al barri del Clot-Glòries. Des de la seva primera edició el 2023, el torneig ha crescut fins a convertir-se en la cita 3×3 FIBA més important de <strong style={{ color: "#fff7ef" }}>Barna</strong> per calendari, premis i participants.
             </p>
             <p style={{ color: "rgba(255,247,239,0.7)", fontSize: 15, lineHeight: 1.7, marginBottom: 16 }}>
-              La 4a edició del <strong style={{ color: "#fff7ef" }}>3×3 Barna 2026</strong> reunirà més de 100 equips en 10 categories, del Premini (8-9 anys) al Veterans (+35 anys), en tres seus emblemàtiques del Clot: Westfield Glòries com a seu principal, La Nau del Clot com a pavelló oficial i la Rambleta del Clot per als partits de carrer en ambient festiu.
+              La 3a edició del <strong style={{ color: "#fff7ef" }}>3×3 Barna 2026</strong> reunirà més de 100 equips en 10 categories, del Premini (8-9 anys) al Veterans (+35 anys), en tres seus emblemàtiques del Clot: Westfield Glòries com a seu principal, La Nau del Clot com a pavelló oficial i la Rambleta del Clot per als partits de carrer en ambient festiu.
             </p>
             <p style={{ color: "rgba(255,247,239,0.7)", fontSize: 15, lineHeight: 1.7 }}>
               Si busques el <strong style={{ color: "#fff7ef" }}>millor torneig 3×3 de Barna</strong>, has arribat al lloc correcte. Inscriu el teu equip ara i assegura la teva plaça abans que s'esgotin.

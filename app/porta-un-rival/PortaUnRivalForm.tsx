@@ -1,8 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
-const SITE_URL = "https://cbgrupbarna-3x3timechamber.com";
+const SITE_URL = "https://www.cbgrupbarna-3x3timechamber.com";
 
 function slugify(value: string): string {
   return value
@@ -25,6 +25,12 @@ export default function PortaUnRivalForm() {
   const [rivalTeam, setRivalTeam] = useState("");
   const [generated, setGenerated] = useState(false);
   const [copied, setCopied] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  // Marca el formulari com a hidritat (es executa sols client-side)
+  useEffect(() => {
+    formRef.current?.setAttribute("data-rival-ready", "true");
+  }, []);
 
   const refSlug = useMemo(() => slugify(myTeam), [myTeam]);
   const code = useMemo(() => toCode(refSlug), [refSlug]);
@@ -63,7 +69,7 @@ export default function PortaUnRivalForm() {
   }
 
   return (
-    <form className="rival-form" onSubmit={handleSubmit}>
+    <form className="rival-form" ref={formRef} onSubmit={handleSubmit}>
       <div className="rival-field">
         <label htmlFor="my-team">El nom del teu equip</label>
         <input

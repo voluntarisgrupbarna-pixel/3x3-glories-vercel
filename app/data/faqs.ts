@@ -6,7 +6,7 @@ export type Faq = {
 export const faqs: Faq[] = [
   {
     q: "Què és el 3×3 Westfield Glòries?",
-    a: "És el torneig oficial de bàsquet 3×3 amb punts FIBA del barri del Clot-Glòries de Barcelona, organitzat per CB Grup Barna, Time Chamber i Eix Clot. La 4a edició es disputa el 6 i 7 de juny de 2026 amb 2.000 € de premi en metàl·lic per a les categories Sènior Masculí i Sènior Femení (1.000 € cadascuna), i trofeus i medalles per a la resta de categories.",
+    a: "És el torneig oficial de bàsquet 3×3 amb punts FIBA del barri del Clot-Glòries de Barcelona, organitzat per CB Grup Barna, Time Chamber i Eix Clot. La 3a edició es disputa el 6 i 7 de juny de 2026 amb 2.000 € de premi en metàl·lic per a les categories Sènior Masculí i Sènior Femení (1.000 € cadascuna), i trofeus i medalles per a la resta de categories.",
   },
   {
     q: "Quan i on es juga el torneig 2026?",

@@ -1254,7 +1254,8 @@ a {
   pointer-events: none;
 }
 
-.wa-whatsapp-link {
+.wa-whatsapp-link,
+.wa-register-link {
   grid-column: 1 / -1;
   display: block;
   text-align: center;
@@ -1265,7 +1266,14 @@ a {
   cursor: pointer;
 }
 
-.wa-whatsapp-link:hover {
+.wa-register-link {
+  color: #25d366;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.wa-whatsapp-link:hover,
+.wa-register-link:hover {
   color: rgba(255, 247, 239, 0.82);
 }
 
@@ -5453,8 +5461,8 @@ html {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-.sticky-cta-rival,
-.sticky-cta-solo {
+.sticky-cta-register,
+.sticky-cta-contact {
   display: flex;
   align-items: center;
   gap: 9px;
@@ -5466,7 +5474,7 @@ html {
   white-space: nowrap;
 }
 
-.sticky-cta-rival {
+.sticky-cta-register {
   background: rgba(20, 4, 8, 0.9);
   border: 1.5px solid #ff375f;
   color: #fff7ef;
@@ -5474,7 +5482,7 @@ html {
   box-shadow: 0 4px 18px rgba(255, 55, 95, 0.25);
 }
 
-.sticky-cta-solo {
+.sticky-cta-contact {
   background: rgba(4, 18, 14, 0.9);
   border: 1.5px solid #21c7a8;
   color: #fff7ef;
@@ -5482,12 +5490,12 @@ html {
   box-shadow: 0 4px 18px rgba(33, 199, 168, 0.2);
 }
 
-.sticky-cta-rival:hover {
+.sticky-cta-register:hover {
   transform: translateX(3px);
   box-shadow: 0 8px 28px rgba(255, 55, 95, 0.42);
 }
 
-.sticky-cta-solo:hover {
+.sticky-cta-contact:hover {
   transform: translateX(3px);
   box-shadow: 0 8px 28px rgba(33, 199, 168, 0.38);
 }
@@ -5539,8 +5547,8 @@ html {
   line-height: 1.2;
 }
 
-.sticky-cta-rival .sticky-cta-text strong { color: #ff7a95; }
-.sticky-cta-solo  .sticky-cta-text strong { color: #5eecd8; }
+.sticky-cta-register .sticky-cta-text strong { color: #ff7a95; }
+.sticky-cta-contact  .sticky-cta-text strong { color: #5eecd8; }
 
 .sticky-cta-text em {
   font-style: normal;
@@ -5557,8 +5565,8 @@ html {
     bottom: 14px;
     gap: 5px;
   }
-  .sticky-cta-rival,
-  .sticky-cta-solo,
+  .sticky-cta-register,
+  .sticky-cta-contact,
   .sticky-cta-share {
     padding: 7px 10px;
     gap: 7px;
@@ -7593,6 +7601,11 @@ html {
   font-family: Inter, ui-sans-serif, system-ui, sans-serif;
 }
 
+.site-nav--scrolled {
+  background: rgba(5, 5, 5, 0.96);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.2);
+}
+
 .site-nav-logo {
   display: flex;
   align-items: center;
@@ -7636,18 +7649,40 @@ html {
   color: #ff375f;
 }
 
+.site-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.site-nav-contact,
 .site-nav-cta {
   flex-shrink: 0;
   padding: 8px 18px;
-  background: #ff375f;
-  color: #fff;
   font-size: 12px;
   font-weight: 900;
   text-decoration: none;
   border-radius: 8px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  transition: background 0.2s ease;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.site-nav-contact {
+  border: 1.5px solid rgba(37, 211, 102, 0.44);
+  color: #25d366;
+  background: rgba(37, 211, 102, 0.08);
+}
+
+.site-nav-contact:hover {
+  background: rgba(37, 211, 102, 0.16);
+  border-color: rgba(37, 211, 102, 0.7);
+}
+
+.site-nav-cta {
+  background: #ff375f;
+  color: #fff;
 }
 
 .site-nav-cta:hover {
@@ -7666,6 +7701,16 @@ html {
 
   .site-nav-logo span {
     display: none;
+  }
+
+  .site-nav-actions {
+    gap: 8px;
+  }
+
+  .site-nav-contact,
+  .site-nav-cta {
+    padding: 7px 11px;
+    font-size: 11px;
   }
 }
 
@@ -7904,6 +7949,68 @@ html {
 /* ================================================================
    SPONSORS SECTION — patrocinadors
    ================================================================ */
+.slide-action-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 28px auto 0;
+}
+
+.slide-action {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 10px;
+  padding: 0 16px;
+  color: #fff7ef;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 850;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.16s ease, background 0.16s ease, border-color 0.16s ease;
+}
+
+.slide-action:hover {
+  transform: translateY(-1px);
+}
+
+.slide-action--register {
+  border: 1.5px solid rgba(255, 55, 95, 0.55);
+  background: #ff375f;
+}
+
+.slide-action--contact {
+  border: 1.5px solid rgba(37, 211, 102, 0.54);
+  background: rgba(37, 211, 102, 0.12);
+  color: #49ee95;
+}
+
+.slide-action--share {
+  border: 1.5px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.slide-action--share:hover {
+  border-color: rgba(255, 255, 255, 0.34);
+}
+
+@media (max-width: 520px) {
+  .slide-action-bar {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+
+  .slide-action {
+    width: 100%;
+  }
+}
+
 .sponsors-section {
   background: #050508;
   padding: 80px 24px 96px;
@@ -7961,6 +8068,10 @@ html {
   justify-content: center;
   padding: 20px;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+}
+.sponsor-logo-wrap--dark {
+  background: #050508;
+  border: 1px solid rgba(255, 255, 255, 0.14);
 }
 .sponsor-logo-img {
   max-width: 120px;
@@ -8791,7 +8902,7 @@ html {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   NOTIFY ME BAR — captura email "Avisa'm quan s'ompli"
+   NOTIFY ME BAR — captura nom + mòbil com a lead
 ══════════════════════════════════════════════════════════════ */
 .notify-bar {
   display: flex;
@@ -8835,8 +8946,10 @@ html {
 
 .notify-bar-form {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   flex-shrink: 0;
+  justify-content: flex-end;
 }
 
 .notify-bar-input {
@@ -8847,7 +8960,7 @@ html {
   color: #fff;
   font: inherit;
   font-size: 13px;
-  width: 220px;
+  width: 156px;
   outline: none;
   transition: border-color 0.15s;
 }
@@ -8896,10 +9009,10 @@ html {
   }
   .notify-bar-form {
     width: 100%;
+    flex-direction: column;
   }
   .notify-bar-input {
-    flex: 1;
-    width: auto;
+    width: 100%;
   }
 }
 
@@ -9012,11 +9125,19 @@ html {
   text-decoration: none;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
   box-shadow: 0 6px 22px rgba(37, 211, 102, 0.28);
+  border: 0;
+  cursor: pointer;
+  font: inherit;
 }
 
-.exit-btn-wa:hover {
+.exit-btn-wa:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 10px 32px rgba(37, 211, 102, 0.42);
+}
+
+.exit-btn-wa:disabled {
+  opacity: 0.68;
+  cursor: wait;
 }
 
 .exit-btn-secondary {
@@ -9034,6 +9155,95 @@ html {
 .exit-btn-secondary:hover {
   border-color: rgba(255, 55, 95, 0.5);
   color: #fff;
+}
+
+.exit-btn-skip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  border: 0;
+  color: rgba(255, 255, 255, 0.52);
+  background: transparent;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.exit-btn-skip:hover {
+  color: #fff;
+}
+
+.exit-form {
+  display: grid;
+  gap: 12px;
+  text-align: left;
+}
+
+.exit-form .exit-title {
+  text-align: center;
+  margin-bottom: 6px;
+}
+
+.exit-field {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+}
+
+.exit-field span {
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.exit-field input {
+  width: 100%;
+  min-height: 48px;
+  border: 1.5px solid rgba(255, 255, 255, 0.16);
+  border-radius: 12px;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.06);
+  font: inherit;
+  font-size: 15px;
+  outline: 0;
+  padding: 0 14px;
+}
+
+.exit-field input:focus {
+  border-color: #25d366;
+  box-shadow: 0 0 0 1px rgba(37, 211, 102, 0.42);
+}
+
+.exit-consent {
+  display: grid;
+  grid-template-columns: 18px 1fr;
+  gap: 9px;
+  align-items: start;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 12px;
+  line-height: 1.35;
+  margin: 2px 0 0;
+}
+
+.exit-consent input {
+  width: 16px;
+  height: 16px;
+  margin: 1px 0 0;
+  accent-color: #25d366;
+}
+
+.exit-error {
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 83, 112, 0.42);
+  border-radius: 10px;
+  color: #ffd6df;
+  background: rgba(255, 31, 79, 0.12);
+  font-size: 12px;
+  font-weight: 750;
+  text-align: center;
 }
 
 .exit-disclaimer {

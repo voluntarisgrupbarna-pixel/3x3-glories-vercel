@@ -1,6 +1,15 @@
 import Image from "next/image";
+import SlideActionBar from "./SlideActionBar";
 
-const SPONSORS = [
+type Sponsor = {
+  name: string;
+  role: string;
+  img: string;
+  url: string;
+  darkLogo?: boolean;
+};
+
+const SPONSORS: Sponsor[] = [
   {
     name: "Westfield Glòries",
     role: "Seu oficial",
@@ -18,6 +27,7 @@ const SPONSORS = [
     role: "Organitzador",
     img: "/logos/timechamber.webp",
     url: "https://timechamber.es",
+    darkLogo: true,
   },
   {
     name: "Eix Clot",
@@ -52,7 +62,7 @@ export default function SponsorsSection() {
               className="sponsor-card"
               aria-label={`${s.name} — ${s.role}`}
             >
-              <div className="sponsor-logo-wrap">
+              <div className={`sponsor-logo-wrap${s.darkLogo ? " sponsor-logo-wrap--dark" : ""}`}>
                 <Image
                   src={s.img}
                   alt={s.name}
@@ -71,12 +81,14 @@ export default function SponsorsSection() {
         <div className="sponsors-cta">
           <p className="sponsors-cta-text">Vols ser patrocinador del torneig?</p>
           <a
-            href="mailto:info@cbgrupbarna.com"
+            href="/contacte?contacte=1"
             className="sponsors-cta-btn"
           >
-            Contacta amb nosaltres ↗
+            Deixa les dades i et contactem ↗
           </a>
         </div>
+
+        <SlideActionBar origin="share-sponsors" />
       </div>
     </section>
   );

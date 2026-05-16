@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   },
 };
 
-const SITE_URL = "https://cbgrupbarna-3x3timechamber.com";
+const SITE_URL = "https://www.cbgrupbarna-3x3timechamber.com";
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -421,9 +421,9 @@ export default function ReglesPage() {
                 FAQ
               </Link>{" "}
               ·{" "}
-              <a href="https://wa.me/34698425153" target="_blank" rel="noreferrer" style={{ color: "#25d366" }}>
-                WhatsApp +34 698 425 153
-              </a>
+              <Link href="/contacte?contacte=1" style={{ color: "#25d366" }}>
+                WhatsApp
+              </Link>
             </p>
           </div>
 

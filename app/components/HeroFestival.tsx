@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import SlideActionBar from "./SlideActionBar";
 
 const ORGANIZERS = [
   { id: "westfield",    name: "Westfield Glòries", short: "Westfield",    logo: "/logos/westfield.svg" },
@@ -110,7 +111,7 @@ export default function HeroFestival() {
       {/* Left panel */}
       <div className="hero-festival-panel">
         <span className="hero-festival-chip">
-          <span className="hero-festival-chip-dot" /> 4a edició · Inscripcions obertes
+          <span className="hero-festival-chip-dot" /> 3a edició · Inscripcions obertes
         </span>
 
         <h1 className="hero-festival-title">3×3 Westfield Glòries</h1>
@@ -146,6 +147,8 @@ export default function HeroFestival() {
             Saber més <span aria-hidden="true">▾</span>
           </a>
         </div>
+
+        <SlideActionBar origin="share-hero" />
 
         <a href="/inscripcio-individual" className="hero-festival-solo-cta">
           <span aria-hidden="true">👤</span> No tens equip? Apunta&apos;t sol per <strong>20€</strong> · t&apos;assignem un equip <span aria-hidden="true">→</span>

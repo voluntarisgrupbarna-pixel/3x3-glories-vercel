@@ -52,7 +52,7 @@ export default async function PlayerPage({
   if (!player) notFound();
 
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=10&data=${encodeURIComponent(
-    `https://cbgrupbarna-3x3timechamber.com/jugador/${player.playerId}`,
+    `https://www.cbgrupbarna-3x3timechamber.com/jugador/${player.playerId}`,
   )}`;
 
   return (

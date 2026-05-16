@@ -12,7 +12,7 @@
  * onEdit per fer-ho automàticament quan canviï la cel·la Status.
  */
 
-const SITE_URL = "https://cbgrupbarna-3x3timechamber.com";
+const SITE_URL = "https://www.cbgrupbarna-3x3timechamber.com";
 
 function generateQrUrl(content) {
   // QR API gratuïta sense límit fort (qrserver.com)

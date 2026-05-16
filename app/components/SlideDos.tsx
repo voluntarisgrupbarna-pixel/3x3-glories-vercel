@@ -127,7 +127,7 @@ export default function SlideDos() {
     shareData: {
       title: "3×3 Westfield Glòries 2026",
       text: "El torneig urbà més potent de Barcelona — 6 i 7 de juny 2026",
-      url: typeof window !== "undefined" ? window.location.href : "https://cbgrupbarna-3x3timechamber.com/",
+      url: typeof window !== "undefined" ? window.location.href : "https://www.cbgrupbarna-3x3timechamber.com/",
     },
     origin: "share-slidedos",
   });
@@ -219,9 +219,7 @@ export default function SlideDos() {
               Compartir
             </button>
             <a
-              href="https://wa.me/34698425153?text=Hola!%20Vull%20informació%20sobre%20el%203x3%20Westfield%20Glòries%202026"
-              target="_blank"
-              rel="noreferrer"
+              href="/contacte?contacte=1"
               className="slide-dos-btn-wa"
               aria-label="Contactar per WhatsApp"
             >

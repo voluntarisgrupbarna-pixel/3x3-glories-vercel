@@ -1,5 +1,7 @@
 "use client";
 
+import SlideActionBar from "./SlideActionBar";
+
 const CATEGORIES = [
   { id: "escola",      name: "Escola",      emoji: "🌱", color: "#22C55E", pct: 55  },
   { id: "premini",     name: "Premini",     emoji: "✏️", color: "#06B6D4", pct: 55  },
@@ -59,6 +61,8 @@ export default function OccupancyGrid() {
             </span>
           ))}
         </div>
+
+        <SlideActionBar origin="share-occupancy" />
       </div>
     </section>
   );

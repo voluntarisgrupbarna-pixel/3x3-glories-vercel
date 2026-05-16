@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { faqs } from "../data/faqs";
+import SlideActionBar from "./SlideActionBar";
 
 /**
  * Secció FAQ integrada al home page — accordion compacte.
@@ -56,15 +57,15 @@ export default function FaqSection() {
               Veure totes les preguntes freqüents →
             </Link>
             <a
-              href="https://wa.me/34698425153?text=Hola%2C%20tinc%20una%20pregunta%20sobre%20el%203x3%20Westfield%20Gl%C3%B2ries"
-              target="_blank"
-              rel="noopener noreferrer"
+              href="/contacte?contacte=1"
               className="faq-btn faq-btn--wa"
             >
               📱 Pregunta per WhatsApp
             </a>
           </div>
         </div>
+
+        <SlideActionBar origin="share-faq" />
       </div>
     </section>
   );

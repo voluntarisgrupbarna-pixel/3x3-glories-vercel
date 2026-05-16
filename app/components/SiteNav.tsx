@@ -22,6 +22,13 @@ export default function SiteNav() {
   const path = usePathname();
   const [scrolled, setScrolled] = useState(false);
 
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   // Ocultar a la home — HeroFestival ja té el seu nav
   if (path === "/") return null;
 
@@ -47,9 +54,14 @@ export default function SiteNav() {
         ))}
       </div>
 
-      <a href="/inscripcion" className="site-nav-cta">
-        Inscriu-te
-      </a>
+      <div className="site-nav-actions">
+        <a href="/contacte?contacte=1" className="site-nav-contact">
+          WhatsApp
+        </a>
+        <a href="/inscripcion" className="site-nav-cta">
+          Inscriu-te
+        </a>
+      </div>
     </nav>
   );
 }

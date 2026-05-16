@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   },
 };
 
-const SITE_URL = "https://cbgrupbarna-3x3timechamber.com";
+const SITE_URL = "https://www.cbgrupbarna-3x3timechamber.com";
 
 const jsonLdBreadcrumb = {
   "@context": "https://schema.org",
@@ -25,7 +25,7 @@ const jsonLdBreadcrumb = {
   ],
 };
 
-const WA = `https://wa.me/34698425153?text=${encodeURIComponent("Hola! Vull inscriure el meu equip de veterans al 3x3 Westfield Glòries 2026. Nascuts fins 1986.")}`;
+const CONTACT_LINK = "/contacte?contacte=1";
 
 export default function VeteransPage() {
   return (
@@ -143,7 +143,7 @@ export default function VeteransPage() {
               🎖️ Inscriu el teu equip Veterans
             </a>
             <br />
-            <a href={WA} target="_blank" rel="noreferrer" style={{ fontSize: "0.9rem", color: "rgba(255,247,239,0.6)", textDecoration: "underline" }}>
+            <a href={CONTACT_LINK} style={{ fontSize: "0.9rem", color: "rgba(255,247,239,0.6)", textDecoration: "underline" }}>
               Pregunta per WhatsApp →
             </a>
           </div>

@@ -5,7 +5,7 @@
  *
  * Flux:
  *  1. Usuari clica el botó "Compartir" exterior
- *  2. S'obre modal amb form (nom, email/telèfon, consent RGPD)
+ *  2. S'obre modal amb form (nom, mòbil, email opcional, consent RGPD)
  *  3. En enviar → POST /api/lead amb origin (ex: "share-home", "share-rival")
  *     que guarda a Apps Script (Sheets) + Supabase
  *  4. Després executem navigator.share o copy-to-clipboard
@@ -32,7 +32,8 @@ type Props = {
 
 export function ShareGateModal({ shareData, origin, open, onClose }: Props) {
   const [name, setName] = useState("");
-  const [contact, setContact] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
   const [consent, setConsent] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -64,9 +65,10 @@ export function ShareGateModal({ shareData, origin, open, onClose }: Props) {
     setError(null);
 
     if (name.trim().length < 2) return setError("Posa el teu nom complet, sisplau.");
-    const c = contact.trim();
-    if (!isEmail(c) && !isPhone(c))
-      return setError("Cal un email vàlid o un telèfon (mín. 7 dígits).");
+    const phoneValue = phone.trim();
+    const emailValue = email.trim();
+    if (!isPhone(phoneValue)) return setError("Cal un mòbil vàlid (mín. 7 dígits).");
+    if (emailValue && !isEmail(emailValue)) return setError("El correu no sembla vàlid.");
     if (!consent) return setError("Cal acceptar la política de privacitat.");
 
     setSubmitting(true);
@@ -75,8 +77,8 @@ export function ShareGateModal({ shareData, origin, open, onClose }: Props) {
     try {
       const payload = {
         name: name.trim(),
-        email: isEmail(c) ? c : "",
-        phone: isPhone(c) && !isEmail(c) ? c : "",
+        email: emailValue,
+        phone: phoneValue,
         interest: "Comparteix el 3×3",
         question: shareData.title,
         message: `Origin: ${origin} · URL: ${shareData.url}`,
@@ -130,8 +132,7 @@ export function ShareGateModal({ shareData, origin, open, onClose }: Props) {
               <span aria-hidden="true">🏀</span> Comparteix el 3×3 Westfield Glòries
             </h3>
             <p className="share-gate-sub">
-              Deixa&apos;ns el teu contacte i et mantindrem informat de novetats, sortejos i ofertes
-              del torneig.
+              Deixa&apos;ns nom i mòbil, ho guardem com a lead, i després podràs compartir la pàgina.
             </p>
 
             <form className="share-gate-form" onSubmit={handleSubmit}>
@@ -148,15 +149,27 @@ export function ShareGateModal({ shareData, origin, open, onClose }: Props) {
               </label>
 
               <label className="share-gate-field">
-                <span>Email o telèfon</span>
+                <span>Mòbil / WhatsApp</span>
                 <input
-                  type="text"
+                  type="tel"
+                  autoComplete="tel"
+                  inputMode="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="+34 600 000 000"
+                  required
+                />
+              </label>
+
+              <label className="share-gate-field">
+                <span>Email opcional</span>
+                <input
+                  type="email"
                   autoComplete="email"
                   inputMode="email"
-                  value={contact}
-                  onChange={(e) => setContact(e.target.value)}
-                  placeholder="email@exemple.com o +34 ..."
-                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="email@exemple.com"
                 />
               </label>
 

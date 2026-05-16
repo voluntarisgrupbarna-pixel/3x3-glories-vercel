@@ -38,7 +38,7 @@ type Payload = {
   captain: ContactPerson;
   tutor: ContactPerson | null;
   players: Player[];
-  proof: {
+  proof?: {
     fileName: string;
     mime: string;
     base64: string;
@@ -108,13 +108,13 @@ export async function POST(req: NextRequest) {
     if (!VALID_PACKAGE_KEYS.includes(payload.packageKey)) {
       return NextResponse.json({ error: "Categoria no vàlida" }, { status: 400 });
     }
-    // Justificant de pagament obligatori
-    if (!payload.proof?.base64) {
-      return NextResponse.json({ error: "El justificant de pagament és obligatori" }, { status: 400 });
-    }
-    // Validació mida arxiu justificant (4 MB màxim)
-    const sizeBytes = Math.ceil((payload.proof.base64.length * 3) / 4);
-    if (sizeBytes > 4 * 1024 * 1024) {
+    const proof = payload.proof ?? { fileName: "", mime: "", base64: "" };
+    const proofBase64 = proof.base64 || "";
+
+    // El justificant és recomanat, però no bloqueja: la plaça queda pendent de validació.
+    // Si s'adjunta, validem mida per evitar bloquejos a Apps Script/Drive.
+    const sizeBytes = proofBase64 ? Math.ceil((proofBase64.length * 3) / 4) : 0;
+    if (proofBase64 && sizeBytes > 4 * 1024 * 1024) {
       return NextResponse.json(
         { error: "El justificant supera els 4 MB. Comprimit la imatge i torna a intentar-ho." },
         { status: 413 }
@@ -153,10 +153,12 @@ export async function POST(req: NextRequest) {
 
     const forwardPayload = {
       ...payload,
+      proof,
       teamId,
       playerIds,
       secret: scriptSecret || "",
       receivedAt: new Date().toISOString(),
+      paymentStatus: proofBase64 ? "proof_uploaded" : "pending_proof",
       // Camps normalitzats per Apps Script (compatibilitat)
       nomEquip: payload.teamName,
       midaEquip: String(payload.players.length),
@@ -202,9 +204,9 @@ export async function POST(req: NextRequest) {
       console.log("[inscripcio] PENDING (no APPS_SCRIPT_WEBHOOK_URL):", JSON.stringify(safe));
       console.log(
         "[inscripcio] proof file:",
-        proof.fileName,
-        proof.mime,
-        `${Math.round(proof.base64.length / 1024)}KB`,
+        proof.fileName || "pending",
+        proof.mime || "none",
+        `${Math.round((proof.base64 || "").length / 1024)}KB`,
       );
     }
 

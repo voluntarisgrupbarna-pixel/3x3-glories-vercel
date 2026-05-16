@@ -3,12 +3,12 @@ import Script from "next/script";
 import Link from "next/link";
 import InscripcioWizard from "./InscripcioWizard";
 
-const SITE_URL = "https://cbgrupbarna-3x3timechamber.com";
+const SITE_URL = "https://www.cbgrupbarna-3x3timechamber.com";
 
 export const metadata: Metadata = {
   title: "Inscriu el teu equip — 3×3 Westfield Glòries 2026 · Des de 75€",
   description:
-    "Places limitades. Des de 75€/equip. 10 categories de Premini a Sènior FIBA. Confirma en menys de 24h. 6-7 juny 2026 · Westfield Glòries, Barcelona.",
+    "Places limitades. Des de 75€/equip. 11 categories de Escoleta a Sènior FIBA. Confirma en menys de 24h. 6-7 juny 2026 · Westfield Glòries, Barcelona.",
   alternates: {
     canonical: "/inscripcion",
   },
@@ -44,7 +44,7 @@ const jsonLdHowTo = {
       "@type": "HowToStep",
       position: 1,
       name: "Escull la categoria",
-      text: "Selecciona la categoria del teu equip: Premini, Mini, Infantil, Cadet, Júnior, Sub-23, Sènior M/F (FIBA) o Veterans M/F. Comprova els anys de naixement requerits per a cada categoria.",
+      text: "Selecciona la categoria del teu equip: Escoleta, Premini, Mini, Infantil, Cadet, Júnior, Sub-23, Sènior M/F (FIBA) o Veterans M/F. Comprova els anys de naixement requerits per a cada categoria.",
       url: `${SITE_URL}/inscripcion`,
       image: `${SITE_URL}/hero-bg-1.webp`,
     },
@@ -80,6 +80,7 @@ const jsonLdHowTo = {
 };
 
 const categories = [
+  { name: "Escoleta", any: "2018–2019", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€", emoji: "⭐" },
   { name: "Premini", any: "2016–2017", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€", emoji: "⭐" },
   { name: "Mini", any: "2014–2015", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€", emoji: "⭐" },
   { name: "Infantil", any: "2012–2013", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€", emoji: "🏀" },
@@ -115,11 +116,7 @@ export default async function InscripcionPage({ searchParams }: InscripcionPageP
   const ref = sanitizeRef(params.ref);
   const fromTeam = ref ? formatTeamName(ref) : "";
   const rivalCode = ref ? `RIVAL-${ref.toUpperCase()}` : "";
-
-  const waBaseMsg = ref
-    ? `Hola! Vull inscriure el meu equip al 3x3 Westfield Glòries 2026. Vinc de part de ${fromTeam}. CODI: ${rivalCode} (pack rival -5€ a cada equip).`
-    : `Hola! Vull inscriure el meu equip al 3x3 Westfield Glòries 2026`;
-  const waLink = `https://wa.me/34698425153?text=${encodeURIComponent(waBaseMsg)}`;
+  const contactLink = ref ? `/contacte?contacte=1&ref=${encodeURIComponent(rivalCode)}` : "/contacte?contacte=1";
 
   return (
     <>
@@ -147,7 +144,7 @@ export default async function InscripcionPage({ searchParams }: InscripcionPageP
         />
         <div className="insc-hero-overlay" />
         <div className="insc-hero-body">
-          <span className="insc-hero-kicker">4a edició · 6-7 Juny 2026 · Clot-Glòries, Barcelona</span>
+          <span className="insc-hero-kicker">3a edició · 6-7 Juny 2026 · Clot-Glòries, Barcelona</span>
           <h1 className="insc-hero-title">Inscriu el teu equip</h1>
           <p className="insc-hero-sub">
             El torneig 3×3 FIBA més potent de Barcelona — 10 categories, 3 seus, 2.000€ premi en metàl·lic
@@ -181,8 +178,8 @@ export default async function InscripcionPage({ searchParams }: InscripcionPageP
               <code>{rivalCode}</code>
             </div>
             <p className="rival-banner-hint">
-              El botó &quot;Inscriu l&apos;equip&quot; ja porta el codi al missatge de WhatsApp — només cal que cliquis i
-              enviïs.
+              Guarda aquest codi i completa el formulari d&apos;inscripció. Si tens dubtes, deixa el teu
+              contacte i et respondrem per WhatsApp.
             </p>
           </div>
         )}
@@ -197,8 +194,8 @@ export default async function InscripcionPage({ searchParams }: InscripcionPageP
 
         <p className="insc-wa-hint">
           Prefereixes parlar per WhatsApp?{" "}
-          <a href={waLink} target="_blank" rel="noreferrer" className="insc-link">
-            Inscripció via WhatsApp
+          <a href={contactLink} className="insc-link">
+            Deixa les teves dades
           </a>{" "}
           (et responem en menys de 24h).
         </p>

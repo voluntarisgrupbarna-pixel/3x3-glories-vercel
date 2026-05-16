@@ -214,12 +214,10 @@ export default function FaqSearch({ items = faqs, page = "frequents" }: Props) {
               <div className="faq-search-empty">
                 <p>No hem trobat cap pregunta amb &ldquo;{trimmed}&rdquo;.</p>
                 <a
-                  href={`https://wa.me/34698425153?text=${encodeURIComponent(`Hola, tinc una pregunta sobre el 3x3 Westfield Glòries: ${trimmed}`)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="/contacte?contacte=1"
                   className="faq-search-wa-link"
                 >
-                  📱 Pregunta directament per WhatsApp
+                  📱 Deixa el mòbil i et responem per WhatsApp
                 </a>
               </div>
             )}

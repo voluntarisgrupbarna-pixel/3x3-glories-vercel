@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { VENUES, PROGRAM } from "../data/seccions3x3";
+import SlideActionBar from "./SlideActionBar";
 
 export default function UbicacionsSection() {
   const [active, setActive] = useState(1); // WG per defecte (seu principal)
@@ -182,6 +183,8 @@ export default function UbicacionsSection() {
             ))}
           </div>
         </div>
+
+        <SlideActionBar origin="share-ubicacions" />
 
       </div>
     </section>

@@ -65,9 +65,22 @@ type WizardState = {
   imageRightsConsent: boolean;
 };
 
+declare global {
+  interface Window {
+    gtag?: (...args: unknown[]) => void;
+    fbq?: (...args: unknown[]) => void;
+  }
+}
+
 // ── Helpers ────────────────────────────────────────────────────────────────
 
-const FORMATIVE_CATS = ["Premini", "Mini", "Preinfantil", "Infantil", "Cadet", "Júnior"];
+const FORMATIVE_CATS = ["Escoleta", "Premini", "Mini", "Preinfantil", "Infantil", "Cadet", "Júnior"];
+
+function trackWizardEvent(name: string, params: Record<string, string | number | boolean> = {}) {
+  if (typeof window === "undefined") return;
+  window.gtag?.("event", name, { event_category: "inscripcion_3x3", ...params });
+  window.fbq?.("trackCustom", name, params);
+}
 
 function isFormative(cat: string): boolean {
   return FORMATIVE_CATS.some((f) => cat.startsWith(f));
@@ -144,8 +157,22 @@ export default function InscripcioWizard({ initialRefCode = "" }: Props) {
   const abandonedEventsSent = useRef<Set<string>>(new Set());
   const earlyEmailSentRef = useRef(false);
   const emailDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const wizardRef = useRef<HTMLDivElement>(null);
   useEffect(() => { stateRef.current = state; });
   useEffect(() => { submitResultRef.current = submitResult; });
+  // Marca el wizard com a hidritat — s'executa només client-side, un cop
+  // tots els event handlers estan registrats. Útil per a tests E2E.
+  useEffect(() => {
+    wizardRef.current?.setAttribute("data-wizard-ready", "true");
+  }, []);
+
+  useEffect(() => {
+    trackWizardEvent("wizard_step_view", {
+      step: state.step,
+      package_key: state.packageKey || "none",
+      category: state.category || "none",
+    });
+  }, [state.step, state.packageKey, state.category]);
 
   // ── Abandoned lead capture ─────────────────────────────────────────────
   // Captura per cada pas — deduplicat per reason (permet múltiples events per sessió)
@@ -186,6 +213,12 @@ export default function InscripcioWizard({ initialRefCode = "" }: Props) {
     } else {
       fetch("/api/abandoned", { method: "POST", headers: { "Content-Type": "application/json" }, body }).catch(() => {});
     }
+    trackWizardEvent("wizard_abandoned", {
+      reason,
+      step: s.step,
+      package_key: s.packageKey || "none",
+      has_contact: Boolean(s.captain.email || s.captain.phone),
+    });
   }
 
   // Captura email opcional a l'Step 1 — s'envia una sola vegada
@@ -344,6 +377,12 @@ export default function InscripcioWizard({ initialRefCode = "" }: Props) {
 
   // ── Navigation ─────────────────────────────────────────────────────────
   function next() {
+    const s = stateRef.current;
+    trackWizardEvent("wizard_step_complete", {
+      step: s.step,
+      package_key: s.packageKey || "none",
+      category: s.category || "none",
+    });
     setState((prev) => {
       let nextStep = prev.step + 1;
       if (prev.packageKey === "individual" && nextStep === 4) nextStep = 5;
@@ -480,9 +519,19 @@ export default function InscripcioWizard({ initialRefCode = "" }: Props) {
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
+      trackWizardEvent("signup_success", {
+        package_key: state.packageKey || "none",
+        category: state.category || "none",
+        final_price: payload.finalPrice,
+        proof_uploaded: Boolean(state.proofBase64),
+      });
       setSubmitResult({ ok: true, teamId: data.teamId, playerIds: data.playerIds });
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Error desconegut";
+      trackWizardEvent("signup_error", {
+        package_key: state.packageKey || "none",
+        step: state.step,
+      });
       setSubmitResult({ ok: false, error: msg });
       setSubmitting(false);
     }
@@ -502,7 +551,7 @@ export default function InscripcioWizard({ initialRefCode = "" }: Props) {
   }
 
   return (
-    <div className="wizard">
+    <div className="wizard" ref={wizardRef}>
       <Stepper currentStep={state.step} isIndividual={state.packageKey === "individual"} />
 
       {state.step === 1 && (
@@ -645,7 +694,7 @@ function SocialDiscountBlock({
       </p>
       <div className="wizard-social-actions">
         <a
-          href={`https://wa.me/?text=${encodeURIComponent("Vine al 3×3 Westfield Glòries 2026! Torneig FIBA a Barcelona el 6-7 juny. 2.000€ premi en metàl·lic. Inscriu-te: https://cbgrupbarna-3x3timechamber.com/inscripcion 🏀")}`}
+          href={`https://wa.me/?text=${encodeURIComponent("Vine al 3×3 Westfield Glòries 2026! Torneig FIBA a Barcelona el 6-7 juny. 2.000€ premi en metàl·lic. Inscriu-te: https://www.cbgrupbarna-3x3timechamber.com/inscripcion 🏀")}`}
           target="_blank"
           rel="noopener noreferrer"
           className={`wizard-social-btn wizard-social-btn--wa${waClicked ? " wizard-social-btn--done" : ""}`}
@@ -1303,7 +1352,7 @@ function Step5Confirm({
         <span>Autoritzo l&apos;organització a fer fotos/vídeos durant el torneig per a difusió del club. *</span>
       </label>
 
-      {error && <p className="wizard-error">⚠️ Error: {error}. Torna-ho a provar o escriu-nos per WA.</p>}
+      {error && <p className="wizard-error">⚠️ Error: {error}. Torna-ho a provar o deixa les dades a Contacte.</p>}
 
       <div className="wizard-nav">
         <button type="button" className="wizard-btn wizard-btn-ghost" onClick={onPrev} disabled={submitting}>← Enrere</button>
@@ -1330,7 +1379,7 @@ function SuccessPanel({
   pkg: Package;
   teamName: string;
 }) {
-  const checkInUrl = `https://cbgrupbarna-3x3timechamber.com/check-in/${teamId}`;
+  const checkInUrl = `https://www.cbgrupbarna-3x3timechamber.com/check-in/${teamId}`;
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=10&data=${encodeURIComponent(checkInUrl)}`;
   const finalPrice = disc.finalPrice > 0 ? disc.finalPrice : pkg.price;
 

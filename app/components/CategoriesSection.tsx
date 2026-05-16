@@ -1,4 +1,5 @@
 import { CATEGORIES } from "../data/seccions3x3";
+import SlideActionBar from "./SlideActionBar";
 
 export default function CategoriesSection() {
   return (
@@ -75,6 +76,8 @@ export default function CategoriesSection() {
             Inscriu el teu Equip Ara
           </a>
         </div>
+
+        <SlideActionBar origin="share-categories" />
       </div>
     </section>
   );

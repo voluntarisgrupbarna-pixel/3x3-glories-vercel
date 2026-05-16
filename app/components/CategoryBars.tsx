@@ -1,5 +1,7 @@
 "use client";
 
+import SlideActionBar from "./SlideActionBar";
+
 const CATEGORIES = [
   { id: "escola",      name: "Escola",      emoji: "🌱", color: "#22C55E", pct: 55,  age: "fins 7 anys", full: false },
   { id: "premini",     name: "Premini",     emoji: "✏️", color: "#06B6D4", pct: 55,  age: "8-9 anys",    full: false },
@@ -71,6 +73,8 @@ export default function CategoryBars() {
           <strong>Sèniors Femení</strong> reben premi en metàl·lic (1.000€ cadascun) i atorguen punts
           FIBA. La resta de categories: trofeus i medalles.
         </p>
+
+        <SlideActionBar origin="share-category-bars" />
       </div>
     </section>
   );

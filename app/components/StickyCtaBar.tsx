@@ -13,16 +13,14 @@ const HIDE_ON = [
   "/jugador",
 ];
 
-const SHARE_URL  = "https://cbgrupbarna-3x3timechamber.com/";
+const SHARE_URL  = "https://www.cbgrupbarna-3x3timechamber.com/";
 const SHARE_TEXT = "🏀 3×3 Westfield Glòries 2026 · Torneig FIBA a Barcelona · 6-7 Juny · 2.000€ premi en metàl·lic. Inscriu-te ja!";
 
 /**
- * Tres botons flotants a la dreta (sota el botó WhatsApp):
- *  - 🏀 Pack Rival (−5 €)
- *  - 🙋 Inscriure'm sol (20 €)
- *  - ↗ Compartir (Native Share API o clipboard)
- *
- * Apareixen a totes les pàgines excepte les de flow d'inscripció.
+ * Accions flotants globals:
+ *  - Inscripció directa
+ *  - Contacte per WhatsApp passant abans per formulari lead
+ *  - Compartir
  */
 export default function StickyCtaBar() {
   const path = usePathname();
@@ -48,19 +46,19 @@ export default function StickyCtaBar() {
 
   return (
     <div className="sticky-cta-bar" aria-label="Accions ràpides">
-      <Link href="/porta-un-rival" className="sticky-cta-rival">
+      <Link href="/inscripcion" className="sticky-cta-register">
         <span className="sticky-cta-icon">🏀</span>
         <span className="sticky-cta-text">
-          <strong>Pack Rival</strong>
-          <em>−5 € cada equip</em>
+          <strong>Inscriu-te</strong>
+          <em>equip · des de 75 €</em>
         </span>
       </Link>
 
-      <Link href="/inscripcio-individual" className="sticky-cta-solo">
-        <span className="sticky-cta-icon">🙋</span>
+      <Link href="/contacte?contacte=1" className="sticky-cta-contact">
+        <span className="sticky-cta-icon">☎</span>
         <span className="sticky-cta-text">
-          <strong>Inscriure&apos;m sol</strong>
-          <em>20 € · sense equip</em>
+          <strong>WhatsApp</strong>
+          <em>deixa el mòbil</em>
         </span>
       </Link>
 

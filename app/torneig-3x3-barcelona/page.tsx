@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   },
 };
 
-const SITE_URL = "https://cbgrupbarna-3x3timechamber.com";
+const SITE_URL = "https://www.cbgrupbarna-3x3timechamber.com";
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -23,7 +23,7 @@ const jsonLd = {
   name: "Torneig 3×3 Barcelona 2026",
   alternateName: ["Torneig 3×3 Barcelona", "Torneig 3x3 Barna 2026", "3×3 Barcelona 2026", "3x3 Barna"],
   description:
-    "Torneig de bàsquet 3×3 FIBA a Barcelona — 10 categories de Premini a Veterans, 3 seus al barri del Clot-Glòries, 2.000€ de premi Sèniors M/F, punts rànquing mundial FIBA. 4a edició, 6-7 juny 2026.",
+    "Torneig de bàsquet 3×3 FIBA a Barcelona — 10 categories de Premini a Veterans, 3 seus al barri del Clot-Glòries, 2.000€ de premi Sèniors M/F, punts rànquing mundial FIBA. 3a edició, 6-7 juny 2026.",
   startDate: "2026-06-06T09:00:00+02:00",
   endDate: "2026-06-07T20:00:00+02:00",
   eventStatus: "https://schema.org/EventScheduled",
@@ -55,7 +55,7 @@ const jsonLdBreadcrumb = {
   ],
 };
 
-const WA = `https://wa.me/34698425153?text=${encodeURIComponent("Hola! Vull inscriure el meu equip al Torneig 3x3 Barcelona 2026. Podeu informar-me?")}`;
+const CONTACT_LINK = "/contacte?contacte=1";
 
 export default function TorneigPage() {
   return (
@@ -77,7 +77,7 @@ export default function TorneigPage() {
             className="insc-hero-img" style={{ objectFit: "cover", objectPosition: "center 30%" }} />
           <div className="insc-hero-overlay" />
           <div className="insc-hero-body">
-            <span className="insc-hero-kicker">4a edició · 6-7 Juny 2026 · Clot-Glòries, Barcelona</span>
+            <span className="insc-hero-kicker">3a edició · 6-7 Juny 2026 · Clot-Glòries, Barcelona</span>
             <h1 className="insc-hero-title">Torneig 3×3 Barcelona 2026</h1>
             <p className="insc-hero-sub">
               El torneig de bàsquet 3×3 FIBA de Barcelona. 10 categories, 3 seus al Clot-Glòries i 2.000€ de premi en metàl·lic per als Sèniors.
@@ -98,7 +98,7 @@ export default function TorneigPage() {
             El <strong>Torneig 3×3 Barcelona</strong> és el nom amb el qual es coneix popularment el{" "}
             <strong>3×3 Westfield Glòries</strong>, l&apos;esdeveniment de bàsquet urbà organitzat anualment per{" "}
             <strong>CB Grup Barna</strong>, <strong>Time Chamber</strong> i <strong>Eix Clot</strong> al barri del
-            Clot-Glòries. La 4a edició es celebra el <strong>6 i 7 de juny de 2026</strong>.
+            Clot-Glòries. La 3a edició es celebra el <strong>6 i 7 de juny de 2026</strong>.
           </p>
           <p>
             És l&apos;únic torneig 3×3 amb punts FIBA oficials a la ciutat de Barcelona el 2026. Els jugadors Sèniors
@@ -144,7 +144,7 @@ export default function TorneigPage() {
               🏀 Inscriu el teu equip al Torneig 3×3 Barcelona
             </Link>
             <br />
-            <a href={WA} target="_blank" rel="noreferrer"
+            <a href={CONTACT_LINK}
               style={{ fontSize: "0.9rem", color: "rgba(255,247,239,0.6)", textDecoration: "underline", marginTop: 8, display: "inline-block" }}>
               Pregunta per WhatsApp →
             </a>

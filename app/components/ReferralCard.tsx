@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useShareGate } from "./ShareGate";
 
-const SHARE_URL = "https://cbgrupbarna-3x3timechamber.com";
+const SHARE_URL = "https://www.cbgrupbarna-3x3timechamber.com";
 const DEADLINE = new Date("2026-05-21T00:00:00+02:00");
 const REFERRAL_CODE = "AMIC5";
 

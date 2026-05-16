@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 const POSITIONS = ["Base", "Aler", "Pivot", "Indiferent"];
 const LEVELS = ["Iniciació", "Mig", "Avançat", "Federat"];
@@ -50,6 +50,12 @@ function isValid(s: FormState): boolean {
 export default function IndividualSignupForm() {
   const [state, setState] = useState<FormState>(INITIAL);
   const [submitted, setSubmitted] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  // Marca el formulari com a hidritat (es executa sols client-side)
+  useEffect(() => {
+    formRef.current?.setAttribute("data-individual-ready", "true");
+  }, []);
 
   function update<K extends keyof FormState>(key: K, value: FormState[K]) {
     setState((prev) => ({ ...prev, [key]: value }));
@@ -89,7 +95,7 @@ export default function IndividualSignupForm() {
   }
 
   return (
-    <form className="solo-form" onSubmit={handleSubmit}>
+    <form className="solo-form" ref={formRef} onSubmit={handleSubmit}>
       <div className="solo-form-grid">
         <div className="solo-field solo-field-full">
           <label htmlFor="full-name">Nom i cognoms *</label>

@@ -1,7 +1,7 @@
 /**
  * Apps Script Web App — 3×3 Westfield Glòries 2026 · Inscripcions
  *
- * Rep POST des de /api/inscripcio de Next.js (cbgrupbarna-3x3timechamber.com),
+ * Rep POST des de /api/inscripcio de Next.js (www.cbgrupbarna-3x3timechamber.com),
  * desa al Google Sheet, puja el justificant a Drive i (opcional) envia a JotForm.
  *
  * --- PROPIETATS NECESSÀRIES ---
@@ -202,7 +202,14 @@ function handleInscripcio(payload) {
     console.warn("Email send error: " + err);
   }
 
-  // 5. Marca els abandonaments previs d'aquest capità com a "Inscrit"
+  // 5. WhatsApp al capità (best effort — mai bloca la inscripció)
+  try {
+    sendWhatsAppConfirmation(payload, payload.teamId);
+  } catch (err) {
+    console.warn("WhatsApp send error: " + err);
+  }
+
+  // 6. Marca els abandonaments previs d'aquest capità com a "Inscrit"
   markAbandonedAsInscrit(payload, sheetId);
 
   return { ok: true, teamId: payload.teamId, proofUrl: proofUrl, jotformId: jotformId };
@@ -570,7 +577,7 @@ function sendAbandonedEmail(payload, props) {
 
   const subject = "🏀 Lead abandonat" + (payload.captainName ? " — " + payload.captainName : "") + " · " + reasonLabel.replace(/[^\w\s·àèéíïòóúüçÀÈÉÍÏÒÓÚÜÇ—]/g, "").trim();
 
-  GmailApp.sendEmail(adminEmail, subject, "", { htmlBody: html, name: "3×3 Inscripcions" });
+  sendToAdmins(adminEmail, subject, html);
 }
 
 function writeAbandonedToSheet(payload, sheetId) {
@@ -952,6 +959,24 @@ function bootstrap() {
  * (Compatibilitat) Si vols afegir manualment JotForm despres del bootstrap, edita aquí
  * i executa només aquesta funció.
  */
+function setAdminEmail() {
+  PropertiesService.getScriptProperties().setProperty(
+    "ADMIN_EMAIL",
+    "voluntarisgrupbarna@gmail.com,anafernandezduran78@gmail.com"
+  );
+  Logger.log("ADMIN_EMAIL configurat ✓ → voluntarisgrupbarna@gmail.com, anafernandezduran78@gmail.com");
+}
+
+/**
+ * Envia un email a tots els destinataris de la llista ADMIN_EMAIL (separats per comes).
+ */
+function sendToAdmins(adminEmail, subject, html) {
+  var emails = adminEmail.split(",").map(function(e) { return e.trim(); }).filter(Boolean);
+  emails.forEach(function(email) {
+    GmailApp.sendEmail(email, subject, "", { htmlBody: html, name: "3×3 Inscripcions" });
+  });
+}
+
 function setJotformProperties() {
   PropertiesService.getScriptProperties().setProperties({
     JOTFORM_API_KEY: "", // pega aquí
@@ -1019,13 +1044,13 @@ function testHandleInscripcio() {
  *
  * Script Properties necessàries:
  *   ADMIN_EMAIL  → email d'Ana per rebre notificacions
- *   SITE_URL     → URL base del microsite (ex: https://cbgrupbarna-3x3timechamber.com)
+ *   SITE_URL     → URL base del microsite (ex: https://www.cbgrupbarna-3x3timechamber.com)
  *                  Opcional; si no hi és, el QR mostra directament el TeamID.
  */
 function sendEmails(payload, proofUrl, sheetId) {
   const props = PropertiesService.getScriptProperties();
   const adminEmail = props.getProperty("ADMIN_EMAIL") || "";
-  const siteUrl = (props.getProperty("SITE_URL") || "https://cbgrupbarna-3x3timechamber.com").replace(/\/$/, "");
+  const siteUrl = (props.getProperty("SITE_URL") || "https://www.cbgrupbarna-3x3timechamber.com").replace(/\/$/, "");
 
   const qrData = siteUrl + "/equip?id=" + payload.teamId;
   const qrImageUrl = "https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=" + encodeURIComponent(qrData) + "&color=1a1a1a&bgcolor=ffffff&margin=10";
@@ -1048,12 +1073,12 @@ function sendEmails(payload, proofUrl, sheetId) {
     GmailApp.sendEmail(tutorEmail, subjectConfirm, "", { htmlBody: htmlConfirm, name: "3×3 Westfield Glòries" });
   }
 
-  // Notificació a Ana
+  // Notificació a Ana (i a tots els emails de ADMIN_EMAIL, separats per coma)
   if (adminEmail) {
     const ssUrl = sheetId ? SpreadsheetApp.openById(sheetId).getUrl() : "";
     const subjectAdmin = "🏀 Nova inscripció — " + teamName + " · " + category;
     const htmlAdmin    = buildAdminEmailHtml(payload, proofUrl, qrImageUrl, ssUrl, finalPrice);
-    GmailApp.sendEmail(adminEmail, subjectAdmin, "", { htmlBody: htmlAdmin, name: "3×3 Inscripcions" });
+    sendToAdmins(adminEmail, subjectAdmin, htmlAdmin);
   }
 }
 

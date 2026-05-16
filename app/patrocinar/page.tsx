@@ -12,11 +12,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Patrocina el 3×3 Westfield Glòries 2026 — Visibilitat real al barri",
     description:
-      "No patrocines un torneig. Entres en l'esdeveniment urbà de bàsquet de referència del Clot-Glòries: 800+ jugadors, 3 seus, 4a edició FIBA. 4 paquets disponibles.",
+      "No patrocines un torneig. Entres en l'esdeveniment urbà de bàsquet de referència del Clot-Glòries: 800+ jugadors, 3 seus, 3a edició FIBA. 4 paquets disponibles.",
   },
 };
 
-const SITE_URL = "https://cbgrupbarna-3x3timechamber.com";
+const SITE_URL = "https://www.cbgrupbarna-3x3timechamber.com";
 
 const jsonLdBreadcrumb = {
   "@context": "https://schema.org",
@@ -32,10 +32,7 @@ const jsonLdBreadcrumb = {
   ],
 };
 
-const WA_MSG = encodeURIComponent(
-  "Hola! Sóc una empresa/comerç i vull col·laborar amb el 3×3 Westfield Glòries 2026. Podeu informar-me dels paquets de patrocini disponibles?"
-);
-const WA_LINK = `https://wa.me/34698425153?text=${WA_MSG}`;
+const CONTACT_LINK = "/contacte?contacte=1";
 
 const PAQUETS = [
   {
@@ -128,7 +125,7 @@ export default function PatrocinarPage() {
           <div className="insc-hero-overlay" />
           <div className="insc-hero-body">
             <span className="insc-hero-kicker">
-              4a edició · 6-7 Juny 2026 · Clot-Glòries, Barcelona
+              3a edició · 6-7 Juny 2026 · Clot-Glòries, Barcelona
             </span>
             <h1 className="insc-hero-title">Patrocina el 3×3</h1>
             <p className="insc-hero-sub">
@@ -139,7 +136,7 @@ export default function PatrocinarPage() {
               <span>🏀 800+ jugadors i famílies</span>
               <span>📍 3 seus al Clot</span>
               <span>🏆 FIBA oficial</span>
-              <span>4a edició consecutiva</span>
+              <span>3a edició consecutiva</span>
             </div>
           </div>
         </div>
@@ -334,13 +331,11 @@ export default function PatrocinarPage() {
                 marginBottom: "1.5rem",
               }}
             >
-              Escriu-nos per WhatsApp i t&apos;expliquem el paquet que millor s&apos;adapta al teu comerç o
-              marca. Resposta en menys de 24h.
+              Deixa&apos;ns nom i mòbil i t&apos;expliquem per WhatsApp el paquet que millor s&apos;adapta
+              al teu comerç o marca. Resposta en menys de 24h.
             </p>
             <a
-              href={WA_LINK}
-              target="_blank"
-              rel="noreferrer"
+              href={CONTACT_LINK}
               style={{
                 display: "inline-flex",
                 alignItems: "center",
@@ -370,7 +365,7 @@ export default function PatrocinarPage() {
               <strong>Únic torneig FIBA 3×3 oficial</strong> de la ciutat de Barcelona el 2026.
             </li>
             <li>
-              <strong>4a edició consecutiva</strong> (2023–2026): historial demostrat de creixement.
+              <strong>3a edició consecutiva</strong> (2023–2026): historial demostrat de creixement.
             </li>
             <li>
               <strong>Premi equiparat</strong> Sèniors M i F (1.000€ cadascun): compromís amb la

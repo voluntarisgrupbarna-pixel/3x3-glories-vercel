@@ -32,7 +32,7 @@ export default function EquipPage() {
         <p>
           El <strong>3×3 Westfield Glòries</strong> és una iniciativa conjunta de tres entitats del barri
           del Clot-Glòries de Barcelona: <strong>CB Grup Barna</strong>, <strong>Time Chamber</strong> i{" "}
-          <strong>Eix Clot</strong>. La 4a edició del torneig oficial de bàsquet 3×3 FIBA se celebra el 6 i
+          <strong>Eix Clot</strong>. La 3a edició del torneig oficial de bàsquet 3×3 FIBA se celebra el 6 i
           7 de juny de 2026.
         </p>
 
@@ -80,7 +80,7 @@ export default function EquipPage() {
             { any: "2023", ed: "1a edició", nota: "Torneig pilot al barri del Clot" },
             { any: "2024", ed: "2a edició", nota: "Incorporació de punts FIBA" },
             { any: "2025", ed: "3a edició", nota: "3 seus · 2.000 € premi en metàl·lic" },
-            { any: "2026", ed: "4a edició", nota: "6-7 juny · Westfield Glòries" },
+            { any: "2026", ed: "3a edició", nota: "6-7 juny · Westfield Glòries" },
           ].map((item) => (
             <div key={item.any} className="page-card">
               <span className="page-card-label">{item.any}</span>

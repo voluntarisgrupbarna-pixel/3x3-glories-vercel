@@ -2,7 +2,6 @@
 
 import EarlyBirdBanner from "./components/EarlyBirdBanner";
 import HeroFestival from "./components/HeroFestival";
-import WhatsAppLeadWidget from "./components/WhatsAppLeadWidget";
 import SlideDos from "./components/SlideDos";
 import OccupancyGrid from "./components/OccupancyGrid";
 import CategoryBars from "./components/CategoryBars";
@@ -56,8 +55,6 @@ export default function Home() {
 
       {/* === Footer === */}
       <SiteFooter />
-
-      <WhatsAppLeadWidget />
     </>
   );
 }

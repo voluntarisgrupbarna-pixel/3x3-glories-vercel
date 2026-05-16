@@ -1,4 +1,5 @@
 import { PRIZES, SECONDARY_PRIZES } from "../data/seccions3x3";
+import SlideActionBar from "./SlideActionBar";
 
 export default function PremisSection() {
   return (
@@ -66,6 +67,8 @@ export default function PremisSection() {
             🏆 Vull competir pels premis
           </a>
         </div>
+
+        <SlideActionBar origin="share-premis" />
       </div>
     </section>
   );

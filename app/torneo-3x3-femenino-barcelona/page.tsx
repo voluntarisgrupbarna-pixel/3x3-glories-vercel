@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   },
 };
 
-const SITE_URL = "https://cbgrupbarna-3x3timechamber.com";
+const SITE_URL = "https://www.cbgrupbarna-3x3timechamber.com";
 
 const jsonLdBreadcrumb = {
   "@context": "https://schema.org",
@@ -25,7 +25,7 @@ const jsonLdBreadcrumb = {
   ],
 };
 
-const WA = `https://wa.me/34698425153?text=${encodeURIComponent("Hola! Vull inscriure el meu equip femení al 3x3 Westfield Glòries 2026.")}`;
+const CONTACT_LINK = "/contacte?contacte=1";
 
 const CATS_FEMENINES = [
   { name: "Sènior Femení", any: "fins 2002", preu: "85–90€", fiba: true },
@@ -144,7 +144,7 @@ export default function FemeniPage() {
               🏀 Inscriu el teu equip femení
             </a>
             <br />
-            <a href={WA} target="_blank" rel="noreferrer" style={{ fontSize: "0.9rem", color: "rgba(255,247,239,0.6)", textDecoration: "underline" }}>
+            <a href={CONTACT_LINK} style={{ fontSize: "0.9rem", color: "rgba(255,247,239,0.6)", textDecoration: "underline" }}>
               Pregunta per WhatsApp →
             </a>
           </div>

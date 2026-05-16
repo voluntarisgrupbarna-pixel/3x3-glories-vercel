@@ -1,5 +1,7 @@
 "use client";
 
+import SlideActionBar from "./SlideActionBar";
+
 const REELS = [
   {
     id: "DJND83Ush_P",
@@ -47,6 +49,8 @@ export default function InstagramReels() {
             </div>
           ))}
         </div>
+
+        <SlideActionBar origin="share-galeria" />
       </div>
     </section>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
+import { usePathname } from "next/navigation";
 
 type LeadMode = "floating" | "page";
 
@@ -17,6 +18,15 @@ type LeadForm = {
 const WHATSAPP_PHONE = "34698425153";
 
 const SHARE_URL = "https://cbgrupbarna-3x3timechamber.com";
+
+const HIDE_FLOATING_ON = [
+  "/inscripcion",
+  "/inscripcio-individual",
+  "/porta-un-rival",
+  "/check-in",
+  "/jugador",
+  "/contacte",
+];
 
 function buildShareUrl() {
   const text = [
@@ -50,7 +60,7 @@ const emptyForm: LeadForm = {
   name: "",
   email: "",
   phone: "",
-  interest: "3x3 Westfield Glòries",
+  interest: "3×3 Westfield Glòries",
   question: "Vull inscriure el meu equip",
   message: "",
   consent: false,
@@ -58,9 +68,11 @@ const emptyForm: LeadForm = {
 
 function buildWhatsappUrl(form: LeadForm) {
   const text = [
-    "Hola Ana, acabo de registrar-me des del QR del 3x3 i vull més informació.",
+    "Hola Ana, he deixat les meves dades a la web del 3x3 i vull més informació.",
     "",
     `Nom: ${form.name}`,
+    `Mòbil: ${form.phone}`,
+    form.email ? `Email: ${form.email}` : "",
     `Interès: ${form.interest}`,
     `Consulta: ${form.question}`,
     form.message ? `Missatge: ${form.message}` : "",
@@ -72,6 +84,7 @@ function buildWhatsappUrl(form: LeadForm) {
 }
 
 export default function WhatsAppLeadWidget({ mode = "floating" }: { mode?: LeadMode }) {
+  const path = usePathname();
   const [open, setOpen] = useState(mode === "page");
   const [form, setForm] = useState<LeadForm>(emptyForm);
   const [submitting, setSubmitting] = useState(false);
@@ -112,8 +125,8 @@ export default function WhatsAppLeadWidget({ mode = "floating" }: { mode?: LeadM
     event.preventDefault();
     if (submitting) return;
 
-    if (!form.name.trim() || !form.email.trim() || !form.phone.trim()) {
-      setError("Falten nom, email o telèfon.");
+    if (!form.name.trim() || !form.phone.trim()) {
+      setError("Falten el nom i el mòbil.");
       return;
     }
 
@@ -155,8 +168,8 @@ export default function WhatsAppLeadWidget({ mode = "floating" }: { mode?: LeadM
           <span />
         </div>
         <div>
-          <h2>Tot llest! ✅</h2>
-          <p>Hem guardat el teu contacte</p>
+          <h2>Tot llest</h2>
+          <p>Hem guardat el teu contacte a Sheets</p>
         </div>
         {mode === "floating" && (
           <button
@@ -218,7 +231,11 @@ export default function WhatsAppLeadWidget({ mode = "floating" }: { mode?: LeadM
           target="_blank"
           rel="noreferrer"
         >
-          Parla ara amb Ana per WhatsApp →
+          Contactar ara per WhatsApp →
+        </a>
+
+        <a className="wa-register-link" href="/inscripcion">
+          Anar al registre directe →
         </a>
       </div>
     </div>
@@ -231,8 +248,8 @@ export default function WhatsAppLeadWidget({ mode = "floating" }: { mode?: LeadM
           <span />
         </div>
         <div>
-          <h2>Pregunta&apos;ns per WhatsApp</h2>
-          <p>T&apos;enviem novetats quan hi hagi</p>
+          <h2>Deixa&apos;ns el teu contacte</h2>
+          <p>Nom + mòbil i et contactem per WhatsApp</p>
         </div>
         {mode === "floating" && (
           <button
@@ -290,7 +307,7 @@ export default function WhatsAppLeadWidget({ mode = "floating" }: { mode?: LeadM
         </label>
 
         <label className="wa-field">
-          <span className="wa-field-label">Email *</span>
+          <span className="wa-field-label">Email opcional</span>
           <input
             autoComplete="email"
             inputMode="email"
@@ -298,12 +315,11 @@ export default function WhatsAppLeadWidget({ mode = "floating" }: { mode?: LeadM
             value={form.email}
             onChange={(event) => updateField("email", event.target.value)}
             placeholder="el-teu@email.com"
-            required
           />
         </label>
 
         <label className="wa-field">
-          <span className="wa-field-label">El teu telèfon *</span>
+          <span className="wa-field-label">Mòbil / WhatsApp *</span>
           <input
             autoComplete="tel"
             inputMode="tel"
@@ -373,7 +389,7 @@ export default function WhatsAppLeadWidget({ mode = "floating" }: { mode?: LeadM
         {error && <p className="wa-lead-error">{error}</p>}
 
         <button className="wa-submit wa-field-full" type="submit" disabled={submitting}>
-          {submitting ? "Guardant contacte..." : "Continuar per WhatsApp"}
+          {submitting ? "Guardant contacte..." : "Guardar contacte"}
         </button>
       </div>
     </form>
@@ -383,11 +399,13 @@ export default function WhatsAppLeadWidget({ mode = "floating" }: { mode?: LeadM
     return <div className="wa-lead-page-wrap">{submitted ? successPanel : panel}</div>;
   }
 
+  if (HIDE_FLOATING_ON.some((prefix) => path.startsWith(prefix))) return null;
+
   return (
     <>
       <button className="wa-floating-button" type="button" onClick={() => setOpen(true)}>
         <span aria-hidden="true" />
-        Pregunta&apos;ns
+        WhatsApp
       </button>
       {open && (
         <div className="wa-lead-overlay" role="dialog" aria-modal="true" aria-label="Formulari de contacte WhatsApp">

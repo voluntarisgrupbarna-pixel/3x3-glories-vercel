@@ -50,7 +50,7 @@ async function saveLeadToSupabase(
   phone: string,
   origin: string,
 ): Promise<void> {
-  if (!SUPABASE_URL || !SUPABASE_KEY) return; // No configurat — silenci
+  if (!SUPABASE_URL || !SUPABASE_KEY || !email) return; // Sheets és la font principal dels leads sense email
 
   const row = {
     nom:             name,
@@ -58,7 +58,7 @@ async function saveLeadToSupabase(
     telefon:         phone,
     etiquetes:       "3x3",
     consent_whatsapp: true,
-    consent_email:   true,
+    consent_email:   Boolean(email),
     consent_sms:     false,
     consent_source:  `Web 3×3 Westfield Glòries 2026 (${origin || "formulari"})`,
     consent_date:    new Date().toISOString().split("T")[0],
