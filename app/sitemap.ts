@@ -151,5 +151,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
       alternates: langs("/horarios-3x3-barcelona-2026"),
     },
+    {
+      url: `${SITE_URL}/regles-3x3`,
+      lastModified,
+      changeFrequency: "monthly",
+      priority: 0.75,
+      alternates: langs("/regles-3x3"),
+    },
   ];
 }

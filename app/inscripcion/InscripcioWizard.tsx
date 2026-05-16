@@ -46,6 +46,7 @@ type WizardState = {
   // Step 1 — descomptes (pre-form)
   socialShareDone: boolean;
   rivalCode: string;
+  earlyEmail: string;           // email opcional capturat a l'Step 1
   // Step 2 — equip + capità
   packageKey: PackageKey | null;
   teamName: string;
@@ -74,6 +75,12 @@ function isFormative(cat: string): boolean {
 
 function isRivalCodeValid(code: string): boolean {
   return /^RIVAL-[A-Z0-9]{3,}$/i.test(code.trim());
+}
+
+function getCategoryYearRange(cat: string): [number, number] | null {
+  const m = cat.match(/\((\d{4})[-–](\d{4})\)/);
+  if (m) return [parseInt(m[1]), parseInt(m[2])];
+  return null;
 }
 
 function emptyPlayer(defaultCategory = ""): Player {
@@ -114,6 +121,7 @@ export default function InscripcioWizard({ initialRefCode = "" }: Props) {
     step: 1,
     socialShareDone: false,
     rivalCode: initialRefCode,
+    earlyEmail: "",
     packageKey: null,
     teamName: "",
     category: "",
@@ -134,6 +142,8 @@ export default function InscripcioWizard({ initialRefCode = "" }: Props) {
   const stateRef = useRef(state);
   const submitResultRef = useRef(submitResult);
   const abandonedEventsSent = useRef<Set<string>>(new Set());
+  const earlyEmailSentRef = useRef(false);
+  const emailDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => { stateRef.current = state; });
   useEffect(() => { submitResultRef.current = submitResult; });
 
@@ -178,6 +188,38 @@ export default function InscripcioWizard({ initialRefCode = "" }: Props) {
     }
   }
 
+  // Captura email opcional a l'Step 1 — s'envia una sola vegada
+  function sendEarlyEmailLead(email: string) {
+    if (!email.includes("@") || !email.includes(".")) return;
+    if (earlyEmailSentRef.current) return;
+    if (submitResultRef.current?.ok === true) return;
+    earlyEmailSentRef.current = true;
+    const s = stateRef.current;
+    fetch("/api/abandoned", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "abandoned",
+        abandonedAt: new Date().toISOString(),
+        reason: "step1_email",
+        step: 1,
+        stepLabel: "Descompte",
+        packageKey: s.packageKey || "",
+        packageTitle: "",
+        packagePrice: 0,
+        teamName: "",
+        category: "",
+        captainName: "",
+        captainPhone: "",
+        captainEmail: email,
+        finalPrice: 0,
+        proofUploaded: false,
+        earlyBirdApplied: isEarlyBirdActive(),
+        socialShareDone: s.socialShareDone,
+      }),
+    }).catch(() => {});
+  }
+
   useEffect(() => {
     const onUnload = () => sendAbandonedLead("beforeunload");
     const onVisibility = () => {
@@ -190,6 +232,19 @@ export default function InscripcioWizard({ initialRefCode = "" }: Props) {
       document.removeEventListener("visibilitychange", onVisibility);
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Captura en temps real quan el capità omple l'email a l'Step 2 (debounce 2s)
+  useEffect(() => {
+    const email = state.captain.email;
+    if (!email.includes("@") || !email.includes(".")) return;
+    if (emailDebounceRef.current) clearTimeout(emailDebounceRef.current);
+    emailDebounceRef.current = setTimeout(() => {
+      sendAbandonedLead("email_entered");
+    }, 2_000);
+    return () => {
+      if (emailDebounceRef.current) clearTimeout(emailDebounceRef.current);
+    };
+  }, [state.captain.email]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Derived ────────────────────────────────────────────────────────────
   const pkg: Package | null = useMemo(
@@ -270,8 +325,8 @@ export default function InscripcioWizard({ initialRefCode = "" }: Props) {
       setState((prev) => ({ ...prev, proofFileName: "", proofBase64: "", proofMime: "" }));
       return;
     }
-    if (file.size > 5 * 1024 * 1024) {
-      alert("El fitxer és massa gran (màxim 5 MB). Comprimeix la imatge i torna-la a adjuntar.");
+    if (file.size > 4 * 1024 * 1024) {
+      alert("El fitxer és massa gran (màxim 4 MB). Comprimeix la imatge i torna-la a adjuntar.");
       return;
     }
     const reader = new FileReader();
@@ -294,6 +349,7 @@ export default function InscripcioWizard({ initialRefCode = "" }: Props) {
       if (prev.packageKey === "individual" && nextStep === 4) nextStep = 5;
       return { ...prev, step: Math.min(nextStep, 5) };
     });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   function prev() {
@@ -302,6 +358,7 @@ export default function InscripcioWizard({ initialRefCode = "" }: Props) {
       if (prev.packageKey === "individual" && prevStep === 4) prevStep = 3;
       return { ...prev, step: Math.max(prevStep, 1) };
     });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   // ── Validation ─────────────────────────────────────────────────────────
@@ -313,29 +370,63 @@ export default function InscripcioWizard({ initialRefCode = "" }: Props) {
     if (!pkg) return false;
     if (pkg.isTeam && !state.teamName.trim()) return false;
     const c = state.captain;
-    // Mínim: nom + telèfon + email (sense talla — la recollim als jugadors)
-    if (!c.fullName.trim() || !c.phone.trim() || !c.email.trim()) return false;
+    if (!c.fullName.trim() || !c.phone.trim() || !c.email.trim() || !c.shirtSize) return false;
     if (state.needsTutor) {
       const t = state.tutor;
-      // Nom + telèfon obligatoris; email opcional per a tutors de menors
-      if (!t.fullName.trim() || !t.phone.trim()) return false;
+      if (!t.fullName.trim() || !t.phone.trim() || !t.email.trim()) return false;
     }
     return true;
   }, [pkg, state.packageKey, state.category, state.teamName, state.captain, state.tutor, state.needsTutor]);
 
-  // Justificant OPCIONAL — la gent pot continuar sense i enviar-lo per WA
+  // El justificant és recomanat però no bloqueja (vegeu text d'introducció de la pàgina)
   const canAdvanceStep3 = true;
 
   const canAdvanceStep4 = useMemo(() => {
     if (!state.players.length) return false;
-    // Mínim: nom + categoria + any de naixement + gènere + telèfon
-    // Club, talla i email són opcionals per agilitzar
     return state.players.every(
-      (p) => p.fullName.trim() && p.category && p.birthYear.trim() && p.gender && p.phone.trim(),
+      (p) => p.fullName.trim() && p.category && p.birthYear.trim() && p.gender && p.club.trim() && p.shirtSize,
     );
   }, [state.players]);
 
   const canSubmit = state.rgpdConsent && state.imageRightsConsent;
+
+  // ── Missing field hints ────────────────────────────────────────────────
+  const missingStep2 = useMemo((): string[] => {
+    if (canAdvanceStep2) return [];
+    const m: string[] = [];
+    if (!state.packageKey) m.push("modalitat");
+    if (!state.category) m.push("categoria");
+    if (pkg?.isTeam && !state.teamName.trim()) m.push("nom de l'equip");
+    const c = state.captain;
+    if (!c.fullName.trim()) m.push("nom del capità/a");
+    if (!c.phone.trim()) m.push("telèfon del capità/a");
+    if (!c.email.trim()) m.push("email del capità/a");
+    if (!c.shirtSize) m.push("talla del capità/a");
+    if (state.needsTutor) {
+      const t = state.tutor;
+      if (!t.fullName.trim()) m.push("nom del capità/a menor");
+      if (!t.phone.trim()) m.push("telèfon del capità/a menor");
+      if (!t.email.trim()) m.push("email del capità/a menor");
+    }
+    return m;
+  }, [canAdvanceStep2, pkg, state.packageKey, state.category, state.teamName, state.captain, state.tutor, state.needsTutor]);
+
+  const missingStep4 = useMemo((): string[] => {
+    if (canAdvanceStep4) return [];
+    const m: string[] = [];
+    state.players.forEach((p, i) => {
+      const n = i + 1;
+      const f: string[] = [];
+      if (!p.fullName.trim()) f.push("nom");
+      if (!p.category) f.push("categoria");
+      if (!p.birthYear.trim()) f.push("any naix.");
+      if (!p.gender) f.push("gènere");
+      if (!p.club.trim()) f.push("club");
+      if (!p.shirtSize) f.push("talla");
+      if (f.length) m.push(`Jugador/a ${n}: ${f.join(", ")}`);
+    });
+    return m;
+  }, [canAdvanceStep4, state.players]);
 
   // ── Submit ─────────────────────────────────────────────────────────────
   async function handleSubmit() {
@@ -418,8 +509,10 @@ export default function InscripcioWizard({ initialRefCode = "" }: Props) {
         <Step1Discounts
           socialShareDone={state.socialShareDone}
           rivalCode={state.rivalCode}
+          earlyEmail={state.earlyEmail}
           onSocialDone={(v) => update("socialShareDone", v)}
           onRivalCode={(v) => update("rivalCode", v.toUpperCase())}
+          onEarlyEmail={(v) => { update("earlyEmail", v); sendEarlyEmailLead(v); }}
           onNext={next}
         />
       )}
@@ -437,6 +530,7 @@ export default function InscripcioWizard({ initialRefCode = "" }: Props) {
           onPrev={prev}
           onNext={() => { sendAbandonedLead("step2_done"); next(); }}
           canAdvance={canAdvanceStep2}
+          missing={missingStep2}
         />
       )}
 
@@ -450,6 +544,7 @@ export default function InscripcioWizard({ initialRefCode = "" }: Props) {
           onPrev={prev}
           onNext={() => { sendAbandonedLead("step3_done"); next(); }}
           canAdvance={canAdvanceStep3}
+          missing={[]}
         />
       )}
 
@@ -464,6 +559,7 @@ export default function InscripcioWizard({ initialRefCode = "" }: Props) {
           onPrev={prev}
           onNext={() => { sendAbandonedLead("step4_done"); next(); }}
           canAdvance={canAdvanceStep4}
+          missing={missingStep4}
         />
       )}
 
@@ -577,14 +673,18 @@ function SocialDiscountBlock({
 function Step1Discounts({
   socialShareDone,
   rivalCode,
+  earlyEmail,
   onSocialDone,
   onRivalCode,
+  onEarlyEmail,
   onNext,
 }: {
   socialShareDone: boolean;
   rivalCode: string;
+  earlyEmail: string;
   onSocialDone: (v: boolean) => void;
   onRivalCode: (v: string) => void;
+  onEarlyEmail: (v: string) => void;
   onNext: () => void;
 }) {
   const earlyBirdActive = isEarlyBirdActive();
@@ -655,6 +755,26 @@ function Step1Discounts({
         </div>
       )}
 
+      {/* Email opcional per capturar leads de Step 1 */}
+      <div className="wizard-early-email-block">
+        <label htmlFor="wizard-early-email" className="wizard-early-email-label">
+          📬 Rep recordatoris i novetats del torneig <span className="wizard-early-email-optional">(opcional)</span>
+        </label>
+        <input
+          id="wizard-early-email"
+          type="email"
+          className="wizard-early-email-input"
+          placeholder="el-teu@email.com"
+          value={earlyEmail}
+          onChange={(e) => onEarlyEmail(e.target.value)}
+          autoComplete="email"
+          inputMode="email"
+        />
+        {earlyEmail.includes("@") && earlyEmail.includes(".") && (
+          <p className="wizard-early-email-ok">✅ T&apos;avisarem de qualsevol novetat!</p>
+        )}
+      </div>
+
       <div className="wizard-nav" style={{ marginTop: 28 }}>
         <button type="button" className="wizard-btn wizard-btn-primary" onClick={onNext}>
           Continuar al formulari →
@@ -675,6 +795,7 @@ function Step2Team({
   updateTutor,
   setTeamName,
   setCategory,
+  missing,
   onPrev,
   onNext,
   canAdvance,
@@ -690,6 +811,7 @@ function Step2Team({
   onPrev: () => void;
   onNext: () => void;
   canAdvance: boolean;
+  missing: string[];
 }) {
   const earlyBirdActive = isEarlyBirdActive();
 
@@ -746,8 +868,8 @@ function Step2Team({
 
       {/* Categoria */}
       <div className="wizard-field wizard-field-full" style={{ marginTop: 8 }}>
-        <label>Categoria *</label>
-        <select value={state.category} onChange={(e) => setCategory(e.target.value)} required>
+        <label htmlFor="wizard-team-cat">Categoria *</label>
+        <select id="wizard-team-cat" value={state.category} onChange={(e) => setCategory(e.target.value)} required>
           <option value="">Tria la categoria…</option>
           {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
         </select>
@@ -756,8 +878,9 @@ function Step2Team({
       {/* Nom equip */}
       {state.packageKey && state.packageKey !== "individual" && (
         <div className="wizard-field wizard-field-full">
-          <label>Nom de l&apos;equip *</label>
+          <label htmlFor="wizard-team-name">Nom de l&apos;equip *</label>
           <input
+            id="wizard-team-name"
             type="text"
             value={state.teamName}
             onChange={(e) => setTeamName(e.target.value)}
@@ -780,20 +903,20 @@ function Step2Team({
 
       <div className="wizard-grid-2">
         <div className="wizard-field wizard-field-full">
-          <label>Nom i cognoms *</label>
-          <input type="text" value={state.captain.fullName} onChange={(e) => updateCaptain("fullName", e.target.value)} placeholder="Anna García López" required maxLength={80} />
+          <label htmlFor="wizard-capt-name">Nom i cognoms *</label>
+          <input id="wizard-capt-name" type="text" value={state.captain.fullName} onChange={(e) => updateCaptain("fullName", e.target.value)} placeholder="Anna García López" required maxLength={80} autoComplete="name" />
         </div>
         <div className="wizard-field">
-          <label>Telèfon (WhatsApp) *</label>
-          <input type="tel" value={state.captain.phone} onChange={(e) => updateCaptain("phone", e.target.value)} placeholder="+34 600 000 000" required maxLength={20} />
+          <label htmlFor="wizard-capt-phone">Telèfon (WhatsApp) *</label>
+          <input id="wizard-capt-phone" type="tel" value={state.captain.phone} onChange={(e) => updateCaptain("phone", e.target.value)} placeholder="+34 600 000 000" required maxLength={20} autoComplete="tel" />
         </div>
         <div className="wizard-field">
-          <label>Email *</label>
-          <input type="email" value={state.captain.email} onChange={(e) => updateCaptain("email", e.target.value)} placeholder="capitana@email.com" required maxLength={100} />
+          <label htmlFor="wizard-capt-email">Email *</label>
+          <input id="wizard-capt-email" type="email" value={state.captain.email} onChange={(e) => updateCaptain("email", e.target.value)} placeholder="capitana@email.com" required maxLength={100} autoComplete="email" />
         </div>
         <div className="wizard-field">
-          <label>Talla samarreta *</label>
-          <select value={state.captain.shirtSize} onChange={(e) => updateCaptain("shirtSize", e.target.value)} required>
+          <label htmlFor="wizard-capt-shirt">Talla samarreta *</label>
+          <select id="wizard-capt-shirt" value={state.captain.shirtSize} onChange={(e) => updateCaptain("shirtSize", e.target.value)} required>
             <option value="">Talla…</option>
             {SHIRT_SIZES.map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
@@ -806,22 +929,27 @@ function Step2Team({
           <h3 className="wizard-section-title" style={{ marginTop: 28 }}>Capità/a de l&apos;equip (menor)</h3>
           <div className="wizard-grid-2">
             <div className="wizard-field wizard-field-full">
-              <label>Nom i cognoms</label>
-              <input type="text" value={state.tutor.fullName} onChange={(e) => updateTutor("fullName", e.target.value)} placeholder="Marc Puig Torres" maxLength={80} />
+              <label>Nom i cognoms *</label>
+              <input type="text" value={state.tutor.fullName} onChange={(e) => updateTutor("fullName", e.target.value)} placeholder="Marc Puig Torres" maxLength={80} autoComplete="name" />
             </div>
             <div className="wizard-field">
-              <label>Telèfon</label>
-              <input type="tel" value={state.tutor.phone} onChange={(e) => updateTutor("phone", e.target.value)} placeholder="+34 600 000 000" maxLength={20} />
+              <label>Telèfon *</label>
+              <input type="tel" value={state.tutor.phone} onChange={(e) => updateTutor("phone", e.target.value)} placeholder="+34 600 000 000" maxLength={20} autoComplete="tel" />
             </div>
             <div className="wizard-field">
-              <label>Email <span style={{ fontWeight: 400, color: "#888" }}>(opcional per a menors)</span></label>
-              <input type="email" value={state.tutor.email} onChange={(e) => updateTutor("email", e.target.value)} placeholder="capitan@email.com" maxLength={100} />
+              <label>Email *</label>
+              <input type="email" value={state.tutor.email} onChange={(e) => updateTutor("email", e.target.value)} placeholder="capitan@email.com" required maxLength={100} autoComplete="email" />
             </div>
           </div>
         </>
       )}
 
-      <div className="wizard-nav" style={{ marginTop: 32 }}>
+      {!canAdvance && missing.length > 0 && (
+        <p style={{ color: "#f08c00", fontSize: 13, margin: "16px 0 0", lineHeight: 1.5 }}>
+          ⚠️ Falta: {missing.join(" · ")}
+        </p>
+      )}
+      <div className="wizard-nav" style={{ marginTop: 12 }}>
         <button type="button" className="wizard-btn wizard-btn-ghost" onClick={onPrev}>← Enrere</button>
         <button type="button" className="wizard-btn wizard-btn-primary" onClick={onNext} disabled={!canAdvance}>
           Continuar al pagament →
@@ -842,6 +970,7 @@ function Step3Payment({
   onPrev,
   onNext,
   canAdvance,
+  missing,
 }: {
   pkg: Package;
   disc: DiscountResult;
@@ -851,6 +980,7 @@ function Step3Payment({
   onPrev: () => void;
   onNext: () => void;
   canAdvance: boolean;
+  missing: string[];
 }) {
   const finalPrice = disc.finalPrice > 0 ? disc.finalPrice : pkg.price;
   const concept = `${(teamName || "EQUIP").toUpperCase().replace(/\s+/g, " ")} 3X3`;
@@ -903,26 +1033,28 @@ function Step3Payment({
 
       <div className="wizard-field wizard-field-full">
         <label htmlFor="proof">
-          Justificant de la transferència{" "}
-          <span style={{ fontWeight: 400, color: "#888" }}>JPG, PNG o PDF · màx. 5 MB</span>
+          Justificant de la transferència *{" "}
+          <span style={{ fontWeight: 400, color: "#888" }}>JPG, PNG o PDF · màx. 4 MB</span>
         </label>
         <input
           id="proof"
           type="file"
           accept="image/*,application/pdf"
           onChange={(e) => onFile(e.target.files?.[0] || null)}
+          required
         />
         {proofFileName
           ? <p className="wizard-help wizard-help-success">✓ Fitxer adjuntat: <strong>{proofFileName}</strong></p>
-          : (
-            <p className="wizard-help">
-              📎 Adjunta el comprovant si ja has fet la transferència. Si encara no, <strong>continua igualment</strong> — envia&apos;l per WhatsApp al <a href="https://wa.me/34698425153" target="_blank" rel="noreferrer" style={{ color: "#25d366" }}>+34 698 425 153</a> i validem igualment.
-            </p>
-          )
+          : <p className="wizard-help">📎 Fes la transferència i adjunta el comprovant per continuar.</p>
         }
       </div>
 
-      <div className="wizard-nav">
+      {!canAdvance && missing.length > 0 && (
+        <p style={{ color: "#f08c00", fontSize: 13, margin: "16px 0 0", lineHeight: 1.5 }}>
+          ⚠️ Falta: {missing.join(" · ")}
+        </p>
+      )}
+      <div className="wizard-nav" style={{ marginTop: 12 }}>
         <button type="button" className="wizard-btn wizard-btn-ghost" onClick={onPrev}>← Enrere</button>
         <button type="button" className="wizard-btn wizard-btn-primary" onClick={onNext} disabled={!canAdvance}>
           Continuar →
@@ -941,6 +1073,7 @@ function Step4Players({
   updatePlayer,
   addPlayer,
   removePlayer,
+  missing,
   onPrev,
   onNext,
   canAdvance,
@@ -951,79 +1084,138 @@ function Step4Players({
   updatePlayer: (idx: number, patch: Partial<Player>) => void;
   addPlayer: () => void;
   removePlayer: (idx: number) => void;
+  missing: string[];
   onPrev: () => void;
   onNext: () => void;
   canAdvance: boolean;
 }) {
+  const [openIdx, setOpenIdx] = useState<number>(0);
+
+  function isPlayerComplete(p: Player): boolean {
+    return !!(p.fullName.trim() && p.category && p.birthYear.trim() && p.gender && p.club.trim() && p.shirtSize);
+  }
+
+  function handleToggle(idx: number) {
+    setOpenIdx((prev) => (prev === idx ? -1 : idx));
+  }
+
+  function handlePlayerUpdate(idx: number, patch: Partial<Player>) {
+    updatePlayer(idx, patch);
+    // Si el jugador queda complet, avança al primer jugador incomplet
+    const updated = { ...players[idx], ...patch };
+    if (isPlayerComplete(updated as Player)) {
+      const nextIncomplete = players.findIndex((p, i) => i !== idx && !isPlayerComplete({ ...p, ...(i === idx ? patch : {}) }));
+      if (nextIncomplete !== -1) setOpenIdx(nextIncomplete);
+    }
+  }
+
   return (
     <div className="wizard-step">
       <h2 className="wizard-step-title">Jugadors ({players.length}/{pkg.maxPlayers})</h2>
       <p className="wizard-step-desc">
-        Mínim {pkg.minPlayers}, màxim {pkg.maxPlayers}. El mail és opcional per a menors.
+        Mínim {pkg.minPlayers}, màxim {pkg.maxPlayers}. El mail és opcional.
       </p>
 
-      {players.map((p, idx) => (
+      {players.map((p, idx) => {
+        const complete = isPlayerComplete(p);
+        const isOpen = openIdx === idx;
+        return (
         <div key={idx} className="wizard-player-card">
-          <div className="wizard-player-head">
-            <strong>Jugador/a {idx + 1}</strong>
-            {players.length > pkg.minPlayers && (
-              <button type="button" className="wizard-player-remove" onClick={() => removePlayer(idx)}>Eliminar</button>
-            )}
-          </div>
+          <button
+            type="button"
+            className="wizard-player-head"
+            onClick={() => handleToggle(idx)}
+            style={{ width: "100%", background: "none", border: "none", cursor: "pointer", textAlign: "left", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "14px 16px" }}
+          >
+            <span style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <span style={{ fontSize: 18, lineHeight: 1 }}>{complete ? "✅" : "⭕"}</span>
+              <strong style={{ color: "#fff7ef" }}>
+                {p.fullName.trim() || `Jugador/a ${idx + 1}`}
+              </strong>
+              {complete && <span style={{ fontSize: 12, color: "#aaa" }}>{p.shirtSize} · {p.club}</span>}
+            </span>
+            <span style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              {players.length > pkg.minPlayers && (
+                <span
+                  role="button"
+                  onClick={(e) => { e.stopPropagation(); removePlayer(idx); }}
+                  style={{ fontSize: 12, color: "#f08c00", textDecoration: "underline", cursor: "pointer" }}
+                >Eliminar</span>
+              )}
+              <span style={{ color: "#aaa", fontSize: 14 }}>{isOpen ? "▲" : "▼"}</span>
+            </span>
+          </button>
 
-          <div className="wizard-grid-2">
+          {isOpen && (
+          <div className="wizard-grid-2" style={{ padding: "0 16px 16px" }}>
             <div className="wizard-field wizard-field-full">
-              <label>Nom i cognoms *</label>
-              <input type="text" value={p.fullName} onChange={(e) => updatePlayer(idx, { fullName: e.target.value })} required maxLength={80} />
+              <label htmlFor={`wp${idx}-name`}>Nom i cognoms *</label>
+              <input id={`wp${idx}-name`} type="text" value={p.fullName} onChange={(e) => handlePlayerUpdate(idx, { fullName: e.target.value })} required maxLength={80} />
             </div>
             <div className="wizard-field">
-              <label>Club d&apos;origen <span style={{ fontWeight: 400, color: "#888" }}>(opcional)</span></label>
-              <input type="text" value={p.club} onChange={(e) => updatePlayer(idx, { club: e.target.value })} placeholder="CB Grup Barna, Sense club…" maxLength={60} />
+              <label htmlFor={`wp${idx}-club`}>Club d&apos;origen *{" "}
+                {!p.club && idx > 0 && players[idx - 1]?.club
+                  ? <button type="button" style={{ fontSize: 11, fontWeight: 400, color: "#aaa", background: "none", border: "none", cursor: "pointer", padding: 0, textDecoration: "underline" }} onClick={() => handlePlayerUpdate(idx, { club: players[idx - 1].club })}>= {players[idx - 1].club}</button>
+                  : !p.club && <button type="button" style={{ fontSize: 11, fontWeight: 400, color: "#aaa", background: "none", border: "none", cursor: "pointer", padding: 0, textDecoration: "underline" }} onClick={() => handlePlayerUpdate(idx, { club: "Sense club" })}>Sense club</button>
+                }
+              </label>
+              <input id={`wp${idx}-club`} type="text" value={p.club} onChange={(e) => handlePlayerUpdate(idx, { club: e.target.value })} placeholder="CB Grup Barna…" required maxLength={60} />
             </div>
             <div className="wizard-field">
-              <label>Categoria *</label>
-              <select value={p.category} onChange={(e) => updatePlayer(idx, { category: e.target.value })} required>
+              <label htmlFor={`wp${idx}-cat`}>Categoria *</label>
+              <select id={`wp${idx}-cat`} value={p.category} onChange={(e) => handlePlayerUpdate(idx, { category: e.target.value })} required>
                 <option value="">Tria…</option>
                 {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
             <div className="wizard-field">
-              <label>Any de naixement *</label>
+              <label htmlFor={`wp${idx}-birth`}>Any de naixement *</label>
               <input
+                id={`wp${idx}-birth`}
                 type="text"
                 value={p.birthYear}
-                onChange={(e) => updatePlayer(idx, { birthYear: e.target.value.replace(/\D/g, "").slice(0, 4) })}
+                onChange={(e) => handlePlayerUpdate(idx, { birthYear: e.target.value.replace(/\D/g, "").slice(0, 4) })}
                 placeholder="2005"
                 maxLength={4}
                 inputMode="numeric"
                 required
               />
+              {(() => {
+                const range = getCategoryYearRange(p.category);
+                const year = parseInt(p.birthYear);
+                if (range && p.birthYear.length === 4 && !isNaN(year) && (year < range[0] || year > range[1])) {
+                  return <p style={{ color: "#f08c00", fontSize: 12, margin: "4px 0 0" }}>⚠️ Rang esperat: {range[0]}–{range[1]}</p>;
+                }
+                return null;
+              })()}
             </div>
             <div className="wizard-field">
-              <label>Gènere *</label>
-              <select value={p.gender} onChange={(e) => updatePlayer(idx, { gender: e.target.value })} required>
+              <label htmlFor={`wp${idx}-gender`}>Gènere *</label>
+              <select id={`wp${idx}-gender`} value={p.gender} onChange={(e) => handlePlayerUpdate(idx, { gender: e.target.value })} required>
                 <option value="">Tria…</option>
                 {GENDERS.map((g) => <option key={g} value={g}>{g}</option>)}
               </select>
             </div>
             <div className="wizard-field">
-              <label>Telèfon *</label>
-              <input type="tel" value={p.phone} onChange={(e) => updatePlayer(idx, { phone: e.target.value })} placeholder="+34 600 000 000" required maxLength={20} />
+              <label htmlFor={`wp${idx}-phone`}>Telèfon</label>
+              <input id={`wp${idx}-phone`} type="tel" value={p.phone} onChange={(e) => handlePlayerUpdate(idx, { phone: e.target.value })} placeholder="+34 600 000 000" maxLength={20} />
             </div>
             <div className="wizard-field">
-              <label>Talla samarreta <span style={{ fontWeight: 400, color: "#888" }}>(opcional)</span></label>
-              <select value={p.shirtSize} onChange={(e) => updatePlayer(idx, { shirtSize: e.target.value })}>
+              <label htmlFor={`wp${idx}-shirt`}>Talla samarreta *</label>
+              <select id={`wp${idx}-shirt`} value={p.shirtSize} onChange={(e) => handlePlayerUpdate(idx, { shirtSize: e.target.value })} required>
                 <option value="">Talla…</option>
                 {SHIRT_SIZES.map((s) => <option key={s} value={s}>{s}</option>)}
               </select>
             </div>
             <div className="wizard-field">
               <label>Email <span style={{ fontWeight: 400, color: "#888" }}>(opcional)</span></label>
-              <input type="email" value={p.email} onChange={(e) => updatePlayer(idx, { email: e.target.value })} placeholder="jugador@email.com" maxLength={100} />
+              <input type="email" value={p.email} onChange={(e) => handlePlayerUpdate(idx, { email: e.target.value })} placeholder="jugador@email.com" maxLength={100} />
             </div>
           </div>
+          )}
         </div>
-      ))}
+        );
+      })}
 
       {players.length < pkg.maxPlayers && (
         <button type="button" className="wizard-add-player" onClick={addPlayer}>
@@ -1031,7 +1223,12 @@ function Step4Players({
         </button>
       )}
 
-      <div className="wizard-nav">
+      {!canAdvance && missing.length > 0 && (
+        <p style={{ color: "#f08c00", fontSize: 13, margin: "16px 0 0", lineHeight: 1.6 }}>
+          ⚠️ {missing.join(" · ")}
+        </p>
+      )}
+      <div className="wizard-nav" style={{ marginTop: 12 }}>
         <button type="button" className="wizard-btn wizard-btn-ghost" onClick={onPrev}>← Enrere</button>
         <button type="button" className="wizard-btn wizard-btn-primary" onClick={onNext} disabled={!canAdvance}>
           Revisar i enviar →

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import Link from "next/link";
 import InscripcioWizard from "./InscripcioWizard";
-import QueueGate from "./QueueGate";
 
 const SITE_URL = "https://cbgrupbarna-3x3timechamber.com";
 
@@ -130,7 +129,6 @@ export default async function InscripcionPage({ searchParams }: InscripcionPageP
         strategy="beforeInteractive"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdHowTo) }}
       />
-    <QueueGate>
     <div className="page-shell">
       {/* Nav */}
       <nav className="page-nav">
@@ -298,8 +296,12 @@ export default async function InscripcionPage({ searchParams }: InscripcionPageP
           Consulta les{" "}
           <Link href="/preguntes-frequents" className="insc-link">
             preguntes freqüents
-          </Link>{" "}
-          o{" "}
+          </Link>
+          , les{" "}
+          <Link href="/regles-3x3" className="insc-link">
+            normes oficials FIBA 3×3
+          </Link>
+          {" "}o{" "}
           <Link href="/contacte" className="insc-link">
             contacta&apos;ns per WhatsApp
           </Link>
@@ -307,7 +309,6 @@ export default async function InscripcionPage({ searchParams }: InscripcionPageP
         </p>
       </main>
     </div>
-    </QueueGate>
     </>
   );
 }

@@ -175,7 +175,7 @@ function handleInscripcio(payload) {
   if (!sheetId) throw new Error("SHEET_ID not configured");
   if (!folderId) throw new Error("DRIVE_FOLDER_ID not configured");
 
-  // 1. Justificant a Drive — opcional: si no hi ha base64 es deixa buit
+  // 1. Justificant a Drive
   const proofUrl = (payload.proof && payload.proof.base64)
     ? saveProofFile(payload, folderId)
     : "";
@@ -184,7 +184,7 @@ function handleInscripcio(payload) {
   const teamSheetRowNum = writeTeamToSheet(payload, proofUrl, sheetId);
   writePlayersToSheet(payload, sheetId);
 
-  // 3. JotForm (best effort, no falla si no està configurat)
+  // 3. JotForm (best effort)
   let jotformId = null;
   try {
     jotformId = sendToJotForm(payload);
@@ -194,6 +194,16 @@ function handleInscripcio(payload) {
   } catch (err) {
     console.warn("JotForm sync error: " + err);
   }
+
+  // 4. Emails (best effort — no bloqueja la inscripció si fallen)
+  try {
+    sendEmails(payload, proofUrl, sheetId);
+  } catch (err) {
+    console.warn("Email send error: " + err);
+  }
+
+  // 5. Marca els abandonaments previs d'aquest capità com a "Inscrit"
+  markAbandonedAsInscrit(payload, sheetId);
 
   return { ok: true, teamId: payload.teamId, proofUrl: proofUrl, jotformId: jotformId };
 }
@@ -486,7 +496,81 @@ function handleAbandoned(payload) {
   const sheetId = props.getProperty("SHEET_ID");
   if (!sheetId) throw new Error("SHEET_ID not configured");
   writeAbandonedToSheet(payload, sheetId);
+
+  // Notificació per email a Ana (best effort)
+  try {
+    sendAbandonedEmail(payload, props);
+  } catch (err) {
+    console.warn("sendAbandonedEmail error: " + err);
+  }
+
   return { ok: true };
+}
+
+function sendAbandonedEmail(payload, props) {
+  const adminEmail = props.getProperty("ADMIN_EMAIL") || "";
+  if (!adminEmail) return; // No configurat → silenci
+
+  // Ignora events sense cap contacte (impossible per validació, però per seguretat)
+  const hasContact = payload.captainEmail || payload.captainPhone;
+  if (!hasContact) return;
+
+  // Evita spam per events de tancament duplicats sense dades útils
+  const reason = payload.reason || "";
+  const noisyReasons = ["beforeunload", "hidden"];
+  // Si ja tenim step2_done o email_entered, beforeunload és redundant
+  // → filtrem beforeunload/hidden si no aporten informació nova
+  if (noisyReasons.indexOf(reason) !== -1 && !payload.captainEmail && !payload.captainPhone) return;
+
+  const reasonLabels = {
+    "step1_email":   "📬 Email donat al Step 1 (sense continuar)",
+    "email_entered": "✍️ Email escrit al Step 2 (formulari abandonat)",
+    "step2_done":    "✅ Ha completat l'Equip — pendent pagament",
+    "step3_done":    "✅ Ha pujat el justificant — pendent jugadors",
+    "step4_done":    "✅ Ha introduït jugadors — pendent confirmar",
+    "beforeunload":  "🚪 Ha tancat la pàgina",
+    "hidden":        "📴 Ha canviat de pestanya/app",
+  };
+  const reasonLabel = reasonLabels[reason] || reason;
+
+  const contact = [
+    payload.captainName  ? "<strong>Nom:</strong> " + payload.captainName : "",
+    payload.captainEmail ? "<strong>Email:</strong> <a href='mailto:" + payload.captainEmail + "'>" + payload.captainEmail + "</a>" : "",
+    payload.captainPhone ? "<strong>Telèfon:</strong> <a href='tel:" + payload.captainPhone + "'>" + payload.captainPhone + "</a>" : "",
+  ].filter(Boolean).join("<br>");
+
+  const details = [
+    payload.packageTitle || payload.packageKey ? "<strong>Modalitat:</strong> " + (payload.packageTitle || payload.packageKey) : "",
+    payload.category ? "<strong>Categoria:</strong> " + payload.category : "",
+    payload.teamName ? "<strong>Equip:</strong> " + payload.teamName : "",
+    payload.finalPrice ? "<strong>Preu final:</strong> " + payload.finalPrice + " €" : "",
+  ].filter(Boolean).join("<br>");
+
+  const sheetUrl = "https://docs.google.com/spreadsheets/d/" + (props.getProperty("SHEET_ID") || "") + "/edit#gid=0";
+
+  const html = [
+    "<div style='font-family:sans-serif;max-width:560px'>",
+    "<h2 style='color:#cc2244;margin:0 0 4px'>🏀 Lead abandonat — 3×3 Westfield Glòries</h2>",
+    "<p style='color:#555;margin:0 0 16px;font-size:0.95em'>" + reasonLabel + "</p>",
+    "<table style='border-collapse:collapse;width:100%'>",
+    "<tr><td style='padding:10px 14px;background:#f9f9f9;border-radius:8px 8px 0 0'>",
+    "<strong style='font-size:1em'>Contacte</strong><br><br>" + (contact || "—"),
+    "</td></tr>",
+    details ? "<tr><td style='padding:10px 14px;border-top:1px solid #eee'>" + details + "</td></tr>" : "",
+    "</table>",
+    "<p style='margin:16px 0 4px'>",
+    "<a href='" + sheetUrl + "' style='background:#cc2244;color:#fff;padding:8px 18px;border-radius:6px;text-decoration:none;font-weight:bold'>",
+    "Veure a l'Sheet →</a>",
+    "</p>",
+    "<p style='font-size:0.8em;color:#999;margin-top:20px'>",
+    "Enviat automàticament pel wizard d'inscripció · " + new Date().toLocaleString("ca-ES"),
+    "</p>",
+    "</div>",
+  ].join("");
+
+  const subject = "🏀 Lead abandonat" + (payload.captainName ? " — " + payload.captainName : "") + " · " + reasonLabel.replace(/[^\w\s·àèéíïòóúüçÀÈÉÍÏÒÓÚÜÇ—]/g, "").trim();
+
+  GmailApp.sendEmail(adminEmail, subject, "", { htmlBody: html, name: "3×3 Inscripcions" });
 }
 
 function writeAbandonedToSheet(payload, sheetId) {
@@ -517,6 +601,44 @@ function writeAbandonedToSheet(payload, sheetId) {
   sheet.getRange(row, 6).setNumberFormat("0.00");
   sheet.getRange(row, 7).setNumberFormat("0.00");
   return lastRow;
+}
+
+/**
+ * Quan una inscripció es completa, busca files a "Abandonaments" que tinguin
+ * el mateix email o telèfon del capità i actualitza el seu Status a "Inscrit".
+ * Permet a Ana filtrar/ocultar facilment els leads que ja s'han convertit.
+ */
+function markAbandonedAsInscrit(payload, sheetId) {
+  try {
+    var email = (payload.captain && payload.captain.email) ? payload.captain.email.trim().toLowerCase() : "";
+    var phone = (payload.captain && payload.captain.phone) ? payload.captain.phone.trim() : "";
+    if (!email && !phone) return;
+
+    var ss = SpreadsheetApp.openById(sheetId);
+    var sheet = ss.getSheetByName("Abandonaments");
+    if (!sheet) return;
+
+    var lastRow = sheet.getLastRow();
+    if (lastRow < 2) return; // Sense files de dades
+
+    // Col L (12) = Captain Email, Col K (11) = Captain Phone, Col P (16) = Status
+    var emailCol  = sheet.getRange(2, 12, lastRow - 1, 1).getValues(); // L
+    var phoneCol  = sheet.getRange(2, 11, lastRow - 1, 1).getValues(); // K
+    var statusCol = sheet.getRange(2, 16, lastRow - 1, 1).getValues(); // P
+
+    for (var i = 0; i < emailCol.length; i++) {
+      var rowEmail = String(emailCol[i][0]).trim().toLowerCase();
+      var rowPhone = String(phoneCol[i][0]).trim();
+      var status   = String(statusCol[i][0]).trim();
+      if (status === "Inscrit" || status === "Descartat") continue; // Ja processat
+      var match = (email && rowEmail === email) || (phone && rowPhone === phone);
+      if (match) {
+        sheet.getRange(i + 2, 16).setValue("Inscrit"); // Col P
+      }
+    }
+  } catch (err) {
+    console.warn("markAbandonedAsInscrit error: " + err);
+  }
 }
 
 // ===== LEADS (Share Gate / WhatsApp widget / qualsevol captura) =====
@@ -886,6 +1008,217 @@ function testHandleInscripcio() {
   const result = handleInscripcio(fake);
   Logger.log(JSON.stringify(result, null, 2));
   return result;
+}
+
+// ===== EMAILS + QR =====
+
+/**
+ * Envia dos emails en paral·lel (best-effort):
+ *   1. Confirmació al capità (i al tutor si n'hi ha)
+ *   2. Notificació a Ana (ADMIN_EMAIL a Script Properties)
+ *
+ * Script Properties necessàries:
+ *   ADMIN_EMAIL  → email d'Ana per rebre notificacions
+ *   SITE_URL     → URL base del microsite (ex: https://cbgrupbarna-3x3timechamber.com)
+ *                  Opcional; si no hi és, el QR mostra directament el TeamID.
+ */
+function sendEmails(payload, proofUrl, sheetId) {
+  const props = PropertiesService.getScriptProperties();
+  const adminEmail = props.getProperty("ADMIN_EMAIL") || "";
+  const siteUrl = (props.getProperty("SITE_URL") || "https://cbgrupbarna-3x3timechamber.com").replace(/\/$/, "");
+
+  const qrData = siteUrl + "/equip?id=" + payload.teamId;
+  const qrImageUrl = "https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=" + encodeURIComponent(qrData) + "&color=1a1a1a&bgcolor=ffffff&margin=10";
+
+  const captainEmail = payload.captain && payload.captain.email;
+  const tutorEmail   = payload.tutor   && payload.tutor.email;
+  const teamName     = payload.teamName || payload.captain.fullName;
+  const category     = payload.category || "";
+  const finalPrice   = (payload.finalPrice || payload.packagePrice || 0).toFixed(2).replace(".00", "");
+
+  const subjectConfirm = "✅ Inscripció rebuda — 3×3 Westfield Glòries 2026 · " + teamName;
+  const htmlConfirm    = buildCaptainEmailHtml(payload, proofUrl, qrImageUrl, qrData, siteUrl);
+
+  // Email al capità
+  if (captainEmail) {
+    GmailApp.sendEmail(captainEmail, subjectConfirm, "", { htmlBody: htmlConfirm, name: "3×3 Westfield Glòries" });
+  }
+  // Email al tutor (si diferent del capità)
+  if (tutorEmail && tutorEmail !== captainEmail) {
+    GmailApp.sendEmail(tutorEmail, subjectConfirm, "", { htmlBody: htmlConfirm, name: "3×3 Westfield Glòries" });
+  }
+
+  // Notificació a Ana
+  if (adminEmail) {
+    const ssUrl = sheetId ? SpreadsheetApp.openById(sheetId).getUrl() : "";
+    const subjectAdmin = "🏀 Nova inscripció — " + teamName + " · " + category;
+    const htmlAdmin    = buildAdminEmailHtml(payload, proofUrl, qrImageUrl, ssUrl, finalPrice);
+    GmailApp.sendEmail(adminEmail, subjectAdmin, "", { htmlBody: htmlAdmin, name: "3×3 Inscripcions" });
+  }
+}
+
+function buildCaptainEmailHtml(payload, proofUrl, qrImageUrl, qrData, siteUrl) {
+  var teamName   = payload.teamName || payload.captain.fullName;
+  var captainName = payload.captain.fullName;
+  var category   = payload.category || "";
+  var packageTitle = payload.packageTitle || payload.packageKey || "";
+  var finalPrice = (payload.finalPrice || payload.packagePrice || 0).toFixed(2).replace(".00", "");
+  var numPlayers = payload.players ? payload.players.length : 0;
+
+  var playerRows = (payload.players || []).map(function(p) {
+    return '<tr style="border-bottom:1px solid #f0f0f0">' +
+      '<td style="padding:7px 8px;font-size:14px">' + esc(p.fullName) + '</td>' +
+      '<td style="padding:7px 8px;font-size:14px;color:#555">' + esc(p.club || "—") + '</td>' +
+      '<td style="padding:7px 8px;font-size:14px;color:#555">' + esc(p.birthYear || "") + '</td>' +
+      '<td style="padding:7px 8px;font-size:14px;color:#555">' + esc(p.shirtSize || "—") + '</td>' +
+    '</tr>';
+  }).join("");
+
+  var discountNote = "";
+  if (payload.discountAmount && payload.discountAmount > 0) {
+    discountNote = '<tr><td style="padding:8px;border-bottom:1px solid #eee;color:#666">Descompte</td>' +
+      '<td style="padding:8px;border-bottom:1px solid #eee;color:#2b8a3e">−' + Number(payload.discountAmount).toFixed(2).replace(".00","") + ' €' +
+      (payload.discountType ? ' (' + esc(payload.discountType) + ')' : '') + '</td></tr>';
+  }
+
+  return '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="margin:0;padding:0;background:#f4f4f4;font-family:Arial,sans-serif">' +
+  '<div style="max-width:600px;margin:24px auto;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.1)">' +
+    // Header
+    '<div style="background:#1a1a1a;padding:32px 40px;text-align:center">' +
+      '<p style="color:#ff375f;font-size:13px;margin:0 0 6px;letter-spacing:2px;text-transform:uppercase">CB Grup Barna</p>' +
+      '<h1 style="color:#fff;margin:0;font-size:22px;font-weight:700">3×3 Westfield Glòries 2026</h1>' +
+      '<p style="color:#aaa;margin:8px 0 0;font-size:14px">6–7 de juny · Westfield Glòries, Barcelona</p>' +
+    '</div>' +
+    // Body
+    '<div style="padding:36px 40px">' +
+      '<p style="font-size:16px;margin:0 0 8px">Hola <strong>' + esc(captainName) + '</strong>,</p>' +
+      '<p style="color:#444;margin:0 0 24px">Hem rebut la teva inscripció per al <strong>3×3 Westfield Glòries 2026</strong>. La validarem en menys de 24h un cop verifiquem el pagament.</p>' +
+
+      // Resum
+      '<table style="width:100%;border-collapse:collapse;margin-bottom:28px">' +
+        '<tr><td style="padding:8px;border-bottom:1px solid #eee;color:#666;width:40%">Equip</td><td style="padding:8px;border-bottom:1px solid #eee;font-weight:700">' + esc(teamName) + '</td></tr>' +
+        '<tr><td style="padding:8px;border-bottom:1px solid #eee;color:#666">Categoria</td><td style="padding:8px;border-bottom:1px solid #eee">' + esc(category) + '</td></tr>' +
+        '<tr><td style="padding:8px;border-bottom:1px solid #eee;color:#666">Pack</td><td style="padding:8px;border-bottom:1px solid #eee">' + esc(packageTitle) + '</td></tr>' +
+        discountNote +
+        '<tr><td style="padding:8px;border-bottom:1px solid #eee;color:#666">Import</td><td style="padding:8px;border-bottom:1px solid #eee;font-weight:700;color:#ff375f">' + finalPrice + ' €</td></tr>' +
+        '<tr><td style="padding:8px;color:#666">ID Equip</td><td style="padding:8px;font-family:monospace;font-size:13px;color:#333">' + esc(payload.teamId) + '</td></tr>' +
+      '</table>' +
+
+      // QR
+      '<div style="text-align:center;margin:28px 0;padding:24px;background:#f9f9f9;border-radius:8px">' +
+        '<p style="color:#555;font-size:14px;margin:0 0 14px;font-weight:600">Codi QR de l\'equip</p>' +
+        '<img src="' + qrImageUrl + '" alt="QR ' + esc(payload.teamId) + '" width="180" height="180" style="display:block;margin:0 auto;border:1px solid #ddd;border-radius:6px" />' +
+        '<p style="color:#999;font-size:12px;margin:10px 0 0;font-family:monospace">' + esc(payload.teamId) + '</p>' +
+        '<p style="color:#aaa;font-size:11px;margin:6px 0 0">Porta\'l al check-in el dia del torneig</p>' +
+      '</div>' +
+
+      // Jugadors
+      '<h3 style="color:#1a1a1a;border-bottom:2px solid #ff375f;padding-bottom:8px;margin:28px 0 14px">Jugadors inscrits (' + numPlayers + ')</h3>' +
+      '<table style="width:100%;border-collapse:collapse">' +
+        '<tr style="background:#f5f5f5">' +
+          '<th style="padding:8px;text-align:left;font-size:13px;color:#666">Nom</th>' +
+          '<th style="padding:8px;text-align:left;font-size:13px;color:#666">Club</th>' +
+          '<th style="padding:8px;text-align:left;font-size:13px;color:#666">Any naix.</th>' +
+          '<th style="padding:8px;text-align:left;font-size:13px;color:#666">Talla</th>' +
+        '</tr>' +
+        playerRows +
+      '</table>' +
+
+      // Avís pagament
+      '<div style="background:#fff8e1;border-left:4px solid #ff9800;padding:14px 16px;margin:28px 0;border-radius:0 6px 6px 0">' +
+        '<p style="margin:0;font-size:14px;color:#5f4000">⏳ La inscripció estarà <strong>pendent de confirmació</strong> fins que verifiquem el justificant. Rebràs un segon email quan estigui validada.</p>' +
+      '</div>' +
+
+      '<p style="font-size:14px;color:#444">Qualsevol dubte: <a href="https://wa.me/34698425153" style="color:#25d366;font-weight:600">WhatsApp +34 698 425 153</a></p>' +
+      '<p style="font-size:14px;color:#444;margin-top:4px">Ens veiem al Westfield Glòries el <strong>6–7 de juny de 2026</strong>! 🏀</p>' +
+      '<hr style="border:none;border-top:1px solid #eee;margin:28px 0">' +
+      '<p style="font-size:12px;color:#aaa;text-align:center">CB Grup Barna · <a href="' + siteUrl + '" style="color:#ff375f">' + siteUrl.replace("https://","") + '</a></p>' +
+    '</div>' +
+  '</div>' +
+  '</body></html>';
+}
+
+function buildAdminEmailHtml(payload, proofUrl, qrImageUrl, ssUrl, finalPrice) {
+  var teamName    = payload.teamName || payload.captain.fullName;
+  var category    = payload.category || "";
+  var captainName = payload.captain.fullName;
+  var captainPhone = payload.captain.phone || "";
+  var captainEmail = payload.captain.email || "";
+  var numPlayers  = payload.players ? payload.players.length : 0;
+  var packageTitle = payload.packageTitle || payload.packageKey || "";
+  var discountInfo = payload.discountType ? " (" + payload.discountType + " −" + (payload.discountAmount||0) + " €)" : "";
+
+  var playerRows = (payload.players || []).map(function(p) {
+    return '<tr style="border-bottom:1px solid #f0f0f0">' +
+      '<td style="padding:6px 8px;font-size:13px">' + esc(p.fullName) + '</td>' +
+      '<td style="padding:6px 8px;font-size:13px;color:#555">' + esc(p.club||"—") + '</td>' +
+      '<td style="padding:6px 8px;font-size:13px;color:#555">' + esc(p.gender||"—") + '</td>' +
+      '<td style="padding:6px 8px;font-size:13px;color:#555">' + esc(p.birthYear||"—") + '</td>' +
+      '<td style="padding:6px 8px;font-size:13px;color:#555">' + esc(p.shirtSize||"—") + '</td>' +
+    '</tr>';
+  }).join("");
+
+  var proofLink = proofUrl ? '<a href="' + proofUrl + '" style="color:#1a73e8">Veure justificant ↗</a>' : '<span style="color:#e53935">Sense justificant</span>';
+  var ssLink    = ssUrl    ? '<a href="' + ssUrl + '" style="color:#1a73e8">Obrir Sheets ↗</a>' : "—";
+  var tutorHtml = "";
+  if (payload.tutor && payload.tutor.fullName) {
+    tutorHtml = '<tr><td style="padding:7px 8px;color:#666;font-size:13px">Tutor/a</td>' +
+      '<td style="padding:7px 8px;font-size:13px">' + esc(payload.tutor.fullName) + ' · ' + esc(payload.tutor.phone||"") + ' · ' + esc(payload.tutor.email||"") + '</td></tr>';
+  }
+
+  return '<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="margin:0;padding:0;background:#f4f4f4;font-family:Arial,sans-serif">' +
+  '<div style="max-width:620px;margin:24px auto;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.1)">' +
+    '<div style="background:#1a1a1a;padding:20px 32px;display:flex;justify-content:space-between;align-items:center">' +
+      '<div>' +
+        '<p style="color:#ff375f;font-size:12px;margin:0 0 4px;letter-spacing:1px;text-transform:uppercase">Nova inscripció</p>' +
+        '<h2 style="color:#fff;margin:0;font-size:18px">' + esc(teamName) + '</h2>' +
+        '<p style="color:#aaa;margin:4px 0 0;font-size:13px">' + esc(category) + ' · ' + esc(packageTitle) + '</p>' +
+      '</div>' +
+      '<div style="text-align:right">' +
+        '<p style="color:#ff375f;font-size:22px;font-weight:700;margin:0">' + finalPrice + ' €</p>' +
+        discountInfo ? '<p style="color:#aaa;font-size:11px;margin:2px 0 0">' + esc(discountInfo) + '</p>' : '' +
+      '</div>' +
+    '</div>' +
+    '<div style="padding:28px 32px">' +
+      // Resum equip
+      '<table style="width:100%;border-collapse:collapse;margin-bottom:20px">' +
+        '<tr style="background:#f9f9f9"><td style="padding:7px 8px;color:#666;font-size:13px;width:130px">ID Equip</td><td style="padding:7px 8px;font-family:monospace;font-size:12px">' + esc(payload.teamId) + '</td></tr>' +
+        '<tr><td style="padding:7px 8px;color:#666;font-size:13px">Capità/a</td><td style="padding:7px 8px;font-size:13px"><strong>' + esc(captainName) + '</strong> · ' + esc(captainPhone) + ' · ' + esc(captainEmail) + '</td></tr>' +
+        tutorHtml +
+        '<tr style="background:#f9f9f9"><td style="padding:7px 8px;color:#666;font-size:13px">Jugadors</td><td style="padding:7px 8px;font-size:13px">' + numPlayers + '</td></tr>' +
+        '<tr><td style="padding:7px 8px;color:#666;font-size:13px">Justificant</td><td style="padding:7px 8px;font-size:13px">' + proofLink + '</td></tr>' +
+        '<tr style="background:#f9f9f9"><td style="padding:7px 8px;color:#666;font-size:13px">Sheets</td><td style="padding:7px 8px;font-size:13px">' + ssLink + '</td></tr>' +
+      '</table>' +
+
+      // Jugadors
+      '<h4 style="margin:0 0 10px;font-size:14px;color:#333">Jugadors</h4>' +
+      '<table style="width:100%;border-collapse:collapse;font-size:13px">' +
+        '<tr style="background:#f5f5f5">' +
+          '<th style="padding:6px 8px;text-align:left;color:#666">Nom</th>' +
+          '<th style="padding:6px 8px;text-align:left;color:#666">Club</th>' +
+          '<th style="padding:6px 8px;text-align:left;color:#666">Gènere</th>' +
+          '<th style="padding:6px 8px;text-align:left;color:#666">Any naix.</th>' +
+          '<th style="padding:6px 8px;text-align:left;color:#666">Talla</th>' +
+        '</tr>' +
+        playerRows +
+      '</table>' +
+
+      // QR petit
+      '<div style="margin-top:24px;display:flex;align-items:center;gap:16px">' +
+        '<img src="' + qrImageUrl + '" alt="QR" width="80" height="80" style="border:1px solid #ddd;border-radius:4px;flex-shrink:0" />' +
+        '<p style="font-size:12px;color:#888;margin:0">QR de l\'equip per al check-in del dia del torneig.</p>' +
+      '</div>' +
+    '</div>' +
+  '</div>' +
+  '</body></html>';
+}
+
+function esc(str) {
+  return String(str == null ? "" : str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }
 
 // ===== CERCA — FAQ search tracking =====

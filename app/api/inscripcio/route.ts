@@ -6,14 +6,19 @@ export const maxDuration = 30;
 
 type Player = {
   fullName: string;
-  birthDate: string;
-  gender: string;
-  position: string;
-  level: string;
-  shirtSize: string;
-  dorsal: string;
-  federated: boolean;
-  federationKey: string;
+  club?: string;
+  category?: string;
+  birthYear?: string;
+  birthDate?: string;
+  gender?: string;
+  phone?: string;
+  email?: string;
+  shirtSize?: string;
+  position?: string;
+  level?: string;
+  dorsal?: string;
+  federated?: boolean;
+  federationKey?: string;
   imageRights: boolean;
 };
 
@@ -73,9 +78,59 @@ export async function POST(req: NextRequest) {
     if (!payload.packageKey || !payload.captain?.fullName || !payload.players?.length) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
-    // proof.base64 és OPCIONAL: la gent pot enviar sense justificant i fer-ho per WA
     if (!payload.rgpdConsent || !payload.imageRightsConsent) {
       return NextResponse.json({ error: "Consents required" }, { status: 400 });
+    }
+
+    // Validació email capità
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.captain.email)) {
+      return NextResponse.json({ error: "Email del capità invàlid" }, { status: 400 });
+    }
+    // Validació telèfon (mínim 9 caràcters)
+    if (!payload.captain.phone || payload.captain.phone.trim().length < 9) {
+      return NextResponse.json({ error: "Telèfon del capità obligatori (mínim 9 dígits)" }, { status: 400 });
+    }
+    // Talla samarreta capità
+    if (!payload.captain.shirtSize) {
+      return NextResponse.json({ error: "Talla samarreta del capità obligatòria" }, { status: 400 });
+    }
+    // Tutor obligatori per a categories formatives — email també obligatori
+    if (payload.tutor) {
+      if (!payload.tutor.fullName?.trim() || !payload.tutor.phone?.trim()) {
+        return NextResponse.json({ error: "Nom i telèfon del tutor obligatoris" }, { status: 400 });
+      }
+      if (!payload.tutor.email?.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.tutor.email)) {
+        return NextResponse.json({ error: "Email del tutor obligatori i ha de ser vàlid" }, { status: 400 });
+      }
+    }
+    // Validació packageKey contra llista tancada
+    const VALID_PACKAGE_KEYS = ["individual", "team-4", "team-5", "senior"];
+    if (!VALID_PACKAGE_KEYS.includes(payload.packageKey)) {
+      return NextResponse.json({ error: "Categoria no vàlida" }, { status: 400 });
+    }
+    // Justificant de pagament obligatori
+    if (!payload.proof?.base64) {
+      return NextResponse.json({ error: "El justificant de pagament és obligatori" }, { status: 400 });
+    }
+    // Validació mida arxiu justificant (4 MB màxim)
+    const sizeBytes = Math.ceil((payload.proof.base64.length * 3) / 4);
+    if (sizeBytes > 4 * 1024 * 1024) {
+      return NextResponse.json(
+        { error: "El justificant supera els 4 MB. Comprimit la imatge i torna a intentar-ho." },
+        { status: 413 }
+      );
+    }
+    // Club i talla samarreta obligatoris per jugadors (no per a inscripció individual)
+    // Telèfon és opcional — el capità ja l'ha proporcionat com a contacte principal
+    if (payload.packageKey !== "individual") {
+      for (const p of payload.players) {
+        if (!p.club?.trim()) {
+          return NextResponse.json({ error: "El club d'origen és obligatori per a tots els jugadors" }, { status: 400 });
+        }
+        if (!p.shirtSize) {
+          return NextResponse.json({ error: "La talla de samarreta és obligatòria per a tots els jugadors" }, { status: 400 });
+        }
+      }
     }
 
     // Generate IDs

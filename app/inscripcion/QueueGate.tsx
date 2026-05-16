@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const TOTAL_WAIT_MS = 11_000;
+const TOTAL_WAIT_MS = 1_500;
 const DONE_HOLD_MS  = 1_200;
 
 function randomInt(min: number, max: number) {

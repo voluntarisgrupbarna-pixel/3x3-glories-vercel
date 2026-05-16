@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "playwright test",
+    "test:mobile": "playwright test --project='Mobile Chrome' --project='Mobile Safari' --project='Mobile Small'",
+    "test:mobile:ui": "playwright test --project='Mobile Chrome' --project='Mobile Safari' --project='Mobile Small' --ui",
+    "test:report": "playwright show-report"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",
@@ -19,6 +23,7 @@
     "three": "^0.184.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
