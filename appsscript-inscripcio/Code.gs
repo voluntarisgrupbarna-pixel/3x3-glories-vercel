@@ -1289,3 +1289,78 @@ function guardarCerca(payload) {
     return { ok: false, error: String(err && err.message ? err.message : err) };
   }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// setupPendentsSheet — crea la pestanya "Pendents recuperació" al Sheet
+// Executa manualment des de l'editor d'Apps Script → Run > setupPendentsSheet
+// ─────────────────────────────────────────────────────────────────────────────
+function setupPendentsSheet() {
+  var ss = SpreadsheetApp.openById("1jrjjMWOGEVGCkyCEd-x8DPVoYTqDLrUuehdZDT-q9OQ");
+
+  // 1. Eliminar pestanyes malformades (conté "Pendents" o "Sheet2")
+  var allSheets = ss.getSheets();
+  allSheets.forEach(function(s) {
+    var name = s.getName();
+    if (name.indexOf("Pendents") !== -1 || name === "Sheet2" || name === "Hoja 1") {
+      // Assegurem que no deixem el sheet sense cap pestanya
+      if (ss.getSheets().length > 1) {
+        ss.deleteSheet(s);
+        Logger.log("Eliminada pestanya: " + name);
+      }
+    }
+  });
+
+  // 2. Crear pestanya "Pendents recuperació" si no existeix
+  var targetName = "Pendents recuperació";
+  var existing = ss.getSheetByName(targetName);
+  var sheet;
+  if (existing) {
+    sheet = existing;
+    sheet.clearContents();
+    Logger.log("Pestanya ja existeix, contingut esborrat: " + targetName);
+  } else {
+    sheet = ss.insertSheet(targetName);
+    Logger.log("Pestanya creada: " + targetName);
+  }
+
+  // 3. Capçaleres
+  var headers = [
+    "Data contacte", "Nom equip", "Categoria", "Paquet",
+    "Preu (€)", "Capità nom", "Capità telèfon", "Capità email",
+    "Justificant rebut", "Estat", "Notes"
+  ];
+  var headerRange = sheet.getRange(1, 1, 1, headers.length);
+  headerRange.setValues([headers]);
+  headerRange.setBackground("#c0392b");
+  headerRange.setFontColor("#ffffff");
+  headerRange.setFontWeight("bold");
+  headerRange.setFontSize(11);
+  sheet.setFrozenRows(1);
+  sheet.setColumnWidths(1, headers.length, 140);
+  sheet.setColumnWidth(2, 160); // Nom equip
+  sheet.setColumnWidth(6, 180); // Capità nom
+  sheet.setColumnWidth(8, 200); // Capità email
+  sheet.setColumnWidth(11, 250); // Notes
+
+  // 4. Pre-poblar fila 2: equip Fade away (abandonament step3, 15 maig)
+  var fadeAway = [
+    "2026-05-15",         // Data contacte
+    "Fade away",          // Nom equip
+    "Mini (2014)",        // Categoria
+    "Equip 5j",           // Paquet
+    90,                   // Preu (€)
+    "Pau Filella Go...",  // Capità nom (dades parcials de l'abandonament)
+    "636519326",          // Capità telèfon
+    "miriamgn@ho...",     // Capità email (parcial)
+    "Pendent",            // Justificant rebut
+    "Pendent contactar",  // Estat
+    "Abandonament step3 — dades recollides del tab Abandonaments"  // Notes
+  ];
+  sheet.getRange(2, 1, 1, fadeAway.length).setValues([fadeAway]);
+
+  // 5. Format zebra per a les files de dades
+  sheet.getRange(2, 1, 1, headers.length).setBackground("#fde8e6");
+
+  Logger.log("setupPendentsSheet completat ✓ — pestanya llesta amb capçaleres i Fade away pre-populat");
+  return "OK";
+}
