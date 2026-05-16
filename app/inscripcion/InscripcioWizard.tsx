@@ -127,9 +127,9 @@ function CopyBtn({ text, label }: { text: string; label: string }) {
 
 // ── Main Component ─────────────────────────────────────────────────────────
 
-type Props = { initialRefCode?: string };
+type Props = { initialRefCode?: string; waFlow?: boolean };
 
-export default function InscripcioWizard({ initialRefCode = "" }: Props) {
+export default function InscripcioWizard({ initialRefCode = "", waFlow = false }: Props) {
   const [state, setState] = useState<WizardState>({
     step: 1,
     socialShareDone: false,
@@ -348,8 +348,7 @@ export default function InscripcioWizard({ initialRefCode = "" }: Props) {
       ...prev,
       category: cat,
       needsTutor: isFormative(cat),
-      // Pre-fill category on existing players that haven't set one
-      players: prev.players.map((p) => p.category ? p : { ...p, category: cat }),
+      players: prev.players.map((p) => ({ ...p, category: cat })),
     }));
   }
 
@@ -385,6 +384,7 @@ export default function InscripcioWizard({ initialRefCode = "" }: Props) {
     });
     setState((prev) => {
       let nextStep = prev.step + 1;
+      if (waFlow && nextStep === 3) nextStep = 4;
       if (prev.packageKey === "individual" && nextStep === 4) nextStep = 5;
       return { ...prev, step: Math.min(nextStep, 5) };
     });
@@ -395,6 +395,7 @@ export default function InscripcioWizard({ initialRefCode = "" }: Props) {
     setState((prev) => {
       let prevStep = prev.step - 1;
       if (prev.packageKey === "individual" && prevStep === 4) prevStep = 3;
+      if (waFlow && prevStep === 3) prevStep = 2;
       return { ...prev, step: Math.max(prevStep, 1) };
     });
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -546,13 +547,14 @@ export default function InscripcioWizard({ initialRefCode = "" }: Props) {
         disc={disc}
         pkg={pkg!}
         teamName={state.teamName}
+        waFlow={waFlow}
       />
     );
   }
 
   return (
     <div className="wizard" ref={wizardRef}>
-      <Stepper currentStep={state.step} isIndividual={state.packageKey === "individual"} />
+      <Stepper currentStep={state.step} isIndividual={state.packageKey === "individual"} waFlow={waFlow} />
 
       {state.step === 1 && (
         <Step1Discounts
@@ -632,13 +634,22 @@ export default function InscripcioWizard({ initialRefCode = "" }: Props) {
 
 // ── Stepper ────────────────────────────────────────────────────────────────
 
-function Stepper({ currentStep, isIndividual }: { currentStep: number; isIndividual: boolean }) {
-  const steps = isIndividual
-    ? [{ id: 1, label: "Descompte" }, { id: 2, label: "Equip" }, { id: 3, label: "Pagament" }, { id: 5, label: "Confirma" }]
-    : STEPS;
+function Stepper({ currentStep, isIndividual, waFlow = false }: { currentStep: number; isIndividual: boolean; waFlow?: boolean }) {
+  const steps = (() => {
+    if (waFlow && isIndividual) return [
+      { id: 1, label: "Descompte" }, { id: 2, label: "Equip" }, { id: 5, label: "Confirma" },
+    ];
+    if (waFlow) return [
+      { id: 1, label: "Descompte" }, { id: 2, label: "Equip" }, { id: 4, label: "Jugadors" }, { id: 5, label: "Confirma" },
+    ];
+    if (isIndividual) return [
+      { id: 1, label: "Descompte" }, { id: 2, label: "Equip" }, { id: 3, label: "Pagament" }, { id: 5, label: "Confirma" },
+    ];
+    return STEPS;
+  })();
 
-  // Map actual step to visual position
-  const visualStep = isIndividual && currentStep >= 4 ? currentStep - 1 : currentStep;
+  // Visual position = how many steps have id ≤ currentStep
+  const visualStep = steps.filter((s) => s.id <= currentStep).length;
 
   return (
     <ol className="wizard-stepper">
@@ -866,7 +877,7 @@ function Step2Team({
 
   return (
     <div className="wizard-step">
-      <h2 className="wizard-step-title">Dades de l&apos;equip</h2>
+      <h2 className="wizard-step-title">{state.packageKey === "individual" ? "Les teves dades" : "Dades de l’equip"}</h2>
 
       {/* Active discounts badge */}
       {(disc.totalDiscount > 0) && (
@@ -1082,7 +1093,7 @@ function Step3Payment({
 
       <div className="wizard-field wizard-field-full">
         <label htmlFor="proof">
-          Justificant de la transferència *{" "}
+          Justificant de la transferència{" "}
           <span style={{ fontWeight: 400, color: "#888" }}>JPG, PNG o PDF · màx. 4 MB</span>
         </label>
         <input
@@ -1090,11 +1101,10 @@ function Step3Payment({
           type="file"
           accept="image/*,application/pdf"
           onChange={(e) => onFile(e.target.files?.[0] || null)}
-          required
         />
         {proofFileName
           ? <p className="wizard-help wizard-help-success">✓ Fitxer adjuntat: <strong>{proofFileName}</strong></p>
-          : <p className="wizard-help">📎 Fes la transferència i adjunta el comprovant per continuar.</p>
+          : <p className="wizard-help">📎 Adjunta el comprovant si ja has fet la transferència — o continua i envia&apos;ns-el per WhatsApp.</p>
         }
       </div>
 
@@ -1211,11 +1221,8 @@ function Step4Players({
               <input id={`wp${idx}-club`} type="text" value={p.club} onChange={(e) => handlePlayerUpdate(idx, { club: e.target.value })} placeholder="CB Grup Barna…" required maxLength={60} />
             </div>
             <div className="wizard-field">
-              <label htmlFor={`wp${idx}-cat`}>Categoria *</label>
-              <select id={`wp${idx}-cat`} value={p.category} onChange={(e) => handlePlayerUpdate(idx, { category: e.target.value })} required>
-                <option value="">Tria…</option>
-                {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
-              </select>
+              <label>Categoria</label>
+              <p style={{ margin: "6px 0 0", fontWeight: 600, fontSize: 15 }}>{teamCategory || "—"}</p>
             </div>
             <div className="wizard-field">
               <label htmlFor={`wp${idx}-birth`}>Any de naixement *</label>
@@ -1224,19 +1231,11 @@ function Step4Players({
                 type="text"
                 value={p.birthYear}
                 onChange={(e) => handlePlayerUpdate(idx, { birthYear: e.target.value.replace(/\D/g, "").slice(0, 4) })}
-                placeholder="2005"
+                placeholder="2010"
                 maxLength={4}
                 inputMode="numeric"
                 required
               />
-              {(() => {
-                const range = getCategoryYearRange(p.category);
-                const year = parseInt(p.birthYear);
-                if (range && p.birthYear.length === 4 && !isNaN(year) && (year < range[0] || year > range[1])) {
-                  return <p style={{ color: "#f08c00", fontSize: 12, margin: "4px 0 0" }}>⚠️ Rang esperat: {range[0]}–{range[1]}</p>;
-                }
-                return null;
-              })()}
             </div>
             <div className="wizard-field">
               <label htmlFor={`wp${idx}-gender`}>Gènere *</label>
@@ -1343,6 +1342,13 @@ function Step5Confirm({
         </div>
       </div>
 
+      {!state.proofFileName && (
+        <p style={{ background: "rgba(240,140,0,.1)", border: "1px solid rgba(240,140,0,.3)", borderRadius: 10, padding: "10px 14px", fontSize: 13, color: "#f08c00", margin: "0 0 16px", lineHeight: 1.5 }}>
+          ⚠️ No has adjuntat el justificant de la transferència. Pots enviar la inscripció igualment — envia&apos;ns el comprovant per{" "}
+          <a href="https://wa.me/34698425153" target="_blank" rel="noreferrer" style={{ color: "#f08c00" }}>WhatsApp</a> en quan facis el pagament.
+        </p>
+      )}
+
       <label className="wizard-toggle">
         <input type="checkbox" checked={state.rgpdConsent} onChange={(e) => setRgpd(e.target.checked)} />
         <span>Accepto la política de privadesa i el tractament de les dades (RGPD). *</span>
@@ -1372,12 +1378,14 @@ function SuccessPanel({
   disc,
   pkg,
   teamName,
+  waFlow = false,
 }: {
   teamId: string;
   playerIds: string[];
   disc: DiscountResult;
   pkg: Package;
   teamName: string;
+  waFlow?: boolean;
 }) {
   const checkInUrl = `https://www.cbgrupbarna-3x3timechamber.com/check-in/${teamId}`;
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=10&data=${encodeURIComponent(checkInUrl)}`;
@@ -1389,8 +1397,21 @@ function SuccessPanel({
       <h2>Inscripció enviada!</h2>
       <p>
         {teamName && <><strong>{teamName}</strong> — </>}
-        Ja tenim totes les vostres dades. Validem el justificant en menys de 24h i us confirmem la plaça per WhatsApp i email.
+        Ja tenim totes les vostres dades. {waFlow
+          ? "Ara envia el justificant de pagament per WhatsApp i et confirmem la plaça en menys de 24h."
+          : "Validem el justificant en menys de 24h i us confirmem la plaça per WhatsApp i email."}
       </p>
+      {waFlow && (
+        <a
+          href="https://wa.me/34698425153?text=Hola%2C%20us%20envio%20el%20justificant%20de%20pagament%20de%20l%27equip%20"
+          className="wizard-btn wizard-btn-primary"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ marginTop: 8 }}
+        >
+          Enviar justificant per WhatsApp
+        </a>
+      )}
       {disc.totalDiscount > 0 && (
         <div className="wizard-success-discount">
           <span>Estalvi total</span>
@@ -1415,7 +1436,17 @@ function SuccessPanel({
         </details>
       )}
       <p className="wizard-success-tip">El check-in del dia del torneig serà aquí mateix.</p>
-      <a href="/" className="wizard-btn wizard-btn-ghost">Tornar a l&apos;inici</a>
+      <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center", marginTop: 8 }}>
+        <a href="/" className="wizard-btn wizard-btn-ghost">Tornar a l&apos;inici</a>
+        <a
+          href={`https://wa.me/34698425153?text=${encodeURIComponent(`Hola! Acabo d'inscriure l'equip ${teamId}${teamName ? ` (${teamName})` : ""}. Tinc un dubte.`)}`}
+          target="_blank"
+          rel="noreferrer"
+          className="wizard-btn wizard-btn-ghost"
+        >
+          💬 Dubtes? WhatsApp
+        </a>
+      </div>
     </div>
   );
 }

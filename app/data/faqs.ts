@@ -14,15 +14,15 @@ export const faqs: Faq[] = [
   },
   {
     q: "Com m'inscric al 3×3 Westfield Glòries?",
-    a: "Pel formulari online a /inscripcion. El procés té 5 passos: dades de l'equip, capità, jugadors (3-5), samarretes i pagament. La transferència bancària es fa amb un codi QR pre-omplert que escaneges amb l'app del banc. Confirmem la plaça en menys de 24h per email i WhatsApp.",
+    a: "Pel formulari online a /inscripcion. El procés té 5 passos: (1) descomptes disponibles, (2) dades de l'equip i capità, (3) pagament per transferència bancària (IBAN del club), (4) dades dels jugadors, i (5) confirmació. Validem la plaça en menys de 24h per WhatsApp i email. No cal pujar el justificant immediatament — pots enviar-nos-el per WhatsApp.",
   },
   {
     q: "Quant costa la inscripció per equip?",
-    a: "Entre 75 € i 105 €. 75 € per equip de 3-4 jugadors (categories formatives), 85 € per equip de 3-4 jugadors Sèniors/Veterans, 90 € per equip de 5 jugadors (categoria general) i 105 € per equip de 5 jugadors Sèniors. Les samarretes addicionals (acompanyant o recanvi) costen 25 €/u. Hi ha un descompte opcional del 10% per compartir el torneig a xarxes socials.",
+    a: "De 75 € a 90 €. 75 € per equip de 4 jugadors (categories formatives i Sub-23), 85 € per equip de 4 jugadors Sèniors/Veterans, 90 € per equip de 5 jugadors en qualsevol categoria. Les samarretes addicionals (acompanyant o recanvi) costen 25 €/u. Hi ha descomptes acumulables: Early Bird −10 % (actiu fins el 21 de maig), Social −5 % (compartint a xarxes) i Pack Rival −5 € (codi de coneixents).",
   },
   {
     q: "Quantes categories hi ha?",
-    a: "Hi ha 10 categories: Premini (2016-17), Mini (2014-15), Infantil (2012-13), Cadet (2010-11), Júnior (2008-09), Sub-23 (2003-07), Sènior Masculí, Sènior Femení, Veterans Masculí (fins 1986) i Veterans Femení (fins 1986).",
+    a: "Hi ha 11 categories: Escoleta (2018-19), Premini (2016-17), Mini (2014-15), Infantil (2012-13), Cadet (2010-11), Júnior (2008-09), Sub-23 (2003-07), Sènior Masculí (fins 2002), Sènior Femení (fins 2002), Veterans Masculí (nascuts fins 1986) i Veterans Femení (nascuts fins 1986).",
   },
   {
     q: "El torneig dóna punts FIBA 3×3?",
@@ -41,7 +41,15 @@ export const faqs: Faq[] = [
     a: "Sí. Westfield Glòries ofereix pàrquing gratuït durant 2 hores per als assistents al torneig. A més, es pot arribar fàcilment en metro (L1, estació Glòries) o en bus (línies de la Diagonal).",
   },
   {
+    q: "Ja he fet la transferència. Quan em confirmen la plaça?",
+    a: "En menys de 24 hores en dies laborables. Rebràs confirmació per WhatsApp i per email. Si no has adjuntat el justificant al formulari, envia'l per WhatsApp (+34 698 425 153) indicant el nom de l'equip i la categoria.",
+  },
+  {
+    q: "Puc canviar jugadors de l'equip abans del torneig?",
+    a: "Sí, amb avís previ per WhatsApp fins 48 hores abans del torneig. Indica el codi de l'equip i les dades del jugador que entra i el que surt. No es cobra cap penalització.",
+  },
+  {
     q: "Com contacto amb l'organització?",
-    a: "Pots contactar amb nosaltres a través del formulari de contacte a /contacte o directament per WhatsApp. Resposta en menys de 24 hores en dies laborables.",
+    a: "Directament per WhatsApp al +34 698 425 153. Resposta en menys de 24 hores en dies laborables.",
   },
 ];

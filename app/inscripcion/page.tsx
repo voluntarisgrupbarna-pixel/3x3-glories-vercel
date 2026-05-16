@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Inscripció — 3×3 Westfield Glòries 2026 · Des de 75€",
     description:
-      "Places al 64%. Des de 75€ per equip. 10 categories, punts FIBA Sèniors, 2.000€ de premi. Inscripció en 10 min · Confirmació en 24h.",
+      "Places al 64%. Des de 75€ per equip. 11 categories, punts FIBA Sèniors, 2.000€ de premi. Inscripció en 10 min · Confirmació en 24h.",
   },
 };
 
@@ -65,15 +65,15 @@ const jsonLdHowTo = {
     {
       "@type": "HowToStep",
       position: 4,
-      name: "Samarretes oficials (opcional)",
-      text: "Si vols, comanda samarretes oficials del torneig a 25€ cadascuna. Disponible per als jugadors de l'equip.",
+      name: "Dades dels jugadors (3–5)",
+      text: "Afegeix de 3 a 5 jugadors: nom, cognoms, any de naixement, gènere, club i talla de samarreta. El mínim per jugar és 3 jugadors; el màxim 5 (3 titulars + fins a 2 suplents).",
       url: `${SITE_URL}/inscripcion`,
     },
     {
       "@type": "HowToStep",
       position: 5,
-      name: "Pagament per transferència bancària",
-      text: "Escaneges el codi QR pre-omplert amb l'import exacte i el codi de l'equip. La transferència es fa des de l'app del teu banc en menys de 2 minuts. Confiració de plaça en menys de 24h per email i WhatsApp.",
+      name: "Confirmació i enviament",
+      text: "Revisa el resum de la inscripció, accepta la política de privadesa i envia. Confirmem la plaça en menys de 24h per WhatsApp i email. Si no has adjuntat el justificant de la transferència, envia'l per WhatsApp quan facis el pagament.",
       url: `${SITE_URL}/inscripcion`,
     },
   ],
@@ -233,7 +233,7 @@ export default async function InscripcionPage({ searchParams }: InscripcionPageP
         {/* ── Categories i preus ── */}
         <h2>Categories i preus</h2>
         <p>
-          Hi ha <strong>10 categories</strong> per edat i gènere. Tots els equips reben samarreta oficial
+          Hi ha <strong>11 categories</strong> per edat i gènere. Tots els equips reben samarreta oficial
           i dorsal.
         </p>
 
