@@ -199,7 +199,7 @@ test.describe("Wizard — casos límit", () => {
 
   // ── Flux categoria formativa (Cadet + Tutor) ─────────────────────────────
 
-  test("10 · Flux formativa Cadet: omple tutor → pot avançar", async ({ page }) => {
+  test("10 · Flux formativa Cadet: omple tutor adult → pot avançar sense capità menor", async ({ page }) => {
     await gotoWizard(page);
     await goToStep2(page);
 
@@ -213,15 +213,27 @@ test.describe("Wizard — casos límit", () => {
     await page.getByLabel("Email *").first().fill("pare@test.com");
     await page.getByLabel("Talla samarreta *").first().selectOption("L");
 
-    // Capità menor (el bloc apareix automàticament)
-    await expect(page.getByText("Capità/a de l'equip (menor)")).toBeVisible();
-    // Els inputs del menor no tenen id — cerquem pels labels dins del segon bloc
-    const tutorSection = page.locator(".wizard-grid-2").last();
-    await tutorSection.getByLabel("Nom i cognoms *").fill("Marc Menor Cadet");
-    await tutorSection.getByLabel("Telèfon *").fill("+34 600 555 001");
-    await tutorSection.getByLabel("Email *").fill("marc@test.com");
+    // Capità menor opcional: no ha de bloquejar el pas si queda buit.
+    await expect(page.getByText("Capità/a de l'equip (menor, opcional)")).toBeVisible();
 
     await expect(page.getByRole("button", { name: /Continuar al pagament/i })).toBeEnabled();
+  });
+
+  test("10b · Flux formativa Cadet: capità menor parcial → demana completar-lo", async ({ page }) => {
+    await gotoWizard(page);
+    await goToStep2(page);
+
+    await page.getByRole("button", { name: /Equip 4 jugadors/i }).first().click();
+    await page.getByLabel("Categoria *").selectOption("Cadet Masculí");
+    await page.getByLabel("Nom de l'equip *").fill("Cadets Test");
+    await fillCaptainTeam(page);
+
+    const minorSection = page.locator(".wizard-grid-2").last();
+    await minorSection.getByLabel("Nom i cognoms").fill("Marc Menor Cadet");
+
+    await expect(page.getByRole("button", { name: /Continuar al pagament/i })).toBeDisabled();
+    await expect(page.getByText(/telèfon del capità\/a menor/i)).toBeVisible();
+    await expect(page.getByText(/email del capità\/a menor/i)).toBeVisible();
   });
 
   // ── waFlow — salta Step 3 ─────────────────────────────────────────────────

@@ -178,11 +178,11 @@ test.describe("InscripcioWizard", () => {
     await gotoWizard(page);
     await goToStep2(page);
 
-    await selectPackageAndCategory(page, "Equip 4 jugadors", "Cadet Masculí (2010-2011)");
+    await selectPackageAndCategory(page, "Equip 4 jugadors", "Cadet Masculí");
     // El títol del camp capità canvia a "Tutor/a"
     await expect(page.getByText("Tutor/a (responsable adult)")).toBeVisible();
-    // I apareix un bloc per al capità menor
-    await expect(page.getByText("Capità/a de l'equip (menor)")).toBeVisible();
+    // I apareix un bloc opcional per al capità menor
+    await expect(page.getByText("Capità/a de l'equip (menor, opcional)")).toBeVisible();
   });
 
   test("5 · Individual salta Step 4 (jugadors)", async ({ page }) => {
@@ -268,15 +268,15 @@ test.describe("InscripcioWizard", () => {
     await expect(page.getByRole("button", { name: /Continuar al pagament/i })).toBeDisabled();
   });
 
-  test("12 · Step 2: botó desactivat si categoria formativa i falta tutor", async ({ page }) => {
+  test("12 · Step 2: categoria formativa avança amb tutor adult complet", async ({ page }) => {
     await gotoWizard(page);
     await goToStep2(page);
 
-    await selectPackageAndCategory(page, "Equip 4 jugadors", "Mini Masculí (2014-2015)");
+    await selectPackageAndCategory(page, "Equip 4 jugadors", "Mini Masculí");
     await page.getByLabel("Nom de l'equip *").fill("Mini Stars");
     await fillCaptain(page);
-    // Falta nom+telèfon del tutor → desactivat
-    await expect(page.getByRole("button", { name: /Continuar al pagament/i })).toBeDisabled();
+    // El capità/a menor és opcional; el tutor adult complet ja permet avançar.
+    await expect(page.getByRole("button", { name: /Continuar al pagament/i })).toBeEnabled();
   });
 
   test("13 · Step 2: botó activat quan tots els camps obligatoris omplerts", async ({ page }) => {

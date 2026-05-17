@@ -80,6 +80,351 @@ function doGet(e) {
   }
 }
 
+/**
+ * Assegura que WR-031/032/033/034 estiguin ben visibles a "Inscripcions 2026":
+ * - WR-031 Croqueta: omple columnes format antic (cols 1-20 buides)
+ * - WR-032 Walking Dead: afegeix fila completa (va ser eliminada per la neteja)
+ * - WR-033 The Microwaves + WR-034 Ice Barna: ja estan, comprova Verificat
+ */
+function fixInsc2026Tab() {
+  var props = PropertiesService.getScriptProperties();
+  var sheetId = props.getProperty("SHEET_ID");
+  var siteUrl = (props.getProperty("SITE_URL") || "https://www.cbgrupbarna-3x3timechamber.com").replace(/\/$/, "");
+  if (!sheetId) return "ERROR: no SHEET_ID";
+  var ss = SpreadsheetApp.openById(sheetId);
+  var sh = ss.getSheetByName("Inscripcions 2026");
+  if (!sh) return "ERROR: no existeix la pestanya 'Inscripcions 2026'";
+
+  var data = sh.getDataRange().getValues();
+  var H = data[0]; // headers row
+
+  // --- Helper: find column index by exact header text ---
+  function ci(name) {
+    for (var i = 0; i < H.length; i++) if (String(H[i]).trim() === name) return i;
+    return -1;
+  }
+
+  // Known column indices (0-based) from header analysis:
+  // Old-format cols 0-20
+  var C = {
+    nomEquip:    ci("Nom Equip"),       // col 1
+    mida:        ci("Mida (4/5)"),      // col 2
+    categoria:   ci("Categoria"),       // col 3
+    capitaNom:   ci("Capità Nom"),      // col 4
+    capitaCognom:ci("Capità Cognom"),   // col 5
+    capitaEmail: ci("Capità Email"),    // col 6
+    capitaTel:   ci("Capità Telèfon"),  // col 7
+    capitaTalla: ci("Capità Talla"),    // col 9
+    jugExtra:    ci("Jugadors Extra"),  // col 13
+    total:       ci("Total (€)"),       // col 17
+    notesEstat:  ci("Notes / Estat"),   // col 19
+    genere:      ci("Gènere"),          // col 20
+    // New-format cols 21+
+    data2:       ci("Data"),            // col 21
+    teamId:      ci("Team ID"),         // col 22
+    concepte:    ci("Concepte"),        // col 23
+    nomEquip2:   ci("Nom equip"),       // col 24 (lowercase e)
+    capita2:     ci("Capità"),          // col 25
+    email2:      ci("Email"),           // col 27
+    telefon2:    ci("Telèfon"),         // col 28
+    jugadors2:   ci("Jugadors"),        // col 29
+    midaSam:     ci("Mida samarretes"), // col 30
+    descAplicat: ci("Desc. aplicat?"),  // col 32
+    descInvit:   ci("Desc. invitacions?"), // col 33
+    justDrive:   ci("Justificant Drive URL"), // col 34
+    checkInUrl:  ci("Check-in URL"),    // col 35
+    pagament:    ci("Pagament estat"),  // col 38
+    codi:        ci("Codi WR")          // col 44
+  };
+
+  var results = [];
+
+  // --- Find row by WR code or keyword in any cell ---
+  function findRow(wr, keyword) {
+    for (var r = 1; r < data.length; r++) {
+      var row = data[r].join("|");
+      if ((wr && row.indexOf(wr) !== -1) || (keyword && row.toLowerCase().indexOf(keyword.toLowerCase()) !== -1)) return r;
+    }
+    return -1;
+  }
+
+  // ── WR-031 Croqueta Mentality — omple columnes format antic ──
+  var r031 = findRow("WR-031", "Croqueta");
+  if (r031 >= 0) {
+    function sv(col, val) { if (col >= 0) sh.getRange(r031+1, col+1).setValue(val); }
+    sv(C.nomEquip,    "Croqueta Mentality");
+    sv(C.mida,        4);
+    sv(C.categoria,   "Cadet Femení");
+    sv(C.capitaNom,   "Pilar");
+    sv(C.capitaCognom,"Franco Salcedo");
+    sv(C.capitaEmail, "pilufranco@gmail.com");
+    sv(C.capitaTel,   "34608522753");
+    sv(C.jugExtra,    "Nora Jornet Franco · Mar Montaner Garcia · Irene Rocamora Martinez");
+    sv(C.total,       67.5);
+    sv(C.notesEstat,  "Verificat");
+    sv(C.genere,      "Femení");
+    sv(C.pagament,    "Verificat");
+    results.push("WR-031 fila " + (r031+1) + " completa");
+  } else {
+    results.push("WR-031 NO TROBADA");
+  }
+
+  // ── WR-033 + WR-034 — comprova pagament estat ──
+  ["WR-033","WR-034"].forEach(function(wr) {
+    var rr = findRow(wr, null);
+    if (rr >= 0) {
+      if (C.pagament >= 0) sh.getRange(rr+1, C.pagament+1).setValue("Verificat");
+      results.push(wr + " fila " + (rr+1) + " pagament=Verificat");
+    } else {
+      results.push(wr + " NO TROBADA");
+    }
+  });
+
+  // ── WR-032 Walking Dead — afegir fila completa si no existeix ──
+  var r032 = findRow("WR-032", "Walking Dead");
+  if (r032 >= 0) {
+    if (C.pagament >= 0) sh.getRange(r032+1, C.pagament+1).setValue("Verificat (BBVA transfer)");
+    if (C.codi >= 0) sh.getRange(r032+1, C.codi+1).setValue("WR-032");
+    results.push("WR-032 ja existia fila " + (r032+1) + " actualitzada");
+  } else {
+    var ciUrl032 = siteUrl + "/check-in/WR-032";
+    var newRow = new Array(H.length).fill("");
+    function nv(col, val) { if (col >= 0) newRow[col] = val; }
+    // Old-format
+    nv(C.nomEquip,    "The Walking Dead");
+    nv(C.mida,        4);
+    nv(C.categoria,   "Veterans Masculí");
+    nv(C.capitaNom,   "Alberto");
+    nv(C.capitaCognom,"Marí");
+    nv(C.capitaEmail, "almari_21@hotmail.com");
+    nv(C.capitaTalla, "L");
+    nv(C.jugExtra,    "Andreu Puig · Ignacio Goñi · Dífac Puig");
+    nv(C.total,       67.5);
+    nv(C.notesEstat,  "Verificat");
+    nv(C.genere,      "Masculí");
+    // New-format
+    nv(C.data2,       "17/05/2026 14:10");
+    nv(C.teamId,      "WR-032");
+    nv(C.concepte,    "Equip 4 jugadors");
+    nv(C.nomEquip2,   "The Walking Dead");
+    nv(C.capita2,     "Alberto Marí");
+    nv(C.email2,      "almari_21@hotmail.com");
+    nv(C.jugadors2,   "Alberto Marí · Andreu Puig · Ignacio Goñi · Dífac Puig");
+    nv(C.midaSam,     "L · XL · XXL · L");
+    nv(C.descAplicat, "No");
+    nv(C.descInvit,   "No");
+    nv(C.checkInUrl,  ciUrl032);
+    nv(C.pagament,    "Verificat (BBVA transfer)");
+    nv(C.codi,        "WR-032");
+    sh.appendRow(newRow);
+    results.push("WR-032 fila nova afegida");
+  }
+
+  var summary = "fixInsc2026Tab OK: " + results.join(" | ");
+  Logger.log(summary);
+  return summary;
+}
+
+/**
+ * Confirma WR-031 (Croqueta Mentality), WR-033 (The Microwaves), WR-034 (Ice Barna)
+ * sense justificant. Afegeix a Inscripcions + Jugadors, actualitza Inscripcions 2026,
+ * envia email de confirmació amb QR a cada capità.
+ * Executar UNA SOLA VEGADA.
+ */
+function confirmThreeTeamsManual() {
+  var props = PropertiesService.getScriptProperties();
+  var sheetId = props.getProperty("SHEET_ID");
+  var siteUrl = (props.getProperty("SITE_URL") || "https://www.cbgrupbarna-3x3timechamber.com").replace(/\/$/, "");
+  if (!sheetId) return "ERROR: no SHEET_ID";
+  var ss = SpreadsheetApp.openById(sheetId);
+  var now = new Date();
+  var nowStr = Utilities.formatDate(now, "Europe/Madrid", "dd/MM/yyyy HH:mm");
+  var results = [];
+
+  var teams = [
+    {
+      wr: "WR-031", teamName: "Croqueta Mentality", category: "Cadet Femení",
+      pkg: "Equip 4 jugadors", price: 67.5,
+      captainName: "Pilar Franco Salcedo", captainPhone: "34608522753",
+      captainEmail: "pilufranco@gmail.com", captainShirt: "",
+      oldTeamId: "T3X3-2026-QNQX4",
+      players: [
+        { name: "Pilar Franco Salcedo",     shirt: "", gender: "Femení" },
+        { name: "Nora Jornet Franco",        shirt: "", gender: "Femení" },
+        { name: "Mar Montaner Garcia",       shirt: "", gender: "Femení" },
+        { name: "Irene Rocamora Martinez",   shirt: "", gender: "Femení" }
+      ]
+    },
+    {
+      wr: "WR-033", teamName: "The Microwaves", category: "Infantil",
+      pkg: "Equip 4 jugadors", price: 67.5,
+      captainName: "Eric García Lopez", captainPhone: "656167822",
+      captainEmail: "oscgarvid@gmail.com", captainShirt: "16",
+      oldTeamId: "the-microwaves-teshqk",
+      players: [
+        { name: "Eric García Lopez", shirt: "16", gender: "Masculí" },
+        { name: "Bruno",             shirt: "16", gender: "Masculí" },
+        { name: "Adrián",            shirt: "S",  gender: "Masculí" },
+        { name: "Gerard",            shirt: "L",  gender: "Masculí" }
+      ]
+    },
+    {
+      wr: "WR-034", teamName: "Ice Barna", category: "Cadet",
+      pkg: "Equip 4 jugadors", price: 67.5,
+      captainName: "Lluc Seseras Perez", captainPhone: "639304918",
+      captainEmail: "llucsepe@gmail.com", captainShirt: "S",
+      oldTeamId: "ice-barna-tetvny",
+      players: [
+        { name: "Lluc Seseras Perez", shirt: "S", gender: "Masculí" },
+        { name: "Ivan",               shirt: "M", gender: "Masculí" },
+        { name: "Alex",               shirt: "M", gender: "Masculí" },
+        { name: "Martí",              shirt: "M", gender: "Masculí" }
+      ]
+    }
+  ];
+
+  var inscSheet     = ss.getSheetByName("Inscripcions");
+  var jugSheet      = ss.getSheetByName("Jugadors");
+  var insc2026Sheet = ss.getSheetByName("Inscripcions 2026");
+
+  var inscHeaders   = inscSheet     ? inscSheet.getDataRange().getValues()[0]     : [];
+  var jugHeaders    = jugSheet      ? jugSheet.getDataRange().getValues()[0]      : [];
+  var insc2026Data  = insc2026Sheet ? insc2026Sheet.getDataRange().getValues()    : [];
+  var insc2026Headers = insc2026Data.length > 0 ? insc2026Data[0] : [];
+
+  function colIdx(headers, name) {
+    for (var i = 0; i < headers.length; i++) {
+      if (String(headers[i]).trim() === name) return i;
+    }
+    return -1;
+  }
+
+  teams.forEach(function(team) {
+    // ── 1. Inscripcions tab ──────────────────────────────────────
+    if (inscSheet) {
+      var inscData = inscSheet.getDataRange().getValues();
+      var tiCol = colIdx(inscHeaders, "TeamID");
+      var existsRow = -1;
+      for (var r = 1; r < inscData.length; r++) {
+        if (String(inscData[r][tiCol] || "").trim().toUpperCase() === team.wr) { existsRow = r; break; }
+      }
+      if (existsRow >= 0) {
+        var stCol = colIdx(inscHeaders, "Status");
+        if (stCol >= 0) inscSheet.getRange(existsRow + 1, stCol + 1).setValue("confirmed");
+        results.push("Inscripcions: actualitzat status " + team.wr);
+      } else {
+        var newRow = new Array(inscHeaders.length).fill("");
+        var vals = {
+          "Timestamp": nowStr, "TeamID": team.wr, "Status": "confirmed",
+          "Package": team.pkg, "Category": team.category, "Team Name": team.teamName,
+          "Preu Base (€)": team.price, "Descompte (€)": 0, "Preu Final (€)": team.price,
+          "Tipus Descompte": "", "Early Bird": "No", "Social Share": "No",
+          "Captain Name": team.captainName, "Captain Phone": team.captainPhone,
+          "Captain Email": team.captainEmail, "Captain Shirt": team.captainShirt,
+          "Has Tutor": "FALSE", "Num Players": team.players.length,
+          "RGPD Consent": "TRUE", "Image Rights": "TRUE", "QRs Sent": "TRUE",
+          "Notes": "Confirmat sense justificant per CB Grup Barna " + nowStr
+        };
+        for (var k in vals) { var ci = colIdx(inscHeaders, k); if (ci >= 0) newRow[ci] = vals[k]; }
+        inscSheet.appendRow(newRow);
+        results.push("Inscripcions: afegida fila " + team.wr);
+      }
+    }
+
+    // ── 2. Jugadors tab ──────────────────────────────────────────
+    if (jugSheet) {
+      var jugData = jugSheet.getDataRange().getValues();
+      var tjCol = colIdx(jugHeaders, "TeamID");
+      var hasPlayers = jugData.some(function(row, ri) {
+        return ri > 0 && String(row[tjCol] || "").trim().toUpperCase() === team.wr;
+      });
+      if (!hasPlayers) {
+        team.players.forEach(function(player, idx) {
+          var jugRow = new Array(jugHeaders.length).fill("");
+          var jv = {
+            "Timestamp": nowStr, "PlayerID": team.wr + "-P" + (idx + 1),
+            "TeamID": team.wr, "Full Name": player.name, "Club": "",
+            "Category": team.category, "Birth Year": "", "Gender": player.gender,
+            "Phone": idx === 0 ? team.captainPhone : "",
+            "Email": idx === 0 ? team.captainEmail : "",
+            "Shirt Size": player.shirt, "Image Rights": "TRUE"
+          };
+          for (var k in jv) { var ji = colIdx(jugHeaders, k); if (ji >= 0) jugRow[ji] = jv[k]; }
+          jugSheet.appendRow(jugRow);
+        });
+        results.push("Jugadors: " + team.players.length + " jugadors afegits per " + team.wr);
+      }
+    }
+
+    // ── 3. Inscripcions 2026 tab — actualitzar pagament estat ────
+    if (insc2026Sheet && insc2026Data.length > 0) {
+      var wrColI = -1, pagColI = -1;
+      for (var c = 0; c < insc2026Headers.length; c++) {
+        var h = String(insc2026Headers[c]).toLowerCase();
+        if (h === "codi wr" || h.includes("codi wr")) wrColI = c;
+        if (h.includes("pagament estat")) pagColI = c;
+      }
+      for (var r = 1; r < insc2026Data.length; r++) {
+        var rowWr  = String(insc2026Data[r][wrColI] || "").trim().toUpperCase();
+        var rowStr = insc2026Data[r].join("|").toLowerCase();
+        if (rowWr === team.wr || rowStr.indexOf(team.oldTeamId.toLowerCase()) !== -1) {
+          if (pagColI >= 0) insc2026Sheet.getRange(r + 1, pagColI + 1).setValue("Verificat");
+          if (wrColI  >= 0) insc2026Sheet.getRange(r + 1, wrColI  + 1).setValue(team.wr);
+          results.push("Inscripcions 2026: actualitzat " + team.wr + " fila " + (r + 1));
+          break;
+        }
+      }
+    }
+
+    // ── 4. Email de confirmació al capità ────────────────────────
+    var ciUrl  = siteUrl + "/check-in/" + team.wr;
+    var qrUrl  = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=10&data=" + encodeURIComponent(ciUrl);
+    var jugHtml = team.players.map(function(p) {
+      return "<li>" + p.name + (p.shirt ? " — talla " + p.shirt : "") + "</li>";
+    }).join("");
+
+    var htmlCap =
+      "<div style='font-family:Arial,sans-serif;max-width:600px;color:#111;'>" +
+      "<div style='background:#111b21;padding:20px 24px;border-radius:10px 10px 0 0;'>" +
+        "<h2 style='color:#25d366;margin:0 0 4px;'>✅ Inscripció confirmada!</h2>" +
+        "<p style='color:#8696a0;margin:0;font-size:13px;'>3×3 Westfield Glòries 2026 · 6-7 juny · Clot, Barcelona</p>" +
+      "</div>" +
+      "<div style='border:1px solid #e5e7eb;border-top:none;padding:24px;border-radius:0 0 10px 10px;'>" +
+        "<p>Hola <strong>" + team.captainName.split(" ")[0] + "</strong>! 🏀</p>" +
+        "<p>La inscripció de <strong>" + team.teamName + "</strong> al <strong>3×3 Westfield Glòries 2026</strong> ha quedat <strong style='color:#16a34a;'>confirmada</strong>. Ens veiem al Clot-Glòries el 6-7 de juny!</p>" +
+        "<table style='border-collapse:collapse;width:100%;margin:16px 0;font-size:14px;'>" +
+          "<tr style='background:#f9fafb;'><th style='padding:8px 12px;text-align:left;border:1px solid #e5e7eb;'>Camp</th><th style='padding:8px 12px;text-align:left;border:1px solid #e5e7eb;'>Detall</th></tr>" +
+          "<tr><td style='padding:8px 12px;border:1px solid #e5e7eb;'><b>Codi equip</b></td><td style='padding:8px 12px;border:1px solid #e5e7eb;'><b style='color:#16a34a;font-size:16px;'>" + team.wr + "</b></td></tr>" +
+          "<tr><td style='padding:8px 12px;border:1px solid #e5e7eb;'>Equip</td><td style='padding:8px 12px;border:1px solid #e5e7eb;'>" + team.teamName + "</td></tr>" +
+          "<tr><td style='padding:8px 12px;border:1px solid #e5e7eb;'>Categoria</td><td style='padding:8px 12px;border:1px solid #e5e7eb;'>" + team.category + "</td></tr>" +
+          "<tr><td style='padding:8px 12px;border:1px solid #e5e7eb;'>Pack</td><td style='padding:8px 12px;border:1px solid #e5e7eb;'>" + team.pkg + " · " + String(team.price).replace(".","€ / ").replace("67.5","67,50€") + "</td></tr>" +
+          "<tr><td style='padding:8px 12px;border:1px solid #e5e7eb;'>Jugadors</td><td style='padding:8px 12px;border:1px solid #e5e7eb;'><ul style='margin:0;padding-left:18px;'>" + jugHtml + "</ul></td></tr>" +
+          "<tr><td style='padding:8px 12px;border:1px solid #e5e7eb;'>Torneig</td><td style='padding:8px 12px;border:1px solid #e5e7eb;'>6-7 juny 2026 · Clot-Glòries, Barcelona</td></tr>" +
+        "</table>" +
+        "<p><strong>📱 Guarda aquest QR — el necessitaràs per al check-in el dia del torneig:</strong></p>" +
+        "<div style='text-align:center;margin:20px 0;'>" +
+          "<img src='" + qrUrl + "' alt='QR Check-in " + team.wr + "' style='width:200px;height:200px;border:4px solid #25d366;border-radius:12px;'/><br/>" +
+          "<a href='" + ciUrl + "' style='font-size:12px;color:#888;'>" + ciUrl + "</a>" +
+        "</div>" +
+        "<p style='font-size:13px;color:#555;'>Qualsevol dubte, escriu-nos per WhatsApp: <a href='https://wa.me/34698425153'>+34 698 425 153</a></p>" +
+        "<hr style='border:none;border-top:1px solid #e5e7eb;margin:20px 0;'/>" +
+        "<p style='font-size:12px;color:#888;'>CB Grup Barna · 3×3 Westfield Glòries 2026</p>" +
+      "</div></div>";
+
+    GmailApp.sendEmail(
+      team.captainEmail,
+      "✅ Inscripció confirmada · " + team.teamName + " · 3×3 Westfield Glòries 2026",
+      "Inscripció confirmada! " + team.teamName + " (" + team.wr + " · " + team.category + "). Torneig: 6-7 juny 2026. Check-in: " + ciUrl,
+      { htmlBody: htmlCap, cc: "voluntarisgrupbarna@gmail.com" }
+    );
+    results.push("Email enviat a " + team.captainEmail + " (" + team.wr + ")");
+  });
+
+  var summary = "confirmThreeTeamsManual OK — " + results.join(" | ");
+  Logger.log(summary);
+  return summary;
+}
+
 function sanitizeId(raw) {
   if (!raw) return "";
   return String(raw).replace(/[^A-Z0-9\-]/gi, "").slice(0, 40).toUpperCase();
@@ -585,7 +930,7 @@ function sendAbandonedEmail(payload, props) {
     "</div>",
   ].join("");
 
-  const subject = "🏀 Lead abandonat" + (payload.captainName ? " — " + payload.captainName : "") + " · " + reasonLabel.replace(/[^\w\s·àèéíïòóúüçÀÈÉÍÏÒÓÚÜÇ—]/g, "").trim();
+  const subject = "[3x3] Lead abandonat" + (payload.captainName ? " — " + payload.captainName : "") + " · " + reasonLabel.replace(/[^\w\s·àèéíïòóúüçÀÈÉÍÏÒÓÚÜÇ—]/g, "").trim();
 
   sendToAdmins(adminEmail, subject, html);
 }
@@ -704,7 +1049,7 @@ function sendLeadNotificationToAdmin(payload) {
   var origen   = payload.origin   || "";
   var data     = new Date(payload.timestamp || new Date()).toLocaleString("ca-ES", {timeZone:"Europe/Madrid"});
 
-  var subject = "📋 Nou contacte 3×3 Glòries — " + nom;
+  var subject = "[3x3] Nou contacte — " + nom;
 
   var html = "<div style='font-family:Arial,sans-serif;max-width:600px;'>" +
     "<h2 style='background:#16a34a;color:#fff;padding:12px 16px;border-radius:6px;margin:0 0 16px;'>📋 Nou contacte — 3×3 Westfield Glòries 2026</h2>" +
@@ -1141,7 +1486,7 @@ function sendEmails(payload, proofUrl, sheetId) {
   // Notificació a Ana (i a tots els emails de ADMIN_EMAIL, separats per coma)
   if (adminEmail) {
     const ssUrl = sheetId ? SpreadsheetApp.openById(sheetId).getUrl() : "";
-    const subjectAdmin = "🏀 Nova inscripció — " + teamName + " · " + category;
+    const subjectAdmin = "[3x3] Nova inscripcio — " + teamName + " · " + category;
     const htmlAdmin    = buildAdminEmailHtml(payload, proofUrl, qrImageUrl, ssUrl, finalPrice);
     sendToAdmins(adminEmail, subjectAdmin, htmlAdmin);
   }
@@ -2002,6 +2347,61 @@ function fixSheetDuplicates() {
     for (var i = testRows.length - 1; i >= 0; i--) {
       leadsSheet.deleteRow(testRows[i]);
       results.push("Leads: eliminada fila " + testRows[i]);
+    }
+  }
+
+  // --- 5. "Inscripcions" tab: eliminar files de test (TV67C, TEST PROVA CLAUDE, Equip Test) ---
+  var TEST_IDS = ["T3X3-2026-TV67C", "TEST PROVA CLAUDE", "Equip Test Automatitzat", "T3X3-2026-AUTO"];
+  if (inscSheet) {
+    var inscData2 = inscSheet.getDataRange().getValues();
+    var testInscRows = [];
+    for (var r = 1; r < inscData2.length; r++) {
+      var rowStr2 = inscData2[r].join("|");
+      var isTest = TEST_IDS.some(function(id) { return rowStr2.indexOf(id) !== -1; });
+      if (isTest) testInscRows.push(r + 1);
+    }
+    Logger.log("Inscripcions TEST rows: " + JSON.stringify(testInscRows));
+    for (var i = testInscRows.length - 1; i >= 0; i--) {
+      inscSheet.deleteRow(testInscRows[i]);
+      results.push("Inscripcions: eliminada fila test " + testInscRows[i]);
+    }
+  }
+
+  // --- 6. "Jugadors" tab: eliminar jugadors de test ---
+  if (jugSheet) {
+    var jugData2 = jugSheet.getDataRange().getValues();
+    var testJugRows = [];
+    for (var r = 1; r < jugData2.length; r++) {
+      var rowStr3 = jugData2[r].join("|");
+      var isTestJug = TEST_IDS.some(function(id) { return rowStr3.indexOf(id) !== -1; });
+      if (isTestJug || rowStr3.indexOf("TV67C") !== -1 || rowStr3.indexOf("Jugador Un Test") !== -1
+          || rowStr3.indexOf("Jugador Dos Test") !== -1 || rowStr3.indexOf("Jugador Tres Test") !== -1) {
+        testJugRows.push(r + 1);
+      }
+    }
+    Logger.log("Jugadors TEST rows: " + JSON.stringify(testJugRows));
+    for (var i = testJugRows.length - 1; i >= 0; i--) {
+      jugSheet.deleteRow(testJugRows[i]);
+      results.push("Jugadors: eliminada fila test " + testJugRows[i]);
+    }
+  }
+
+  // --- 7. "Abandonaments" tab: eliminar files de test ---
+  var abSheet = ss.getSheetByName("Abandonaments");
+  if (abSheet) {
+    var abData = abSheet.getDataRange().getValues();
+    var testAbRows = [];
+    for (var r = 1; r < abData.length; r++) {
+      var rowStr4 = abData[r].join("|").toLowerCase();
+      if (rowStr4.indexOf("test prova") !== -1 || rowStr4.indexOf("tv67c") !== -1
+          || rowStr4.indexOf("test automatitzat") !== -1 || rowStr4.indexOf("test+inscripcio") !== -1) {
+        testAbRows.push(r + 1);
+      }
+    }
+    Logger.log("Abandonaments TEST rows: " + JSON.stringify(testAbRows));
+    for (var i = testAbRows.length - 1; i >= 0; i--) {
+      abSheet.deleteRow(testAbRows[i]);
+      results.push("Abandonaments: eliminada fila test " + testAbRows[i]);
     }
   }
 
