@@ -119,6 +119,46 @@ export type DiscountResult = {
   finalPrice   : number;
 };
 
+// ── Anys de naixement per categoria (torneig juny 2026) ───────────────────
+// [mínim, màxim] — nascut dins aquest rang per competir a la categoria
+export const CATEGORY_BIRTH_YEARS: Record<string, [number, number]> = {
+  "Escoleta":    [2018, 2020],   // U8
+  "Premini":     [2016, 2017],   // U10
+  "Mini":        [2014, 2015],   // U12
+  "Preinfantil": [2013, 2015],   // intermedi Mini-Infantil
+  "Infantil":    [2012, 2013],   // U14
+  "Cadet":       [2010, 2011],   // U16
+  "Júnior":      [2008, 2009],   // U18
+  "Sub-23":      [2003, 2007],   // U23
+  "Sènior":      [1960, 2002],   // fins 2002
+  "Veterans":    [1900, 1986],   // nascut fins 1986
+};
+
+/** Retorna el rang [minAny, maxAny] de la categoria, o null si no es reconeix. */
+export function getCategoryBirthRange(cat: string): [number, number] | null {
+  for (const [key, range] of Object.entries(CATEGORY_BIRTH_YEARS)) {
+    if (cat.startsWith(key)) return range;
+  }
+  return null;
+}
+
+/** Text llegible del rang d'anys per mostrar com a hint. */
+export function getCategoryBirthHint(cat: string): string {
+  const r = getCategoryBirthRange(cat);
+  if (!r) return "";
+  if (r[0] === 1900) return `nascut/da fins ${r[1]}`;
+  if (r[0] === 1960) return `nascut/da fins ${r[1]}`;
+  return `nascut/da entre ${r[0]} i ${r[1]}`;
+}
+
+// ── Categories disponibles per paquet ────────────────────────────────────
+export const PACKAGE_ALLOWED_CATEGORIES: Record<PackageKey, string[]> = {
+  individual: CATEGORIES,
+  "team-4":   CATEGORIES.filter((c) => !c.startsWith("Sènior")),
+  "team-5":   CATEGORIES.filter((c) => !c.startsWith("Sènior")),
+  senior:     CATEGORIES.filter((c) => c.startsWith("Sènior")),
+};
+
 /**
  * Calcula tots els descomptes actius sobre `basePrice`.
  * Els tres descomptes s'apliquen sobre el preu base (no en cascada)

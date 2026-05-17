@@ -6,6 +6,8 @@ import {
   CATEGORIES,
   SHIRT_SIZES,
   GENDERS,
+  POSITIONS,
+  LEVELS,
   IBAN_INFO,
   type Package,
   type PackageKey,
@@ -13,6 +15,9 @@ import {
   isEarlyBirdActive,
   calcDiscount,
   EARLY_BIRD_DEADLINE,
+  getCategoryBirthRange,
+  getCategoryBirthHint,
+  PACKAGE_ALLOWED_CATEGORIES,
 } from "./wizardData";
 
 // ── Types ──────────────────────────────────────────────────────────────────
@@ -54,6 +59,11 @@ type WizardState = {
   captain: Captain;
   needsTutor: boolean;
   tutor: Tutor;
+  // Step 2 — camps addicionals per inscripció individual
+  indivBirthYear: string;
+  indivGender: string;
+  indivPosition: string;
+  indivLevel: string;
   // Step 3 — pagament
   proofFileName: string;
   proofBase64: string;
@@ -88,6 +98,25 @@ function isFormative(cat: string): boolean {
 
 function isRivalCodeValid(code: string): boolean {
   return /^RIVAL-[A-Z0-9]{3,}$/i.test(code.trim());
+}
+
+/** Validació bàsica de telèfon: mínim 9 dígits (ignorant espais, guions, parèntesis) */
+function isValidPhone(phone: string): boolean {
+  return phone.replace(/[\s\-().+]/g, "").replace(/\D/g, "").length >= 9;
+}
+
+/** Any de naixement vàlid: 4 dígits, rang [1950, any actual] */
+function isValidBirthYear(year: string): boolean {
+  const n = parseInt(year);
+  return !isNaN(n) && n >= 1950 && n <= new Date().getFullYear();
+}
+
+/** Retorna true si el gènere del jugador és compatible amb la categoria (soft check) */
+function genderMatchesCategory(gender: string, cat: string): boolean {
+  if (!gender || gender === "Altre") return true;
+  if (cat.includes("Masculí") && gender === "Femení") return false;
+  if (cat.includes("Femení") && gender === "Masculí") return false;
+  return true;
 }
 
 function getCategoryYearRange(cat: string): [number, number] | null {
@@ -141,6 +170,10 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
     captain: { fullName: "", phone: "", email: "", shirtSize: "" },
     needsTutor: false,
     tutor: { fullName: "", phone: "", email: "" },
+    indivBirthYear: "",
+    indivGender: "",
+    indivPosition: "",
+    indivLevel: "",
     proofFileName: "",
     proofBase64: "",
     proofMime: "",
@@ -356,7 +389,10 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
       } else if (players.length > p.maxPlayers) {
         players = players.slice(0, p.maxPlayers);
       }
-      return { ...prev, packageKey: key, players };
+      // Reset category si no és compatible amb el nou paquet
+      const allowed = PACKAGE_ALLOWED_CATEGORIES[key];
+      const category = allowed.includes(prev.category) ? prev.category : "";
+      return { ...prev, packageKey: key, players, category };
     });
   }
 
@@ -428,21 +464,37 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
     if (pkg.isTeam && !state.teamName.trim()) return false;
     const c = state.captain;
     if (!c.fullName.trim() || !c.phone.trim() || !c.email.trim() || !c.shirtSize) return false;
+    if (!isValidPhone(c.phone)) return false;
+    if (!c.email.includes("@") || !c.email.includes(".")) return false;
     if (state.needsTutor) {
       const t = state.tutor;
       if (!t.fullName.trim() || !t.phone.trim() || !t.email.trim()) return false;
+      if (!isValidPhone(t.phone)) return false;
+    }
+    // Camps addicionals obligatoris per inscripció individual
+    if (state.packageKey === "individual") {
+      if (!state.indivBirthYear || !isValidBirthYear(state.indivBirthYear)) return false;
+      if (!state.indivGender) return false;
     }
     return true;
-  }, [pkg, state.packageKey, state.category, state.teamName, state.captain, state.tutor, state.needsTutor]);
+  }, [pkg, state.packageKey, state.category, state.teamName, state.captain, state.tutor, state.needsTutor, state.indivBirthYear, state.indivGender]);
 
   // El justificant és recomanat però no bloqueja (vegeu text d'introducció de la pàgina)
   const canAdvanceStep3 = true;
 
   const canAdvanceStep4 = useMemo(() => {
     if (!state.players.length) return false;
-    return state.players.every(
-      (p) => p.fullName.trim() && p.category && p.birthYear.trim() && p.gender && p.club.trim() && p.shirtSize,
-    );
+    return state.players.every((p) => {
+      if (!p.fullName.trim() || !p.category || !p.birthYear.trim() || !p.gender || !p.club.trim() || !p.shirtSize) return false;
+      if (!isValidBirthYear(p.birthYear)) return false;
+      // Hard block si l'any és clarament fora del rang de la categoria (>5 anys de diferència)
+      const range = getCategoryBirthRange(p.category);
+      if (range) {
+        const y = parseInt(p.birthYear);
+        if (y < range[0] - 1 || y > range[1] + 1) return false;
+      }
+      return true;
+    });
   }, [state.players]);
 
   const canSubmit = state.rgpdConsent && state.imageRightsConsent;
@@ -457,16 +509,24 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
     const c = state.captain;
     if (!c.fullName.trim()) m.push("nom del capità/a");
     if (!c.phone.trim()) m.push("telèfon del capità/a");
+    else if (!isValidPhone(c.phone)) m.push("telèfon invàlid (mínim 9 dígits)");
     if (!c.email.trim()) m.push("email del capità/a");
-    if (!c.shirtSize) m.push("talla del capità/a");
+    else if (!c.email.includes("@") || !c.email.includes(".")) m.push("format d'email invàlid");
+    if (!c.shirtSize) m.push("talla samarreta del capità/a");
     if (state.needsTutor) {
       const t = state.tutor;
-      if (!t.fullName.trim()) m.push("nom del capità/a menor");
-      if (!t.phone.trim()) m.push("telèfon del capità/a menor");
-      if (!t.email.trim()) m.push("email del capità/a menor");
+      if (!t.fullName.trim()) m.push("nom del tutor/a");
+      if (!t.phone.trim()) m.push("telèfon del tutor/a");
+      else if (!isValidPhone(t.phone)) m.push("telèfon tutor/a invàlid");
+      if (!t.email.trim()) m.push("email del tutor/a");
+    }
+    if (state.packageKey === "individual") {
+      if (!state.indivBirthYear) m.push("any de naixement");
+      else if (!isValidBirthYear(state.indivBirthYear)) m.push("any de naixement invàlid");
+      if (!state.indivGender) m.push("gènere");
     }
     return m;
-  }, [canAdvanceStep2, pkg, state.packageKey, state.category, state.teamName, state.captain, state.tutor, state.needsTutor]);
+  }, [canAdvanceStep2, pkg, state.packageKey, state.category, state.teamName, state.captain, state.tutor, state.needsTutor, state.indivBirthYear, state.indivGender]);
 
   const missingStep4 = useMemo((): string[] => {
     if (canAdvanceStep4) return [];
@@ -477,6 +537,16 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
       if (!p.fullName.trim()) f.push("nom");
       if (!p.category) f.push("categoria");
       if (!p.birthYear.trim()) f.push("any naix.");
+      else if (!isValidBirthYear(p.birthYear)) f.push("any naix. invàlid");
+      else {
+        const range = getCategoryBirthRange(p.category);
+        if (range) {
+          const y = parseInt(p.birthYear);
+          if (y < range[0] - 1 || y > range[1] + 1) {
+            f.push(`any naix. fora de rang (${getCategoryBirthHint(p.category)})`);
+          }
+        }
+      }
       if (!p.gender) f.push("gènere");
       if (!p.club.trim()) f.push("club");
       if (!p.shirtSize) f.push("talla");
@@ -494,7 +564,7 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
       const players =
         pkg.isTeam
           ? state.players
-          : [{ fullName: state.captain.fullName, club: "", category: state.category, birthYear: "", gender: "", phone: state.captain.phone, shirtSize: state.captain.shirtSize, email: state.captain.email }];
+          : [{ fullName: state.captain.fullName, club: "Individual", category: state.category, birthYear: state.indivBirthYear, gender: state.indivGender, phone: state.captain.phone, shirtSize: state.captain.shirtSize, email: state.captain.email }];
 
       const payload = {
         packageKey: state.packageKey,
@@ -522,6 +592,8 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
         rgpdConsent: state.rgpdConsent,
         imageRightsConsent: state.imageRightsConsent,
         refCode: isRivalCodeValid(state.rivalCode) ? state.rivalCode : null,
+        indivPosition: state.packageKey === "individual" ? state.indivPosition : null,
+        indivLevel: state.packageKey === "individual" ? state.indivLevel : null,
         submittedAt: new Date().toISOString(),
         discountType: [disc.earlyBirdAmt > 0 && "earlybird", disc.socialAmt > 0 && "social", disc.rivalAmt > 0 && "rival"].filter(Boolean).join("+") || null,
         discountAmount: disc.totalDiscount,
@@ -597,6 +669,7 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
           updateTutor={updateTutor}
           setTeamName={(v) => update("teamName", v)}
           setCategory={handleCategoryChange}
+          setIndivField={(field, value) => setState((prev) => ({ ...prev, [field]: value }))}
           onPrev={prev}
           onNext={() => { sendAbandonedLead("step2_done"); next(); }}
           canAdvance={canAdvanceStep2}
@@ -874,6 +947,7 @@ function Step2Team({
   updateTutor,
   setTeamName,
   setCategory,
+  setIndivField,
   missing,
   onPrev,
   onNext,
@@ -887,12 +961,17 @@ function Step2Team({
   updateTutor: <K extends keyof Tutor>(k: K, v: Tutor[K]) => void;
   setTeamName: (v: string) => void;
   setCategory: (v: string) => void;
+  setIndivField: (field: "indivBirthYear" | "indivGender" | "indivPosition" | "indivLevel", value: string) => void;
   onPrev: () => void;
   onNext: () => void;
   canAdvance: boolean;
   missing: string[];
 }) {
   const earlyBirdActive = isEarlyBirdActive();
+  // Categories filtrades per paquet seleccionat
+  const availableCategories = state.packageKey ? PACKAGE_ALLOWED_CATEGORIES[state.packageKey] : CATEGORIES;
+  // Hint d’anys de naixement per categoria individual
+  const indivBirthHint = state.category ? getCategoryBirthHint(state.category) : "";
 
   return (
     <div className="wizard-step">
@@ -945,12 +1024,12 @@ function Step2Team({
         })}
       </div>
 
-      {/* Categoria */}
+      {/* Categoria — filtrada per paquet */}
       <div className="wizard-field wizard-field-full" style={{ marginTop: 8 }}>
         <label htmlFor="wizard-team-cat">Categoria *</label>
         <select id="wizard-team-cat" value={state.category} onChange={(e) => setCategory(e.target.value)} required>
           <option value="">Tria la categoria…</option>
-          {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+          {availableCategories.map((c) => <option key={c} value={c}>{c}</option>)}
         </select>
       </div>
 
@@ -1000,6 +1079,47 @@ function Step2Team({
             {SHIRT_SIZES.map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
         </div>
+
+        {/* Camps addicionals per a inscripció individual */}
+        {state.packageKey === "individual" && (<>
+          <div className="wizard-field">
+            <label htmlFor="wizard-indiv-birth">
+              Any de naixement *
+              {indivBirthHint && <span style={{ fontWeight: 400, color: "#888", marginLeft: 6 }}>({indivBirthHint})</span>}
+            </label>
+            <input
+              id="wizard-indiv-birth"
+              type="text"
+              value={state.indivBirthYear}
+              onChange={(e) => setIndivField("indivBirthYear", e.target.value.replace(/\D/g, "").slice(0, 4))}
+              placeholder="2005"
+              maxLength={4}
+              inputMode="numeric"
+              required
+            />
+          </div>
+          <div className="wizard-field">
+            <label htmlFor="wizard-indiv-gender">Gènere *</label>
+            <select id="wizard-indiv-gender" value={state.indivGender} onChange={(e) => setIndivField("indivGender", e.target.value)} required>
+              <option value="">Tria…</option>
+              {GENDERS.map((g) => <option key={g} value={g}>{g}</option>)}
+            </select>
+          </div>
+          <div className="wizard-field">
+            <label htmlFor="wizard-indiv-position">Posició preferida <span style={{ fontWeight: 400, color: "#888" }}>(opcional)</span></label>
+            <select id="wizard-indiv-position" value={state.indivPosition} onChange={(e) => setIndivField("indivPosition", e.target.value)}>
+              <option value="">Indiferent</option>
+              {POSITIONS.map((p) => <option key={p} value={p}>{p}</option>)}
+            </select>
+          </div>
+          <div className="wizard-field">
+            <label htmlFor="wizard-indiv-level">Nivell de joc <span style={{ fontWeight: 400, color: "#888" }}>(opcional)</span></label>
+            <select id="wizard-indiv-level" value={state.indivLevel} onChange={(e) => setIndivField("indivLevel", e.target.value)}>
+              <option value="">Tria…</option>
+              {LEVELS.map((l) => <option key={l} value={l}>{l}</option>)}
+            </select>
+          </div>
+        </>)}
       </div>
 
       {/* Capità menor (si formativa) */}
@@ -1244,7 +1364,12 @@ function Step4Players({
               <p style={{ margin: "6px 0 0", fontWeight: 600, fontSize: 15 }}>{teamCategory || "—"}</p>
             </div>
             <div className="wizard-field">
-              <label htmlFor={`wp${idx}-birth`}>Any de naixement *</label>
+              <label htmlFor={`wp${idx}-birth`}>
+                Any de naixement *
+                {p.category && getCategoryBirthHint(p.category) && (
+                  <span style={{ fontWeight: 400, color: "#888", marginLeft: 6 }}>({getCategoryBirthHint(p.category)})</span>
+                )}
+              </label>
               <input
                 id={`wp${idx}-birth`}
                 type="text"
@@ -1254,7 +1379,26 @@ function Step4Players({
                 maxLength={4}
                 inputMode="numeric"
                 required
+                style={(() => {
+                  if (!p.birthYear || !isValidBirthYear(p.birthYear)) return {};
+                  const range = getCategoryBirthRange(p.category);
+                  if (!range) return {};
+                  const y = parseInt(p.birthYear);
+                  return (y < range[0] - 1 || y > range[1] + 1)
+                    ? { borderColor: "#f08c00" }
+                    : {};
+                })()}
               />
+              {p.birthYear && isValidBirthYear(p.birthYear) && (() => {
+                const range = getCategoryBirthRange(p.category);
+                if (!range) return null;
+                const y = parseInt(p.birthYear);
+                return (y < range[0] - 1 || y > range[1] + 1) ? (
+                  <p style={{ color: "#f08c00", fontSize: 12, margin: "4px 0 0" }}>
+                    ⚠️ Any fora del rang de la categoria ({getCategoryBirthHint(p.category)})
+                  </p>
+                ) : null;
+              })()}
             </div>
             <div className="wizard-field">
               <label htmlFor={`wp${idx}-gender`}>Gènere *</label>
@@ -1262,6 +1406,11 @@ function Step4Players({
                 <option value="">Tria…</option>
                 {GENDERS.map((g) => <option key={g} value={g}>{g}</option>)}
               </select>
+              {p.gender && !genderMatchesCategory(p.gender, teamCategory) && (
+                <p style={{ color: "#f08c00", fontSize: 12, margin: "4px 0 0" }}>
+                  ⚠️ El gènere del jugador/a no coincideix amb la categoria de l&apos;equip
+                </p>
+              )}
             </div>
             <div className="wizard-field">
               <label htmlFor={`wp${idx}-phone`}>Telèfon</label>
