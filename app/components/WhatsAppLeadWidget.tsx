@@ -194,37 +194,6 @@ export default function WhatsAppLeadWidget({ mode = "floating" }: { mode?: LeadM
           </div>
         )}
 
-        <div className="wa-referral-block">
-          <p className="wa-referral-title">Guanya un <strong>−5% addicional</strong></p>
-          {referralUnlocked ? (
-            <div className="wa-discount-badge">
-              <span className="wa-discount-pct">−5%</span>
-              <span className="wa-discount-txt">
-                <strong>Codi: AMIC5</strong><br />
-                Menciona&apos;l quan contactis per WhatsApp.
-              </span>
-            </div>
-          ) : (
-            <>
-              <p className="wa-referral-hint">Reenvia la pàgina a 5 amics per WhatsApp</p>
-              <button className="wa-share-btn" type="button" onClick={handleShare}>
-                <span aria-hidden="true">📲</span>
-                Comparteix ({shareCount}/5 amics)
-              </button>
-            </>
-          )}
-        </div>
-
-        <a
-          className="wa-insta-btn"
-          href="https://www.instagram.com/cbgrupbarna/"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <span aria-hidden="true">📸</span>
-          Segueix @cbgrupbarna a Instagram
-        </a>
-
         <a
           className="wa-whatsapp-link"
           href={whatsappUrl}
@@ -264,37 +233,6 @@ export default function WhatsAppLeadWidget({ mode = "floating" }: { mode?: LeadM
       </div>
 
       <div className="wa-lead-body">
-        <div className="wa-referral-block">
-          <p className="wa-referral-title">Guanya un <strong>−5% addicional</strong></p>
-          {referralUnlocked ? (
-            <div className="wa-discount-badge">
-              <span className="wa-discount-pct">−5%</span>
-              <span className="wa-discount-txt">
-                <strong>Codi: AMIC5</strong><br />
-                Menciona&apos;l quan contactis per WhatsApp.
-              </span>
-            </div>
-          ) : (
-            <>
-              <p className="wa-referral-hint">Reenvia la pàgina a 5 amics per WhatsApp</p>
-              <button className="wa-share-btn" type="button" onClick={handleShare}>
-                <span aria-hidden="true">📲</span>
-                Comparteix ({shareCount}/5 amics)
-              </button>
-            </>
-          )}
-        </div>
-
-        <a
-          className="wa-insta-btn"
-          href="https://www.instagram.com/cbgrupbarna/"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <span aria-hidden="true">📸</span>
-          Segueix @cbgrupbarna a Instagram
-        </a>
-
         <label className="wa-field wa-field-full">
           <span className="wa-field-label">Nom i cognoms *</span>
           <input
