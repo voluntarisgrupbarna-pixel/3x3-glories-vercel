@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { WA_REGISTER_URL } from "../lib/whatsapp";
 
 export const metadata: Metadata = {
   title: "Normes 3×3 FIBA — Regles oficials del bàsquet 3×3 | Westfield Glòries 2026",
@@ -421,9 +422,9 @@ export default function ReglesPage() {
                 FAQ
               </Link>{" "}
               ·{" "}
-              <Link href="/contacte?contacte=1" style={{ color: "#25d366" }}>
+              <a href={WA_REGISTER_URL} target="_blank" rel="noreferrer noopener" style={{ color: "#25d366" }}>
                 WhatsApp
-              </Link>
+              </a>
             </p>
           </div>
 

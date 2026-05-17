@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import Link from "next/link";
 import Image from "next/image";
+import { WA_REGISTER_URL } from "../lib/whatsapp";
 
 export const metadata: Metadata = {
   title: "3×3 Sènior FIBA Barcelona 2026 | 1.000€ premi + punts rànquing mundial",
@@ -26,7 +27,7 @@ const jsonLdBreadcrumb = {
   ],
 };
 
-const CONTACT_LINK = "/contacte?contacte=1";
+const CONTACT_LINK = WA_REGISTER_URL;
 
 export default function SeniorFibaPage() {
   return (
@@ -139,7 +140,7 @@ export default function SeniorFibaPage() {
               🏀 Inscriu el teu equip Sènior
             </a>
             <br />
-            <a href={CONTACT_LINK} style={{ fontSize: "0.9rem", color: "rgba(255,247,239,0.6)", textDecoration: "underline" }}>
+            <a href={CONTACT_LINK} target="_blank" rel="noreferrer noopener" style={{ fontSize: "0.9rem", color: "rgba(255,247,239,0.6)", textDecoration: "underline" }}>
               Pregunta per WhatsApp →
             </a>
           </div>
@@ -162,7 +163,7 @@ export default function SeniorFibaPage() {
             Consulta les{" "}
             <Link href="/preguntes-frequents" className="insc-link">preguntes freqüents</Link>{" "}
             o{" "}
-            <Link href="/contacte" className="insc-link">contacta&apos;ns per WhatsApp</Link>.
+            <a href={WA_REGISTER_URL} target="_blank" rel="noreferrer noopener" className="insc-link">contacta&apos;ns per WhatsApp</a>.
             Resposta en menys de 24h.
           </p>
         </main>

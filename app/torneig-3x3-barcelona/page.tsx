@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import Link from "next/link";
 import Image from "next/image";
+import { WA_REGISTER_URL } from "../lib/whatsapp";
 
 export const metadata: Metadata = {
   title: "Torneig 3×3 Barcelona 2026 — Westfield Glòries · FIBA · 2.000€ premis",
@@ -55,7 +56,7 @@ const jsonLdBreadcrumb = {
   ],
 };
 
-const CONTACT_LINK = "/contacte?contacte=1";
+const CONTACT_LINK = WA_REGISTER_URL;
 
 export default function TorneigPage() {
   return (
@@ -144,7 +145,7 @@ export default function TorneigPage() {
               🏀 Inscriu el teu equip al Torneig 3×3 Barcelona
             </Link>
             <br />
-            <a href={CONTACT_LINK}
+            <a href={CONTACT_LINK} target="_blank" rel="noreferrer noopener"
               style={{ fontSize: "0.9rem", color: "rgba(255,247,239,0.6)", textDecoration: "underline", marginTop: 8, display: "inline-block" }}>
               Pregunta per WhatsApp →
             </a>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import Link from "next/link";
+import { WA_REGISTER_URL } from "../lib/whatsapp";
 
 export const metadata: Metadata = {
   title: "3×3 Veterans Barcelona 2026 | +35 anys · Torna a la pista al Clot-Glòries",
@@ -25,7 +26,7 @@ const jsonLdBreadcrumb = {
   ],
 };
 
-const CONTACT_LINK = "/contacte?contacte=1";
+const CONTACT_LINK = WA_REGISTER_URL;
 
 export default function VeteransPage() {
   return (
@@ -143,7 +144,7 @@ export default function VeteransPage() {
               🎖️ Inscriu el teu equip Veterans
             </a>
             <br />
-            <a href={CONTACT_LINK} style={{ fontSize: "0.9rem", color: "rgba(255,247,239,0.6)", textDecoration: "underline" }}>
+            <a href={CONTACT_LINK} target="_blank" rel="noreferrer noopener" style={{ fontSize: "0.9rem", color: "rgba(255,247,239,0.6)", textDecoration: "underline" }}>
               Pregunta per WhatsApp →
             </a>
           </div>
@@ -155,7 +156,7 @@ export default function VeteransPage() {
             Consulta les{" "}
             <Link href="/preguntes-frequents" className="insc-link">preguntes freqüents</Link>
             {" "}o{" "}
-            <Link href="/contacte" className="insc-link">contacta&apos;ns per WhatsApp</Link>.
+            <a href={WA_REGISTER_URL} target="_blank" rel="noreferrer noopener" className="insc-link">contacta&apos;ns per WhatsApp</a>.
             Resposta en menys de 24h.
           </p>
         </main>

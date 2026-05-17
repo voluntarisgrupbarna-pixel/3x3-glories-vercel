@@ -76,6 +76,13 @@ export default function SiteFooter() {
         </div>
       </div>
 
+      <div className="site-footer-institutional">
+        Organitzat per <strong>CB Grup Barna</strong> ·
+        Pla d&apos;Igualtat 2026-2029 aprovat ·
+        Delegat de Protecció del Menor (LOPIVI) ·
+        Club nominat als Premis Dona i Esport
+      </div>
+
       <div className="site-footer-bottom">
         <span className="site-footer-copy">
           © 2026 CB Grup Barna · Time Chamber · Eix Clot. Tots els drets reservats.

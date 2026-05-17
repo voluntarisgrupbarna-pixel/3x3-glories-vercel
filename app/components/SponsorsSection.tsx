@@ -1,5 +1,6 @@
 import Image from "next/image";
 import SlideActionBar from "./SlideActionBar";
+import { WA_REGISTER_URL } from "../lib/whatsapp";
 
 type Sponsor = {
   name: string;
@@ -81,7 +82,8 @@ export default function SponsorsSection() {
         <div className="sponsors-cta">
           <p className="sponsors-cta-text">Vols ser patrocinador del torneig?</p>
           <a
-            href="/contacte?contacte=1"
+            href={WA_REGISTER_URL}
+            target="_blank" rel="noreferrer noopener"
             className="sponsors-cta-btn"
           >
             Deixa les dades i et contactem ↗

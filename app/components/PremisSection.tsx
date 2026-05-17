@@ -14,6 +14,13 @@ export default function PremisSection() {
             <span className="prize-total-label">Total Premi en Metàl·lic</span>
             <span className="prize-total-amount">2.000€</span>
           </div>
+          <div className="parity-callout">
+            <span className="parity-callout-icon" aria-hidden="true">⚖️</span>
+            <div className="parity-callout-body">
+              <strong>1.000€ Sènior Femení · 1.000€ Sènior Masculí</strong>
+              <span className="parity-callout-sub"> — premi paritari, únic a Barcelona</span>
+            </div>
+          </div>
           <p className="section-desc">
             Premi econòmic per als <strong>1ers classificats de Sèniors Masculí i Sèniors
             Femení</strong> (1.000€ cadascun). Veterans M/F i la resta de categories: trofeus i medalles.

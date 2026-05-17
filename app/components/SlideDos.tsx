@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useShareGate } from "./ShareGate";
+import { WA_REGISTER_URL } from "../lib/whatsapp";
 
 /* ── Programa per dia ─────────────────────────────────────── */
 const PROGRAM = [
@@ -219,7 +220,8 @@ export default function SlideDos() {
               Compartir
             </button>
             <a
-              href="/contacte?contacte=1"
+              href={WA_REGISTER_URL}
+              target="_blank" rel="noreferrer noopener"
               className="slide-dos-btn-wa"
               aria-label="Contactar per WhatsApp"
             >

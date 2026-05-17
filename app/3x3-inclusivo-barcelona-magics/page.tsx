@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import Link from "next/link";
+import { WA_REGISTER_URL } from "../lib/whatsapp";
 
 export const metadata: Metadata = {
   title: "3×3 Inclusiu Barcelona — Barna Màgics | Categoria inclusiva Westfield Glòries 2026",
@@ -25,7 +26,7 @@ const jsonLdBreadcrumb = {
   ],
 };
 
-const CONTACT_LINK = "/contacte?contacte=1";
+const CONTACT_LINK = WA_REGISTER_URL;
 
 export default function MagicsPage() {
   return (
@@ -155,7 +156,7 @@ export default function MagicsPage() {
               💙 Inscriure&apos;s a la categoria Màgics
             </a>
             <br />
-            <a href={CONTACT_LINK} style={{ fontSize: "0.9rem", color: "rgba(255,247,239,0.6)", textDecoration: "underline" }}>
+            <a href={CONTACT_LINK} target="_blank" rel="noreferrer noopener" style={{ fontSize: "0.9rem", color: "rgba(255,247,239,0.6)", textDecoration: "underline" }}>
               Pregunta per WhatsApp →
             </a>
           </div>
@@ -165,7 +166,7 @@ export default function MagicsPage() {
           <h2>Tens dubtes?</h2>
           <p>
             Contacta&apos;ns per{" "}
-            <Link href="/contacte" className="insc-link">WhatsApp</Link>{" "}
+            <a href={WA_REGISTER_URL} target="_blank" rel="noreferrer noopener" className="insc-link">WhatsApp</a>{" "}
             i t&apos;expliquem com funciona la categoria Màgics i com inscriure el teu equip.
             Resposta en menys de 24h.
           </p>

@@ -355,6 +355,15 @@ function writeTeamToSheet(payload, proofUrl, sheetId) {
     "",                                                        // Notes
   ];
 
+  // Dedup: si el teamId ja existeix, no duplicar
+  var existingTeams = sheet.getDataRange().getValues();
+  for (var di = 1; di < existingTeams.length; di++) {
+    if (String(existingTeams[di][1]).trim() === payload.teamId) {
+      Logger.log("writeTeamToSheet: teamId ja existeix, skip: " + payload.teamId);
+      return sheet.getLastRow();
+    }
+  }
+
   sheet.appendRow(row);
   return sheet.getLastRow();
 }
@@ -822,6 +831,21 @@ function setupLeadsDashboard() {
 function writeLeadToSheet(payload, sheetId) {
   const ss = SpreadsheetApp.openById(sheetId);
   const sheet = ensureSheet(ss, "Leads", LEAD_HEADERS);
+
+  // Dedup: si el mateix email en < 60s, no duplicar (evita doble-click)
+  var existingLeads = sheet.getDataRange().getValues();
+  var now = new Date();
+  for (var li = 1; li < existingLeads.length; li++) {
+    var rowEmail = String(existingLeads[li][3]).trim().toLowerCase();
+    var rowTime  = new Date(existingLeads[li][0]);
+    var sameEmail = rowEmail === String(payload.email || "").trim().toLowerCase();
+    var within60s = (now - rowTime) < 60000;
+    if (sameEmail && within60s) {
+      Logger.log("writeLeadToSheet: duplicate dins 60s, skip: " + payload.email);
+      return;
+    }
+  }
+
   sheet.appendRow([
     new Date(payload.timestamp || new Date()),
     payload.origin || "",
@@ -1296,7 +1320,8 @@ function guardarCerca(payload) {
 // Executa manualment des de l'editor d'Apps Script → Run > setupPendentsSheet
 // ─────────────────────────────────────────────────────────────────────────────
 function setupPendentsSheet() {
-  var ss = SpreadsheetApp.openById("1jrjjMWOGEVGCkyCEd-x8DPVoYTqDLrUuehdZDT-q9OQ");
+  var sheetId = PropertiesService.getScriptProperties().getProperty("SHEET_ID") || "1MG5_8cmeKOe5Jz8BWiJ2e1K669EcIdNNHN1gFGI2uPA";
+  var ss = SpreadsheetApp.openById(sheetId);
 
   // 1. Eliminar pestanyes malformades (conté "Pendents" o "Sheet2")
   var allSheets = ss.getSheets();
@@ -1474,4 +1499,293 @@ function setupDailyBackupTrigger() {
 
   Logger.log("setupDailyBackupTrigger: trigger creat → dailySheetBackup cada dia a les 02:00 (Europe/Madrid)");
   return "Trigger creat ✓";
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MIGRACIÓ — copia dades del sheet secundari al TARGET central
+// Executar UNA SOLA VEGADA des de l'editor: Run > migrateToTarget
+// ═══════════════════════════════════════════════════════════════════════════
+
+function migrateToTarget() {
+  var SOURCE_ID     = "1jrjjMWOGEVGCkyCEd-x8DPVoYTqDLrUuehdZDT-q9OQ"; // "Inscripcions 3x3 2026"
+  var TARGET_ID     = "1MG5_8cmeKOe5Jz8BWiJ2e1K669EcIdNNHN1gFGI2uPA"; // Sheet central
+  var TEST_PREFIXES = ["T3X3-2026-AUTO", "T3X3-2026-TEST"];
+
+  var src = SpreadsheetApp.openById(SOURCE_ID);
+  var tgt = SpreadsheetApp.openById(TARGET_ID);
+
+  // ── Inscripcions ─────────────────────────────────────────────────────────
+  var srcSheet = src.getSheetByName("Inscripcions");
+  var tgtSheet = tgt.getSheetByName("Inscripcions"); // creat per syncSheetIdToCentralized
+  if (srcSheet && tgtSheet) {
+    var srcData    = srcSheet.getDataRange().getValues();
+    var tgtData    = tgtSheet.getDataRange().getValues();
+    var existingIds = tgtData.slice(1).map(function(r) { return String(r[1]).trim(); });
+    var added = 0;
+    srcData.slice(1).forEach(function(row) {
+      var teamId = String(row[1]).trim();
+      if (!teamId) return;
+      var isTest = TEST_PREFIXES.some(function(p) { return teamId.startsWith(p); });
+      if (isTest || existingIds.indexOf(teamId) !== -1) return;
+      tgtSheet.appendRow(row);
+      existingIds.push(teamId);
+      added++;
+    });
+    Logger.log("Inscripcions migrades: " + added);
+  } else {
+    Logger.log("WARN: no s'ha trobat Inscripcions al source o target (executa syncSheetIdToCentralized primer)");
+  }
+
+  // ── Jugadors ─────────────────────────────────────────────────────────────
+  var srcJug = src.getSheetByName("Jugadors");
+  var tgtJug = tgt.getSheetByName("Jugadors");
+  if (srcJug && tgtJug) {
+    var srcJugData        = srcJug.getDataRange().getValues();
+    var tgtJugData        = tgtJug.getDataRange().getValues();
+    var existingPlayerIds = tgtJugData.slice(1).map(function(r) { return String(r[1]).trim(); });
+    var addedJug = 0;
+    srcJugData.slice(1).forEach(function(row) {
+      var playerId = String(row[1]).trim();
+      var teamId   = String(row[2]).trim();
+      if (!playerId) return;
+      var isTest = TEST_PREFIXES.some(function(p) { return teamId.startsWith(p); });
+      if (isTest || existingPlayerIds.indexOf(playerId) !== -1) return;
+      tgtJug.appendRow(row);
+      existingPlayerIds.push(playerId);
+      addedJug++;
+    });
+    Logger.log("Jugadors migrats: " + addedJug);
+  }
+
+  // ── Abandonaments ────────────────────────────────────────────────────────
+  var srcAb = src.getSheetByName("Abandonaments");
+  var tgtAb = tgt.getSheetByName("Abandonaments");
+  if (srcAb && tgtAb) {
+    var srcAbData = srcAb.getDataRange().getValues();
+    var addedAb = 0;
+    srcAbData.slice(1).forEach(function(row) {
+      if (!row[0]) return; // fila buida
+      tgtAb.appendRow(row);
+      addedAb++;
+    });
+    Logger.log("Abandonaments migrats: " + addedAb);
+  }
+
+  Logger.log("✅ Migració completada. Comprova: " + tgt.getUrl());
+  return "OK — comprova el log per al recompte de files migrades";
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// DEDUPLICACIÓ — elimina files repetides al TARGET
+// Executar UNA SOLA VEGADA des de l'editor: Run > deduplicateSheet
+// ═══════════════════════════════════════════════════════════════════════════
+
+function deduplicateSheet() {
+  var TARGET_ID = "1MG5_8cmeKOe5Jz8BWiJ2e1K669EcIdNNHN1gFGI2uPA";
+  var ss        = SpreadsheetApp.openById(TARGET_ID);
+
+  // ── Contactes_WhatsApp — dedup per email o telèfon (col D=3 email, col C=2 tel) ──
+  var contactSheet = ss.getSheetByName("Contactes_WhatsApp");
+  if (contactSheet) {
+    var cData        = contactSheet.getDataRange().getValues();
+    var seenContact  = {};
+    var rowsToDelete = [];
+    for (var ci = cData.length - 1; ci >= 1; ci--) {
+      var cEmail = String(cData[ci][3]).trim().toLowerCase();
+      var cPhone = String(cData[ci][2]).trim();
+      var cKey   = cEmail || cPhone;
+      if (!cKey) continue;
+      if (seenContact[cKey]) {
+        rowsToDelete.push(ci + 1);
+      } else {
+        seenContact[cKey] = true;
+      }
+    }
+    rowsToDelete.forEach(function(r) { contactSheet.deleteRow(r); });
+    Logger.log("Contactes_WhatsApp: " + rowsToDelete.length + " duplicats eliminats");
+  }
+
+  // ── Inscripcions — dedup per TeamID (col B=1) ────────────────────────────
+  var inscSheet = ss.getSheetByName("Inscripcions");
+  if (inscSheet) {
+    var iData        = inscSheet.getDataRange().getValues();
+    var seenTeams    = {};
+    var teamsToDelete = [];
+    for (var ii = iData.length - 1; ii >= 1; ii--) {
+      var tid = String(iData[ii][1]).trim();
+      if (!tid) { teamsToDelete.push(ii + 1); continue; }
+      if (seenTeams[tid]) {
+        teamsToDelete.push(ii + 1);
+      } else {
+        seenTeams[tid] = true;
+      }
+    }
+    teamsToDelete.forEach(function(r) { inscSheet.deleteRow(r); });
+    Logger.log("Inscripcions: " + teamsToDelete.length + " duplicats eliminats");
+  }
+
+  Logger.log("✅ Deduplicació completada");
+  return "OK";
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// NETEJA — elimina pestanyes buides del TARGET
+// Executar UNA SOLA VEGADA: Run > cleanEmptyTabs
+// ═══════════════════════════════════════════════════════════════════════════
+
+function cleanEmptyTabs() {
+  var ss = SpreadsheetApp.openById("1MG5_8cmeKOe5Jz8BWiJ2e1K669EcIdNNHN1gFGI2uPA");
+  var tabsToClean = ["Contactes_WhatsApp_3x3", "Contactes_WhatsApp_Campus", "Hoja 1"];
+  tabsToClean.forEach(function(name) {
+    var s = ss.getSheetByName(name);
+    if (s && s.getLastRow() <= 1) { // buida o només capçalera
+      ss.deleteSheet(s);
+      Logger.log("Eliminada pestanya buida: " + name);
+    } else if (s) {
+      Logger.log("Conservada (té dades): " + name + " — " + s.getLastRow() + " files");
+    }
+  });
+  return "OK";
+}
+
+// ===== HELPER MANUAL: afegir WR-032 The Walking Dead (esborrar després) =====
+function addWR032Manual() {
+  const ss = SpreadsheetApp.openById(
+    PropertiesService.getScriptProperties().getProperty("SHEET_ID")
+  );
+
+  // — Inscripcions tab —
+  const teamSheet = ensureSheet(ss, "Inscripcions", TEAM_HEADERS);
+  const ts = "17/05/2026 14:10";
+  const teamRow = [
+    ts,                                          // A Timestamp
+    "WR-032",                                    // B TeamID
+    "confirmed",                                 // C Status
+    "Equip 4 jugadors",                          // D Package
+    "Veterans Masculí",                          // E Category
+    "The Walking Dead",                          // F Team Name
+    67.5,                                        // G Preu Base (€)
+    0,                                           // H Descompte (€)
+    67.5,                                        // I Preu Final (€)
+    "",                                          // J Tipus Descompte
+    "No",                                        // K Early Bird
+    "No",                                        // L Social Share
+    "",                                          // M Codi Rival
+    "Alberto Marí",                              // N Captain Name
+    "",                                          // O Captain Phone
+    "almari_21@hotmail.com",                     // P Captain Email
+    "L",                                         // Q Captain Shirt
+    "FALSE",                                     // R Has Tutor
+    "",                                          // S Tutor Name
+    "",                                          // T Tutor Phone
+    "",                                          // U Tutor Email
+    4,                                           // V Num Players
+    "TRUE",                                      // W RGPD Consent
+    "TRUE",                                      // X Image Rights
+    "",                                          // Y Proof File
+    "",                                          // Z Proof URL
+    "MANUAL",                                    // AA JotForm ID
+    "FALSE",                                     // AB QRs Sent
+    "Inscripció manual via WhatsApp 17/05/2026", // AC Notes
+  ];
+  teamSheet.appendRow(teamRow);
+  Logger.log("addWR032Manual: team row appended ✓");
+
+  // — Jugadors tab —
+  const playerSheet = ensureSheet(ss, "Jugadors", PLAYER_HEADERS);
+  const players = [
+    [ts, "WR-032-P1", "WR-032", "Alberto Marí",  "", "Veterans Masculí", 1978, "Masculí", "", "almari_21@hotmail.com", "L",   "TRUE"],
+    [ts, "WR-032-P2", "WR-032", "Andreu Puig",   "", "Veterans Masculí", 1984, "Masculí", "", "",                      "XL",  "TRUE"],
+    [ts, "WR-032-P3", "WR-032", "Ignacio Goñi",  "", "Veterans Masculí", 1979, "Masculí", "", "",                      "XXL", "TRUE"],
+    [ts, "WR-032-P4", "WR-032", "Dífac Puig",    "", "Veterans Masculí", 1978, "Masculí", "", "",                      "L",   "TRUE"],
+  ];
+  players.forEach(function(p) { playerSheet.appendRow(p); });
+  Logger.log("addWR032Manual: 4 player rows appended ✓");
+
+  // — Enviar emails (confirmació al capità + notificació a Ana) —
+  const props = PropertiesService.getScriptProperties();
+  const sheetId = props.getProperty("SHEET_ID");
+  const siteUrl = (props.getProperty("SITE_URL") || "https://www.cbgrupbarna-3x3timechamber.com").replace(/\/$/, "");
+  const teamId = "WR-032";
+  const qrData = siteUrl + "/equip?id=" + teamId;
+  const qrImageUrl = "https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=" + encodeURIComponent(qrData) + "&color=1a1a1a&bgcolor=ffffff&margin=10";
+
+  const payload = {
+    teamId: "WR-032",
+    teamName: "The Walking Dead",
+    category: "Veterans Masculí",
+    packageTitle: "Equip 4 jugadors",
+    packageKey: "team4",
+    packagePrice: 67.5,
+    finalPrice: 67.5,
+    discountAmount: 0,
+    discountType: "",
+    earlyBirdApplied: false,
+    socialShareDone: false,
+    rgpdConsent: true,
+    captain: {
+      fullName: "Alberto Marí",
+      email: "almari_21@hotmail.com",
+      phone: "",
+      shirtSize: "L"
+    },
+    tutor: null,
+    players: [
+      { fullName: "Alberto Marí",  club: "", birthYear: 1978, shirtSize: "L",   gender: "Masculí" },
+      { fullName: "Andreu Puig",   club: "", birthYear: 1984, shirtSize: "XL",  gender: "Masculí" },
+      { fullName: "Ignacio Goñi",  club: "", birthYear: 1979, shirtSize: "XXL", gender: "Masculí" },
+      { fullName: "Dífac Puig",    club: "", birthYear: 1978, shirtSize: "L",   gender: "Masculí" }
+    ]
+  };
+
+  try {
+    sendEmails(payload, "", sheetId);
+    Logger.log("addWR032Manual: emails enviats ✓ → " + payload.captain.email);
+  } catch(err) {
+    Logger.log("addWR032Manual: error emails → " + err);
+  }
+
+  return "WR-032 The Walking Dead afegit ✓ (1 equip + 4 jugadors + emails enviats)";
+}
+
+// ===== HELPER: enviar emails WR-032 (sense re-inserir al sheet) =====
+function sendEmailsWR032() {
+  const props = PropertiesService.getScriptProperties();
+  const sheetId = props.getProperty("SHEET_ID");
+  const siteUrl = (props.getProperty("SITE_URL") || "https://www.cbgrupbarna-3x3timechamber.com").replace(/\/$/, "");
+  const teamId = "WR-032";
+  const qrData = siteUrl + "/equip?id=" + teamId;
+  const qrImageUrl = "https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=" + encodeURIComponent(qrData) + "&color=1a1a1a&bgcolor=ffffff&margin=10";
+
+  const payload = {
+    teamId: "WR-032",
+    teamName: "The Walking Dead",
+    category: "Veterans Masculí",
+    packageTitle: "Equip 4 jugadors",
+    packageKey: "team4",
+    packagePrice: 67.5,
+    finalPrice: 67.5,
+    discountAmount: 0,
+    discountType: "",
+    earlyBirdApplied: false,
+    socialShareDone: false,
+    rgpdConsent: true,
+    captain: {
+      fullName: "Alberto Marí",
+      email: "almari_21@hotmail.com",
+      phone: "",
+      shirtSize: "L"
+    },
+    tutor: null,
+    players: [
+      { fullName: "Alberto Marí",  club: "", birthYear: 1978, shirtSize: "L",   gender: "Masculí" },
+      { fullName: "Andreu Puig",   club: "", birthYear: 1984, shirtSize: "XL",  gender: "Masculí" },
+      { fullName: "Ignacio Goñi",  club: "", birthYear: 1979, shirtSize: "XXL", gender: "Masculí" },
+      { fullName: "Dífac Puig",    club: "", birthYear: 1978, shirtSize: "L",   gender: "Masculí" }
+    ]
+  };
+
+  sendEmails(payload, "", sheetId);
+  Logger.log("sendEmailsWR032: emails enviats ✓ → " + payload.captain.email);
+  return "Emails WR-032 enviats ✓";
 }

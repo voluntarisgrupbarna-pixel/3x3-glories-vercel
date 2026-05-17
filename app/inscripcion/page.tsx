@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import Link from "next/link";
 import InscripcioWizard from "./InscripcioWizard";
+import { WA_REGISTER_URL } from "../lib/whatsapp";
 
 const SITE_URL = "https://www.cbgrupbarna-3x3timechamber.com";
 
@@ -116,8 +117,6 @@ export default async function InscripcionPage({ searchParams }: InscripcionPageP
   const ref = sanitizeRef(params.ref);
   const fromTeam = ref ? formatTeamName(ref) : "";
   const rivalCode = ref ? `RIVAL-${ref.toUpperCase()}` : "";
-  const contactLink = ref ? `/contacte?contacte=1&ref=${encodeURIComponent(rivalCode)}` : "/contacte?contacte=1";
-
   return (
     <>
       <Script
@@ -147,7 +146,7 @@ export default async function InscripcionPage({ searchParams }: InscripcionPageP
           <span className="insc-hero-kicker">3a edició · 6-7 Juny 2026 · Clot-Glòries, Barcelona</span>
           <h1 className="insc-hero-title">Inscriu el teu equip</h1>
           <p className="insc-hero-sub">
-            El torneig 3×3 FIBA més potent de Barcelona — 10 categories, 3 seus, 2.000€ premi en metàl·lic
+            El torneig 3×3 FIBA més potent de Barcelona — 11 categories, 3 seus, 2.000€ premi en metàl·lic
           </p>
           <div className="insc-hero-chips">
             <span>🔥 Early Bird −10%</span>
@@ -293,9 +292,9 @@ export default async function InscripcionPage({ searchParams }: InscripcionPageP
             normes oficials FIBA 3×3
           </Link>
           {" "}o{" "}
-          <Link href="/contacte" className="insc-link">
+          <a href={WA_REGISTER_URL} target="_blank" rel="noreferrer noopener" className="insc-link">
             contacta&apos;ns per WhatsApp
-          </Link>
+          </a>
           . Resposta en menys de 24h.
         </p>
       </main>

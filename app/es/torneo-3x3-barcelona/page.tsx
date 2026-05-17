@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import Link from "next/link";
+import { WA_REGISTER_URL } from "../../lib/whatsapp";
 
 export const metadata: Metadata = {
   title: "Torneo 3x3 Barcelona 2026 | Westfield Glòries · FIBA · 2.000€ premios",
@@ -28,7 +29,7 @@ const jsonLdBreadcrumb = {
   ],
 };
 
-const CONTACT_LINK = "/contacte?contacte=1";
+const CONTACT_LINK = WA_REGISTER_URL;
 
 const CATEGORIAS = [
   { name: "Premini", año: "2016–2017", precio: "75–90 €" },
@@ -211,6 +212,7 @@ export default function TorneoESPage() {
             <br />
             <a
               href={CONTACT_LINK}
+              target="_blank" rel="noreferrer noopener"
               style={{ fontSize: "0.9rem", color: "rgba(255,247,239,0.6)", textDecoration: "underline" }}
             >
               ¿Prefieres WhatsApp? Escríbenos →
@@ -226,9 +228,9 @@ export default function TorneoESPage() {
               preguntas frecuentes
             </Link>{" "}
             o{" "}
-            <Link href="/contacte" style={{ color: "#f97316" }}>
+            <a href={WA_REGISTER_URL} target="_blank" rel="noreferrer noopener" style={{ color: "#f97316" }}>
               contáctanos por WhatsApp
-            </Link>
+            </a>
             . Respuesta en menos de 24h.
           </p>
         </main>

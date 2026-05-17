@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { faqs } from "../data/faqs";
+import { WA_REGISTER_URL } from "../lib/whatsapp";
 import SlideActionBar from "./SlideActionBar";
 
 /**
@@ -57,7 +58,8 @@ export default function FaqSection() {
               Veure totes les preguntes freqüents →
             </Link>
             <a
-              href="/contacte?contacte=1"
+              href={WA_REGISTER_URL}
+              target="_blank" rel="noreferrer noopener"
               className="faq-btn faq-btn--wa"
             >
               📱 Pregunta per WhatsApp

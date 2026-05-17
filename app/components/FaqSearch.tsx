@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { faqs } from "../data/faqs";
+import { WA_REGISTER_URL } from "../lib/whatsapp";
 import type { Faq } from "../data/faqs";
 
 interface Props {
@@ -214,7 +215,8 @@ export default function FaqSearch({ items = faqs, page = "frequents" }: Props) {
               <div className="faq-search-empty">
                 <p>No hem trobat cap pregunta amb &ldquo;{trimmed}&rdquo;.</p>
                 <a
-                  href="/contacte?contacte=1"
+                  href={WA_REGISTER_URL}
+                  target="_blank" rel="noreferrer noopener"
                   className="faq-search-wa-link"
                 >
                   📱 Deixa el mòbil i et responem per WhatsApp

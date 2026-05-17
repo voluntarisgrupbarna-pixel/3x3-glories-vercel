@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
+import { WA_REGISTER_URL } from "../lib/whatsapp";
 
 const NAV_LINKS = [
   { href: "/#torneig",      label: "Torneig" },
@@ -55,7 +56,7 @@ export default function SiteNav() {
       </div>
 
       <div className="site-nav-actions">
-        <a href="/contacte?contacte=1" className="site-nav-contact">
+        <a href={WA_REGISTER_URL} target="_blank" rel="noreferrer noopener" className="site-nav-contact">
           WhatsApp
         </a>
         <a href="/inscripcion" className="site-nav-cta">

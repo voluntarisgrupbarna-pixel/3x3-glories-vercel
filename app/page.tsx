@@ -2,12 +2,14 @@
 
 import EarlyBirdBanner from "./components/EarlyBirdBanner";
 import HeroFestival from "./components/HeroFestival";
+import IdentityChipsStrip from "./components/IdentityChipsStrip";
 import SlideDos from "./components/SlideDos";
 import OccupancyGrid from "./components/OccupancyGrid";
 import CategoryBars from "./components/CategoryBars";
 import UbicacionsSection from "./components/UbicacionsSection";
 import PremisSection from "./components/PremisSection";
 import CategoriesSection from "./components/CategoriesSection";
+import ObertATothomSection from "./components/ObertATothomSection";
 import InstagramReels from "./components/InstagramReels";
 import NotifyMeBar from "./components/NotifyMeBar";
 import FaqSection from "./components/FaqSection";
@@ -26,6 +28,9 @@ export default function Home() {
         <SlideDos />
       </main>
 
+      {/* === FRANJA IDENTITAT — 5 valors del torneig === */}
+      <IdentityChipsStrip />
+
       {/* === SLIDE 3 — Graella d'ocupació 100 places (1 quadrat = 1 equip) === */}
       <OccupancyGrid />
 
@@ -40,6 +45,9 @@ export default function Home() {
 
       {/* === Categories — dia 6 + dia 7 === */}
       <CategoriesSection />
+
+      {/* === Un 3x3 obert a tothom — Màgics + LGTBI+ === */}
+      <ObertATothomSection />
 
       {/* === Telaraña: captura de qui no està llest per inscriure's === */}
       <NotifyMeBar />

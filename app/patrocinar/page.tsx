@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import Link from "next/link";
+import { WA_REGISTER_URL } from "../lib/whatsapp";
 
 export const metadata: Metadata = {
   title: "Patrocina el 3×3 Westfield Glòries 2026 | Visibilitat local Barcelona",
@@ -32,7 +33,7 @@ const jsonLdBreadcrumb = {
   ],
 };
 
-const CONTACT_LINK = "/contacte?contacte=1";
+const CONTACT_LINK = WA_REGISTER_URL;
 
 const PAQUETS = [
   {
@@ -336,6 +337,7 @@ export default function PatrocinarPage() {
             </p>
             <a
               href={CONTACT_LINK}
+              target="_blank" rel="noreferrer noopener"
               style={{
                 display: "inline-flex",
                 alignItems: "center",
@@ -394,9 +396,9 @@ export default function PatrocinarPage() {
               preguntes freqüents
             </Link>{" "}
             o{" "}
-            <Link href="/contacte" className="insc-link">
+            <a href={WA_REGISTER_URL} target="_blank" rel="noreferrer noopener" className="insc-link">
               contacta&apos;ns per WhatsApp
-            </Link>
+            </a>
             . Resposta en menys de 24h.
           </p>
         </main>

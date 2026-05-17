@@ -14,7 +14,7 @@ const STATS = [
   { value: "180+", label: "Equips a 2 edicions" },
   { value: "800+", label: "Jugadors/es totals" },
   { value: "2.4M+", label: "Impressions potencials" },
-  { value: "4a", label: "Edició consecutiva" },
+  { value: "3a", label: "Edició consecutiva" },
 ];
 
 const EVENT_DATE = new Date("2026-06-06T09:00:00+02:00");
@@ -120,6 +120,9 @@ export default function HeroFestival() {
         </p>
         <p className="hero-festival-subtitle" style={{ opacity: 0.6, fontSize: "0.8em", marginTop: "-0.4em" }}>
           × <strong>Grup Barna</strong> · <strong>Time Chamber</strong> · <strong>Eix Clot</strong>
+        </p>
+        <p className="hero-festival-parity-line">
+          ⚖️ <strong>1.000€ Femení · 1.000€ Masculí</strong> — premi paritari, únic a Barcelona
         </p>
 
         <div className="hero-festival-meta">

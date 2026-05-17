@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import StickyCtaBar from "./components/StickyCtaBar";
 import SiteNav from "./components/SiteNav";
 // ExitIntentModal removed — Ana vol capturar leads via abandó del formulari, no via popup
 import WhatsAppLeadWidget from "./components/WhatsAppLeadWidget";
@@ -631,7 +630,6 @@ export default function RootLayout({
       </head>
       <body>
         <SiteNav />
-        <StickyCtaBar />
         <WhatsAppLeadWidget />
         {/* ExitIntentModal removed */}
         {children}
