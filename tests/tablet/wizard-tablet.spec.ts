@@ -96,16 +96,18 @@ test.describe("Wizard — tablet (iPad)", () => {
 
   // ── Descompte social en tablet ───────────────────────────────────────────
 
-  test("6 · Descompte social s'activa en tablet (5 WA + IG)", async ({ page }) => {
+  test("6 · Descompte social s'activa en tablet (WA + checkbox + IG)", async ({ page }) => {
     await gotoWizard(page);
-    for (let i = 0; i < 5; i++) await page.locator(`[data-slot="${i}"]`).click();
+    await page.locator("[data-wa-share]").click();
+    await page.locator("[data-wa-confirm] input[type='checkbox']").check();
     await page.getByRole("link", { name: /Segueix @cbgrupbarna/i }).click();
     await expect(page.getByText(/Descompte social del 5 % activat/i)).toBeVisible();
   });
 
   test("7 · Descompte social persistent a Step 2 en tablet", async ({ page }) => {
     await gotoWizard(page);
-    for (let i = 0; i < 5; i++) await page.locator(`[data-slot="${i}"]`).click();
+    await page.locator("[data-wa-share]").click();
+    await page.locator("[data-wa-confirm] input[type='checkbox']").check();
     await page.getByRole("link", { name: /Segueix @cbgrupbarna/i }).click();
     await page.getByRole("button", { name: /Continuar al formulari/i }).click();
     await expect(page.locator(".wizard-active-badge--social")).toBeVisible();

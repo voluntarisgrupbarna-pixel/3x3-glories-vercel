@@ -416,16 +416,18 @@ test.describe("InscripcioWizard", () => {
     await expect(status.first()).toBeVisible();
   });
 
-  test("25 · Social: clicar 5 slots WA + IG activa el descompte", async ({ page }) => {
+  test("25 · Social: WA + checkbox + IG activa el descompte", async ({ page }) => {
     await gotoWizard(page);
-    for (let i = 0; i < 5; i++) await page.locator(`[data-slot="${i}"]`).click();
+    await page.locator("[data-wa-share]").click();
+    await page.locator("[data-wa-confirm] input[type='checkbox']").check();
     await page.getByRole("link", { name: /Segueix @cbgrupbarna/i }).click();
     await expect(page.getByText(/Descompte social del 5 % activat/i)).toBeVisible();
   });
 
-  test("26 · Social: clicar 5 WA però sense IG no activa el descompte", async ({ page }) => {
+  test("26 · Social: WA + checkbox sense IG no activa el descompte", async ({ page }) => {
     await gotoWizard(page);
-    for (let i = 0; i < 5; i++) await page.locator(`[data-slot="${i}"]`).click();
+    await page.locator("[data-wa-share]").click();
+    await page.locator("[data-wa-confirm] input[type='checkbox']").check();
     // Sense clicar Instagram
     await expect(page.getByText(/Descompte social del 5 % activat/i)).not.toBeVisible();
   });
@@ -455,8 +457,9 @@ test.describe("InscripcioWizard", () => {
   test("30 · Tots 3 descomptes combinats: resum mostra tots al Step 5", async ({ page }) => {
     await gotoWizard(page, "?ref=CBGB2026");
 
-    // Activar social: 5 slots WA + IG
-    for (let i = 0; i < 5; i++) await page.locator(`[data-slot="${i}"]`).click();
+    // Activar social: WA + checkbox + IG
+    await page.locator("[data-wa-share]").click();
+    await page.locator("[data-wa-confirm] input[type='checkbox']").check();
     await page.getByRole("link", { name: /Segueix @cbgrupbarna/i }).click();
     await expect(page.getByText(/Descompte social del 5 % activat/i)).toBeVisible();
 

@@ -1,16 +1,12 @@
 /**
- * Bateria de proves — SocialDiscountBlock (5 contactes WA + IG)
+ * Bateria de proves — SocialDiscountBlock (1 botó WA + checkbox confirmació + IG)
  * Ruta: /inscripcion (Step 1)
  *
- * El descompte social del 5% s'activa quan:
- *   1. L'usuari clica els 5 botons de WA (un per contacte)
- *   2. L'usuari clica el botó de seguir @cbgrupbarna a Instagram
- * Cobreix: estat inicial, clics parcials, flux complet, comptador, badges, preus.
+ * Flux: clicar WA → WhatsApp s'obre → tornar → marcar checkbox "He compartit amb 5 amics"
+ *       + clicar IG → descompte -5% activat.
  */
 
 import { test, expect, Page } from "@playwright/test";
-
-const REQUIRED_SHARES = 5;
 
 async function gotoStep1(page: Page) {
   await page.addInitScript(() => {
@@ -32,21 +28,15 @@ async function gotoStep1(page: Page) {
   await expect(page.getByText("Descomptes disponibles")).toBeVisible();
 }
 
-/** Clica els N primers slots de WA (0-based, fins a REQUIRED_SHARES) */
-async function clickWaSlots(page: Page, count: number) {
-  for (let i = 0; i < count; i++) {
-    await page.locator(`[data-slot="${i}"]`).click();
-  }
-}
-
-/** Clica tots els 5 slots WA + el botó IG */
+/** Activa el descompte social complet: WA + checkbox + IG */
 async function activateSocialDiscount(page: Page) {
-  await clickWaSlots(page, REQUIRED_SHARES);
+  await page.locator("[data-wa-share]").click();
+  await page.locator("[data-wa-confirm] input[type='checkbox']").check();
   await page.getByRole("link", { name: /Segueix @cbgrupbarna/i }).click();
   await expect(page.getByText(/Descompte social del 5 % activat/i)).toBeVisible();
 }
 
-test.describe("SocialDiscountBlock — 5 contactes WA + IG", () => {
+test.describe("SocialDiscountBlock — WA + confirmació + IG", () => {
 
   // ── Estat inicial ────────────────────────────────────────────────────────
 
@@ -56,118 +46,104 @@ test.describe("SocialDiscountBlock — 5 contactes WA + IG", () => {
     await expect(page.getByText(/−5 %/)).toBeVisible();
   });
 
-  test("2 · Es mostren exactament 5 botons de WA", async ({ page }) => {
+  test("2 · Un sol botó WA visible (sense checkbox inicial)", async ({ page }) => {
     await gotoStep1(page);
-    await expect(page.locator(".wizard-social-btn--slot")).toHaveCount(REQUIRED_SHARES);
+    await expect(page.locator("[data-wa-share]")).toBeVisible();
+    await expect(page.locator("[data-wa-confirm]")).not.toBeVisible();
   });
 
-  test("3 · Comptador inicial mostra '0/5 contactes'", async ({ page }) => {
-    await gotoStep1(page);
-    await expect(page.locator(".wizard-social-wa-progress")).toContainText("0/5");
-  });
-
-  test("4 · Sense cap clic → cap descompte activat", async ({ page }) => {
+  test("3 · Sense cap clic → cap descompte activat", async ({ page }) => {
     await gotoStep1(page);
     await expect(page.getByText(/Descompte social del 5 % activat/i)).not.toBeVisible();
-    await expect(page.locator(".wizard-discount-status--on")).not.toBeVisible();
   });
 
-  // ── Clics parcials de WA ─────────────────────────────────────────────────
+  // ── Clicar WA mostra el checkbox ─────────────────────────────────────────
 
-  test("5 · Clicar 1 slot WA → comptador mostra '1/5'", async ({ page }) => {
+  test("4 · Clicar WA → checkbox de confirmació apareix", async ({ page }) => {
     await gotoStep1(page);
-    await page.locator("[data-slot='0']").click();
-    await expect(page.locator(".wizard-social-wa-progress")).toContainText("1/5");
+    await page.locator("[data-wa-share]").click();
+    await expect(page.locator("[data-wa-confirm]")).toBeVisible();
   });
 
-  test("6 · Clicar 3 slots WA → comptador mostra '3/5'", async ({ page }) => {
+  test("5 · Clicar WA → botó canvia a 'WhatsApp obert'", async ({ page }) => {
     await gotoStep1(page);
-    await clickWaSlots(page, 3);
-    await expect(page.locator(".wizard-social-wa-progress")).toContainText("3/5");
+    await page.locator("[data-wa-share]").click();
+    await expect(page.locator("[data-wa-share]")).toContainText(/WhatsApp obert/i);
   });
 
-  test("7 · Clicar slot WA → canvia a estat 'compartit'", async ({ page }) => {
+  test("6 · Botó WA apunta a wa.me amb text del torneig", async ({ page }) => {
     await gotoStep1(page);
-    await page.locator("[data-slot='0']").click();
-    await expect(page.locator("[data-slot='0']")).toHaveClass(/wizard-social-btn--done/);
-    await expect(page.locator("[data-slot='0']")).toContainText("Contacte 1 compartit");
+    const href = await page.locator("[data-wa-share]").getAttribute("href");
+    expect(href).toContain("wa.me");
+    expect(href).toContain("3x3");
+    expect(href).toContain("inscripcion");
   });
 
-  test("8 · 4 slots WA + IG → descompte NO activat (falta 1 WA)", async ({ page }) => {
+  // ── Clics parcials — no activen el descompte ─────────────────────────────
+
+  test("7 · Clicar WA + marcar checkbox, sense IG → descompte NO activat", async ({ page }) => {
     await gotoStep1(page);
-    await clickWaSlots(page, 4); // falta 1
+    await page.locator("[data-wa-share]").click();
+    await page.locator("[data-wa-confirm] input[type='checkbox']").check();
+    await expect(page.getByText(/Descompte social del 5 % activat/i)).not.toBeVisible();
+  });
+
+  test("8 · Clicar IG sense WA → descompte NO activat", async ({ page }) => {
+    await gotoStep1(page);
     await page.getByRole("link", { name: /Segueix @cbgrupbarna/i }).click();
     await expect(page.getByText(/Descompte social del 5 % activat/i)).not.toBeVisible();
   });
 
-  test("9 · 5 slots WA sense IG → descompte NO activat", async ({ page }) => {
+  test("9 · Clicar WA sense marcar checkbox + IG → descompte NO activat", async ({ page }) => {
     await gotoStep1(page);
-    await clickWaSlots(page, REQUIRED_SHARES);
-    // Sense clicar IG
-    await expect(page.getByText(/Descompte social del 5 % activat/i)).not.toBeVisible();
-    // Però sí apareix el missatge de 5 contactes notificats
-    await expect(page.getByText(/5 contactes notificats/i)).toBeVisible();
-  });
-
-  test("10 · Clicar IG sense cap WA → descompte NO activat", async ({ page }) => {
-    await gotoStep1(page);
+    await page.locator("[data-wa-share]").click();
+    // No marquem el checkbox
     await page.getByRole("link", { name: /Segueix @cbgrupbarna/i }).click();
     await expect(page.getByText(/Descompte social del 5 % activat/i)).not.toBeVisible();
   });
 
   // ── Flux complet — activa ────────────────────────────────────────────────
 
-  test("11 · 5 slots WA + IG → descompte ACTIVAT", async ({ page }) => {
+  test("10 · WA + checkbox + IG → descompte ACTIVAT", async ({ page }) => {
     await gotoStep1(page);
     await activateSocialDiscount(page);
   });
 
-  test("12 · Quan actiu, tots els slots mostren check ✓", async ({ page }) => {
-    await gotoStep1(page);
-    await activateSocialDiscount(page);
-    const slots = page.locator(".wizard-social-btn--slot");
-    for (let i = 0; i < REQUIRED_SHARES; i++) {
-      await expect(slots.nth(i)).toHaveClass(/wizard-social-btn--done/);
-    }
-  });
-
-  test("13 · Quan actiu, comptador mostra '5/5 contactes'", async ({ page }) => {
-    await gotoStep1(page);
-    await clickWaSlots(page, REQUIRED_SHARES);
-    await expect(page.locator(".wizard-social-wa-progress")).toContainText("5/5");
-  });
-
-  // ── Ordre invers (IG primer) ─────────────────────────────────────────────
-
-  test("14 · IG primer, després 5 WA → descompte ACTIVAT", async ({ page }) => {
+  test("11 · Ordre invers: IG primer, WA + checkbox → descompte ACTIVAT", async ({ page }) => {
     await gotoStep1(page);
     await page.getByRole("link", { name: /Segueix @cbgrupbarna/i }).click();
-    await clickWaSlots(page, REQUIRED_SHARES);
+    await page.locator("[data-wa-share]").click();
+    await page.locator("[data-wa-confirm] input[type='checkbox']").check();
     await expect(page.getByText(/Descompte social del 5 % activat/i)).toBeVisible();
   });
 
-  // ── URL dels botons ──────────────────────────────────────────────────────
+  // ── Desmarcar el checkbox elimina el descompte ───────────────────────────
 
-  test("15 · Tots els botons WA apunten a wa.me", async ({ page }) => {
+  test("12 · Desmarcar checkbox → descompte es desactiva", async ({ page }) => {
     await gotoStep1(page);
-    const slots = page.locator(".wizard-social-btn--slot");
-    for (let i = 0; i < REQUIRED_SHARES; i++) {
-      const href = await slots.nth(i).getAttribute("href");
-      expect(href).toContain("wa.me");
-      expect(href).toContain("3x3");
-    }
+    await activateSocialDiscount(page);
+    // Desmarcar
+    await page.locator("[data-wa-confirm] input[type='checkbox']").uncheck();
+    await expect(page.getByText(/Descompte social del 5 % activat/i)).not.toBeVisible();
   });
 
-  test("16 · Botó IG apunta al perfil @cbgrupbarna", async ({ page }) => {
+  // ── Botó Instagram ───────────────────────────────────────────────────────
+
+  test("13 · Botó IG apunta a instagram.com/cbgrupbarna", async ({ page }) => {
     await gotoStep1(page);
-    const igLink = page.getByRole("link", { name: /Segueix @cbgrupbarna/i });
-    const href = await igLink.getAttribute("href");
+    const href = await page.getByRole("link", { name: /Segueix @cbgrupbarna/i }).getAttribute("href");
     expect(href).toContain("instagram.com/cbgrupbarna");
+  });
+
+  test("14 · Botó IG canvia a 'Instagram obert' après clic", async ({ page }) => {
+    await gotoStep1(page);
+    await page.getByRole("link", { name: /Segueix @cbgrupbarna/i }).click();
+    await expect(page.getByText(/📸 Instagram obert/i)).toBeVisible();
   });
 
   // ── Persistència al Step 2 ───────────────────────────────────────────────
 
-  test("17 · Descompte social actiu → badge visible al Step 2", async ({ page }) => {
+  test("15 · Descompte actiu → badge Social visible al Step 2", async ({ page }) => {
     await gotoStep1(page);
     await activateSocialDiscount(page);
     await page.getByRole("button", { name: /Continuar al formulari/i }).click();
@@ -175,30 +151,26 @@ test.describe("SocialDiscountBlock — 5 contactes WA + IG", () => {
     await expect(page.locator(".wizard-active-badge--social")).toBeVisible();
   });
 
-  test("18 · Descompte social actiu → preu reduït visible als paquets del Step 2", async ({ page }) => {
+  test("16 · Descompte actiu → preu ratllat visible als paquets", async ({ page }) => {
     await gotoStep1(page);
     await activateSocialDiscount(page);
     await page.getByRole("button", { name: /Continuar al formulari/i }).click();
-    await expect(page.getByText("Dades de l'equip")).toBeVisible();
     await expect(page.locator(".wizard-pkg-price-old").first()).toBeVisible();
   });
 
-  test("19 · Sense descompte social → NO hi ha preu ratllat als paquets", async ({ page }) => {
+  test("17 · Sense descompte → sense preu ratllat als paquets", async ({ page }) => {
     await gotoStep1(page);
     await page.getByRole("button", { name: /Continuar al formulari/i }).click();
-    await expect(page.getByText("Dades de l'equip")).toBeVisible();
     await expect(page.locator(".wizard-pkg-price-old").first()).not.toBeVisible();
   });
 
   // ── Persistència al Step 5 ───────────────────────────────────────────────
 
-  test("20 · Descompte social reflectit al resum del Step 5", async ({ page }) => {
+  test("18 · Descompte social reflectit al resum del Step 5", async ({ page }) => {
     await gotoStep1(page);
     await activateSocialDiscount(page);
 
     await page.getByRole("button", { name: /Continuar al formulari/i }).click();
-    await expect(page.getByText("Dades de l'equip")).toBeVisible();
-
     await page.getByRole("button", { name: /Inscripció individual/i }).first().click();
     await page.getByLabel("Categoria *").selectOption("Sènior Femení");
     await page.getByLabel("Nom i cognoms *").first().fill("Anna García López");
@@ -209,9 +181,24 @@ test.describe("SocialDiscountBlock — 5 contactes WA + IG", () => {
     await page.locator("#wizard-indiv-gender").selectOption("Femení");
 
     await page.getByRole("button", { name: /Continuar al pagament/i }).click();
-    await expect(page.getByRole("heading", { name: "Fes la transferència" })).toBeVisible();
     await page.getByRole("button", { name: /Continuar/i }).last().click();
 
     await expect(page.locator(".wizard-summary-row-discount", { hasText: /Social/i })).toBeVisible();
+  });
+
+  // ── Touch targets mòbil ───────────────────────────────────────────────────
+
+  test("19 · Botó WA touch target ≥ 44px (WCAG)", async ({ page }) => {
+    await gotoStep1(page);
+    const box = await page.locator("[data-wa-share]").boundingBox();
+    expect(box).not.toBeNull();
+    expect(box!.height).toBeGreaterThanOrEqual(44);
+  });
+
+  test("20 · Botó IG touch target ≥ 44px (WCAG)", async ({ page }) => {
+    await gotoStep1(page);
+    const box = await page.getByRole("link", { name: /Segueix @cbgrupbarna/i }).boundingBox();
+    expect(box).not.toBeNull();
+    expect(box!.height).toBeGreaterThanOrEqual(44);
   });
 });

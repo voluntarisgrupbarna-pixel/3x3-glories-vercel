@@ -45,17 +45,15 @@ test.describe("Wizard — mòbil", () => {
     expect(dims.scrollWidth).toBeLessThanOrEqual(dims.clientWidth + 2);
   });
 
-  test("2 · Step 1: els 5 slots WA i el botó IG visibles", async ({ page }) => {
+  test("2 · Step 1: botó WA i botó IG visibles", async ({ page }) => {
     await gotoWizard(page);
-    // Els 5 slots han d'estar al DOM
-    await expect(page.locator(".wizard-social-btn--slot")).toHaveCount(5);
+    await expect(page.locator("[data-wa-share]")).toBeVisible();
     await expect(page.getByRole("link", { name: /Segueix @cbgrupbarna/i })).toBeVisible();
   });
 
-  test("3 · Step 1: primer botó WA (slot 0) touch target ≥ 44px (WCAG)", async ({ page }) => {
+  test("3 · Step 1: botó WA touch target ≥ 44px (WCAG)", async ({ page }) => {
     await gotoWizard(page);
-    const btn = page.locator("[data-slot='0']");
-    const box = await btn.boundingBox();
+    const box = await page.locator("[data-wa-share]").boundingBox();
     expect(box).not.toBeNull();
     expect(box!.height).toBeGreaterThanOrEqual(44);
   });
@@ -68,9 +66,10 @@ test.describe("Wizard — mòbil", () => {
     expect(box!.height).toBeGreaterThanOrEqual(44);
   });
 
-  test("5 · Step 1: descompte social s'activa en mòbil (5 WA + IG)", async ({ page }) => {
+  test("5 · Step 1: descompte social s'activa en mòbil (WA + checkbox + IG)", async ({ page }) => {
     await gotoWizard(page);
-    for (let i = 0; i < 5; i++) await page.locator(`[data-slot="${i}"]`).click();
+    await page.locator("[data-wa-share]").click();
+    await page.locator("[data-wa-confirm] input[type='checkbox']").check();
     await page.getByRole("link", { name: /Segueix @cbgrupbarna/i }).click();
     await expect(page.getByText(/Descompte social del 5 % activat/i)).toBeVisible();
   });

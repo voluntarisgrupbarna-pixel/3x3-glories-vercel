@@ -272,8 +272,9 @@ test.describe("Wizard — casos límit", () => {
 
   test("13 · Preu individual (20€) amb descompte social (−5%) = 19€", async ({ page }) => {
     await gotoWizard(page);
-    // Activar social: 5 slots WA + IG
-    for (let i = 0; i < 5; i++) await page.locator(`[data-slot="${i}"]`).click();
+    // Activar social: WA + checkbox + IG
+    await page.locator("[data-wa-share]").click();
+    await page.locator("[data-wa-confirm] input[type='checkbox']").check();
     await page.getByRole("link", { name: /Segueix @cbgrupbarna/i }).click();
 
     await page.getByRole("button", { name: /Continuar al formulari/i }).click();

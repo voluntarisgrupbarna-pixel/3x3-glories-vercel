@@ -760,16 +760,15 @@ function Stepper({ currentStep, isIndividual, waFlow = false }: { currentStep: n
 }
 
 // ── Social Discount Block ──────────────────────────────────────────────────
-// El descompte s'activa quan l'usuari ha clicat els 5 botons de WA (un per
-// contacte) I ha clicat el botó de seguir @cbgrupbarna a Instagram.
-// Cada clic de WA obre WhatsApp directament al chat corresponent.
-// Sense checkbox — el sistema ho detecta pels clics reals.
+// Flux:
+//  1. Usuari clica "Compartir per WhatsApp" → s'obre WA, tria 5 contactes de cop
+//  2. Torna a la pàgina i confirma "He compartit amb 5 amics" (checkbox)
+//  3. Clica "Segueix @cbgrupbarna" a Instagram
+//  Quan les dues condicions es compleixen → descompte -5% activat.
 
-const WA_SHARE_TEXT = encodeURIComponent(
+const WA_SHARE_URL = `https://wa.me/?text=${encodeURIComponent(
   "Vine al 3×3 Westfield Glòries 2026! Torneig FIBA a Barcelona el 6-7 juny. 2.000€ premi en metàl·lic. Inscriu-te: https://www.cbgrupbarna-3x3timechamber.com/inscripcion 🏀"
-);
-const WA_SHARE_URL = `https://wa.me/?text=${WA_SHARE_TEXT}`;
-const REQUIRED_SHARES = 5;
+)}`;
 
 function SocialDiscountBlock({
   socialShareDone,
@@ -778,26 +777,23 @@ function SocialDiscountBlock({
   socialShareDone: boolean;
   onSocialDone: (v: boolean) => void;
 }) {
-  // Cada posició = si s'ha clicat el botó WA d'aquell contacte
-  const [waSlots, setWaSlots] = useState<boolean[]>(Array(REQUIRED_SHARES).fill(false));
+  const [waOpened, setWaOpened] = useState(false);
+  const [waConfirmed, setWaConfirmed] = useState(false);
   const [igClicked, setIgClicked] = useState(false);
 
-  const waCount = waSlots.filter(Boolean).length;
-  const allWaDone = waCount === REQUIRED_SHARES;
+  function handleWaOpen() {
+    setWaOpened(true);
+  }
 
-  function handleWaSlot(idx: number) {
-    setWaSlots((prev) => {
-      const next = [...prev];
-      next[idx] = true;
-      const allDone = next.every(Boolean);
-      if (allDone && igClicked) onSocialDone(true);
-      return next;
-    });
+  function handleWaConfirm(checked: boolean) {
+    setWaConfirmed(checked);
+    if (checked && igClicked) onSocialDone(true);
+    if (!checked) onSocialDone(false);
   }
 
   function handleIg() {
     setIgClicked(true);
-    if (allWaDone) onSocialDone(true);
+    if (waConfirmed) onSocialDone(true);
   }
 
   return (
@@ -814,38 +810,32 @@ function SocialDiscountBlock({
         <strong>@cbgrupbarna</strong> a Instagram. El descompte s&apos;activa quan hagis fet les dues coses.
       </p>
 
-      {/* 5 botons WA — un per contacte */}
-      <div className="wizard-social-wa-slots">
-        <div className="wizard-social-wa-slots-header">
-          <span>WhatsApp</span>
-          <span className="wizard-social-wa-progress">
-            {waCount}/{REQUIRED_SHARES} contactes
-          </span>
-        </div>
-        {waSlots.map((done, idx) => (
-          <a
-            key={idx}
-            href={WA_SHARE_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            data-slot={idx}
-            className={`wizard-social-btn wizard-social-btn--wa wizard-social-btn--slot${done ? " wizard-social-btn--done" : ""}`}
-            onClick={() => handleWaSlot(idx)}
-            aria-label={done ? `Contacte ${idx + 1} compartit` : `Compartir amb el contacte ${idx + 1}`}
-          >
-            {done
-              ? <><span className="wizard-social-slot-check">✓</span> Contacte {idx + 1} compartit</>
-              : <>📲 Compartir amb contacte {idx + 1}</>
-            }
-          </a>
-        ))}
-        {allWaDone && (
-          <p className="wizard-social-wa-ok">✅ {REQUIRED_SHARES} contactes notificats!</p>
-        )}
-      </div>
+      <div className="wizard-social-actions">
+        {/* Botó WA únic — obre WhatsApp on es poden triar múltiples contactes */}
+        <a
+          href={WA_SHARE_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-wa-share
+          className={`wizard-social-btn wizard-social-btn--wa${waOpened ? " wizard-social-btn--opened" : ""}`}
+          onClick={handleWaOpen}
+        >
+          {waOpened ? "📲 WhatsApp obert — tria 5 contactes!" : "📲 Comparteix per WhatsApp"}
+        </a>
 
-      {/* Botó Instagram */}
-      <div className="wizard-social-actions" style={{ marginTop: 12 }}>
+        {/* Confirmació manual — apareix després de clicar WA */}
+        {waOpened && (
+          <label className="wizard-social-confirm" data-wa-confirm>
+            <input
+              type="checkbox"
+              checked={waConfirmed}
+              onChange={(e) => handleWaConfirm(e.target.checked)}
+            />
+            <span>He compartit el torneig amb <strong>5 amics</strong> ✓</span>
+          </label>
+        )}
+
+        {/* Botó Instagram */}
         <a
           href="https://www.instagram.com/cbgrupbarna/"
           target="_blank"
