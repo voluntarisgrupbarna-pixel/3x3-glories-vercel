@@ -1365,3 +1365,113 @@ function setupPendentsSheet() {
   Logger.log("setupPendentsSheet completat ✓ — pestanya llesta amb capçaleres i Fade away pre-populat");
   return "OK";
 }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// BACKUP DIARI DE SHEETS
+// Crea cada nit una còpia completa del Google Sheet a Drive.
+// La còpia inclou TOTES les pestanyes (Inscripcions, Jugadors,
+// Abandonaments, Leads, Dashboard...).
+//
+// Configuració (una sola vegada):
+//   1. Obrir l'editor: https://script.google.com
+//   2. Executar la funció: setupDailyBackupTrigger
+//   3. Acceptar els permisos (Drive + Spreadsheets)
+//   → A partir d'aquí corre cada nit a les 02:00 (hora Catalunya)
+//
+// Recuperar una versió:
+//   1. Obrir Drive → carpeta "Backups 3x3 Glòries"
+//   2. Trobar "3x3 Glòries Backup YYYY-MM-DD"
+//   3. Obrir directament o descarregar com Excel (.xlsx)
+// ═══════════════════════════════════════════════════════════════════════════
+
+var BACKUP_FOLDER_NAME = "Backups 3x3 Glòries";
+var BACKUP_DAYS_KEEP   = 30; // dies de retenció
+
+/**
+ * Còpia diària del Sheet principal a Drive.
+ * S'executa via time trigger (creat per setupDailyBackupTrigger).
+ */
+function dailySheetBackup() {
+  var props   = PropertiesService.getScriptProperties();
+  var sheetId = props.getProperty("SHEET_ID");
+  if (!sheetId) {
+    Logger.log("dailySheetBackup: SHEET_ID no configurat — executar syncSheetIdToCentralized primer");
+    return;
+  }
+
+  // Data d'avui a Europa/Madrid
+  var today = Utilities.formatDate(new Date(), "Europe/Madrid", "yyyy-MM-dd");
+  var fileName = "3x3 Glòries Backup " + today;
+
+  // Carpeta de backups (es crea si no existeix)
+  var folder = getOrCreateBackupFolder_();
+
+  // Evitar duplicats: si ja existeix el backup d'avui, sortir
+  var existing = folder.getFilesByName(fileName);
+  if (existing.hasNext()) {
+    Logger.log("dailySheetBackup: backup " + fileName + " ja existia, saltant");
+    return;
+  }
+
+  // Fer la còpia completa (totes les pestanyes)
+  var ss   = SpreadsheetApp.openById(sheetId);
+  var copy = ss.copy(fileName);
+
+  // Moure la còpia a la carpeta de backups
+  var copyFile = DriveApp.getFileById(copy.getId());
+  folder.addFile(copyFile);
+  DriveApp.getRootFolder().removeFile(copyFile); // treure de "My Drive" arrel
+
+  Logger.log("dailySheetBackup: creat " + fileName + " a la carpeta '" + BACKUP_FOLDER_NAME + "'");
+
+  // Netejar còpies antigues (> BACKUP_DAYS_KEEP dies)
+  pruneOldBackups_(folder);
+}
+
+function getOrCreateBackupFolder_() {
+  var it = DriveApp.getFoldersByName(BACKUP_FOLDER_NAME);
+  if (it.hasNext()) return it.next();
+  return DriveApp.createFolder(BACKUP_FOLDER_NAME);
+}
+
+function pruneOldBackups_(folder) {
+  var cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - BACKUP_DAYS_KEEP);
+
+  var files = folder.getFiles();
+  var deleted = 0;
+  while (files.hasNext()) {
+    var f = files.next();
+    if (f.getName().startsWith("3x3 Glòries Backup ") && f.getDateCreated() < cutoff) {
+      f.setTrashed(true);
+      deleted++;
+      Logger.log("pruneOldBackups: eliminat " + f.getName());
+    }
+  }
+  if (deleted > 0) Logger.log("pruneOldBackups: " + deleted + " còpies antigues eliminades");
+}
+
+/**
+ * Configura el trigger diari.
+ * Executar UNA SOLA VEGADA des de l'editor d'Apps Script:
+ *   Editor → selecciona "setupDailyBackupTrigger" → ▶ Executar
+ */
+function setupDailyBackupTrigger() {
+  // Esborra triggers anteriors del mateix nom per evitar duplicats
+  ScriptApp.getProjectTriggers().forEach(function(t) {
+    if (t.getHandlerFunction() === "dailySheetBackup") {
+      ScriptApp.deleteTrigger(t);
+    }
+  });
+
+  // Nou trigger: cada dia a les 02:00 hora Catalunya (UTC+1/+2)
+  ScriptApp.newTrigger("dailySheetBackup")
+    .timeBased()
+    .everyDays(1)
+    .atHour(2)   // 02:00 AM — fora d'horari d'ús
+    .inTimezone("Europe/Madrid")
+    .create();
+
+  Logger.log("setupDailyBackupTrigger: trigger creat → dailySheetBackup cada dia a les 02:00 (Europe/Madrid)");
+  return "Trigger creat ✓";
+}
