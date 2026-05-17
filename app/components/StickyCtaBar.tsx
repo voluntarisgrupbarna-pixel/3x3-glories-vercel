@@ -3,12 +3,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { WA_REGISTER_URL } from "../lib/whatsapp";
+import { WA_REGISTRE_URL } from "../lib/whatsapp";
 
 // Pàgines on els botons flotants NO han d'aparèixer (ja és dins del flow d'inscripció)
 const HIDE_ON = [
   "/inscripcion",
   "/inscripcio-individual",
+  "/inscripcio-wa",
+  "/wa-registre",
   "/porta-un-rival",
   "/check-in",
   "/jugador",
@@ -56,9 +58,7 @@ export default function StickyCtaBar() {
       </Link>
 
       <a
-        href={WA_REGISTER_URL}
-        target="_blank"
-        rel="noreferrer noopener"
+        href={WA_REGISTRE_URL}
         className="sticky-cta-contact"
       >
         <span className="sticky-cta-icon">💬</span>

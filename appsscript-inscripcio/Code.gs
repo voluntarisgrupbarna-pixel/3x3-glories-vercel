@@ -686,7 +686,47 @@ function handleLead(payload) {
   const sheetId = props.getProperty("SHEET_ID");
   if (!sheetId) throw new Error("SHEET_ID not configured");
   writeLeadToSheet(payload, sheetId);
+  try { sendLeadNotificationToAdmin(payload); } catch(e) { Logger.log("sendLeadNotificationToAdmin error: " + e); }
   return { ok: true };
+}
+
+/**
+ * Envia notificació per email a l'admin cada cop que arriba un lead del formulari de contacte.
+ */
+function sendLeadNotificationToAdmin(payload) {
+  var adminEmail = "voluntarisgrupbarna@gmail.com";
+  var nom      = payload.name     || "(sense nom)";
+  var mobil    = payload.phone    || "(sense mòbil)";
+  var email    = payload.email    || "(no facilitat)";
+  var interes  = payload.interest || "";
+  var pregunta = payload.question || "";
+  var missatge = payload.message  || "";
+  var origen   = payload.origin   || "";
+  var data     = new Date(payload.timestamp || new Date()).toLocaleString("ca-ES", {timeZone:"Europe/Madrid"});
+
+  var subject = "📋 Nou contacte 3×3 Glòries — " + nom;
+
+  var html = "<div style='font-family:Arial,sans-serif;max-width:600px;'>" +
+    "<h2 style='background:#16a34a;color:#fff;padding:12px 16px;border-radius:6px;margin:0 0 16px;'>📋 Nou contacte — 3×3 Westfield Glòries 2026</h2>" +
+    "<table border='1' cellpadding='8' cellspacing='0' style='border-collapse:collapse;width:100%;font-size:14px;'>" +
+    "<tr style='background:#f3f4f6'><th style='text-align:left;width:35%'>Camp</th><th style='text-align:left'>Valor</th></tr>" +
+    "<tr><td><b>Nom</b></td><td><b>" + nom + "</b></td></tr>" +
+    "<tr><td>Mòbil / WhatsApp</td><td><a href='https://wa.me/34" + mobil.replace(/\D/g,'') + "'>" + mobil + "</a></td></tr>" +
+    "<tr><td>Email</td><td>" + (payload.email ? "<a href='mailto:" + email + "'>" + email + "</a>" : "<i>no facilitat</i>") + "</td></tr>" +
+    "<tr><td>Tipus d'interès</td><td>" + interes + "</td></tr>" +
+    "<tr><td>Pregunta</td><td>" + pregunta + "</td></tr>" +
+    (missatge ? "<tr><td>Missatge</td><td>" + missatge + "</td></tr>" : "") +
+    "<tr><td>Origen</td><td>" + origen + "</td></tr>" +
+    "<tr><td>Data</td><td>" + data + "</td></tr>" +
+    "</table>" +
+    "<p style='margin-top:16px;'><a href='https://docs.google.com/spreadsheets/d/1MG5_8cmeKOe5Jz8BWiJ2e1K669EcIdNNHN1gFGI2uPA/edit#gid=0' style='background:#2563eb;color:#fff;padding:8px 16px;border-radius:4px;text-decoration:none;'>Veure Leads al Sheet →</a></p>" +
+    "<p style='font-size:11px;color:#9ca3af;margin-top:24px;'>Formulari de contacte web · cbgrupbarna-3x3timechamber.com</p>" +
+    "</div>";
+
+  var plain = "Nou contacte 3x3:\nNom: " + nom + "\nMobil: " + mobil + "\nEmail: " + email + "\nInteres: " + interes + "\nPregunta: " + pregunta + "\nMissatge: " + missatge;
+
+  GmailApp.sendEmail(adminEmail, subject, plain, { htmlBody: html });
+  Logger.log("sendLeadNotificationToAdmin: email enviat a " + adminEmail + " per lead de " + nom);
 }
 
 /**
@@ -1226,7 +1266,7 @@ function buildAdminEmailHtml(payload, proofUrl, qrImageUrl, ssUrl, finalPrice) {
       '</div>' +
       '<div style="text-align:right">' +
         '<p style="color:#ff375f;font-size:22px;font-weight:700;margin:0">' + finalPrice + ' €</p>' +
-        discountInfo ? '<p style="color:#aaa;font-size:11px;margin:2px 0 0">' + esc(discountInfo) + '</p>' : '' +
+        (discountInfo ? '<p style="color:#aaa;font-size:11px;margin:2px 0 0">' + esc(discountInfo) + '</p>' : '') +
       '</div>' +
     '</div>' +
     '<div style="padding:28px 32px">' +
@@ -1788,4 +1828,82 @@ function sendEmailsWR032() {
   sendEmails(payload, "", sheetId);
   Logger.log("sendEmailsWR032: emails enviats ✓ → " + payload.captain.email);
   return "Emails WR-032 enviats ✓";
+}
+
+/**
+ * Reenviar NOMÉS la notificació admin per a WR-032 (cos en blanc corregit).
+ * El mail al capità (almari_21@hotmail.com) va arribar correcte.
+ * Executar UNA SOLA VEGADA des de l'editor.
+ */
+function resendAdminEmailWR032() {
+  var props = PropertiesService.getScriptProperties();
+  var adminEmail = props.getProperty("ADMIN_EMAIL") || "";
+  var sheetId = props.getProperty("SHEET_ID");
+  var siteUrl = (props.getProperty("SITE_URL") || "https://www.cbgrupbarna-3x3timechamber.com").replace(/\/$/, "");
+
+  if (!adminEmail) { Logger.log("ERROR: ADMIN_EMAIL no configurat"); return; }
+
+  var payload = {
+    teamId: "WR-032",
+    teamName: "The Walking Dead",
+    category: "Veterans Masculí",
+    packageTitle: "Equip 4 jugadors",
+    packageKey: "team4",
+    packagePrice: 67.5,
+    finalPrice: 67.5,
+    discountAmount: 0,
+    discountType: "",
+    captain: {
+      fullName: "Alberto Marí",
+      email: "almari_21@hotmail.com",
+      phone: "",
+      shirtSize: "L"
+    },
+    tutor: null,
+    players: [
+      { fullName: "Alberto Marí",  club: "", birthYear: 1978, shirtSize: "L",   gender: "Masculí" },
+      { fullName: "Andreu Puig",   club: "", birthYear: 1984, shirtSize: "XL",  gender: "Masculí" },
+      { fullName: "Ignacio Goñi",  club: "", birthYear: 1979, shirtSize: "XXL", gender: "Masculí" },
+      { fullName: "Dífac Puig",    club: "", birthYear: 1978, shirtSize: "L",   gender: "Masculí" }
+    ]
+  };
+
+  var qrData = siteUrl + "/equip?id=" + payload.teamId;
+  var qrImageUrl = "https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=" + encodeURIComponent(qrData) + "&color=1a1a1a&bgcolor=ffffff&margin=10";
+  var ssUrl = sheetId ? SpreadsheetApp.openById(sheetId).getUrl() : "";
+  var finalPrice = payload.finalPrice.toFixed(2).replace(".00", "");
+
+  var htmlAdmin = buildAdminEmailHtml(payload, "", qrImageUrl, ssUrl, finalPrice);
+  var subject = "[3x3] Nova inscripcio - " + payload.teamName + " - " + payload.category;
+
+  sendToAdmins(adminEmail, subject, htmlAdmin);
+  Logger.log("resendAdminEmailWR032: notificacio admin reenviada a " + adminEmail);
+  return "Admin email WR-032 reenviat OK";
+}
+
+// ===== HELPER: notificació directa a Ana (cos buit corregit) =====
+function notifyAnaWR032() {
+  var adminEmail = "voluntarisgrupbarna@gmail.com";
+  var subject = "🏀 Nova inscripció confirmada — The Walking Dead · WR-032";
+  var html = "<h2 style='font-family:Arial;color:#111;'>Nova inscripció confirmada ✅</h2>" +
+    "<table border='1' cellpadding='8' cellspacing='0' style='border-collapse:collapse;font-family:Arial,sans-serif;font-size:14px;'>" +
+    "<tr style='background:#f0f0f0'><th>Camp</th><th>Valor</th></tr>" +
+    "<tr><td><b>Codi equip</b></td><td><b style='color:#d00;'>WR-032</b></td></tr>" +
+    "<tr><td>Nom equip</td><td>The Walking Dead</td></tr>" +
+    "<tr><td>Categoria</td><td>Veterans Masculí</td></tr>" +
+    "<tr><td>Pack</td><td>Equip 4 jugadors</td></tr>" +
+    "<tr><td>Capità</td><td>Alberto Marí</td></tr>" +
+    "<tr><td>Email capità</td><td>almari_21@hotmail.com</td></tr>" +
+    "<tr><td>Jugadors</td><td>Alberto Marí · Andreu Puig · Ignacio Goñi · Dífac Puig</td></tr>" +
+    "<tr><td>Talles</td><td>L · XL · XXL · L</td></tr>" +
+    "<tr><td><b>Import</b></td><td><b>67,50 €</b></td></tr>" +
+    "<tr><td>Pagament</td><td>✅ Verificat (BBVA transfer)</td></tr>" +
+    "<tr><td>Data</td><td>17/05/2026 14:10</td></tr>" +
+    "<tr><td>Check-in</td><td><a href='https://www.cbgrupbarna-3x3timechamber.com/check-in/WR-032'>check-in/WR-032</a></td></tr>" +
+    "</table>" +
+    "<p style='font-size:12px;color:#888;font-family:Arial;margin-top:16px;'>Inscripció manual via WhatsApp. Registrada per Claude Code el 17/05/2026.</p>";
+
+  GmailApp.sendEmail(adminEmail, subject, "Nova inscripcio WR-032 The Walking Dead confirmada. Import: 67,50 EUR. Capita: Alberto Mari (almari_21@hotmail.com).", { htmlBody: html });
+  Logger.log("notifyAnaWR032: email enviat a " + adminEmail + " OK");
+  return "Notificacio Ana enviada OK";
 }

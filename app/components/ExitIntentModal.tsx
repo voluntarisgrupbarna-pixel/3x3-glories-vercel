@@ -3,13 +3,15 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
 
-import { WA_REGISTER_URL } from "../lib/whatsapp";
+import { WA_REGISTER_URL, WA_REGISTRE_URL } from "../lib/whatsapp";
 
 const WHATSAPP_PHONE = "34698425153";
 
 const HIDE_ON = [
   "/inscripcion",
   "/inscripcio-individual",
+  "/inscripcio-wa",
+  "/wa-registre",
   "/porta-un-rival",
   "/check-in",
   "/jugador",
@@ -183,9 +185,7 @@ export default function ExitIntentModal() {
 
             <div className="exit-actions">
               <a
-                href={WA_REGISTER_URL}
-                target="_blank"
-                rel="noreferrer noopener"
+                href={WA_REGISTRE_URL}
                 className="exit-btn-wa"
                 onClick={close}
               >

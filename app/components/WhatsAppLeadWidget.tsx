@@ -23,6 +23,8 @@ const SHARE_URL = "https://cbgrupbarna-3x3timechamber.com";
 const HIDE_FLOATING_ON = [
   "/inscripcion",
   "/inscripcio-individual",
+  "/inscripcio-wa",
+  "/wa-registre",
   "/porta-un-rival",
   "/check-in",
   "/jugador",

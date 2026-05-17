@@ -36,6 +36,19 @@ Concepte: [NOM EQUIP] 3X3`;
 export const WA_REGISTER_URL =
   `https://wa.me/${WA_PHONE}?text=${encodeURIComponent(REGISTER_TEMPLATE)}`;
 
+/**
+ * Pàgina de pre-registre: recull dades de l'equip, guarda a Sheets
+ * via /api/inscripcio i obre WhatsApp per enviar el justificant.
+ * Usa el mateix wizard que /inscripcion però amb waFlow=true.
+ */
+export const WA_INSCRIPCIO_URL = "/inscripcio-wa";
+
+/**
+ * Pàgina de registre WhatsApp: formulari amb estètica WA,
+ * guarda a Sheets i obre WhatsApp amb missatge pre-omplert.
+ */
+export const WA_REGISTRE_URL = "/wa-registre";
+
 /** URL wa.me per compartir el torneig (sense destí — broadcast) */
 export function buildShareWaUrl() {
   const text = [
