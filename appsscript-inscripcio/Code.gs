@@ -1907,3 +1907,105 @@ function notifyAnaWR032() {
   Logger.log("notifyAnaWR032: email enviat a " + adminEmail + " OK");
   return "Notificacio Ana enviada OK";
 }
+
+/**
+ * Neteja de duplicats WR-032 al Sheet.
+ * Executar UNA SOLA VEGADA des de l'editor o via clasp run.
+ * - Esborra fila duplicada de "Inscripcions"
+ * - Esborra 4 files duplicades de "Jugadors"
+ * - Esborra fila mal alineada de "Inscripcions 2026"
+ * - Esborra fila TEST Claude de "Leads"
+ */
+function fixSheetDuplicates() {
+  var props = PropertiesService.getScriptProperties();
+  var sheetId = props.getProperty("SHEET_ID");
+  if (!sheetId) { Logger.log("SHEET_ID not set"); return "ERROR: no SHEET_ID"; }
+  var ss = SpreadsheetApp.openById(sheetId);
+  var results = [];
+
+  // --- 1. "Inscripcions" tab: eliminar fila duplicada WR-032 ---
+  var inscSheet = ss.getSheetByName("Inscripcions");
+  if (inscSheet) {
+    var inscData = inscSheet.getDataRange().getValues();
+    var inscHeaders = inscData[0];
+    var teamIdCol = -1;
+    for (var c = 0; c < inscHeaders.length; c++) {
+      if (String(inscHeaders[c]).replace(/\s/g,"").toUpperCase().indexOf("TEAMID") !== -1) { teamIdCol = c; break; }
+    }
+    var wr032Rows = [];
+    for (var r = 1; r < inscData.length; r++) {
+      if (String(inscData[r][teamIdCol] || "").trim().toUpperCase() === "WR-032") {
+        wr032Rows.push(r + 1);
+      }
+    }
+    Logger.log("Inscripcions WR-032 rows: " + JSON.stringify(wr032Rows));
+    // Eliminar duplicats (guardar el primer, esborrar la resta) — de baix a dalt
+    for (var i = wr032Rows.length - 1; i >= 1; i--) {
+      inscSheet.deleteRow(wr032Rows[i]);
+      results.push("Inscripcions: eliminada fila " + wr032Rows[i]);
+    }
+  }
+
+  // --- 2. "Jugadors" tab: eliminar les 4 files duplicades WR-032 ---
+  var jugSheet = ss.getSheetByName("Jugadors");
+  if (jugSheet) {
+    var jugData = jugSheet.getDataRange().getValues();
+    var jugHeaders = jugData[0];
+    var teamIdColJ = -1;
+    for (var c = 0; c < jugHeaders.length; c++) {
+      if (String(jugHeaders[c]).replace(/\s/g,"").toUpperCase().indexOf("TEAMID") !== -1) { teamIdColJ = c; break; }
+    }
+    var wr032PlayerRows = [];
+    for (var r = 1; r < jugData.length; r++) {
+      if (String(jugData[r][teamIdColJ] || "").trim().toUpperCase() === "WR-032") {
+        wr032PlayerRows.push(r + 1);
+      }
+    }
+    Logger.log("Jugadors WR-032 rows: " + JSON.stringify(wr032PlayerRows));
+    // Guardar els 4 primers, eliminar la resta (de baix a dalt)
+    for (var i = wr032PlayerRows.length - 1; i >= 4; i--) {
+      jugSheet.deleteRow(wr032PlayerRows[i]);
+      results.push("Jugadors: eliminada fila " + wr032PlayerRows[i]);
+    }
+  }
+
+  // --- 3. "Inscripcions 2026" tab: eliminar fila WR-032 mal alineada ---
+  var insc2026Sheet = ss.getSheetByName("Inscripcions 2026");
+  if (insc2026Sheet) {
+    var insc2026Data = insc2026Sheet.getDataRange().getValues();
+    var oldRows = [];
+    for (var r = 1; r < insc2026Data.length; r++) {
+      var rowStr = insc2026Data[r].join("|");
+      if (rowStr.indexOf("WR-032") !== -1 || rowStr.indexOf("Walking Dead") !== -1) {
+        oldRows.push(r + 1);
+      }
+    }
+    Logger.log("Inscripcions 2026 WR-032 rows: " + JSON.stringify(oldRows));
+    for (var i = oldRows.length - 1; i >= 0; i--) {
+      insc2026Sheet.deleteRow(oldRows[i]);
+      results.push("Inscripcions 2026: eliminada fila " + oldRows[i]);
+    }
+  }
+
+  // --- 4. "Leads" tab: eliminar fila TEST Claude ---
+  var leadsSheet = ss.getSheetByName("Leads");
+  if (leadsSheet) {
+    var leadsData = leadsSheet.getDataRange().getValues();
+    var testRows = [];
+    for (var r = 1; r < leadsData.length; r++) {
+      var rowAll = leadsData[r].join("|").toLowerCase();
+      if (rowAll.indexOf("test claude") !== -1 || rowAll.indexOf("600000001") !== -1 || rowAll.indexOf("test lead") !== -1) {
+        testRows.push(r + 1);
+      }
+    }
+    Logger.log("Leads TEST rows: " + JSON.stringify(testRows));
+    for (var i = testRows.length - 1; i >= 0; i--) {
+      leadsSheet.deleteRow(testRows[i]);
+      results.push("Leads: eliminada fila " + testRows[i]);
+    }
+  }
+
+  var summary = "fixSheetDuplicates OK: " + (results.length ? results.join(" | ") : "res a fer");
+  Logger.log(summary);
+  return summary;
+}

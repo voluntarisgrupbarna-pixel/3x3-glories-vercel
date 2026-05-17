@@ -111,6 +111,18 @@ function isValidBirthYear(year: string): boolean {
   return !isNaN(n) && n >= 1950 && n <= new Date().getFullYear();
 }
 
+function hasMinorCaptain(tutor: Tutor): boolean {
+  return Boolean(tutor.fullName.trim() || tutor.phone.trim() || tutor.email.trim());
+}
+
+function isValidMinorCaptain(tutor: Tutor): boolean {
+  if (!hasMinorCaptain(tutor)) return true;
+  if (!tutor.fullName.trim() || !tutor.phone.trim() || !tutor.email.trim()) return false;
+  if (!isValidPhone(tutor.phone)) return false;
+  if (!tutor.email.includes("@") || !tutor.email.includes(".")) return false;
+  return true;
+}
+
 /** Retorna true si el gènere del jugador és compatible amb la categoria (soft check) */
 function genderMatchesCategory(gender: string, cat: string): boolean {
   if (!gender || gender === "Altre") return true;
@@ -466,11 +478,7 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
     if (!c.fullName.trim() || !c.phone.trim() || !c.email.trim() || !c.shirtSize) return false;
     if (!isValidPhone(c.phone)) return false;
     if (!c.email.includes("@") || !c.email.includes(".")) return false;
-    if (state.needsTutor) {
-      const t = state.tutor;
-      if (!t.fullName.trim() || !t.phone.trim() || !t.email.trim()) return false;
-      if (!isValidPhone(t.phone)) return false;
-    }
+    if (state.needsTutor && !isValidMinorCaptain(state.tutor)) return false;
     // Camps addicionals obligatoris per inscripció individual
     if (state.packageKey === "individual") {
       if (!state.indivBirthYear || !isValidBirthYear(state.indivBirthYear)) return false;
@@ -513,12 +521,13 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
     if (!c.email.trim()) m.push("email del capità/a");
     else if (!c.email.includes("@") || !c.email.includes(".")) m.push("format d'email invàlid");
     if (!c.shirtSize) m.push("talla samarreta del capità/a");
-    if (state.needsTutor) {
+    if (state.needsTutor && hasMinorCaptain(state.tutor)) {
       const t = state.tutor;
-      if (!t.fullName.trim()) m.push("nom del tutor/a");
-      if (!t.phone.trim()) m.push("telèfon del tutor/a");
-      else if (!isValidPhone(t.phone)) m.push("telèfon tutor/a invàlid");
-      if (!t.email.trim()) m.push("email del tutor/a");
+      if (!t.fullName.trim()) m.push("nom del capità/a menor");
+      if (!t.phone.trim()) m.push("telèfon del capità/a menor");
+      else if (!isValidPhone(t.phone)) m.push("telèfon del capità/a menor invàlid");
+      if (!t.email.trim()) m.push("email del capità/a menor");
+      else if (!t.email.includes("@") || !t.email.includes(".")) m.push("format d'email del capità/a menor invàlid");
     }
     if (state.packageKey === "individual") {
       if (!state.indivBirthYear) m.push("any de naixement");
@@ -573,7 +582,7 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
         teamName: state.teamName || state.captain.fullName,
         category: state.category,
         captain: { fullName: state.captain.fullName, phone: state.captain.phone, email: state.captain.email, shirtSize: state.captain.shirtSize },
-        tutor: state.needsTutor
+        tutor: state.needsTutor && hasMinorCaptain(state.tutor)
           ? { fullName: state.tutor.fullName, phone: state.tutor.phone, email: state.tutor.email, shirtSize: "" }
           : null,
         players: players.map((p) => ({
@@ -1157,19 +1166,22 @@ function Step2Team({
       {/* Capità menor (si formativa) */}
       {state.needsTutor && (
         <>
-          <h3 className="wizard-section-title" style={{ marginTop: 28 }}>Capità/a de l&apos;equip (menor)</h3>
+          <h3 className="wizard-section-title" style={{ marginTop: 28 }}>Capità/a de l&apos;equip (menor, opcional)</h3>
+          <p style={{ marginBottom: 12, color: "#aaa", fontSize: 14 }}>
+            Si encara no el tens clar, pots deixar aquests camps en blanc i posar els jugadors al pas següent.
+          </p>
           <div className="wizard-grid-2">
             <div className="wizard-field wizard-field-full">
-              <label>Nom i cognoms *</label>
+              <label>Nom i cognoms</label>
               <input type="text" value={state.tutor.fullName} onChange={(e) => updateTutor("fullName", e.target.value)} placeholder="Marc Puig Torres" maxLength={80} autoComplete="name" />
             </div>
             <div className="wizard-field">
-              <label>Telèfon *</label>
+              <label>Telèfon</label>
               <input type="tel" value={state.tutor.phone} onChange={(e) => updateTutor("phone", e.target.value)} placeholder="+34 600 000 000" maxLength={20} autoComplete="tel" />
             </div>
             <div className="wizard-field">
-              <label>Email *</label>
-              <input type="email" value={state.tutor.email} onChange={(e) => updateTutor("email", e.target.value)} placeholder="capitan@email.com" required maxLength={100} autoComplete="email" />
+              <label>Email</label>
+              <input type="email" value={state.tutor.email} onChange={(e) => updateTutor("email", e.target.value)} placeholder="capitan@email.com" maxLength={100} autoComplete="email" />
             </div>
           </div>
         </>

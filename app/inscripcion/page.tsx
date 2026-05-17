@@ -189,7 +189,17 @@ export default async function InscripcionPage({ searchParams }: InscripcionPageP
           continuar de seguida i nosaltres validem el pagament en menys de 24h.
         </p>
 
-        <InscripcioWizard initialRefCode={rivalCode} />
+        {/* ── WhatsApp-style chat wrapper ── */}
+        <div className="wa-form-shell">
+          <div className="wa-form-header">
+            <div className="wa-form-header-avatar">🏀</div>
+            <div className="wa-form-header-info">
+              <span className="wa-form-header-name">3×3 Westfield Glòries 2026</span>
+              <span className="wa-form-header-status">CB Grup Barna · 6-7 juny · Clot, Barcelona</span>
+            </div>
+          </div>
+          <InscripcioWizard initialRefCode={rivalCode} />
+        </div>
 
         {/* insc-wa-hint removed — leads capturats via formulari d'abandó */}
 
