@@ -532,6 +532,7 @@ function sendAbandonedEmail(payload, props) {
   const reasonLabels = {
     "step1_email":   "📬 Email donat al Step 1 (sense continuar)",
     "email_entered": "✍️ Email escrit al Step 2 (formulari abandonat)",
+    "phone_entered": "📱 Telèfon escrit al Step 2 — nom + telèfon capturats",
     "step2_done":    "✅ Ha completat l'Equip — pendent pagament",
     "step3_done":    "✅ Ha pujat el justificant — pendent jugadors",
     "step4_done":    "✅ Ha introduït jugadors — pendent confirmar",

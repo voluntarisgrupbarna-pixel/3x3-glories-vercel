@@ -192,13 +192,7 @@ export default async function InscripcionPage({ searchParams }: InscripcionPageP
 
         <InscripcioWizard initialRefCode={rivalCode} />
 
-        <p className="insc-wa-hint">
-          Prefereixes parlar per WhatsApp?{" "}
-          <a href={contactLink} className="insc-link">
-            Deixa les teves dades
-          </a>{" "}
-          (et responem en menys de 24h).
-        </p>
+        {/* insc-wa-hint removed — leads capturats via formulari d'abandó */}
 
         <hr className="page-divider" />
 

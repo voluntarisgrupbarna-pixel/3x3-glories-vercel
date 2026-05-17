@@ -135,7 +135,8 @@ export async function POST(req: NextRequest) {
   try {
     const payload = await req.json();
 
-    if (!payload.captainEmail && !payload.captainPhone) {
+    // Requereix almenys nom O algun mètode de contacte per guardar el lead
+    if (!payload.captainName && !payload.captainEmail && !payload.captainPhone) {
       return NextResponse.json({ ok: false, error: "No contact data" }, { status: 400 });
     }
 

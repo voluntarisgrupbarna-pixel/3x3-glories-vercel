@@ -157,6 +157,7 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
   const abandonedEventsSent = useRef<Set<string>>(new Set());
   const earlyEmailSentRef = useRef(false);
   const emailDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const phoneDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const wizardRef = useRef<HTMLDivElement>(null);
   useEffect(() => { stateRef.current = state; });
   useEffect(() => { submitResultRef.current = submitResult; });
@@ -278,6 +279,22 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
       if (emailDebounceRef.current) clearTimeout(emailDebounceRef.current);
     };
   }, [state.captain.email]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Captura en temps real quan el capità omple el telèfon a l'Step 2 (debounce 3s)
+  // Permet saber qui ha abandonat fins i tot sense email, per a seguiment per WhatsApp.
+  useEffect(() => {
+    const phone = state.captain.phone;
+    const name  = state.captain.fullName;
+    if (!phone || phone.replace(/[\s\-().+]/g, "").length < 9) return; // mínim 9 dígits
+    if (!name.trim()) return; // necessitem almenys el nom per identificar el lead
+    if (phoneDebounceRef.current) clearTimeout(phoneDebounceRef.current);
+    phoneDebounceRef.current = setTimeout(() => {
+      sendAbandonedLead("phone_entered");
+    }, 3_000);
+    return () => {
+      if (phoneDebounceRef.current) clearTimeout(phoneDebounceRef.current);
+    };
+  }, [state.captain.phone, state.captain.fullName]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Derived ────────────────────────────────────────────────────────────
   const pkg: Package | null = useMemo(
