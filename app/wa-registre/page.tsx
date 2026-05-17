@@ -3,6 +3,7 @@
 import { FormEvent, useState } from "react";
 import Link from "next/link";
 import { WA_PHONE } from "../lib/whatsapp";
+import { isEarlyBirdActive, EARLY_BIRD_PCT } from "../inscripcion/wizardData";
 
 /* ── Dades de les categories ──────────────────────────────────────────── */
 const CATEGORIES = [
@@ -50,7 +51,11 @@ const emptyForm = (): Form => ({
 
 /* ── Construeix el missatge WhatsApp amb les dades del formulari ───────── */
 function buildWaMessage(f: Form): string {
+  const earlyBird = isEarlyBirdActive();
   const catPrice = CATEGORIES.find((c) => c.label === f.category)?.price ?? 75;
+  const finalPrice = earlyBird
+    ? Math.round(catPrice * (1 - EARLY_BIRD_PCT) * 100) / 100
+    : catPrice;
   const playerLines = f.players
     .map((p, i) =>
       p.name.trim()
@@ -74,7 +79,9 @@ function buildWaMessage(f: Form): string {
     "",
     playerLines ? `👥 JUGADORS:\n${playerLines}` : "👥 JUGADORS: (afegiré jugadors a continuació)",
     "",
-    `💳 PAGAMENT (${catPrice} €):`,
+    earlyBird
+      ? `💳 PAGAMENT (${finalPrice} € · Early Bird −10%, preu original ${catPrice} €):`
+      : `💳 PAGAMENT (${catPrice} €):`,
     `He fet la transferència a:`,
     "IBAN: ES25 0182 1797 3002 0387 8558",
     "Titular: CB GRUP BARNA",
@@ -379,7 +386,28 @@ export default function WaRegistrePage() {
               <p><strong>IBAN:</strong> ES25 0182 1797 3002 0387 8558</p>
               <p><strong>Titular:</strong> CB GRUP BARNA</p>
               <p><strong>Concepte:</strong> {form.teamName ? form.teamName.toUpperCase().replace(/\s+/g, "-") + " 3X3" : "[NOM EQUIP] 3X3"}</p>
-              <p><strong>Import:</strong> {CATEGORIES.find((c) => c.label === form.category)?.price ?? "75–90"} €</p>
+              {(() => {
+                const base = CATEGORIES.find((c) => c.label === form.category)?.price;
+                const eb = isEarlyBirdActive();
+                if (base === undefined) return <p><strong>Import:</strong> 75–90 €</p>;
+                const discounted = eb ? Math.round(base * (1 - EARLY_BIRD_PCT) * 100) / 100 : base;
+                return (
+                  <p>
+                    <strong>Import:</strong>{" "}
+                    {eb ? (
+                      <>
+                        <s style={{ color: "#999" }}>{base} €</s>
+                        {" → "}
+                        <strong style={{ color: "#25d366" }}>{discounted} €</strong>
+                        {" "}
+                        <span style={{ background: "#e8f5e9", color: "#2e7d32", borderRadius: "4px", padding: "1px 6px", fontSize: "0.82em", fontWeight: 600 }}>
+                          Early Bird −10%
+                        </span>
+                      </>
+                    ) : `${base} €`}
+                  </p>
+                );
+              })()}
             </div>
           </div>
 
