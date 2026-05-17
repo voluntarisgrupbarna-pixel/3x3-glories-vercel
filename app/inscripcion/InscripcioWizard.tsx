@@ -760,8 +760,16 @@ function Stepper({ currentStep, isIndividual, waFlow = false }: { currentStep: n
 }
 
 // ── Social Discount Block ──────────────────────────────────────────────────
-// El descompte s'activa automàticament quan l'usuari clica els dos botons.
+// El descompte s'activa quan l'usuari ha clicat els 5 botons de WA (un per
+// contacte) I ha clicat el botó de seguir @cbgrupbarna a Instagram.
+// Cada clic de WA obre WhatsApp directament al chat corresponent.
 // Sense checkbox — el sistema ho detecta pels clics reals.
+
+const WA_SHARE_TEXT = encodeURIComponent(
+  "Vine al 3×3 Westfield Glòries 2026! Torneig FIBA a Barcelona el 6-7 juny. 2.000€ premi en metàl·lic. Inscriu-te: https://www.cbgrupbarna-3x3timechamber.com/inscripcion 🏀"
+);
+const WA_SHARE_URL = `https://wa.me/?text=${WA_SHARE_TEXT}`;
+const REQUIRED_SHARES = 5;
 
 function SocialDiscountBlock({
   socialShareDone,
@@ -770,17 +778,26 @@ function SocialDiscountBlock({
   socialShareDone: boolean;
   onSocialDone: (v: boolean) => void;
 }) {
-  const [waClicked, setWaClicked] = useState(false);
+  // Cada posició = si s'ha clicat el botó WA d'aquell contacte
+  const [waSlots, setWaSlots] = useState<boolean[]>(Array(REQUIRED_SHARES).fill(false));
   const [igClicked, setIgClicked] = useState(false);
 
-  function handleWa() {
-    setWaClicked(true);
-    if (igClicked) onSocialDone(true);
+  const waCount = waSlots.filter(Boolean).length;
+  const allWaDone = waCount === REQUIRED_SHARES;
+
+  function handleWaSlot(idx: number) {
+    setWaSlots((prev) => {
+      const next = [...prev];
+      next[idx] = true;
+      const allDone = next.every(Boolean);
+      if (allDone && igClicked) onSocialDone(true);
+      return next;
+    });
   }
 
   function handleIg() {
     setIgClicked(true);
-    if (waClicked) onSocialDone(true);
+    if (allWaDone) onSocialDone(true);
   }
 
   return (
@@ -793,18 +810,42 @@ function SocialDiscountBlock({
         </div>
       </div>
       <p className="wizard-discount-desc">
-        Comparteix el torneig amb 5 amics per WhatsApp i segueix <strong>@cbgrupbarna</strong> a Instagram. El descompte s&apos;activa automàticament.
+        Comparteix el torneig amb <strong>5 amics</strong> per WhatsApp i segueix{" "}
+        <strong>@cbgrupbarna</strong> a Instagram. El descompte s&apos;activa quan hagis fet les dues coses.
       </p>
-      <div className="wizard-social-actions">
-        <a
-          href={`https://wa.me/?text=${encodeURIComponent("Vine al 3×3 Westfield Glòries 2026! Torneig FIBA a Barcelona el 6-7 juny. 2.000€ premi en metàl·lic. Inscriu-te: https://www.cbgrupbarna-3x3timechamber.com/inscripcion 🏀")}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={`wizard-social-btn wizard-social-btn--wa${waClicked ? " wizard-social-btn--done" : ""}`}
-          onClick={handleWa}
-        >
-          {waClicked ? "📲 WhatsApp obert" : "📲 Comparteix per WhatsApp"}
-        </a>
+
+      {/* 5 botons WA — un per contacte */}
+      <div className="wizard-social-wa-slots">
+        <div className="wizard-social-wa-slots-header">
+          <span>WhatsApp</span>
+          <span className="wizard-social-wa-progress">
+            {waCount}/{REQUIRED_SHARES} contactes
+          </span>
+        </div>
+        {waSlots.map((done, idx) => (
+          <a
+            key={idx}
+            href={WA_SHARE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-slot={idx}
+            className={`wizard-social-btn wizard-social-btn--wa wizard-social-btn--slot${done ? " wizard-social-btn--done" : ""}`}
+            onClick={() => handleWaSlot(idx)}
+            aria-label={done ? `Contacte ${idx + 1} compartit` : `Compartir amb el contacte ${idx + 1}`}
+          >
+            {done
+              ? <><span className="wizard-social-slot-check">✓</span> Contacte {idx + 1} compartit</>
+              : <>📲 Compartir amb contacte {idx + 1}</>
+            }
+          </a>
+        ))}
+        {allWaDone && (
+          <p className="wizard-social-wa-ok">✅ {REQUIRED_SHARES} contactes notificats!</p>
+        )}
+      </div>
+
+      {/* Botó Instagram */}
+      <div className="wizard-social-actions" style={{ marginTop: 12 }}>
         <a
           href="https://www.instagram.com/cbgrupbarna/"
           target="_blank"
@@ -814,8 +855,9 @@ function SocialDiscountBlock({
         >
           {igClicked ? "📸 Instagram obert" : "📸 Segueix @cbgrupbarna a Instagram"}
         </a>
-        {socialShareDone && <p className="wizard-social-ok">✅ Descompte social del 5 % activat!</p>}
       </div>
+
+      {socialShareDone && <p className="wizard-social-ok">✅ Descompte social del 5 % activat!</p>}
     </div>
   );
 }

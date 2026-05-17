@@ -48,14 +48,19 @@ async function goToStep2(page: Page) {
   await expect(page.getByText("Dades de l'equip")).toBeVisible();
 }
 
-/** Omple el capità (sense talla — l'afegim manualment als tests que cal) */
-async function fillCaptain(page: Page, opts?: { shirtSize?: boolean }) {
+/** Omple el capità (sense talla — l'afegim manualment als tests que cal).
+ *  Passa `{ individual: true }` per omplir també els camps obligatoris del paquet individual
+ *  (any de naixement i gènere). */
+async function fillCaptain(page: Page, opts?: { shirtSize?: boolean; individual?: boolean }) {
   await page.getByLabel("Nom i cognoms *").first().fill("Anna García López");
   await page.getByLabel(/Telèfon \(WhatsApp\)/i).first().fill("+34 600 000 001");
   await page.getByLabel("Email *").first().fill("anna@test.com");
   if (opts?.shirtSize !== false) {
-    // La talla és obligatòria al capità
     await page.getByLabel("Talla samarreta *").first().selectOption("M");
+  }
+  if (opts?.individual) {
+    await page.locator("#wizard-indiv-birth").fill("1995");
+    await page.locator("#wizard-indiv-gender").selectOption("Femení");
   }
 }
 
@@ -70,9 +75,9 @@ async function selectPackageAndCategory(
 }
 
 /** Omple un jugador pel seu índex (0-based) amb dades mínimes (usa IDs únics).
- *  Les targetes de jugador són un acordió — s'obre la que cal si és tancada. */
+ *  Les targetes de jugador són un acordió — s'obre la que cal si és tancada.
+ *  Nota: la categoria NO és editable a Step 4 (és un display llegit de l'equip). */
 async function fillPlayer(page: Page, idx: number, year = "2000") {
-  // Obre l'acordió si la targeta és tancada (els inputs no existeixen en DOM quan és tancada)
   const nameInput = page.locator(`#wp${idx}-name`);
   if (!await nameInput.isVisible()) {
     await page.locator(".wizard-player-card").nth(idx).locator("button.wizard-player-head").click();
@@ -80,7 +85,6 @@ async function fillPlayer(page: Page, idx: number, year = "2000") {
   }
   await nameInput.fill(`Jugador Test ${idx + 1}`);
   await page.locator(`#wp${idx}-club`).fill("CB Grup Barna");
-  await page.locator(`#wp${idx}-cat`).selectOption("Sènior Masculí");
   await page.locator(`#wp${idx}-birth`).fill(year);
   await page.locator(`#wp${idx}-gender`).selectOption("Masculí");
   await page.locator(`#wp${idx}-shirt`).selectOption("M");
@@ -100,7 +104,7 @@ test.describe("InscripcioWizard", () => {
 
     // Seleccionar paquet individual + categoria
     await selectPackageAndCategory(page, "Inscripció individual");
-    await fillCaptain(page);
+    await fillCaptain(page, { individual: true });
 
     // El botó "Talla samarreta" del capità ha d'estar omplert
     await page.getByRole("button", { name: /Continuar al pagament/i }).click();
@@ -186,7 +190,7 @@ test.describe("InscripcioWizard", () => {
     await goToStep2(page);
 
     await selectPackageAndCategory(page, "Inscripció individual");
-    await fillCaptain(page);
+    await fillCaptain(page, { individual: true });
     await page.getByRole("button", { name: /Continuar al pagament/i }).click();
     // Step 3
     await expect(page.getByRole("heading", { name: "Fes la transferència" })).toBeVisible();
@@ -372,7 +376,7 @@ test.describe("InscripcioWizard", () => {
     await gotoWizard(page);
     await goToStep2(page);
     await selectPackageAndCategory(page, "Inscripció individual");
-    await fillCaptain(page);
+    await fillCaptain(page, { individual: true });
     await page.getByRole("button", { name: /Continuar al pagament/i }).click();
     await expect(page.getByRole("heading", { name: "Fes la transferència" })).toBeVisible();
     await page.getByRole("button", { name: /Continuar/i }).last().click();
@@ -412,16 +416,16 @@ test.describe("InscripcioWizard", () => {
     await expect(status.first()).toBeVisible();
   });
 
-  test("25 · Social: clicar WA + IG activa el descompte", async ({ page }) => {
+  test("25 · Social: clicar 5 slots WA + IG activa el descompte", async ({ page }) => {
     await gotoWizard(page);
-    await page.getByText(/Comparteix per WhatsApp/i).click();
+    for (let i = 0; i < 5; i++) await page.locator(`[data-slot="${i}"]`).click();
     await page.getByRole("link", { name: /Segueix @cbgrupbarna/i }).click();
     await expect(page.getByText(/Descompte social del 5 % activat/i)).toBeVisible();
   });
 
-  test("26 · Social: clicar només WA no activa el descompte", async ({ page }) => {
+  test("26 · Social: clicar 5 WA però sense IG no activa el descompte", async ({ page }) => {
     await gotoWizard(page);
-    await page.getByText(/Comparteix per WhatsApp/i).click();
+    for (let i = 0; i < 5; i++) await page.locator(`[data-slot="${i}"]`).click();
     // Sense clicar Instagram
     await expect(page.getByText(/Descompte social del 5 % activat/i)).not.toBeVisible();
   });
@@ -451,14 +455,14 @@ test.describe("InscripcioWizard", () => {
   test("30 · Tots 3 descomptes combinats: resum mostra tots al Step 5", async ({ page }) => {
     await gotoWizard(page, "?ref=CBGB2026");
 
-    // Activar social
-    await page.getByText(/Comparteix per WhatsApp/i).click();
+    // Activar social: 5 slots WA + IG
+    for (let i = 0; i < 5; i++) await page.locator(`[data-slot="${i}"]`).click();
     await page.getByRole("link", { name: /Segueix @cbgrupbarna/i }).click();
     await expect(page.getByText(/Descompte social del 5 % activat/i)).toBeVisible();
 
     await goToStep2(page);
     await selectPackageAndCategory(page, "Inscripció individual");
-    await fillCaptain(page);
+    await fillCaptain(page, { individual: true });
     await page.getByRole("button", { name: /Continuar al pagament/i }).click();
     await expect(page.getByRole("heading", { name: "Fes la transferència" })).toBeVisible();
     await page.getByRole("button", { name: /Continuar/i }).last().click();
@@ -471,7 +475,7 @@ test.describe("InscripcioWizard", () => {
 
   // ── Fitxer justificant ───────────────────────────────────────────────────
 
-  test("31 · Fitxer >5 MB bloquejat amb alerta", async ({ page }) => {
+  test("31 · Fitxer >4 MB bloquejat amb alerta", async ({ page }) => {
     await gotoWizard(page);
     await goToStep2(page);
     await selectPackageAndCategory(page, "Equip 4 jugadors");
@@ -504,7 +508,7 @@ test.describe("InscripcioWizard", () => {
     await gotoWizard(page);
     await goToStep2(page);
     await selectPackageAndCategory(page, "Inscripció individual");
-    await fillCaptain(page);
+    await fillCaptain(page, { individual: true });
     await page.getByRole("button", { name: /Continuar al pagament/i }).click();
     await expect(page.getByRole("heading", { name: "Fes la transferència" })).toBeVisible();
 
@@ -528,7 +532,7 @@ test.describe("InscripcioWizard", () => {
     await gotoWizard(page);
     await goToStep2(page);
     await selectPackageAndCategory(page, "Inscripció individual");
-    await fillCaptain(page);
+    await fillCaptain(page, { individual: true });
     await page.getByRole("button", { name: /Continuar al pagament/i }).click();
     await expect(page.getByRole("heading", { name: "Fes la transferència" })).toBeVisible();
     await page.getByRole("button", { name: /Continuar/i }).last().click();

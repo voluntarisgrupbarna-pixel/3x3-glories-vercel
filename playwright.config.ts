@@ -45,5 +45,11 @@ export default defineConfig({
       use: { ...devices["iPhone SE"] }, // 375×667, viewport mínim
       testMatch: "**/mobile/**/*.spec.ts",
     },
+    // Tests tablet — iPad Pro 11" (1024×1366)
+    {
+      name: "Tablet iPad",
+      use: { ...devices["iPad Pro 11"] },
+      testMatch: "**/tablet/**/*.spec.ts",
+    },
   ],
 });

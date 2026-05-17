@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
+import { WA_REGISTER_URL } from "../lib/whatsapp";
 
 type LeadMode = "floating" | "page";
 
@@ -341,10 +342,16 @@ export default function WhatsAppLeadWidget({ mode = "floating" }: { mode?: LeadM
 
   return (
     <>
-      <button className="wa-floating-button" type="button" onClick={() => setOpen(true)}>
+      <a
+        className="wa-floating-button"
+        href={WA_REGISTER_URL}
+        target="_blank"
+        rel="noreferrer noopener"
+        aria-label="Inscriure equip per WhatsApp"
+      >
         <span aria-hidden="true" />
         WhatsApp
-      </button>
+      </a>
       {open && (
         <div className="wa-lead-overlay" role="dialog" aria-modal="true" aria-label="Formulari de contacte WhatsApp">
           {submitted ? successPanel : panel}

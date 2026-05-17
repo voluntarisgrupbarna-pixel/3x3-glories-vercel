@@ -3,6 +3,8 @@
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
 
+import { WA_REGISTER_URL } from "../lib/whatsapp";
+
 const WHATSAPP_PHONE = "34698425153";
 
 const HIDE_ON = [
@@ -180,12 +182,18 @@ export default function ExitIntentModal() {
             </p>
 
             <div className="exit-actions">
-              <button type="button" className="exit-btn-wa" onClick={() => setMode("contact")}>
-                Deixar les meves dades
-              </button>
+              <a
+                href={WA_REGISTER_URL}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="exit-btn-wa"
+                onClick={close}
+              >
+                💬 Inscriure per WhatsApp
+              </a>
 
               <a href="/inscripcion" className="exit-btn-secondary" onClick={close}>
-                Anar al registre directe →
+                Formulari web →
               </a>
 
               <button type="button" className="exit-btn-skip" onClick={close}>
@@ -193,7 +201,7 @@ export default function ExitIntentModal() {
               </button>
             </div>
 
-            <p className="exit-disclaimer">Nom + mòbil · email opcional · guardat a Sheets</p>
+            <p className="exit-disclaimer">Obre WhatsApp directament amb les dades de l&apos;equip pre-omplertes</p>
           </>
         )}
 

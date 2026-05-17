@@ -1,6 +1,7 @@
 "use client";
 
 import { useShareGate } from "./ShareGate";
+import { WA_REGISTER_URL } from "../lib/whatsapp";
 
 type SlideActionBarProps = {
   origin: string;
@@ -28,8 +29,13 @@ export default function SlideActionBar({
         <span aria-hidden="true">🏀</span>
         Inscriu-te
       </a>
-      <a href="/contacte?contacte=1" className="slide-action slide-action--contact">
-        <span aria-hidden="true">☎</span>
+      <a
+        href={WA_REGISTER_URL}
+        target="_blank"
+        rel="noreferrer noopener"
+        className="slide-action slide-action--contact"
+      >
+        <span aria-hidden="true">💬</span>
         WhatsApp
       </a>
       <button type="button" className="slide-action slide-action--share" onClick={openShare}>

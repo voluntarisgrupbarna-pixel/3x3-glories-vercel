@@ -5781,8 +5781,56 @@ html {
 
 .wizard-social-btn--wa  { background: #25d366; color: #07120c; }
 .wizard-social-btn--ig  { background: linear-gradient(135deg, #f58529, #dd2a7b, #8134af); color: #fff; }
-.wizard-social-btn--done { background: rgba(37, 211, 102, 0.15); color: #25d366; border: 1px solid #25d366; }
+.wizard-social-btn--done { background: rgba(37, 211, 102, 0.15); color: #25d366; border: 1px solid rgba(37, 211, 102, 0.4); cursor: default; pointer-events: none; }
 .wizard-social-btn:hover { opacity: 0.86; }
+
+/* Slot de contacte — versió compacta dins la llista de 5 */
+.wizard-social-btn--slot {
+  font-size: 12px;
+  padding: 9px 14px;
+  justify-content: flex-start;
+}
+.wizard-social-slot-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #25d366;
+  color: #07120c;
+  font-size: 11px;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+
+/* Contenidor dels 5 slots WA */
+.wizard-social-wa-slots {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.wizard-social-wa-slots-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255, 247, 239, 0.55);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 2px;
+}
+.wizard-social-wa-progress {
+  font-variant-numeric: tabular-nums;
+  color: #25d366;
+}
+.wizard-social-wa-ok {
+  margin: 4px 0 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: #25d366;
+}
 
 .wizard-social-confirm {
   display: flex;
@@ -9259,4 +9307,184 @@ html {
   .exit-title {
     font-size: 22px;
   }
+}
+
+/* ══════════════════════════════════════════════════════════
+   Hero parity line
+══════════════════════════════════════════════════════════ */
+.hero-festival-parity-line {
+  margin: 10px 0 0;
+  font-size: 0.88em;
+  color: #ffd166;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1.4;
+}
+
+/* ══════════════════════════════════════════════════════════
+   Identity chips strip
+══════════════════════════════════════════════════════════ */
+.identity-chips-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  justify-content: center;
+  align-items: center;
+  padding: 18px 24px;
+  background: #0e0e0e;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.identity-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+.identity-chip:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* ══════════════════════════════════════════════════════════
+   Premis — parity callout
+══════════════════════════════════════════════════════════ */
+.parity-callout {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  margin: 16px 0 8px;
+  border-radius: 12px;
+  background: rgba(255, 209, 102, 0.08);
+  border: 1px solid rgba(255, 209, 102, 0.3);
+  color: #ffd166;
+}
+
+.parity-callout-icon {
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.parity-callout-body {
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.parity-callout-sub {
+  opacity: 0.75;
+  font-size: 13px;
+}
+
+/* ══════════════════════════════════════════════════════════
+   Obert a tothom section
+══════════════════════════════════════════════════════════ */
+.obert-section {
+  padding: 72px 24px;
+  background: linear-gradient(160deg, #0a0a1a 0%, #120d20 100%);
+}
+
+.obert-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 40px;
+}
+
+.obert-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: border-color 0.2s;
+}
+
+.obert-card:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.obert-card--pride {
+  border-color: rgba(232, 93, 38, 0.25);
+  background: linear-gradient(
+    135deg,
+    rgba(232, 93, 38, 0.07) 0%,
+    rgba(255, 200, 50, 0.04) 100%
+  );
+}
+
+.obert-card--pride:hover {
+  border-color: rgba(232, 93, 38, 0.45);
+}
+
+.obert-card-icon {
+  font-size: 38px;
+  line-height: 1;
+}
+
+.obert-card-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.obert-card-body {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.68);
+  line-height: 1.65;
+  margin: 0;
+  flex: 1;
+}
+
+.obert-card-cta {
+  display: inline-block;
+  color: #e85d26;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: opacity 0.15s;
+}
+
+.obert-card-cta:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+@media (max-width: 640px) {
+  .obert-cards {
+    grid-template-columns: 1fr;
+  }
+  .obert-section {
+    padding: 48px 20px;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════
+   Footer — institutional signature
+══════════════════════════════════════════════════════════ */
+.site-footer-institutional {
+  padding: 12px 32px;
+  text-align: center;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.35);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  line-height: 1.6;
+}
+
+.site-footer-institutional strong {
+  color: rgba(255, 255, 255, 0.55);
 }
