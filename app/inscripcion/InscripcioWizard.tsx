@@ -440,6 +440,12 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
   }, []);
 
   // ── Navigation ─────────────────────────────────────────────────────────
+  function scrollToWizard() {
+    // Scroll al wizard (respectant scroll-margin-top: 64px per SiteNav)
+    // en comptes de scrollTo(0) que deixaria el wizard fora de vista sota el hero
+    wizardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
   function next() {
     const s = stateRef.current;
     trackWizardEvent("wizard_step_complete", {
@@ -453,7 +459,7 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
       if (prev.packageKey === "individual" && nextStep === 4) nextStep = 5;
       return { ...prev, step: Math.min(nextStep, 5) };
     });
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    scrollToWizard();
   }
 
   function prev() {
@@ -463,7 +469,7 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
       if (waFlow && prevStep === 3) prevStep = 2;
       return { ...prev, step: Math.max(prevStep, 1) };
     });
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    scrollToWizard();
   }
 
   // ── Validation ─────────────────────────────────────────────────────────
@@ -1188,7 +1194,7 @@ function Step2Team({
       )}
 
       {!canAdvance && missing.length > 0 && (
-        <p style={{ color: "#f08c00", fontSize: 13, margin: "16px 0 0", lineHeight: 1.5 }}>
+        <p role="alert" style={{ color: "#f08c00", fontSize: 13, margin: "16px 0 0", lineHeight: 1.5 }}>
           ⚠️ Falta: {missing.join(" · ")}
         </p>
       )}
@@ -1292,7 +1298,7 @@ function Step3Payment({
       </div>
 
       {!canAdvance && missing.length > 0 && (
-        <p style={{ color: "#f08c00", fontSize: 13, margin: "16px 0 0", lineHeight: 1.5 }}>
+        <p role="alert" style={{ color: "#f08c00", fontSize: 13, margin: "16px 0 0", lineHeight: 1.5 }}>
           ⚠️ Falta: {missing.join(" · ")}
         </p>
       )}
@@ -1570,7 +1576,7 @@ function Step5Confirm({
         <span>Autoritzo l&apos;organització a fer fotos/vídeos durant el torneig per a difusió del club. *</span>
       </label>
 
-      {error && <p className="wizard-error">⚠️ Error: {error}. Torna-ho a provar o deixa les dades a Contacte.</p>}
+      {error && <p role="alert" className="wizard-error">⚠️ Error: {error}. Torna-ho a provar o deixa les dades a Contacte.</p>}
 
       <div className="wizard-nav">
         <button type="button" className="wizard-btn wizard-btn-ghost" onClick={onPrev} disabled={submitting}>← Enrere</button>

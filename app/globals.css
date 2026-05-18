@@ -17,6 +17,16 @@ a {
   -webkit-tap-highlight-color: transparent;
 }
 
+/* Focus-visible: ring verd per a navegació per teclat (WCAG 2.4.7) */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #25d366;
+  outline-offset: 2px;
+}
+
 .experience-shell {
   min-height: 100vh;
   position: relative;
@@ -2626,7 +2636,7 @@ html {
   background: rgba(7, 8, 10, 0.6);
   color: #fff7ef;
   font: inherit;
-  font-size: 15px;
+  font-size: 16px; /* 16px mínim — evita zoom automàtic iOS */
   outline: none;
   transition: border-color 0.2s ease;
 }
@@ -2791,6 +2801,7 @@ html {
   border: 1px solid rgba(37, 211, 102, 0.22);
   border-radius: 14px;
   background: rgba(37, 211, 102, 0.04);
+  scroll-margin-top: 64px; /* espai per SiteNav quan fem scrollIntoView en canvi de pas */
 }
 
 /* Stepper */
@@ -3348,9 +3359,9 @@ html {
 .wizard-error {
   margin: 0;
   padding: 12px 16px;
-  border: 1px solid rgba(37, 211, 102, 0.42);
+  border: 1px solid rgba(239, 68, 68, 0.45); /* vermell — era verd (confusió amb èxit) */
   border-radius: 8px;
-  background: rgba(37, 211, 102, 0.08);
+  background: rgba(239, 68, 68, 0.10);
   color: #ffd6df;
   font-size: 14px;
   font-weight: 700;
@@ -3484,6 +3495,23 @@ html {
 
   .wizard-btn {
     width: 100%;
+  }
+
+  /* IBAN: disposar vertical per evitar overflow del número llarg en pantalles estretes */
+  .wizard-iban-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 8px 0;
+  }
+  .wizard-iban-label { min-width: auto; }
+  .wizard-iban-value-wrap {
+    justify-content: flex-start;
+    width: 100%;
+  }
+  .wizard-iban-mono {
+    font-size: 13px;
+    letter-spacing: 0.02em; /* reduït de 0.06 per cabre millor */
   }
 }
 
@@ -5818,7 +5846,7 @@ html {
   background: rgba(0, 0, 0, 0.28);
   color: #fff7ef;
   font-family: monospace;
-  font-size: 15px;
+  font-size: 16px; /* 16px mínim — evita zoom automàtic iOS */
   font-weight: 700;
   letter-spacing: 0.06em;
   width: 100%;
@@ -6070,7 +6098,7 @@ html {
   border: 1.5px solid rgba(255, 247, 239, 0.15);
   background: rgba(255, 247, 239, 0.07);
   color: #fff7ef;
-  font-size: 0.95rem;
+  font-size: 1rem; /* 16px — evita zoom automàtic iOS */
   box-sizing: border-box;
   transition: border-color 0.2s;
 }
@@ -9687,7 +9715,7 @@ html {
   border: 1px solid rgba(255,255,255,0.15);
   border-radius: 8px;
   color: #e9edef;
-  font-size: 15px;
+  font-size: 16px; /* 16px mínim — evita zoom automàtic iOS */
   padding: 10px 12px;
   outline: none;
   transition: border-color 0.15s;
@@ -9930,9 +9958,14 @@ html {
   }
 }
 
-/* Mòbil (<768px): SiteNav té 50px */
+/* Mòbil (<768px): SiteNav té 50px + iOS 16px anti-zoom */
 @media (max-width: 768px) {
   .wa-reg-header { top: 50px; }
+  /* iOS: font-size mínim 16px als player inputs per evitar zoom automàtic */
+  .wa-reg-player-name,
+  .wa-reg-player-year,
+  .wa-reg-player-size,
+  .wa-reg-player-club { font-size: 16px; }
 }
 
 @media (max-width: 480px) {
