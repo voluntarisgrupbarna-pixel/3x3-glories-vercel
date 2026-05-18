@@ -1,6 +1,6 @@
 {
   "name": "3x3-glories-vercel",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -10,7 +10,10 @@
     "test": "playwright test",
     "test:mobile": "playwright test --project='Mobile Chrome' --project='Mobile Safari' --project='Mobile Small'",
     "test:mobile:ui": "playwright test --project='Mobile Chrome' --project='Mobile Safari' --project='Mobile Small' --ui",
-    "test:report": "playwright show-report"
+    "test:report": "playwright show-report",
+    "release:patch": "npm version patch && git push && git push --tags",
+    "release:minor": "npm version minor && git push && git push --tags",
+    "release:major": "npm version major && git push && git push --tags"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",
