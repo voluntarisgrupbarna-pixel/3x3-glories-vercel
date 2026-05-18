@@ -209,6 +209,7 @@ export default function IndividualSignupForm() {
             id="phone"
             type="tel"
             inputMode="tel"
+            autoComplete="tel"
             value={state.phone}
             onChange={(e) => update("phone", e.target.value)}
             placeholder="+34 600 000 000"
@@ -222,6 +223,8 @@ export default function IndividualSignupForm() {
           <input
             id="email"
             type="email"
+            inputMode="email"
+            autoComplete="email"
             value={state.email}
             onChange={(e) => update("email", e.target.value)}
             placeholder="tu@email.com"

@@ -356,13 +356,13 @@ export default function WaRegistrePage() {
                   />
                   <input
                     className="wa-reg-player-year"
-                    type="number"
+                    type="text"
                     inputMode="numeric"
+                    pattern="[0-9]*"
                     value={p.year}
-                    onChange={(e) => updatePlayer(i, { year: e.target.value })}
+                    onChange={(e) => updatePlayer(i, { year: e.target.value.replace(/\D/g, "").slice(0, 4) })}
                     placeholder="Any"
-                    min={1950}
-                    max={2022}
+                    maxLength={4}
                   />
                   <select
                     className="wa-reg-player-size"

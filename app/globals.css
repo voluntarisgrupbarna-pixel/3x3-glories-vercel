@@ -624,7 +624,7 @@ a {
 
 .page-nav {
   position: sticky;
-  top: 0;
+  top: 56px; /* sota el SiteNav desktop (56px) */
   z-index: 10;
   display: flex;
   align-items: center;
@@ -633,6 +633,9 @@ a {
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   background: rgba(5, 5, 5, 0.88);
   backdrop-filter: blur(14px);
+}
+@media (max-width: 768px) {
+  .page-nav { top: 50px; } /* SiteNav mòbil = 50px */
 }
 
 .page-nav-back {
@@ -9536,7 +9539,7 @@ html {
   background: #1f2c34;
   padding: 10px 16px;
   position: sticky;
-  top: 0;
+  top: 56px; /* altura SiteNav desktop — evita que el header quedi tapat */
   z-index: 10;
   border-bottom: 1px solid rgba(255,255,255,0.06);
 }
@@ -9737,7 +9740,8 @@ html {
   border-radius: 8px;
   color: #e9edef;
   font-size: 14px;
-  padding: 8px 10px;
+  padding: 10px 8px; /* augmentat de 8px → 10px per complir 44px mínim touch */
+  min-height: 44px;
   outline: none;
   -webkit-appearance: none;
   box-sizing: border-box;
@@ -9749,10 +9753,11 @@ html {
   border-radius: 8px;
   color: #e9edef;
   font-size: 13px;
-  padding: 6px 10px 6px 30px;
+  padding: 8px 10px; /* padding uniforme — s'eliminà el 30px esquerre sense icona */
   outline: none;
   box-sizing: border-box;
   width: 100%;
+  min-height: 36px; /* mínim touch */
 }
 .wa-reg-player-club::placeholder { color: rgba(255,255,255,0.25); font-size: 12px; }
 .wa-reg-player-club:focus { border-color: #25d366; }
@@ -9788,6 +9793,7 @@ html {
 .wa-reg-bank p {
   margin: 4px 0;
   line-height: 1.4;
+  overflow-wrap: anywhere; /* evita overflow de l'IBAN en pantalles estretes */
 }
 .wa-reg-bank strong { color: #fff; }
 
@@ -9913,6 +9919,22 @@ html {
 }
 
 /* ── Responsive ──────────────────────────────────────── */
+
+/* Desktop: centra el "xat" com si fos WhatsApp Web */
+@media (min-width: 769px) {
+  .wa-reg-shell {
+    max-width: 560px;
+    margin: 0 auto;
+    min-height: calc(100dvh - 56px);
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.06), 0 24px 64px rgba(0,0,0,0.5);
+  }
+}
+
+/* Mòbil (<768px): SiteNav té 50px */
+@media (max-width: 768px) {
+  .wa-reg-header { top: 50px; }
+}
+
 @media (max-width: 480px) {
   .wa-reg-body { padding: 12px 8px 80px; }
   .wa-reg-form-bubble { padding: 14px 12px; }
@@ -9922,6 +9944,6 @@ html {
   }
   .wa-reg-player-name,
   .wa-reg-player-year,
-  .wa-reg-player-size { font-size: 13px; padding: 7px 8px; }
+  .wa-reg-player-size { font-size: 13px; padding: 9px 8px; min-height: 44px; }
   .wa-reg-row { grid-template-columns: 1fr; }
 }
