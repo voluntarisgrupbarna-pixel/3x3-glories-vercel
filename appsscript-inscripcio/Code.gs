@@ -2490,3 +2490,174 @@ function fixSheetDuplicates() {
   Logger.log(summary);
   return summary;
 }
+
+// ============================================================
+// MIGRACIÓ JUGADORS D'EQUIP → COLUMNES J1-J5 a INSCRIPCIONS
+// (executada 2026-05-18 — funció conservada per referència)
+// ============================================================
+function runMigrateJugadorsToInscripcions() {
+  var props = PropertiesService.getScriptProperties();
+  var sheetId = props.getProperty("SHEET_ID");
+  if (!sheetId) return { ok: false, error: "No SHEET_ID" };
+
+  var ss = SpreadsheetApp.openById(sheetId);
+  var sheetInsc = ss.getSheetByName("Inscripcions");
+  var sheetJug  = ss.getSheetByName("Jugadors");
+  if (!sheetInsc) return { ok: false, error: "No s'ha trobat pestanya Inscripcions" };
+  if (!sheetJug)  return { ok: false, error: "No s'ha trobat pestanya Jugadors" };
+
+  var log = [];
+  var t0 = new Date();
+
+  // Llegir dades
+  var inscData = sheetInsc.getDataRange().getValues();
+  var jugData  = sheetJug.getDataRange().getValues();
+  if (inscData.length < 2) return { ok: false, error: "Inscripcions buida" };
+  if (jugData.length < 2)  return { ok: false, error: "Jugadors buida" };
+
+  var inscHeader = inscData[0];
+  var jugHeader  = jugData[0];
+
+  // Helper: trobar columna
+  function ci(header, name) {
+    for (var i = 0; i < header.length; i++) {
+      if (String(header[i]).trim().toLowerCase() === name.toLowerCase()) return i;
+    }
+    return -1;
+  }
+
+  // Helper: garantir columna (afegir si no existeix)
+  function ensureCol(sheet, header, name) {
+    var idx = ci(header, name);
+    if (idx !== -1) return idx;
+    var newCol = header.length + 1;
+    sheet.getRange(1, newCol).setValue(name);
+    sheet.getRange(1, newCol).setFontWeight("bold");
+    header.push(name);
+    return newCol - 1;
+  }
+
+  var colInscTeamId = ci(inscHeader, "TeamID");
+  var colInscPkg    = ci(inscHeader, "Package");
+  if (colInscPkg === -1) colInscPkg = ci(inscHeader, "Concepte");
+  if (colInscPkg === -1) colInscPkg = ci(inscHeader, "Tipus");
+
+  var colJugTeamId = ci(jugHeader, "TeamID");
+  var colJugName   = ci(jugHeader, "Full Name");
+  var colJugYear   = ci(jugHeader, "Birth Year");
+  var colJugShirt  = ci(jugHeader, "Shirt Size");
+
+  if (colInscTeamId === -1) return { ok: false, error: "Columna TeamID no trobada a Inscripcions" };
+  if (colJugTeamId === -1)  return { ok: false, error: "Columna TeamID no trobada a Jugadors" };
+  if (colJugName === -1)    return { ok: false, error: "Columna 'Full Name' no trobada a Jugadors" };
+
+  log.push("Columnes localitzades OK");
+
+  // Afegir columnes J1-J5 a Inscripcions
+  var MAX_PLAYERS = 5;
+  var playerCols = [];
+  for (var i = 1; i <= MAX_PLAYERS; i++) {
+    var cNom   = ensureCol(sheetInsc, inscHeader, "J" + i + " Nom");
+    var cAny   = ensureCol(sheetInsc, inscHeader, "J" + i + " Any");
+    var cTalla = ensureCol(sheetInsc, inscHeader, "J" + i + " Talla");
+    playerCols.push({ nom: cNom, any: cAny, talla: cTalla });
+  }
+  log.push("Columnes J1-J5 preparades");
+
+  // Obtenir TeamIDs vàlids d'equips
+  var teamIds = {};
+  for (var r = 1; r < inscData.length; r++) {
+    var tid = String(inscData[r][colInscTeamId] || "").trim();
+    if (!tid) continue;
+    var pkg = colInscPkg !== -1 ? String(inscData[r][colInscPkg] || "").toLowerCase() : "";
+    var isIndividual = pkg.indexOf("individual") !== -1;
+    teamIds[tid] = { row: r + 1, isIndividual: isIndividual };
+  }
+
+  // Agrupar jugadors per equip
+  var playersByTeam = {};
+  var teamPlayerRows = []; // rows a moure a backup (1-indexed)
+
+  for (var r = 1; r < jugData.length; r++) {
+    var row = jugData[r];
+    var teamId = String(row[colJugTeamId] || "").trim();
+    if (!teamId) continue;
+
+    var teamInfo = teamIds[teamId];
+    if (!teamInfo) {
+      log.push("SKIP jugador fila " + (r+1) + ": TeamID '" + teamId + "' no existeix a Inscripcions");
+      continue;
+    }
+    if (teamInfo.isIndividual) continue; // És individual, no migrem
+
+    if (!playersByTeam[teamId]) playersByTeam[teamId] = [];
+    playersByTeam[teamId].push({
+      nom:   String(row[colJugName]  || ""),
+      any:   String(row[colJugYear]  || ""),
+      talla: colJugShirt !== -1 ? String(row[colJugShirt] || "") : "",
+      rowIdx: r + 1,
+    });
+    teamPlayerRows.push(r + 1);
+  }
+
+  var numTeams = Object.keys(playersByTeam).length;
+  log.push(numTeams + " equips amb jugadors a migrar, " + teamPlayerRows.length + " files de jugadors");
+
+  // Escriure J1-J5 a Inscripcions
+  var teamsWritten = 0;
+  for (var teamId in playersByTeam) {
+    var players = playersByTeam[teamId];
+    var teamRow = teamIds[teamId].row;
+    for (var j = 0; j < Math.min(players.length, MAX_PLAYERS); j++) {
+      var p = players[j];
+      var cols = playerCols[j];
+      sheetInsc.getRange(teamRow, cols.nom   + 1).setValue(p.nom);
+      sheetInsc.getRange(teamRow, cols.any   + 1).setValue(p.any);
+      sheetInsc.getRange(teamRow, cols.talla + 1).setValue(p.talla);
+    }
+    teamsWritten++;
+    log.push("  " + teamId + ": " + players.length + " jugadors → fila " + teamRow);
+  }
+  log.push(teamsWritten + " equips actualitzats a Inscripcions");
+
+  // Crear pestanya backup i moure files (de baix a dalt)
+  if (teamPlayerRows.length > 0) {
+    var sheetBackup = ss.getSheetByName("Jugadors_BACKUP");
+    if (!sheetBackup) {
+      sheetBackup = ss.insertSheet("Jugadors_BACKUP");
+      var backupHeader = jugHeader.slice();
+      backupHeader.push("Migrat_Timestamp");
+      sheetBackup.getRange(1, 1, 1, backupHeader.length).setValues([backupHeader]);
+      log.push("Pestanya Jugadors_BACKUP creada");
+    }
+
+    // Copiar files al backup
+    var rowsToBackup = teamPlayerRows.map(function(r) {
+      var rowData = jugData[r - 1].slice();
+      rowData.push(new Date().toISOString());
+      return rowData;
+    });
+    var lastRow = sheetBackup.getLastRow();
+    sheetBackup.getRange(lastRow + 1, 1, rowsToBackup.length, rowsToBackup[0].length)
+               .setValues(rowsToBackup);
+    log.push(rowsToBackup.length + " files copiades a Jugadors_BACKUP");
+
+    // Eliminar de Jugadors (de baix a dalt)
+    var sortedRows = teamPlayerRows.slice().sort(function(a, b) { return b - a; });
+    for (var k = 0; k < sortedRows.length; k++) {
+      sheetJug.deleteRow(sortedRows[k]);
+    }
+    log.push(sortedRows.length + " files eliminades de Jugadors");
+  }
+
+  var elapsed = ((new Date() - t0) / 1000).toFixed(1);
+  log.push("Finalitzat en " + elapsed + "s");
+
+  return {
+    ok: true,
+    teamsWritten: teamsWritten,
+    jugadorsBackup: teamPlayerRows.length,
+    elapsed: elapsed + "s",
+    log: log.join(" | "),
+  };
+}

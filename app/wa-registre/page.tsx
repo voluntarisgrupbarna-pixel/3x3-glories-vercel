@@ -23,7 +23,7 @@ const CATEGORIES = [
 
 const SHIRT_SIZES = ["XS", "S", "M", "L", "XL", "XXL"];
 
-type Player = { name: string; year: string; size: string };
+type Player = { name: string; year: string; size: string; club: string };
 
 type Form = {
   teamName: string;
@@ -36,7 +36,7 @@ type Form = {
   consent: boolean;
 };
 
-const emptyPlayer = (): Player => ({ name: "", year: "", size: "" });
+const emptyPlayer = (): Player => ({ name: "", year: "", size: "", club: "" });
 
 const emptyForm = (): Form => ({
   teamName: "",
@@ -59,7 +59,7 @@ function buildWaMessage(f: Form): string {
   const playerLines = f.players
     .map((p, i) =>
       p.name.trim()
-        ? `${i + 1}. ${p.name.trim()}${p.year ? ` · ${p.year}` : ""}${p.size ? ` · Talla ${p.size}` : ""}`
+        ? `${i + 1}. ${p.name.trim()}${p.year ? ` · ${p.year}` : ""}${p.club ? ` · ${p.club}` : ""}${p.size ? ` · Talla ${p.size}` : ""}`
         : null
     )
     .filter(Boolean)
@@ -104,6 +104,13 @@ export default function WaRegistrePage() {
     if (!form.category) return "Tria una categoria.";
     if (!form.captainName.trim()) return "Cal el nom del capità.";
     if (!form.captainPhone.trim()) return "Cal el telèfon del capità.";
+    // Els 3 primers jugadors han d'indicar el club
+    for (let i = 0; i < 3; i++) {
+      const p = form.players[i];
+      if (p?.name.trim() && !p.club.trim()) {
+        return `Cal indicar el club del jugador ${i + 1}.`;
+      }
+    }
     if (!form.consent) return "Cal acceptar la política de privadesa.";
     return "";
   }
@@ -149,7 +156,7 @@ export default function WaRegistrePage() {
         form.captainSize ? `Talla capità: ${form.captainSize}` : "",
         ...form.players
           .filter((p) => p.name.trim())
-          .map((p, i) => `Jugador ${i + 1}: ${p.name}${p.year ? ` (${p.year})` : ""}${p.size ? ` T${p.size}` : ""}`),
+          .map((p, i) => `Jugador ${i + 1}: ${p.name}${p.year ? ` (${p.year})` : ""}${p.club ? ` [${p.club}]` : ""}${p.size ? ` T${p.size}` : ""}`),
       ]
         .filter(Boolean)
         .join(" | "),
@@ -337,33 +344,43 @@ export default function WaRegistrePage() {
             <p className="wa-reg-section-label">👥 Jugadors (mínim 3)</p>
 
             {form.players.map((p, i) => (
-              <div key={i} className="wa-reg-player">
-                <span className="wa-reg-player-num">{i + 1}</span>
+              <div key={i} className="wa-reg-player-block">
+                <div className="wa-reg-player">
+                  <span className="wa-reg-player-num">{i + 1}</span>
+                  <input
+                    className="wa-reg-player-name"
+                    type="text"
+                    value={p.name}
+                    onChange={(e) => updatePlayer(i, { name: e.target.value })}
+                    placeholder={i < 3 ? `Jugador ${i + 1} *` : "Jugador 4 (opcional)"}
+                  />
+                  <input
+                    className="wa-reg-player-year"
+                    type="number"
+                    inputMode="numeric"
+                    value={p.year}
+                    onChange={(e) => updatePlayer(i, { year: e.target.value })}
+                    placeholder="Any"
+                    min={1950}
+                    max={2022}
+                  />
+                  <select
+                    className="wa-reg-player-size"
+                    value={p.size}
+                    onChange={(e) => updatePlayer(i, { size: e.target.value })}
+                  >
+                    <option value="">Talla</option>
+                    {SHIRT_SIZES.map((s) => <option key={s}>{s}</option>)}
+                  </select>
+                </div>
                 <input
-                  className="wa-reg-player-name"
+                  className="wa-reg-player-club"
                   type="text"
-                  value={p.name}
-                  onChange={(e) => updatePlayer(i, { name: e.target.value })}
-                  placeholder={i < 3 ? `Jugador ${i + 1} *` : "Jugador 4 (opcional)"}
+                  value={p.club}
+                  onChange={(e) => updatePlayer(i, { club: e.target.value })}
+                  placeholder={`Club jugador ${i + 1}${i < 3 ? " *" : ""} (ex: CB Grup Barna)`}
+                  maxLength={60}
                 />
-                <input
-                  className="wa-reg-player-year"
-                  type="number"
-                  inputMode="numeric"
-                  value={p.year}
-                  onChange={(e) => updatePlayer(i, { year: e.target.value })}
-                  placeholder="Any"
-                  min={1950}
-                  max={2022}
-                />
-                <select
-                  className="wa-reg-player-size"
-                  value={p.size}
-                  onChange={(e) => updatePlayer(i, { size: e.target.value })}
-                >
-                  <option value="">Talla</option>
-                  {SHIRT_SIZES.map((s) => <option key={s}>{s}</option>)}
-                </select>
               </div>
             ))}
 

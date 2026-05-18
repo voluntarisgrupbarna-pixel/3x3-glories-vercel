@@ -9713,12 +9713,15 @@ html {
 }
 
 /* ── Jugadors ────────────────────────────────────────── */
+.wa-reg-player-block {
+  margin-bottom: 10px;
+}
 .wa-reg-player {
   display: grid;
   grid-template-columns: 20px 1fr 70px 64px;
   gap: 6px;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 .wa-reg-player-num {
   color: #8696a0;
@@ -9740,6 +9743,19 @@ html {
   box-sizing: border-box;
   width: 100%;
 }
+.wa-reg-player-club {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  color: #e9edef;
+  font-size: 13px;
+  padding: 6px 10px 6px 30px;
+  outline: none;
+  box-sizing: border-box;
+  width: 100%;
+}
+.wa-reg-player-club::placeholder { color: rgba(255,255,255,0.25); font-size: 12px; }
+.wa-reg-player-club:focus { border-color: #25d366; }
 .wa-reg-player-name::placeholder,
 .wa-reg-player-year::placeholder { color: rgba(255,255,255,0.3); }
 .wa-reg-player-name:focus,

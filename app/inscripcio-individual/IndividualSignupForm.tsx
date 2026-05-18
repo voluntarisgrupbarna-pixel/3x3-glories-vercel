@@ -14,6 +14,7 @@ type FormState = {
   position: string;
   level: string;
   shirtSize: string;
+  club: string;
   phone: string;
   email: string;
   comments: string;
@@ -27,6 +28,7 @@ const INITIAL: FormState = {
   position: "",
   level: "",
   shirtSize: "",
+  club: "",
   phone: "",
   email: "",
   comments: "",
@@ -41,6 +43,7 @@ function isValid(s: FormState): boolean {
       s.position &&
       s.level &&
       s.shirtSize &&
+      s.club.trim() &&
       s.phone.trim() &&
       s.email.trim() &&
       s.consent,
@@ -73,6 +76,7 @@ export default function IndividualSignupForm() {
       `*Posició:* ${state.position}`,
       `*Nivell:* ${state.level}`,
       `*Talla samarreta:* ${state.shirtSize}`,
+      `*Club d'origen:* ${state.club}`,
       `*Telèfon:* ${state.phone}`,
       `*Email:* ${state.email}`,
       state.comments ? `*Comentaris:* ${state.comments}` : null,
@@ -184,6 +188,19 @@ export default function IndividualSignupForm() {
               </option>
             ))}
           </select>
+        </div>
+
+        <div className="solo-field">
+          <label htmlFor="club">Club d&apos;origen *</label>
+          <input
+            id="club"
+            type="text"
+            value={state.club}
+            onChange={(e) => update("club", e.target.value)}
+            placeholder="CB Grup Barna, Sense club…"
+            required
+            maxLength={60}
+          />
         </div>
 
         <div className="solo-field">
