@@ -200,14 +200,9 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
   const stateRef = useRef(state);
   const submitResultRef = useRef(submitResult);
   const abandonedEventsSent = useRef<Set<string>>(new Set());
-  const earlyEmailSentRef    = useRef(false);
-  const earlyEmailDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const emailDebounceRef     = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const phoneDebounceRef     = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  // ── Temps d'espera (ms) per considerar que un usuari ha abandonat ──────
-  // Prou llarg perquè no dispari per lentors normals de tecleig durant el registre
-  const ABANDON_DEBOUNCE_MS = 5 * 60 * 1_000;  // 5 minuts
+  const earlyEmailSentRef = useRef(false);
+  const emailDebounceRef  = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const phoneDebounceRef  = useRef<ReturnType<typeof setTimeout> | null>(null);
   const wizardRef = useRef<HTMLDivElement>(null);
   useEffect(() => { stateRef.current = state; });
   useEffect(() => { submitResultRef.current = submitResult; });
@@ -324,7 +319,7 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
     if (emailDebounceRef.current) clearTimeout(emailDebounceRef.current);
     emailDebounceRef.current = setTimeout(() => {
       sendAbandonedLead("email_entered");
-    }, ABANDON_DEBOUNCE_MS);
+    }, 2_000);
     return () => {
       if (emailDebounceRef.current) clearTimeout(emailDebounceRef.current);
     };
@@ -340,7 +335,7 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
     if (phoneDebounceRef.current) clearTimeout(phoneDebounceRef.current);
     phoneDebounceRef.current = setTimeout(() => {
       sendAbandonedLead("phone_entered");
-    }, ABANDON_DEBOUNCE_MS);
+    }, 3_000);
     return () => {
       if (phoneDebounceRef.current) clearTimeout(phoneDebounceRef.current);
     };
@@ -668,12 +663,7 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
           earlyEmail={state.earlyEmail}
           onSocialDone={(v) => update("socialShareDone", v)}
           onRivalCode={(v) => update("rivalCode", v.toUpperCase())}
-          onEarlyEmail={(v) => {
-            update("earlyEmail", v);
-            // Debounce: no enviar fins que l'usuari porti 3 min inactiu al pas 1
-            if (earlyEmailDebounceRef.current) clearTimeout(earlyEmailDebounceRef.current);
-            earlyEmailDebounceRef.current = setTimeout(() => sendEarlyEmailLead(v), 3 * 60 * 1_000);
-          }}
+          onEarlyEmail={(v) => { update("earlyEmail", v); sendEarlyEmailLead(v); }}
           onNext={next}
         />
       )}
