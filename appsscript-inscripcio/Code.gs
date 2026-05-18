@@ -2176,6 +2176,87 @@ function sendEmailsWR032() {
 }
 
 /**
+ * Confirma WR-031 Croqueta Mentality al sheet i envia email QR al capità.
+ * Executar UNA SOLA VEGADA des de l'editor.
+ */
+function sendConfirmEmailWR031() {
+  var props = PropertiesService.getScriptProperties();
+  var sheetId = props.getProperty("SHEET_ID");
+  var siteUrl = (props.getProperty("SITE_URL") || "https://www.cbgrupbarna-3x3timechamber.com").replace(/\/$/, "");
+  if (!sheetId) return "ERROR: no SHEET_ID";
+  var ss = SpreadsheetApp.openById(sheetId);
+  var now = new Date();
+  var nowStr = Utilities.formatDate(now, "Europe/Madrid", "dd/MM/yyyy HH:mm");
+
+  // 1. Actualitzar sheet: status confirmed + nota
+  var inscSheet = ss.getSheetByName("Inscripcions");
+  if (inscSheet) {
+    var data = inscSheet.getDataRange().getValues();
+    var headers = data[0];
+    function colIdx(name) {
+      for (var i = 0; i < headers.length; i++) if (String(headers[i]).trim() === name) return i;
+      return -1;
+    }
+    var tiCol = colIdx("TeamID");
+    for (var r = 1; r < data.length; r++) {
+      if (String(data[r][tiCol] || "").trim().toUpperCase() === "WR-031") {
+        var stCol   = colIdx("Status");
+        var notesCol = colIdx("Notes");
+        var qrsCol   = colIdx("QRs Sent");
+        if (stCol    >= 0) inscSheet.getRange(r+1, stCol+1).setValue("confirmed");
+        if (notesCol >= 0) inscSheet.getRange(r+1, notesCol+1).setValue("Confirmat sense justificant per CB Grup Barna " + nowStr);
+        if (qrsCol   >= 0) inscSheet.getRange(r+1, qrsCol+1).setValue("TRUE");
+        Logger.log("WR-031 sheet actualitzat fila " + (r+1));
+        break;
+      }
+    }
+  }
+
+  // 2. Enviar email de confirmació amb QR
+  var ciUrl  = siteUrl + "/check-in/WR-031";
+  var qrUrl  = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=10&data=" + encodeURIComponent(ciUrl);
+  var jugHtml = "<li>Pilar Franco Salcedo</li><li>Nora Jornet Franco</li><li>Mar Montaner Garcia</li><li>Irene Rocamora Martinez</li>";
+
+  var htmlCap =
+    "<div style='font-family:Arial,sans-serif;max-width:600px;color:#111;'>" +
+    "<div style='background:#111b21;padding:20px 24px;border-radius:10px 10px 0 0;'>" +
+      "<h2 style='color:#25d366;margin:0 0 4px;'>✅ Inscripció confirmada!</h2>" +
+      "<p style='color:#8696a0;margin:0;font-size:13px;'>3×3 Westfield Glòries 2026 · 6-7 juny · Clot, Barcelona</p>" +
+    "</div>" +
+    "<div style='border:1px solid #e5e7eb;border-top:none;padding:24px;border-radius:0 0 10px 10px;'>" +
+      "<p>Hola <strong>Pilar</strong>! 🏀</p>" +
+      "<p>La inscripció de <strong>Croqueta Mentality</strong> al <strong>3×3 Westfield Glòries 2026</strong> ha quedat <strong style='color:#16a34a;'>confirmada</strong>. Ens veiem al Clot-Glòries el 6-7 de juny!</p>" +
+      "<table style='border-collapse:collapse;width:100%;margin:16px 0;font-size:14px;'>" +
+        "<tr style='background:#f9fafb;'><th style='padding:8px 12px;text-align:left;border:1px solid #e5e7eb;'>Camp</th><th style='padding:8px 12px;text-align:left;border:1px solid #e5e7eb;'>Detall</th></tr>" +
+        "<tr><td style='padding:8px 12px;border:1px solid #e5e7eb;'><b>Codi equip</b></td><td style='padding:8px 12px;border:1px solid #e5e7eb;'><b style='color:#16a34a;font-size:16px;'>WR-031</b></td></tr>" +
+        "<tr><td style='padding:8px 12px;border:1px solid #e5e7eb;'>Equip</td><td style='padding:8px 12px;border:1px solid #e5e7eb;'>Croqueta Mentality</td></tr>" +
+        "<tr><td style='padding:8px 12px;border:1px solid #e5e7eb;'>Categoria</td><td style='padding:8px 12px;border:1px solid #e5e7eb;'>Cadet Femení</td></tr>" +
+        "<tr><td style='padding:8px 12px;border:1px solid #e5e7eb;'>Pack</td><td style='padding:8px 12px;border:1px solid #e5e7eb;'>Equip 4 jugadors · 67,50€</td></tr>" +
+        "<tr><td style='padding:8px 12px;border:1px solid #e5e7eb;'>Jugadors</td><td style='padding:8px 12px;border:1px solid #e5e7eb;'><ul style='margin:0;padding-left:18px;'>" + jugHtml + "</ul></td></tr>" +
+        "<tr><td style='padding:8px 12px;border:1px solid #e5e7eb;'>Torneig</td><td style='padding:8px 12px;border:1px solid #e5e7eb;'>6-7 juny 2026 · Clot-Glòries, Barcelona</td></tr>" +
+      "</table>" +
+      "<p><strong>📱 Guarda aquest QR — el necessitaràs per al check-in el dia del torneig:</strong></p>" +
+      "<div style='text-align:center;margin:20px 0;'>" +
+        "<img src='" + qrUrl + "' alt='QR Check-in WR-031' style='width:200px;height:200px;border:4px solid #25d366;border-radius:12px;'/><br/>" +
+        "<a href='" + ciUrl + "' style='font-size:12px;color:#888;'>" + ciUrl + "</a>" +
+      "</div>" +
+      "<p style='font-size:13px;color:#555;'>Qualsevol dubte, escriu-nos per WhatsApp: <a href='https://wa.me/34698425153'>+34 698 425 153</a></p>" +
+      "<hr style='border:none;border-top:1px solid #e5e7eb;margin:20px 0;'/>" +
+      "<p style='font-size:12px;color:#888;'>CB Grup Barna · 3×3 Westfield Glòries 2026</p>" +
+    "</div></div>";
+
+  GmailApp.sendEmail(
+    "pilufranco@gmail.com",
+    "✅ Inscripció confirmada · Croqueta Mentality · 3×3 Westfield Glòries 2026",
+    "Inscripció confirmada! Croqueta Mentality (WR-031 · Cadet Femení). Torneig: 6-7 juny 2026. Check-in: " + ciUrl,
+    { htmlBody: htmlCap, cc: "voluntarisgrupbarna@gmail.com" }
+  );
+
+  Logger.log("sendConfirmEmailWR031: email enviat a pilufranco@gmail.com ✓");
+  return "WR-031 Croqueta Mentality — status OK + QR enviat a pilufranco@gmail.com ✓";
+}
+
+/**
  * Reenviar NOMÉS la notificació admin per a WR-032 (cos en blanc corregit).
  * El mail al capità (almari_21@hotmail.com) va arribar correcte.
  * Executar UNA SOLA VEGADA des de l'editor.
