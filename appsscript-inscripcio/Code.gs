@@ -81,6 +81,264 @@ function doGet(e) {
 }
 
 /**
+ * TEMP 18/05/2026 Part C — Corregeix Team Name de L9SZ8 a "Ada Gómez Pulido"
+ */
+function fix18MayC() {
+  var props = PropertiesService.getScriptProperties();
+  var sheetId = props.getProperty("SHEET_ID");
+  if (!sheetId) return { ok: false, error: "No SHEET_ID" };
+  var ss = SpreadsheetApp.openById(sheetId);
+  var inscSheet = ss.getSheetByName("Inscripcions");
+  if (!inscSheet) return { ok: false, error: "No Inscripcions" };
+
+  var inscData    = inscSheet.getDataRange().getValues();
+  var inscHeaders = inscData[0];
+  function ci(name) {
+    for (var i = 0; i < inscHeaders.length; i++) if (String(inscHeaders[i]).trim() === name) return i;
+    return -1;
+  }
+  var iTeamId   = ci("TeamID");
+  var iTeamName = ci("Team Name");
+
+  for (var r = 1; r < inscData.length; r++) {
+    if (String(inscData[r][iTeamId]).trim() === "T3X3-2026-L9SZ8") {
+      var row = r + 1;
+      if (iTeamName >= 0) inscSheet.getRange(row, iTeamName + 1).setValue("Ada Gómez Pulido");
+      return { ok: true, result: "✅ L9SZ8 Team Name → Ada Gómez Pulido (fila " + row + ")" };
+    }
+  }
+  return { ok: false, error: "L9SZ8 no trobat" };
+}
+
+/**
+ * TEMP 18/05/2026 — Fix Ada Gómez Pulido + KABRAS KABREADAS + migra J1-J5
+ * S'exposa via doGet action=fix18may i es neteja després d'executar.
+ */
+function fix18May() {
+  var props = PropertiesService.getScriptProperties();
+  var sheetId = props.getProperty("SHEET_ID");
+  if (!sheetId) return { ok: false, error: "No SHEET_ID" };
+  var ss = SpreadsheetApp.openById(sheetId);
+
+  var inscSheet = ss.getSheetByName("Inscripcions");
+  var jugSheet  = ss.getSheetByName("Jugadors");
+  if (!inscSheet) return { ok: false, error: "No pestanya Inscripcions" };
+  if (!jugSheet)  return { ok: false, error: "No pestanya Jugadors" };
+
+  var results = [];
+
+  // ── Helpers ──────────────────────────────────────────────────────────
+  function colIdx(headers, name) {
+    for (var i = 0; i < headers.length; i++) if (String(headers[i]).trim() === name) return i;
+    return -1;
+  }
+
+  // ── Llegim Inscripcions ───────────────────────────────────────────────
+  var inscData    = inscSheet.getDataRange().getValues();
+  var inscHeaders = inscData[0];
+
+  var iTeamId      = colIdx(inscHeaders, "TeamID");       // 1
+  var iStatus      = colIdx(inscHeaders, "Status");       // 2
+  var iCapName     = colIdx(inscHeaders, "Captain Name"); // 13
+  var iHasTutor    = colIdx(inscHeaders, "Has Tutor");    // 17
+  var iTutorName   = colIdx(inscHeaders, "Tutor Name");   // 18
+  var iTutorPhone  = colIdx(inscHeaders, "Tutor Phone");  // 19
+  var iTutorEmail  = colIdx(inscHeaders, "Tutor Email");  // 20
+  var iNotes       = colIdx(inscHeaders, "Notes");        // 28
+  var iPackage     = colIdx(inscHeaders, "Package");      // 3
+
+  // ── Fix 1: Ada Gómez Pulido (T3X3-2026-L9SZ8) ───────────────────────
+  for (var r = 1; r < inscData.length; r++) {
+    if (String(inscData[r][iTeamId]).trim() === "T3X3-2026-L9SZ8") {
+      var row = r + 1; // 1-indexed per Sheets
+      if (iCapName   >= 0) inscSheet.getRange(row, iCapName   + 1).setValue("Ada Gómez Pulido");
+      if (iHasTutor  >= 0) inscSheet.getRange(row, iHasTutor  + 1).setValue(true);
+      if (iTutorName >= 0) inscSheet.getRange(row, iTutorName + 1).setValue("David Gómez Andrés");
+      if (iTutorPhone>= 0) inscSheet.getRange(row, iTutorPhone+ 1).setValue("34620539379");
+      if (iTutorEmail>= 0) inscSheet.getRange(row, iTutorEmail+ 1).setValue("dgandres10@gmail.com");
+      if (iNotes     >= 0) inscSheet.getRange(row, iNotes     + 1).setValue("Correcció nom: jugadora Ada Gómez Pulido. Tutor: David Gómez Andrés. 18/05/2026");
+      results.push("✅ L9SZ8 Ada Gómez Pulido: corregit fila " + row);
+      break;
+    }
+  }
+
+  // ── Fix 2: KABRAS KABREADAS (T3X3-2026-9R3VB) ───────────────────────
+  for (var r2 = 1; r2 < inscData.length; r2++) {
+    if (String(inscData[r2][iTeamId]).trim() === "T3X3-2026-9R3VB") {
+      var row2 = r2 + 1;
+      if (iStatus  >= 0) inscSheet.getRange(row2, iStatus   + 1).setValue("confirmed");
+      if (iCapName >= 0) inscSheet.getRange(row2, iCapName  + 1).setValue("Ander Sánchez López");
+      if (iNotes   >= 0) inscSheet.getRange(row2, iNotes    + 1).setValue("Info via WhatsApp Aitor 17/05. 4 federats CB Grup Barna. Justificant rebut.");
+      results.push("✅ 9R3VB KABRAS: confirmat fila " + row2);
+      break;
+    }
+  }
+
+  // ── Migració J1-J5: Jugadors (equips) → columnes Inscripcions ────────
+  // Afegim 15 cols noves al final de Inscripcions si no existeixen
+  var J_COLS = ["J1 Nom","J1 Any","J1 Talla","J2 Nom","J2 Any","J2 Talla",
+                "J3 Nom","J3 Any","J3 Talla","J4 Nom","J4 Any","J4 Talla",
+                "J5 Nom","J5 Any","J5 Talla"];
+  var existingJ = J_COLS.filter(function(c) { return colIdx(inscHeaders, c) >= 0; });
+  if (existingJ.length === 0) {
+    var lastCol = inscHeaders.length;
+    inscSheet.getRange(1, lastCol + 1, 1, J_COLS.length).setValues([J_COLS]);
+    // Rellegim headers actualitzats
+    inscHeaders = inscSheet.getRange(1, 1, 1, lastCol + J_COLS.length).getValues()[0];
+    results.push("✅ Columnes J1-J5 afegides a Inscripcions (cols " + (lastCol+1) + "-" + (lastCol+J_COLS.length) + ")");
+  } else {
+    results.push("ℹ️ Columnes J1-J5 ja existien");
+  }
+
+  // Rellegim col-índexos J1-J5
+  var jCols = {};
+  J_COLS.forEach(function(c) { jCols[c] = colIdx(inscHeaders, c); });
+
+  // Llegim Jugadors
+  var jugData    = jugSheet.getDataRange().getValues();
+  var jugHeaders = jugData[0];
+  var jJPlayerID = colIdx(jugHeaders, "PlayerID");
+  var jJTeamID   = colIdx(jugHeaders, "TeamID");
+  var jJFullName = colIdx(jugHeaders, "Full Name");
+  var jJBirth    = colIdx(jugHeaders, "Birth Year");
+  var jJShirt    = colIdx(jugHeaders, "Shirt Size");
+
+  // Agrupa jugadors per TeamID
+  var byTeam = {};
+  for (var j = 1; j < jugData.length; j++) {
+    var tid = String(jugData[j][jJTeamID]).trim();
+    if (!tid) continue;
+    if (!byTeam[tid]) byTeam[tid] = [];
+    byTeam[tid].push(jugData[j]);
+  }
+
+  // Per cada equip a Inscripcions: omplim J1-J5 si el package NO és individual
+  inscData = inscSheet.getDataRange().getValues(); // rellegim amb noves columnes
+  var teamsMigrated = 0;
+  var teamsSkipped  = 0;
+  for (var ri = 1; ri < inscData.length; ri++) {
+    var tid2    = String(inscData[ri][iTeamId]).trim();
+    var pkg     = String(inscData[ri][iPackage] || "").toLowerCase();
+    var isIndiv = pkg.indexOf("individual") >= 0;
+    if (isIndiv || !tid2) { teamsSkipped++; continue; }
+
+    var players = byTeam[tid2];
+    if (!players || players.length === 0) continue;
+
+    var rowN = ri + 1;
+    for (var pi = 0; pi < Math.min(players.length, 5); pi++) {
+      var p   = players[pi];
+      var n   = "J" + (pi+1) + " Nom";
+      var a   = "J" + (pi+1) + " Any";
+      var t   = "J" + (pi+1) + " Talla";
+      if (jCols[n] >= 0) inscSheet.getRange(rowN, jCols[n]+1).setValue(p[jJFullName] || "");
+      if (jCols[a] >= 0) inscSheet.getRange(rowN, jCols[a]+1).setValue(p[jJBirth]    || "");
+      if (jCols[t] >= 0) inscSheet.getRange(rowN, jCols[t]+1).setValue(p[jJShirt]    || "");
+    }
+    teamsMigrated++;
+  }
+  results.push("✅ J1-J5 omplerts per " + teamsMigrated + " equips (" + teamsSkipped + " individuals saltats)");
+
+  // ── Backup de jugadors d'equip → Jugadors_BACKUP ─────────────────────
+  var backupSheet = ss.getSheetByName("Jugadors_BACKUP");
+  if (!backupSheet) {
+    backupSheet = ss.insertSheet("Jugadors_BACKUP");
+    backupSheet.appendRow(jugHeaders.concat(["Migrat"]));
+  }
+
+  var rowsToDelete = [];
+  var migCount = 0;
+  for (var j2 = 1; j2 < jugData.length; j2++) {
+    var tid3    = String(jugData[j2][jJTeamID]).trim();
+    if (!tid3) continue;
+    // Busca si és equip (package no-individual) a Inscripcions
+    var isTeamPlayer = false;
+    for (var ri2 = 1; ri2 < inscData.length; ri2++) {
+      if (String(inscData[ri2][iTeamId]).trim() !== tid3) continue;
+      var pkg2 = String(inscData[ri2][iPackage] || "").toLowerCase();
+      if (pkg2.indexOf("individual") < 0) { isTeamPlayer = true; break; }
+    }
+    if (isTeamPlayer) {
+      backupSheet.appendRow(jugData[j2].concat([new Date().toISOString()]));
+      rowsToDelete.push(j2 + 1); // 1-indexed
+      migCount++;
+    }
+  }
+  // Eliminar de baix cap amunt per no desplaçar índexos
+  for (var d = rowsToDelete.length - 1; d >= 0; d--) {
+    jugSheet.deleteRow(rowsToDelete[d]);
+  }
+  results.push("✅ " + migCount + " jugadors d'equip moguts a Jugadors_BACKUP");
+
+  return { ok: true, results: results };
+}
+
+/**
+ * TEMP 18/05/2026 Part B — Omple J1-J5 de KABRAS directament + debug estat Sheet
+ */
+function fix18MayB() {
+  var props = PropertiesService.getScriptProperties();
+  var sheetId = props.getProperty("SHEET_ID");
+  if (!sheetId) return { ok: false, error: "No SHEET_ID" };
+  var ss = SpreadsheetApp.openById(sheetId);
+  var inscSheet = ss.getSheetByName("Inscripcions");
+  if (!inscSheet) return { ok: false, error: "No Inscripcions" };
+
+  var inscData    = inscSheet.getDataRange().getValues();
+  var inscHeaders = inscData[0];
+  var results     = [];
+
+  function ci(name) {
+    for (var i = 0; i < inscHeaders.length; i++) if (String(inscHeaders[i]).trim() === name) return i;
+    return -1;
+  }
+
+  // Debug: mostra tot el contingut de les primeres 15 files
+  var debug = [];
+  for (var i = 0; i < Math.min(inscData.length, 15); i++) {
+    debug.push("R" + i + ": [" + inscData[i].slice(0, 8).join(" | ") + "]");
+  }
+  results.push("📋 Inscripcions primeres files: " + debug.join(" // "));
+
+  var iTeamId  = ci("TeamID");
+  results.push("📍 iTeamId=" + iTeamId + " iJ1Nom=" + ci("J1 Nom") + " iJ1Any=" + ci("J1 Any") + " iJ1Talla=" + ci("J1 Talla"));
+
+  // Jugadors KABRAS: dades conegudes del WhatsApp Aitor 17/05
+  var kabrasPlayers = [
+    ["Ander Sánchez López", "2013", "M"],
+    ["Álex Porto Alfonso",  "2013", "M"],
+    ["Jon Navarro Rodríguez","2013", "M"],
+    ["Guillem Vidal Morato", "2013", "M"],
+  ];
+
+  for (var r = 1; r < inscData.length; r++) {
+    if (String(inscData[r][iTeamId]).trim() === "T3X3-2026-9R3VB") {
+      var row = r + 1;
+      for (var pi = 0; pi < kabrasPlayers.length; pi++) {
+        var n = ci("J" + (pi+1) + " Nom");
+        var a = ci("J" + (pi+1) + " Any");
+        var t = ci("J" + (pi+1) + " Talla");
+        if (n >= 0) inscSheet.getRange(row, n + 1).setValue(kabrasPlayers[pi][0]);
+        if (a >= 0) inscSheet.getRange(row, a + 1).setValue(kabrasPlayers[pi][1]);
+        if (t >= 0) inscSheet.getRange(row, t + 1).setValue(kabrasPlayers[pi][2]);
+      }
+      results.push("✅ J1-J4 KABRAS omplerts a fila " + row);
+      break;
+    }
+  }
+
+  // Jugadors tab: llista el que hi ha
+  var jugSheet = ss.getSheetByName("Jugadors");
+  if (jugSheet) {
+    var jugData = jugSheet.getDataRange().getValues();
+    results.push("📋 Jugadors (" + (jugData.length - 1) + " files): " +
+      jugData.slice(1, 6).map(function(r) { return r[1] + " / " + r[2]; }).join(" | "));
+  }
+
+  return { ok: true, results: results };
+}
+
+/**
  * Assegura que WR-031/032/033/034 estiguin ben visibles a "Inscripcions 2026":
  * - WR-031 Croqueta: omple columnes format antic (cols 1-20 buides)
  * - WR-032 Walking Dead: afegeix fila completa (va ser eliminada per la neteja)
