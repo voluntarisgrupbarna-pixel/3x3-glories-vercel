@@ -30,7 +30,12 @@ export const metadata: Metadata = {
     "3x3 Barcelona 2026",
     "torneig 3x3 FIBA",
     "torneig 3x3 Barcelona",
+    "torneo 3x3 Barcelona",
+    "torneo baloncesto 3x3 Barcelona 2026",
+    "torneig bàsquet 3x3 Barcelona",
     "Westfield Glòries",
+    "3x3 Westfield Glòries",
+    "3x3 Clot Glòries Barcelona",
     "basquet 3x3",
     "bàsquet de carrer Barcelona",
     "basquet barna",
@@ -43,6 +48,14 @@ export const metadata: Metadata = {
     "torneo baloncesto 3x3 Barcelona",
     "3x3 FIBA Barcelona 2026",
     "3x3 carrer Barcelona",
+    "torneo 3x3 senior Barcelona",
+    "torneo 3x3 femenino Barcelona",
+    "torneo 3x3 niños Barcelona",
+    "3x3 veteranos Barcelona",
+    "3x3 inclusivo Barcelona",
+    "Barna Màgics 3x3",
+    "torneig bàsquet urbà Barcelona",
+    "baloncesto urbano Barcelona",
   ],
   authors: [{ name: "CB Grup Barna" }, { name: "Time Chamber" }, { name: "Eix Clot" }],
   publisher: "CB Grup Barna",
@@ -50,7 +63,7 @@ export const metadata: Metadata = {
     canonical: "/",
     languages: {
       ca: "/",
-      es: "/",
+      es: "/es/torneo-3x3-barcelona",
       "x-default": "/",
     },
   },
@@ -68,6 +81,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "ca_ES",
+    alternateLocale: ["es_ES"],
     url: SITE_URL,
     siteName: SITE_NAME,
     title: "3×3 Barna 2026 · Torneig Westfield Glòries · FIBA Barcelona",
@@ -140,7 +154,7 @@ const jsonLdEvent = {
   name: "3×3 Westfield Glòries 2026",
   alternateName: ["3x3 Barna", "3x3 Barna 2026", "Torneig 3×3 FIBA Barna", "Torneig 3×3 FIBA Barcelona", "3x3 Glories Barcelona", "Torneo 3x3 Westfield Glòries", "Torneo 3x3 Barna"],
   description:
-    "Torneig de bàsquet 3×3 amb punts FIBA i 2.000€ de premi en metàl·lic. 10 categories de Premini a Sènior Pro · 3 seus al barri del Clot-Glòries · Barcelona. 3a edició consecutiva (2023–2026).",
+    "Torneig de bàsquet 3×3 amb punts FIBA i 2.000€ de premi en metàl·lic. 10 categories de Premini a Sènior Pro · 3 seus al barri del Clot-Glòries · Barcelona. 3a edició consecutiva (2024–2026).",
   startDate: "2026-06-06T09:00:00+02:00",
   endDate: "2026-06-07T20:00:00+02:00",
   eventStatus: "https://schema.org/EventScheduled",
@@ -447,15 +461,15 @@ const jsonLdBreadcrumb = {
   ],
 };
 
-// JSON-LD: EventSeries — 4 edicions (GEO: estableix historial d'autoritat)
+// JSON-LD: EventSeries — 3 edicions (GEO: estableix historial d'autoritat)
 const jsonLdSeries = {
   "@context": "https://schema.org",
   "@type": "EventSeries",
   name: "3×3 Westfield Glòries",
   alternateName: ["Torneig 3×3 FIBA Clot-Glòries Barcelona", "3x3 Barna", "Torneig 3x3 Barna"],
   description:
-    "Sèrie anual de torneig de bàsquet 3×3 oficial FIBA al barri del Clot-Glòries de Barcelona, organitzat per CB Grup Barna · Time Chamber · Eix Clot des de 2023. 4 edicions consecutives (2023–2026).",
-  startDate: "2023-06-01",
+    "Sèrie anual de torneig de bàsquet 3×3 oficial FIBA al barri del Clot-Glòries de Barcelona, organitzat per CB Grup Barna · Time Chamber · Eix Clot des de 2024. 3 edicions consecutives (2024–2026).",
+  startDate: "2024-06-01",
   url: SITE_URL,
   location: {
     "@type": "Place",
@@ -477,9 +491,8 @@ const jsonLdSeries = {
     sameAs: ["https://www.instagram.com/cbgrupbarna/", "https://cbgrupbarna.com"],
   },
   subEvent: [
-    { "@type": "SportsEvent", name: "3×3 Westfield Glòries 2023 — 1a edició", startDate: "2023-06-01", location: { "@type": "Place", name: "Westfield Glòries", address: { "@type": "PostalAddress", addressLocality: "Barcelona", addressCountry: "ES" } } },
-    { "@type": "SportsEvent", name: "3×3 Westfield Glòries 2024 — 2a edició", startDate: "2024-06-01", location: { "@type": "Place", name: "Westfield Glòries", address: { "@type": "PostalAddress", addressLocality: "Barcelona", addressCountry: "ES" } } },
-    { "@type": "SportsEvent", name: "3×3 Westfield Glòries 2025 — 3a edició", startDate: "2025-06-01", sameAs: "https://www.instagram.com/p/DJNKYiuMOGm/", location: { "@type": "Place", name: "Westfield Glòries", address: { "@type": "PostalAddress", addressLocality: "Barcelona", addressCountry: "ES" } } },
+    { "@type": "SportsEvent", name: "3×3 Westfield Glòries 2024 — 1a edició", startDate: "2024-06-01", location: { "@type": "Place", name: "Westfield Glòries", address: { "@type": "PostalAddress", addressLocality: "Barcelona", addressCountry: "ES" } } },
+    { "@type": "SportsEvent", name: "3×3 Westfield Glòries 2025 — 2a edició", startDate: "2025-06-01", sameAs: "https://www.instagram.com/p/DJNKYiuMOGm/", location: { "@type": "Place", name: "Westfield Glòries", address: { "@type": "PostalAddress", addressLocality: "Barcelona", addressCountry: "ES" } } },
     { "@type": "SportsEvent", name: "3×3 Westfield Glòries 2026 — 3a edició", startDate: "2026-06-06", endDate: "2026-06-07", url: SITE_URL, location: { "@type": "Place", name: "Westfield Glòries", address: { "@type": "PostalAddress", streetAddress: "Av. Diagonal 208", addressLocality: "Barcelona", postalCode: "08018", addressCountry: "ES" } } },
   ],
   sameAs: "https://www.instagram.com/cbgrupbarna/",

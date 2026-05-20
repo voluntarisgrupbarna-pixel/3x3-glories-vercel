@@ -3,16 +3,16 @@
 import SlideActionBar from "./SlideActionBar";
 
 const CATEGORIES = [
-  { id: "escola",      name: "Escola",      emoji: "🌱", color: "#22C55E", pct: 55,  age: "fins 7 anys", full: false },
-  { id: "premini",     name: "Premini",     emoji: "✏️", color: "#06B6D4", pct: 55,  age: "8-9 anys",    full: false },
+  { id: "escola",      name: "Escola",      emoji: "🌱", color: "#22C55E", pct: 63,  age: "fins 7 anys", full: false },
+  { id: "premini",     name: "Premini",     emoji: "✏️", color: "#06B6D4", pct: 65,  age: "8-9 anys",    full: false },
   { id: "mini",        name: "Mini",        emoji: "⭐", color: "#818CF8", pct: 100, age: "10-11 anys",  full: true  },
-  { id: "preinfantil", name: "Preinfantil", emoji: "🚀", color: "#A855F7", pct: 60,  age: "12 anys",     full: false },
-  { id: "infantil",    name: "Infantil",    emoji: "🔥", color: "#D946EF", pct: 67,  age: "13-14 anys",  full: false },
-  { id: "cadet",       name: "Cadet",       emoji: "⚡", color: "#EC4899", pct: 65,  age: "15-16 anys",  full: false },
-  { id: "junior",      name: "Junior",      emoji: "🏀", color: "#FB7185", pct: 65,  age: "17-18 anys",  full: false },
-  { id: "seniors",     name: "Sèniors",     emoji: "🏆", color: "#EF4444", pct: 65,  age: "18+ FIBA",    full: false },
-  { id: "veterans",    name: "Veterans",    emoji: "💪", color: "#F97316", pct: 60,  age: "+35 anys",    full: false },
-  { id: "magics",      name: "Màgics",      emoji: "✨", color: "#FBBF24", pct: 50,  age: "Inclusiva",   full: false },
+  { id: "preinfantil", name: "Preinfantil", emoji: "🚀", color: "#A855F7", pct: 70,  age: "12 anys",     full: false },
+  { id: "infantil",    name: "Infantil",    emoji: "🔥", color: "#D946EF", pct: 68,  age: "13-14 anys",  full: false },
+  { id: "cadet",       name: "Cadet",       emoji: "⚡", color: "#EC4899", pct: 67,  age: "15-16 anys",  full: false },
+  { id: "junior",      name: "Junior",      emoji: "🏀", color: "#FB7185", pct: 72,  age: "17-18 anys",  full: false },
+  { id: "seniors",     name: "Sèniors",     emoji: "🏆", color: "#EF4444", pct: 75,  age: "18+ FIBA",    full: false },
+  { id: "veterans",    name: "Veterans",    emoji: "💪", color: "#F97316", pct: 63,  age: "+35 anys",    full: false },
+  { id: "magics",      name: "Màgics",      emoji: "✨", color: "#FBBF24", pct: 60,  age: "Inclusiva",   full: false },
 ];
 
 export default function CategoryBars() {
@@ -22,8 +22,8 @@ export default function CategoryBars() {
         <div className="catbars-header">
           <div>
             <p className="catbars-kicker">PLACES PER CATEGORIA</p>
-            <h2 className="catbars-title">64% ocupat</h2>
-            <p className="catbars-subtitle">Places disponibles a totes les categories</p>
+            <h2 className="catbars-title">70% ocupat</h2>
+            <p className="catbars-subtitle">Queden places a la majoria de categories</p>
           </div>
           <a href="/inscripcion" className="catbars-cta">🏀 INSCRIU EL TEU EQUIP</a>
         </div>

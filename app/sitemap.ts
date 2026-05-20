@@ -2,9 +2,19 @@ import type { MetadataRoute } from "next";
 
 const SITE_URL = "https://www.cbgrupbarna-3x3timechamber.com";
 
+// Mapeig CA ↔ ES per a les pàgines que tenen versió bilingüe separada
+const CA_ES_MAP: Record<string, string> = {
+  "/es/torneo-3x3-barcelona": "/torneig-3x3-barcelona",
+  "/torneig-3x3-barcelona":   "/es/torneo-3x3-barcelona",
+};
+
 function langs(path: string): { languages: Record<string, string> } {
   const url = `${SITE_URL}${path}`;
-  return { languages: { ca: url, es: url, "x-default": url } };
+  const caPath = CA_ES_MAP[path] ?? path;
+  const esPath = CA_ES_MAP[caPath] ?? path;
+  const caUrl = `${SITE_URL}${caPath}`;
+  const esUrl = `${SITE_URL}${esPath}`;
+  return { languages: { ca: caUrl, es: esUrl, "x-default": `${SITE_URL}/` } };
 }
 
 export default function sitemap(): MetadataRoute.Sitemap {

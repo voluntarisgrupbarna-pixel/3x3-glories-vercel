@@ -3,16 +3,16 @@
 import SlideActionBar from "./SlideActionBar";
 
 const CATEGORIES = [
-  { id: "escola",      name: "Escola",      emoji: "🌱", color: "#22C55E", pct: 55  },
-  { id: "premini",     name: "Premini",     emoji: "✏️", color: "#06B6D4", pct: 55  },
+  { id: "escola",      name: "Escola",      emoji: "🌱", color: "#22C55E", pct: 63  },
+  { id: "premini",     name: "Premini",     emoji: "✏️", color: "#06B6D4", pct: 65  },
   { id: "mini",        name: "Mini",        emoji: "⭐", color: "#818CF8", pct: 100 },
-  { id: "preinfantil", name: "Preinfantil", emoji: "🚀", color: "#A855F7", pct: 60  },
-  { id: "infantil",    name: "Infantil",    emoji: "🔥", color: "#D946EF", pct: 67  },
-  { id: "cadet",       name: "Cadet",       emoji: "⚡", color: "#EC4899", pct: 65  },
-  { id: "junior",      name: "Junior",      emoji: "🏀", color: "#FB7185", pct: 65  },
-  { id: "seniors",     name: "Sèniors",     emoji: "🏆", color: "#EF4444", pct: 65  },
-  { id: "veterans",    name: "Veterans",    emoji: "💪", color: "#F97316", pct: 60  },
-  { id: "magics",      name: "Màgics",      emoji: "✨", color: "#FBBF24", pct: 50  },
+  { id: "preinfantil", name: "Preinfantil", emoji: "🚀", color: "#A855F7", pct: 70  },
+  { id: "infantil",    name: "Infantil",    emoji: "🔥", color: "#D946EF", pct: 68  },
+  { id: "cadet",       name: "Cadet",       emoji: "⚡", color: "#EC4899", pct: 67  },
+  { id: "junior",      name: "Junior",      emoji: "🏀", color: "#FB7185", pct: 72  },
+  { id: "seniors",     name: "Sèniors",     emoji: "🏆", color: "#EF4444", pct: 75  },
+  { id: "veterans",    name: "Veterans",    emoji: "💪", color: "#F97316", pct: 63  },
+  { id: "magics",      name: "Màgics",      emoji: "✨", color: "#FBBF24", pct: 60  },
 ];
 
 const GRID_ROWS = [
