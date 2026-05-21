@@ -2,6 +2,94 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import FaqSearch from "../components/FaqSearch";
 
+// JSON-LD FAQPage — aquí i no al layout: evita warning Search Console "FAQPage fora de context"
+const jsonLdFaq = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "Què és el 3×3 Westfield Glòries?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "És el torneig oficial de bàsquet 3×3 amb punts FIBA del barri del Clot-Glòries de Barcelona, organitzat per CB Grup Barna, Time Chamber i Eix Clot. La 3a edició es disputa el 6 i 7 de juny de 2026 amb 2.000 € de premi en metàl·lic per a les categories Sènior Masculí i Sènior Femení (1.000 € cadascuna), i trofeus i medalles per a la resta de categories.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Quan i on es juga el torneig 2026?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Es disputa el dissabte 6 i el diumenge 7 de juny de 2026 a tres seus del barri del Clot-Glòries de Barcelona: Westfield Glòries (Av. Diagonal 208, seu principal), La Nau del Clot (Carrer de la Llacuna 172, pavelló oficial) i la Rambleta del Clot (pista exterior).",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Com m'inscric al 3×3 Westfield Glòries?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Pel formulari online a www.cbgrupbarna-3x3timechamber.com/inscripcion. El procés té 5 passos: dades de l'equip, capità, jugadors (3-5), samarretes i pagament. La transferència bancària es fa amb un codi QR pre-omplert que escaneges amb l'app del banc. Confirmem la plaça en menys de 24h per email i WhatsApp.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Quant costa la inscripció per equip?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Entre 75 € i 90 €. 75 € per equip de 3-4 jugadors (categories formatives i Veterans), 85 € per equip de 3-4 jugadors Sèniors, 90 € per equip de 5 jugadors (qualsevol categoria). Les samarretes addicionals costen 25 €/u. Hi ha un descompte del 10% per compartir el torneig a xarxes socials (Early Bird).",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Quantes categories hi ha?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Hi ha 10 categories: Premini (2016-17), Mini (2014-15), Infantil (2012-13), Cadet (2010-11), Júnior (2008-09), Sub-23 (2003-07), Sènior Masculí, Sènior Femení, Veterans Masculí (fins 1986) i Veterans Femení (fins 1986).",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "El torneig dóna punts FIBA 3×3?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Sí. És un torneig oficial reconegut per FIBA 3×3. Els jugadors de les categories Sènior Masculí i Sènior Femení obtenen punts pel rànquing mundial individual de FIBA 3×3, que serveixen per accedir a competicions internacionals.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Puc inscriure'm sense equip?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Sí. La inscripció individual costa 20 € i es fa a www.cbgrupbarna-3x3timechamber.com/inscripcio-individual. Apuntes les teves dades, talla i posició preferida; el club t'assigna a un equip una setmana abans del torneig. El preu inclou samarreta oficial, dorsal i accés als 2 dies.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Quants jugadors pot tenir un equip?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Un equip pot tenir entre 3 i 5 jugadors (3 titulars + fins a 2 suplents). El mínim per jugar és 3 jugadors.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Hi ha pàrquing a la zona?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Sí. Westfield Glòries ofereix pàrquing gratuït durant 2 hores per als assistents al torneig. A més, es pot arribar fàcilment en metro (L1, estació Glòries) o en bus (línies de la Diagonal).",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Com contacto amb l'organització?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Pots contactar-nos a través del formulari a www.cbgrupbarna-3x3timechamber.com/contacte o per WhatsApp al +34 698 425 153. Resposta en menys de 24 hores en dies laborables.",
+      },
+    },
+  ],
+};
+
 export const metadata: Metadata = {
   title: "Preguntes freqüents | 3×3 Westfield Glòries 2026",
   description:
@@ -20,6 +108,7 @@ export const metadata: Metadata = {
 export default function PreguntesFrequentsPage() {
   return (
     <div className="page-shell">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdFaq) }} />
       <nav className="page-nav">
         <Link href="/" className="page-nav-back">
           ← Inici
