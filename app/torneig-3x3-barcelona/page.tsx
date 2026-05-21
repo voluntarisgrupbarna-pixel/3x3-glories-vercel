@@ -157,8 +157,8 @@ export default function TorneigPage() {
           <ul>
             <li><strong>Format FIBA 3×3</strong>: fases de grups + eliminatòria directa. 3 titulars + fins a 2 suplents per equip.</li>
             <li><strong>Durada dels partits</strong>: 10 minuts o primer equip que arriba a 21 punts.</li>
-            <li><strong>Dissabte 6 de juny</strong>: Sèniors M/F (Nau del Clot + Finals Westfield), Veterans M/F i Barna Màgics (Rambleta del Clot).</li>
-            <li><strong>Diumenge 7 de juny</strong>: Premini, Mini, Infantil, Cadet, Júnior, Sub-23 (Nau del Clot).</li>
+            <li><strong>Dissabte 6 de juny</strong>: Sèniors M/F (Nau del Clot + Finals Westfield) i Veterans M/F (Rambleta del Clot).</li>
+            <li><strong>Diumenge 7 de juny</strong>: Barna Màgics (Rambleta del Clot), Premini, Mini, Infantil, Cadet, Júnior, Sub-23 (Nau del Clot).</li>
             <li>Arbitratge oficial FIBA. No cal ser federat per participar.</li>
           </ul>
 

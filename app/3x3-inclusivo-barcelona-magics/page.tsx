@@ -6,12 +6,12 @@ import { WA_REGISTER_URL } from "../lib/whatsapp";
 export const metadata: Metadata = {
   title: "3×3 Inclusiu Barcelona — Barna Màgics | Categoria inclusiva Westfield Glòries 2026",
   description:
-    "Barna Màgics: la categoria inclusiva del 3×3 Westfield Glòries 2026. Esport adaptat i inclusiu a Barcelona, dissabte 6 de juny a la Rambleta del Clot. Oberta a tothom.",
+    "Barna Màgics: la categoria inclusiva del 3×3 Westfield Glòries 2026. Esport adaptat i inclusiu a Barcelona, diumenge 7 de juny a la Rambleta del Clot. Oberta a tothom.",
   alternates: { canonical: "/3x3-inclusivo-barcelona-magics" },
   openGraph: {
     title: "Barna Màgics — 3×3 Inclusiu Barcelona 2026 · Westfield Glòries",
     description:
-      "La categoria inclusiva del torneig 3×3 de Barcelona. Barna Màgics: esport, inclusió i comunitat. Dissabte 6 de juny 2026 a la Rambleta del Clot.",
+      "La categoria inclusiva del torneig 3×3 de Barcelona. Barna Màgics: esport, inclusió i comunitat. Diumenge 7 de juny 2026 a la Rambleta del Clot.",
   },
 };
 
@@ -52,7 +52,7 @@ export default function MagicsPage() {
           />
           <div className="insc-hero-overlay" />
           <div className="insc-hero-body">
-            <span className="insc-hero-kicker">Dissabte 6 de Juny 2026 · Rambleta del Clot, Barcelona</span>
+            <span className="insc-hero-kicker">Diumenge 7 de Juny 2026 · Rambleta del Clot, Barcelona</span>
             <h1 className="insc-hero-title">Barna Màgics</h1>
             <p className="insc-hero-sub">
               La categoria inclusiva del 3×3 Westfield Glòries. Esport, diversitat i comunitat —
@@ -111,7 +111,7 @@ export default function MagicsPage() {
             }}
           >
             <p style={{ fontWeight: 700, marginBottom: "0.5rem" }}>
-              🟠 Dissabte 6 de juny · 11:00–13:00h
+              🔵 Diumenge 7 de juny · 11:00–13:00h
             </p>
             <p style={{ margin: 0 }}>
               <strong>Rambleta del Clot</strong> — Pista exterior, ambient festiu, música i públic
@@ -119,6 +119,40 @@ export default function MagicsPage() {
             </p>
             <p style={{ fontSize: "0.85rem", color: "rgba(255,247,239,0.55)", marginTop: "0.5rem" }}>
               Metro L1 Glòries o L1 Clot · Tram T4/T5/T6 parada Pallars
+            </p>
+          </div>
+
+          <hr className="page-divider" />
+
+          <h2>Ja s&apos;hi apunten ✨</h2>
+          <div
+            style={{
+              background: "linear-gradient(135deg, rgba(96,165,250,0.10) 0%, rgba(236,72,153,0.08) 100%)",
+              border: "1.5px solid rgba(96,165,250,0.25)",
+              borderRadius: "14px",
+              padding: "1.25rem 1.5rem",
+              margin: "1rem 0",
+            }}
+          >
+            <p style={{ marginBottom: "0.75rem", color: "rgba(255,247,239,0.7)", fontSize: "0.9rem" }}>
+              Equips i entitats que ja han confirmat la seva participació a la categoria Màgics:
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                <span style={{ fontSize: "1.4rem" }}>✅</span>
+                <div>
+                  <p style={{ fontWeight: 700, margin: 0 }}>Sesé</p>
+                </div>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                <span style={{ fontSize: "1.4rem" }}>✅</span>
+                <div>
+                  <p style={{ fontWeight: 700, margin: 0 }}>Lluïsos</p>
+                </div>
+              </div>
+            </div>
+            <p style={{ marginTop: "1rem", fontSize: "0.85rem", color: "rgba(255,247,239,0.5)", margin: "1rem 0 0" }}>
+              Vols sumar el teu equip? Inscriu-te avui i forma part de la primera edició Màgics.
             </p>
           </div>
 

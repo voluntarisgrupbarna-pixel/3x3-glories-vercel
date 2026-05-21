@@ -5,7 +5,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Horaris 3×3 Westfield Glòries 2026 | Dissabte 6 i Diumenge 7 de Juny · Barcelona",
   description:
-    "Horaris complets del Torneig 3×3 Barcelona 2026. Dissabte 6 de juny: Sèniors FIBA, Veterans i Màgics. Diumenge 7 de juny: categories formatives. 3 seus al Clot-Glòries.",
+    "Horaris complets del Torneig 3×3 Barcelona 2026. Dissabte 6 de juny: Sèniors FIBA i Veterans. Diumenge 7 de juny: Màgics Inclusiva i categories formatives. 3 seus al Clot-Glòries.",
   alternates: { canonical: "/horarios-3x3-barcelona-2026" },
   openGraph: {
     title: "Horaris 3×3 Westfield Glòries 2026 — 6 i 7 de Juny · Barcelona",
@@ -36,7 +36,6 @@ const PROGRAMA = [
       { nom: "Sènior Femení Pro", hora: "09:00–18:00", seu: "Nau del Clot + Finals Westfield", fiba: true },
       { nom: "Veterans Masculí", hora: "10:00–14:00", seu: "Rambleta del Clot", fiba: false },
       { nom: "Veterans Femení", hora: "10:00–14:00", seu: "Rambleta del Clot", fiba: false },
-      { nom: "Màgics · Inclusiva", hora: "11:00–13:00", seu: "Rambleta del Clot", fiba: false },
     ],
   },
   {
@@ -45,6 +44,7 @@ const PROGRAMA = [
     bgColor: "rgba(96,165,250,0.08)",
     borderColor: "rgba(96,165,250,0.25)",
     categories: [
+      { nom: "Màgics · Inclusiva", hora: "11:00–13:00", seu: "Rambleta del Clot", fiba: false },
       { nom: "Premini · Benjamí · Aleví", hora: "09:00–12:00", seu: "La Nau del Clot", fiba: false },
       { nom: "U12 Preinfantil", hora: "09:00–12:00", seu: "La Nau del Clot", fiba: false },
       { nom: "U14 Infantil", hora: "10:00–14:00", seu: "La Nau del Clot", fiba: false },

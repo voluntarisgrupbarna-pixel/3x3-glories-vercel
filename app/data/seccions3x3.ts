@@ -1,7 +1,7 @@
 export const CATEGORIES = [
   { name: "SÈNIORS",              gender: "♂ ♀", desc: "Premi en Metàl·lic 1.000€ · Punts Rànquing FIBA",        badge: "FIBA OFFICIAL", badgeColor: "#ef4444", price: "90€ (5 jug.)", day: 6, dayColor: "#f97316" },
   { name: "VETERANS",             gender: "♂ ♀", desc: "Trofeus i medalles · Esport intergeneracional +35", badge: "+35 ANYS",     badgeColor: "#06b6d4", price: "85€ (4 jug.)", day: 6, dayColor: "#f97316" },
-  { name: "MÀGICS · INCLUSIVA",   gender: "♂ ♀", desc: "Categoria inclusiva Barna Màgics · Novetat 2026.", badge: "INCLUSIVA",    badgeColor: "#ec4899", price: "75€ (4 jug.)", day: 6, dayColor: "#f97316" },
+  { name: "MÀGICS · INCLUSIVA",   gender: "♂ ♀", desc: "Categoria inclusiva Barna Màgics · Novetat 2026.", badge: "INCLUSIVA",    badgeColor: "#ec4899", price: "75€ (4 jug.)", day: 7, dayColor: "#60a5fa" },
   { name: "U18 JUNIOR",           gender: "♂ ♀", desc: "Categoria juvenil d'alt nivell",                   badge: "JUVENIL",      badgeColor: "#3b82f6", price: "75€ (4 jug.)", day: 7, dayColor: "#60a5fa" },
   { name: "U16 CADET",            gender: "♂",   desc: "Competició formativa d'elit",                      badge: "FORMACIÓ",     badgeColor: "#10b981", price: "75€ (4 jug.)", day: 7, dayColor: "#60a5fa" },
   { name: "U14 INFANTIL",         gender: "♂",   desc: "Primer pas cap a la competició",                   badge: "FORMACIÓ",     badgeColor: "#8b5cf6", price: "75€ (4 jug.)", day: 7, dayColor: "#60a5fa" },
@@ -100,7 +100,6 @@ export const PROGRAM = [
       { nom: "Sènior Masculí Pro", fiba: true, hora: "09:00–18:00" },
       { nom: "Sènior Femení Pro",  fiba: true, hora: "09:00–18:00" },
       { nom: "Veterans M/F",       fiba: false, hora: "10:00–14:00" },
-      { nom: "Màgics · Inclusiva", fiba: false, hora: "11:00–13:00" },
     ],
   },
   {
@@ -108,6 +107,7 @@ export const PROGRAM = [
     dateShort: "Diu 7",
     dayColor: "#60a5fa",
     categories: [
+      { nom: "Màgics · Inclusiva", fiba: false, hora: "11:00–13:00" },
       { nom: "Premini · Benjamí · Aleví", fiba: false, hora: "09:00–12:00" },
       { nom: "U12 Preinfantil",            fiba: false, hora: "09:00–12:00" },
       { nom: "U14 Infantil",               fiba: false, hora: "10:00–14:00" },

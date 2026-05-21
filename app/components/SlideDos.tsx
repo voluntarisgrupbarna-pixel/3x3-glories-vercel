@@ -13,13 +13,13 @@ const PROGRAM = [
       { nom: "Sènior Masculí Pro", fiba: true },
       { nom: "Sènior Femení Pro",  fiba: true },
       { nom: "Veterans",          fiba: false },
-      { nom: "Màgics",            fiba: false },
     ],
   },
   {
     dia: "Diumenge 7 de Juny",
     dateShort: "7 Jun",
     categories: [
+      { nom: "Màgics",      fiba: false },
       { nom: "Júnior",      fiba: false },
       { nom: "Cadet",       fiba: false },
       { nom: "Infantil",    fiba: false },
