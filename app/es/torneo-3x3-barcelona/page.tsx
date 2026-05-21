@@ -9,7 +9,11 @@ export const metadata: Metadata = {
     "Inscríbete al torneo 3x3 de Barcelona 2026 en Westfield Glòries. Categorías desde Premini hasta Sénior Pro, puntos FIBA, 2.000€ en premios y camiseta oficial. 6-7 junio.",
   alternates: {
     canonical: "/es/torneo-3x3-barcelona",
-    languages: { es: "/es/torneo-3x3-barcelona", ca: "/", "x-default": "/" },
+    languages: {
+      ca: "https://www.cbgrupbarna-3x3timechamber.com/torneig-3x3-barcelona",
+      es: "https://www.cbgrupbarna-3x3timechamber.com/es/torneo-3x3-barcelona",
+      "x-default": "https://www.cbgrupbarna-3x3timechamber.com/",
+    },
   },
   openGraph: {
     title: "Torneo 3x3 Barcelona 2026 — Westfield Glòries · FIBA · Premios",

@@ -1,6 +1,38 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+const jsonLdVenue = {
+  "@context": "https://schema.org",
+  "@type": "SportsActivityLocation",
+  name: "Westfield Glòries — Seu principal 3×3 Barcelona 2026",
+  description: "Seu principal del torneig 3×3 Westfield Glòries 2026. Pàrquing gratuït 2h per als participants.",
+  url: "https://www.cbgrupbarna-3x3timechamber.com/seu/westfield-glories",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "Avinguda Diagonal, 208",
+    addressLocality: "Barcelona",
+    postalCode: "08018",
+    addressRegion: "Catalunya",
+    addressCountry: "ES",
+  },
+  geo: {
+    "@type": "GeoCoordinates",
+    latitude: 41.4043,
+    longitude: 2.1924,
+  },
+  publicAccess: true,
+  openingHoursSpecification: [
+    { "@type": "OpeningHoursSpecification", dayOfWeek: "Saturday", opens: "09:00", closes: "21:00" },
+    { "@type": "OpeningHoursSpecification", dayOfWeek: "Sunday", opens: "09:00", closes: "21:00" },
+  ],
+  event: {
+    "@type": "SportsEvent",
+    name: "3×3 Westfield Glòries 2026",
+    startDate: "2026-06-06",
+    endDate: "2026-06-07",
+  },
+};
+
 export const metadata: Metadata = {
   title: "Seu Westfield Glòries | 3×3 Barcelona 2026",
   description:
@@ -18,6 +50,7 @@ export const metadata: Metadata = {
 export default function WestfieldGloriesPage() {
   return (
     <div className="page-shell">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdVenue) }} />
       <nav className="page-nav">
         <Link href="/" className="page-nav-back">
           ← Inici

@@ -1,6 +1,37 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+const jsonLdVenue = {
+  "@context": "https://schema.org",
+  "@type": "SportsActivityLocation",
+  name: "Rambleta del Clot — Pista exterior 3×3 Barcelona 2026",
+  description: "Pista exterior del torneig 3×3 Westfield Glòries 2026. Bàsquet de carrer al barri del Clot-Glòries, Barcelona.",
+  url: "https://www.cbgrupbarna-3x3timechamber.com/seu/rambleta-del-clot",
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Barcelona",
+    postalCode: "08018",
+    addressRegion: "Catalunya",
+    addressCountry: "ES",
+  },
+  geo: {
+    "@type": "GeoCoordinates",
+    latitude: 41.4074,
+    longitude: 2.1972,
+  },
+  publicAccess: true,
+  openingHoursSpecification: [
+    { "@type": "OpeningHoursSpecification", dayOfWeek: "Saturday", opens: "09:00", closes: "21:00" },
+    { "@type": "OpeningHoursSpecification", dayOfWeek: "Sunday", opens: "09:00", closes: "21:00" },
+  ],
+  event: {
+    "@type": "SportsEvent",
+    name: "3×3 Westfield Glòries 2026",
+    startDate: "2026-06-06",
+    endDate: "2026-06-07",
+  },
+};
+
 export const metadata: Metadata = {
   title: "Rambleta del Clot | 3×3 Barcelona 2026",
   description:
@@ -18,6 +49,7 @@ export const metadata: Metadata = {
 export default function RambletaDelClotPage() {
   return (
     <div className="page-shell">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdVenue) }} />
       <nav className="page-nav">
         <Link href="/" className="page-nav-back">
           ← Inici

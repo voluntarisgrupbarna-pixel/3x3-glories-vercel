@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import Image from "next/image";
 import {
   PACKAGES,
   CATEGORIES,
@@ -1653,7 +1654,7 @@ function SuccessPanel({
         <code className="wizard-success-code">{teamId}</code>
       </div>
       <div className="wizard-success-qr">
-        <img src={qrUrl} alt={`QR check-in equip ${teamId}`} width={260} height={260} loading="eager" decoding="async" />
+        <Image src={qrUrl} alt={`QR check-in equip ${teamId}`} width={260} height={260} unoptimized priority />
         <p><strong>Guarda aquest QR.</strong> Escanejant-lo accedeixes a la teva pàgina de check-in. Fes captura — també t&apos;ho enviarem per email.</p>
       </div>
       <a href={`/check-in/${teamId}`} className="wizard-btn wizard-btn-primary">Obrir pàgina de check-in →</a>

@@ -8,7 +8,14 @@ export const metadata: Metadata = {
   title: "Torneig 3×3 Barcelona 2026 — Westfield Glòries · FIBA · 2.000€ premis",
   description:
     "Torneig 3×3 Barcelona 2026: bàsquet 3×3 FIBA al Clot-Glòries. 10 categories (Premini a Veterans), 2.000€ premi en metàl·lic Sèniors, punts FIBA. 6-7 Juny 2026. Inscriu-te des de 75€!",
-  alternates: { canonical: "/torneig-3x3-barcelona" },
+  alternates: {
+    canonical: "/torneig-3x3-barcelona",
+    languages: {
+      ca: "https://www.cbgrupbarna-3x3timechamber.com/torneig-3x3-barcelona",
+      es: "https://www.cbgrupbarna-3x3timechamber.com/es/torneo-3x3-barcelona",
+      "x-default": "https://www.cbgrupbarna-3x3timechamber.com/",
+    },
+  },
   openGraph: {
     title: "Torneig 3×3 Barcelona 2026 — Westfield Glòries · FIBA",
     description:

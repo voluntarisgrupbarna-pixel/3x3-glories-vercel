@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { WA_REGISTRE_URL } from "../lib/whatsapp";
 
 const NAV_LINKS = [
@@ -39,7 +40,7 @@ export default function SiteNav() {
       aria-label="Navegació principal"
     >
       <a href="/" className="site-nav-logo" aria-label="Inici 3×3 Westfield Glòries">
-        <img src="/logos/westfield.svg" alt="Westfield Glòries" className="site-nav-logo-img" />
+        <Image src="/logos/westfield.svg" alt="Westfield Glòries" className="site-nav-logo-img" width={28} height={28} priority />
         <span>3×3 Westfield Glòries</span>
       </a>
 
