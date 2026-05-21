@@ -61,11 +61,6 @@ export const metadata: Metadata = {
   publisher: "CB Grup Barna",
   alternates: {
     canonical: "/",
-    languages: {
-      ca: "/",
-      es: "/es/torneo-3x3-barcelona",
-      "x-default": "/",
-    },
   },
   robots: {
     index: true,
