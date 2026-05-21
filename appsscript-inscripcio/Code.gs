@@ -1134,12 +1134,28 @@ function sendAbandonedEmail(payload, props) {
   const hasContact = payload.captainEmail || payload.captainPhone;
   if (!hasContact) return;
 
-  // Evita spam per events de tancament duplicats sense dades útils
+  // ── FILTRE 1: Només enviem email per events significatius ──────────────
+  // phone_entered, email_entered, hidden, beforeunload → es graven al Sheet
+  // però NO generen email (massa sorollosos, 3-5 per sessió per persona)
   const reason = payload.reason || "";
-  const noisyReasons = ["beforeunload", "hidden"];
-  // Si ja tenim step2_done o email_entered, beforeunload és redundant
-  // → filtrem beforeunload/hidden si no aporten informació nova
-  if (noisyReasons.indexOf(reason) !== -1 && !payload.captainEmail && !payload.captainPhone) return;
+  const emailWorthyReasons = ["step1_email", "step2_done", "step3_done", "step4_done"];
+  if (emailWorthyReasons.indexOf(reason) === -1) return;
+
+  // ── FILTRE 2: Dedup per persona — 1 email cada 10 minuts ──────────────
+  // Evita dobles si la mateixa persona activa 2 events significatius seguits
+  try {
+    var cache = CacheService.getScriptCache();
+    var contactKey = ((payload.captainEmail || "") + (payload.captainPhone || ""))
+      .toLowerCase().replace(/[^a-z0-9]/g, "").substring(0, 60);
+    if (contactKey) {
+      var cacheKey = "ab_email_" + contactKey;
+      if (cache.get(cacheKey)) {
+        Logger.log("sendAbandonedEmail: skipped dedup (" + reason + ") per " + (payload.captainEmail || payload.captainPhone));
+        return;
+      }
+      cache.put(cacheKey, reason, 600); // 10 minuts
+    }
+  } catch(e) { /* CacheService falla en tests locals → ignorem */ }
 
   const reasonLabels = {
     "step1_email":   "📬 Email donat al Step 1 (sense continuar)",
