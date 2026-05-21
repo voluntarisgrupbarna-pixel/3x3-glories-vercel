@@ -109,7 +109,7 @@ export default function TorneoESPage() {
               { v: "180+", l: "Equipos en ediciones anteriores" },
               { v: "800+", l: "Jugadores y jugadoras" },
               { v: "10", l: "Categorías" },
-              { v: "4ª", l: "Edición consecutiva" },
+              { v: "3ª", l: "Edición consecutiva" },
             ].map((s) => (
               <div
                 key={s.l}
@@ -149,7 +149,7 @@ export default function TorneoESPage() {
                 🔵 Domingo 7 de junio
               </div>
               <ul style={{ margin: 0, padding: "0 0 0 1.1rem", listStyle: "disc" }}>
-                <li style={{ marginBottom: "0.4rem" }}>Premini · Benjamí · Aleví · 09:00–12:00</li>
+                <li style={{ marginBottom: "0.4rem" }}>Premini · Benjamín · Alevín · 09:00–12:00</li>
                 <li style={{ marginBottom: "0.4rem" }}>U12 Preinfantil · 09:00–12:00</li>
                 <li style={{ marginBottom: "0.4rem" }}>U14 Infantil · 10:00–14:00</li>
                 <li style={{ marginBottom: "0.4rem" }}>U16 Cadete · 10:00–14:00</li>
