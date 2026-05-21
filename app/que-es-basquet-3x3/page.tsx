@@ -235,7 +235,7 @@ export default function QueEsBasquet3x3Page() {
               <p>
                 El <strong>Torneig 3×3 Westfield Glòries</strong> és la cita de bàsquet urbà
                 de referència a Barcelona. Organitzat per CB Grup Barna, Time Chamber i l&apos;Eix
-                Clot, arriba a la seva 4a edició el <strong>6 i 7 de juny de 2026</strong> amb
+                Clot, arriba a la seva 3a edició el <strong>6 i 7 de juny de 2026</strong> amb
                 més de 10 categories i premi en metàl·lic per a la categoria Sènior.
               </p>
               <p>
