@@ -101,11 +101,15 @@ export const IBAN_INFO = {
   beneficiary: "CB Grup Barna",
 };
 
-// ── Descomptes (acumulables) ───────────────────────────────────────────────
+// ── Descomptes ────────────────────────────────────────────────────────────
 export const EARLY_BIRD_DEADLINE = new Date("2026-05-20T23:59:59+02:00");
 export const EARLY_BIRD_PCT      = 0.10; // 10 % sobre el preu base
 export const SOCIAL_PCT          = 0.05; // 5 %  sobre el preu base
 export const RIVAL_FLAT          = 5;    // −5 € fixos
+
+// Codi de fidelitat per a equips participants el 2025
+export const PROMO_2025_CODE = "EQUIPS2025";
+export const PROMO_2025_PCT  = 0.10; // 10 % — NO acumulable amb Early Bird (s'aplica el més gran)
 
 export function isEarlyBirdActive(): boolean {
   return new Date() < EARLY_BIRD_DEADLINE;
@@ -115,6 +119,7 @@ export type DiscountResult = {
   earlyBirdAmt : number;
   socialAmt    : number;
   rivalAmt     : number;
+  promoAmt     : number;  // EQUIP2025 — exclou earlyBird si ambdós actius
   totalDiscount: number;
   finalPrice   : number;
 };
@@ -166,16 +171,24 @@ export const PACKAGE_ALLOWED_CATEGORIES: Record<PackageKey, string[]> = {
  */
 export function calcDiscount(
   basePrice: number,
-  opts: { earlyBird?: boolean; social?: boolean; rivalValid?: boolean },
+  opts: { earlyBird?: boolean; social?: boolean; rivalValid?: boolean; promoValid?: boolean },
 ): DiscountResult {
-  const earlyBirdAmt = opts.earlyBird
+  const earlyBirdFull = opts.earlyBird
     ? Math.round(basePrice * EARLY_BIRD_PCT * 100) / 100
     : 0;
+  const promoFull = opts.promoValid
+    ? Math.round(basePrice * PROMO_2025_PCT * 100) / 100
+    : 0;
+
+  // EQUIP2025 i Early Bird NO s'acumulen — s'aplica el més gran dels dos
+  const earlyBirdAmt = earlyBirdFull >= promoFull ? earlyBirdFull : 0;
+  const promoAmt     = promoFull > earlyBirdFull   ? promoFull     : 0;
+
   const socialAmt = opts.social
     ? Math.round(basePrice * SOCIAL_PCT * 100) / 100
     : 0;
   const rivalAmt = opts.rivalValid ? RIVAL_FLAT : 0;
-  const totalDiscount = earlyBirdAmt + socialAmt + rivalAmt;
+  const totalDiscount = earlyBirdAmt + socialAmt + rivalAmt + promoAmt;
   const finalPrice = Math.max(0, Math.round((basePrice - totalDiscount) * 100) / 100);
-  return { earlyBirdAmt, socialAmt, rivalAmt, totalDiscount, finalPrice };
+  return { earlyBirdAmt, socialAmt, rivalAmt, promoAmt, totalDiscount, finalPrice };
 }

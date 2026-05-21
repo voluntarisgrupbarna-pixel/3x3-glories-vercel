@@ -1,5 +1,3 @@
-"use client";
-
 import EarlyBirdBanner from "./components/EarlyBirdBanner";
 import HeroFestival from "./components/HeroFestival";
 import IdentityChipsStrip from "./components/IdentityChipsStrip";

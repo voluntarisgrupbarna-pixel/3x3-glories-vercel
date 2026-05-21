@@ -16,6 +16,7 @@ import {
   isEarlyBirdActive,
   calcDiscount,
   EARLY_BIRD_DEADLINE,
+  PROMO_2025_CODE,
   getCategoryBirthRange,
   getCategoryBirthHint,
   PACKAGE_ALLOWED_CATEGORIES,
@@ -52,6 +53,7 @@ type WizardState = {
   // Step 1 — descomptes (pre-form)
   socialShareDone: boolean;
   rivalCode: string;
+  promoCode: string;            // codi de fidelitat 2025 (EQUIP2025)
   earlyEmail: string;           // email opcional capturat a l'Step 1
   // Step 2 — equip + capità
   packageKey: PackageKey | null;
@@ -99,6 +101,10 @@ function isFormative(cat: string): boolean {
 
 function isRivalCodeValid(code: string): boolean {
   return /^RIVAL-[A-Z0-9]{3,}$/i.test(code.trim());
+}
+
+function isPromoCodeValid(code: string): boolean {
+  return code.trim().toUpperCase() === PROMO_2025_CODE;
 }
 
 /** Validació bàsica de telèfon: mínim 9 dígits (ignorant espais, guions, parèntesis) */
@@ -176,6 +182,7 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
     step: 1,
     socialShareDone: false,
     rivalCode: initialRefCode,
+    promoCode: "",
     earlyEmail: "",
     packageKey: null,
     teamName: "",
@@ -235,6 +242,7 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
           earlyBird: isEarlyBirdActive(),
           social: s.socialShareDone,
           rivalValid: /^RIVAL-[A-Z0-9]{3,}$/i.test(s.rivalCode.trim()),
+          promoValid: isPromoCodeValid(s.promoCode),
         })
       : null;
     const body = JSON.stringify({
@@ -349,13 +357,14 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
   );
 
   const disc: DiscountResult = useMemo(() => {
-    if (!pkg) return { earlyBirdAmt: 0, socialAmt: 0, rivalAmt: 0, totalDiscount: 0, finalPrice: 0 };
+    if (!pkg) return { earlyBirdAmt: 0, socialAmt: 0, rivalAmt: 0, promoAmt: 0, totalDiscount: 0, finalPrice: 0 };
     return calcDiscount(pkg.price, {
       earlyBird: isEarlyBirdActive(),
       social: state.socialShareDone,
       rivalValid: isRivalCodeValid(state.rivalCode),
+      promoValid: isPromoCodeValid(state.promoCode),
     });
-  }, [pkg, state.socialShareDone, state.rivalCode]);
+  }, [pkg, state.socialShareDone, state.rivalCode, state.promoCode]);
 
   // ── State helpers ──────────────────────────────────────────────────────
   function update<K extends keyof WizardState>(k: K, v: WizardState[K]) {
@@ -611,7 +620,7 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
         indivPosition: state.packageKey === "individual" ? state.indivPosition : null,
         indivLevel: state.packageKey === "individual" ? state.indivLevel : null,
         submittedAt: new Date().toISOString(),
-        discountType: [disc.earlyBirdAmt > 0 && "earlybird", disc.socialAmt > 0 && "social", disc.rivalAmt > 0 && "rival"].filter(Boolean).join("+") || null,
+        discountType: [disc.earlyBirdAmt > 0 && "earlybird", disc.promoAmt > 0 && "promo", disc.socialAmt > 0 && "social", disc.rivalAmt > 0 && "rival"].filter(Boolean).join("+") || null,
         discountAmount: disc.totalDiscount,
         finalPrice: disc.finalPrice > 0 ? disc.finalPrice : pkg.price,
         earlyBirdApplied: isEarlyBirdActive(),
@@ -667,9 +676,11 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
         <Step1Discounts
           socialShareDone={state.socialShareDone}
           rivalCode={state.rivalCode}
+          promoCode={state.promoCode}
           earlyEmail={state.earlyEmail}
           onSocialDone={(v) => update("socialShareDone", v)}
           onRivalCode={(v) => update("rivalCode", v.toUpperCase())}
+          onPromoCode={(v) => update("promoCode", v.toUpperCase())}
           onEarlyEmail={(v) => { update("earlyEmail", v); sendEarlyEmailLead(v); }}
           onNext={next}
         />
@@ -873,25 +884,31 @@ function SocialDiscountBlock({
 function Step1Discounts({
   socialShareDone,
   rivalCode,
+  promoCode,
   earlyEmail,
   onSocialDone,
   onRivalCode,
+  onPromoCode,
   onEarlyEmail,
   onNext,
 }: {
   socialShareDone: boolean;
   rivalCode: string;
+  promoCode: string;
   earlyEmail: string;
   onSocialDone: (v: boolean) => void;
   onRivalCode: (v: string) => void;
+  onPromoCode: (v: string) => void;
   onEarlyEmail: (v: string) => void;
   onNext: () => void;
 }) {
   const earlyBirdActive = isEarlyBirdActive();
   const daysLeft = Math.max(0, Math.ceil((EARLY_BIRD_DEADLINE.getTime() - Date.now()) / 86_400_000));
   const rivalValid = isRivalCodeValid(rivalCode);
+  const promoValid = isPromoCodeValid(promoCode);
   // Pre-obrir si hi ha codi des de la URL (?ref=...)
   const [rivalOpen, setRivalOpen] = useState(rivalCode.length > 0);
+  const [promoOpen, setPromoOpen] = useState(promoCode.length > 0);
 
   return (
     <div className="wizard-step">
@@ -951,6 +968,43 @@ function Step1Discounts({
             maxLength={40}
             autoCapitalize="characters"
             style={{ marginTop: 8, width: "100%", padding: "0.55rem 0.8rem", borderRadius: 8, border: rivalValid ? "1.5px solid #ff9c3c" : "1.5px solid rgba(255,247,239,.15)", background: "rgba(255,247,239,.06)", color: "#fff7ef", fontSize: "0.95rem", letterSpacing: "0.04em" }}
+          />
+        </div>
+      )}
+
+      {/* EQUIP2025 — fidelitat 2025 */}
+      {!promoOpen ? (
+        <button
+          type="button"
+          className="wizard-rival-toggle"
+          onClick={() => setPromoOpen(true)}
+        >
+          🏆 Vas participar al 3×3 el 2025? (−10 %)
+        </button>
+      ) : (
+        <div className={`wizard-discount-block${promoValid ? " wizard-discount-block--active" : ""}`}>
+          <div className="wizard-discount-head">
+            <span className="wizard-discount-pct" style={{ background: "rgba(250,204,21,.18)", color: "#facc15" }}>🏆 −10 %</span>
+            <div>
+              <strong>Fidelitat 2025</strong>
+              {promoValid
+                ? <span className="wizard-discount-status wizard-discount-status--on">Activat ✓</span>
+                : <span className="wizard-discount-status wizard-discount-status--off">Introdueix el codi</span>
+              }
+            </div>
+          </div>
+          <p className="wizard-discount-desc">
+            Per a equips que van participar al 3×3 Westfield Glòries 2025. No acumulable amb Early Bird (s&apos;aplica el més gran dels dos).
+          </p>
+          <input
+            type="text"
+            className="wizard-rival-input"
+            placeholder="EQUIP2025"
+            value={promoCode}
+            onChange={(e) => onPromoCode(e.target.value)}
+            maxLength={20}
+            autoCapitalize="characters"
+            style={{ marginTop: 8, width: "100%", padding: "0.55rem 0.8rem", borderRadius: 8, border: promoValid ? "1.5px solid #facc15" : "1.5px solid rgba(255,247,239,.15)", background: "rgba(255,247,239,.06)", color: "#fff7ef", fontSize: "0.95rem", letterSpacing: "0.04em" }}
           />
         </div>
       )}
@@ -1029,6 +1083,7 @@ function Step2Team({
       {(disc.totalDiscount > 0) && (
         <div className="wizard-active-discounts">
           {disc.earlyBirdAmt > 0 && <span className="wizard-active-badge wizard-active-badge--eb">🔥 Early Bird −10 %</span>}
+          {disc.promoAmt > 0 && <span className="wizard-active-badge wizard-active-badge--promo">🏆 Fidelitat 2025 −10 %</span>}
           {disc.socialAmt > 0 && <span className="wizard-active-badge wizard-active-badge--social">📲 Social −5 %</span>}
           {disc.rivalAmt > 0 && <span className="wizard-active-badge wizard-active-badge--rival">🏀 Rival −5 €</span>}
           <span className="wizard-active-badge-note">ja aplicat als preus</span>
@@ -1040,7 +1095,7 @@ function Step2Team({
       <div className="wizard-pkg-grid">
         {PACKAGES.map((p) => {
           const isSelected = state.packageKey === p.key;
-          const preview = calcDiscount(p.price, { earlyBird: earlyBirdActive, social: state.socialShareDone, rivalValid: isRivalCodeValid(state.rivalCode) });
+          const preview = calcDiscount(p.price, { earlyBird: earlyBirdActive, social: state.socialShareDone, rivalValid: isRivalCodeValid(state.rivalCode), promoValid: isPromoCodeValid(state.promoCode) });
           const hasDiscount = preview.totalDiscount > 0;
           return (
             <button
