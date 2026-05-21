@@ -168,5 +168,47 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.75,
       alternates: langs("/regles-3x3"),
     },
+    {
+      url: `${SITE_URL}/que-es-basquet-3x3`,
+      lastModified,
+      changeFrequency: "monthly",
+      priority: 0.85,
+      alternates: langs("/que-es-basquet-3x3"),
+    },
+    {
+      url: `${SITE_URL}/com-arribar-westfield-glories`,
+      lastModified,
+      changeFrequency: "monthly",
+      priority: 0.80,
+      alternates: langs("/com-arribar-westfield-glories"),
+    },
+    {
+      url: `${SITE_URL}/com-inscriure-equip-3x3`,
+      lastModified,
+      changeFrequency: "monthly",
+      priority: 0.80,
+      alternates: langs("/com-inscriure-equip-3x3"),
+    },
+    {
+      url: `${SITE_URL}/3x3-cadet-barcelona`,
+      lastModified,
+      changeFrequency: "monthly",
+      priority: 0.75,
+      alternates: langs("/3x3-cadet-barcelona"),
+    },
+    {
+      url: `${SITE_URL}/3x3-infantil-barcelona`,
+      lastModified,
+      changeFrequency: "monthly",
+      priority: 0.75,
+      alternates: langs("/3x3-infantil-barcelona"),
+    },
+    {
+      url: `${SITE_URL}/3x3-junior-barcelona`,
+      lastModified,
+      changeFrequency: "monthly",
+      priority: 0.75,
+      alternates: langs("/3x3-junior-barcelona"),
+    },
   ];
 }
