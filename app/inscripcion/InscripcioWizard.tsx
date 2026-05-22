@@ -53,7 +53,7 @@ type WizardState = {
   // Step 1 — descomptes (pre-form)
   socialShareDone: boolean;
   rivalCode: string;
-  promoCode: string;            // codi de fidelitat 2025 (EQUIP2025)
+  promoCode: string;            // codi de fidelitat 2025 (EQUIPS2025)
   earlyEmail: string;           // email opcional capturat a l'Step 1
   // Step 2 — equip + capità
   packageKey: PackageKey | null;
@@ -972,7 +972,7 @@ function Step1Discounts({
         </div>
       )}
 
-      {/* EQUIP2025 — fidelitat 2025 */}
+      {/* EQUIPS2025 — fidelitat 2025 */}
       {!promoOpen ? (
         <button
           type="button"
@@ -999,7 +999,7 @@ function Step1Discounts({
           <input
             type="text"
             className="wizard-rival-input"
-            placeholder="EQUIP2025"
+            placeholder="EQUIPS2025"
             value={promoCode}
             onChange={(e) => onPromoCode(e.target.value)}
             maxLength={20}
