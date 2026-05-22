@@ -220,6 +220,51 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
     wizardRef.current?.setAttribute("data-wizard-ready", "true");
   }, []);
 
+  // ── Persistència localStorage — recupera esborrany en carregar ───────────
+  const DRAFT_KEY = "insc3x3_draft_v1";
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(DRAFT_KEY);
+      if (!saved) return;
+      const parsed = JSON.parse(saved) as WizardState & { _ts?: number };
+      // Restaurar només si l'esborrany és de les últimes 24h
+      if (!parsed._ts || Date.now() - parsed._ts > 86_400_000) {
+        localStorage.removeItem(DRAFT_KEY);
+        return;
+      }
+      // No restaurar si ja s'ha enviat (pas 5 amb resultat OK)
+      if (submitResultRef.current?.ok === true) return;
+      // Restaurar l'estat (sense el camp binari proofBase64 per estalviar memòria)
+      const { _ts: _ignored, proofBase64: _proof, rgpdConsent: _rgpd, imageRightsConsent: _img, ...rest } = parsed as WizardState & { _ts?: number };
+      setState((prev) => ({
+        ...prev,
+        ...rest,
+        proofBase64: "",       // no persistim el binari
+        rgpdConsent: false,    // consents sempre explícits per llei
+        imageRightsConsent: false,
+        step: Math.min((rest.step ?? 1), 4), // cap al pas 4 com a màxim en restaurar
+      }));
+    } catch (_) {
+      // Si localStorage no és accessible (mode privat, etc.) ignorem silenciosament
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Desa l'esborrany a localStorage en cada canvi d'estat (no desa el binari)
+  useEffect(() => {
+    if (submitResult?.ok === true) {
+      // Formulari enviat — esborrar l'esborrany
+      try { localStorage.removeItem(DRAFT_KEY); } catch (_) {}
+      return;
+    }
+    if (state.step >= 5) return; // No persistir el pas de confirmació
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { proofBase64: _proof, ...stateToPersist } = state;
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({ ...stateToPersist, _ts: Date.now() }));
+    } catch (_) {}
+  }, [state, submitResult]);
+
   useEffect(() => {
     trackWizardEvent("wizard_step_view", {
       step: state.step,
@@ -491,7 +536,7 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
     if (!pkg) return false;
     if (pkg.isTeam && !state.teamName.trim()) return false;
     const c = state.captain;
-    if (!c.fullName.trim() || !c.phone.trim() || !c.email.trim() || !c.shirtSize) return false;
+    if (!c.fullName.trim() || !c.phone.trim() || !c.email.trim()) return false;
     if (!isValidPhone(c.phone)) return false;
     if (!c.email.includes("@") || !c.email.includes(".")) return false;
     if (state.needsTutor && !isValidMinorCaptain(state.tutor)) return false;
@@ -509,7 +554,7 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
   const canAdvanceStep4 = useMemo(() => {
     if (!state.players.length) return false;
     return state.players.every((p) => {
-      if (!p.fullName.trim() || !p.category || !p.birthYear.trim() || !p.gender || !p.club.trim() || !p.shirtSize) return false;
+      if (!p.fullName.trim() || !p.category || !p.birthYear.trim() || !p.gender) return false;
       if (!isValidBirthYear(p.birthYear)) return false;
       // Hard block si l'any és clarament fora del rang de la categoria (>5 anys de diferència)
       const range = getCategoryBirthRange(p.category);
@@ -536,7 +581,7 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
     else if (!isValidPhone(c.phone)) m.push("telèfon invàlid (mínim 9 dígits)");
     if (!c.email.trim()) m.push("email del capità/a");
     else if (!c.email.includes("@") || !c.email.includes(".")) m.push("format d'email invàlid");
-    if (!c.shirtSize) m.push("talla samarreta del capità/a");
+
     if (state.needsTutor && hasMinorCaptain(state.tutor)) {
       const t = state.tutor;
       if (!t.fullName.trim()) m.push("nom del capità/a menor");
@@ -917,20 +962,19 @@ function Step1Discounts({
         Pots combinar fins a 3 descomptes. S&apos;apliquen automàticament al preu final.
       </p>
 
-      {/* Early Bird */}
-      <div className={`wizard-discount-block${earlyBirdActive ? " wizard-discount-block--active" : " wizard-discount-block--expired"}`}>
-        <div className="wizard-discount-head">
-          <span className="wizard-discount-pct wizard-discount-pct--fire">🔥 −10 %</span>
-          <div>
-            <strong>Early Bird</strong>
-            {earlyBirdActive
-              ? <span className="wizard-discount-status wizard-discount-status--on">Actiu · {daysLeft} {daysLeft === 1 ? "dia" : "dies"} restants</span>
-              : <span className="wizard-discount-status wizard-discount-status--off">Caducat</span>
-            }
+      {/* Early Bird — només mostrar si actiu */}
+      {earlyBirdActive && (
+        <div className="wizard-discount-block wizard-discount-block--active">
+          <div className="wizard-discount-head">
+            <span className="wizard-discount-pct wizard-discount-pct--fire">🔥 −10 %</span>
+            <div>
+              <strong>Early Bird</strong>
+              <span className="wizard-discount-status wizard-discount-status--on">Actiu · {daysLeft} {daysLeft === 1 ? "dia" : "dies"} restants</span>
+            </div>
           </div>
+          <p className="wizard-discount-desc">S&apos;aplica automàticament a tots els paquets. No cal fer res.</p>
         </div>
-        <p className="wizard-discount-desc">S&apos;aplica automàticament a tots els paquets. No cal fer res.</p>
-      </div>
+      )}
 
       {/* Social share */}
       <SocialDiscountBlock socialShareDone={socialShareDone} onSocialDone={onSocialDone} />
@@ -1176,8 +1220,8 @@ function Step2Team({
           <input id="wizard-capt-email" type="email" value={state.captain.email} onChange={(e) => updateCaptain("email", e.target.value)} placeholder="capitana@email.com" required maxLength={100} autoComplete="email" />
         </div>
         <div className="wizard-field">
-          <label htmlFor="wizard-capt-shirt">Talla samarreta *</label>
-          <select id="wizard-capt-shirt" value={state.captain.shirtSize} onChange={(e) => updateCaptain("shirtSize", e.target.value)} required>
+          <label htmlFor="wizard-capt-shirt">Talla samarreta <span style={{ fontWeight: 400, color: "#888" }}>(opcional)</span></label>
+          <select id="wizard-capt-shirt" value={state.captain.shirtSize} onChange={(e) => updateCaptain("shirtSize", e.target.value)}>
             <option value="">Talla…</option>
             {SHIRT_SIZES.map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
@@ -1457,13 +1501,13 @@ function Step4Players({
               <input id={`wp${idx}-name`} type="text" value={p.fullName} onChange={(e) => handlePlayerUpdate(idx, { fullName: e.target.value })} required maxLength={80} />
             </div>
             <div className="wizard-field">
-              <label htmlFor={`wp${idx}-club`}>Club d&apos;origen *{" "}
+              <label htmlFor={`wp${idx}-club`}>Club d&apos;origen{" "}
                 {!p.club && idx > 0 && players[idx - 1]?.club
                   ? <button type="button" style={{ fontSize: 11, fontWeight: 400, color: "#aaa", background: "none", border: "none", cursor: "pointer", padding: 0, textDecoration: "underline" }} onClick={() => handlePlayerUpdate(idx, { club: players[idx - 1].club })}>= {players[idx - 1].club}</button>
                   : !p.club && <button type="button" style={{ fontSize: 11, fontWeight: 400, color: "#aaa", background: "none", border: "none", cursor: "pointer", padding: 0, textDecoration: "underline" }} onClick={() => handlePlayerUpdate(idx, { club: "Sense club" })}>Sense club</button>
                 }
               </label>
-              <input id={`wp${idx}-club`} type="text" value={p.club} onChange={(e) => handlePlayerUpdate(idx, { club: e.target.value })} placeholder="CB Grup Barna…" required maxLength={60} />
+              <input id={`wp${idx}-club`} type="text" value={p.club} onChange={(e) => handlePlayerUpdate(idx, { club: e.target.value })} placeholder="CB Grup Barna…" maxLength={60} />
             </div>
             <div className="wizard-field">
               <label>Categoria</label>
@@ -1523,8 +1567,8 @@ function Step4Players({
               <input id={`wp${idx}-phone`} type="tel" value={p.phone} onChange={(e) => handlePlayerUpdate(idx, { phone: e.target.value })} placeholder="+34 600 000 000" maxLength={20} />
             </div>
             <div className="wizard-field">
-              <label htmlFor={`wp${idx}-shirt`}>Talla samarreta *</label>
-              <select id={`wp${idx}-shirt`} value={p.shirtSize} onChange={(e) => handlePlayerUpdate(idx, { shirtSize: e.target.value })} required>
+              <label htmlFor={`wp${idx}-shirt`}>Talla samarreta <span style={{ fontWeight: 400, color: "#888" }}>(opcional)</span></label>
+              <select id={`wp${idx}-shirt`} value={p.shirtSize} onChange={(e) => handlePlayerUpdate(idx, { shirtSize: e.target.value })}>
                 <option value="">Talla…</option>
                 {SHIRT_SIZES.map((s) => <option key={s} value={s}>{s}</option>)}
               </select>
@@ -1547,7 +1591,8 @@ function Step4Players({
 
       {!canAdvance && missing.length > 0 && (
         <p style={{ color: "#f08c00", fontSize: 13, margin: "16px 0 0", lineHeight: 1.6 }}>
-          ⚠️ {missing.join(" · ")}
+          ⚠️ {missing.slice(0, 3).join(" · ")}
+          {missing.length > 3 && ` · i ${missing.length - 3} camp${missing.length - 3 > 1 ? "s" : ""} més`}
         </p>
       )}
       <div className="wizard-nav" style={{ marginTop: 12 }}>
