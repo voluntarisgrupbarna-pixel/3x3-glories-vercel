@@ -69,6 +69,30 @@ function doGet(e) {
       return jsonResponse({ ok: true, player: data });
     }
 
+    // ── Stats públiques: nombre d'equips inscrits i places disponibles ──────
+    if (action === "stats") {
+      var props    = PropertiesService.getScriptProperties();
+      var sheetId  = props.getProperty("SHEET_ID");
+      var maxTeams = parseInt(props.getProperty("MAX_TEAMS") || "48", 10);
+      var count    = 0;
+      if (sheetId) {
+        var ss         = SpreadsheetApp.openById(sheetId);
+        var inscSheet  = ss.getSheetByName("Inscripcions");
+        if (inscSheet && inscSheet.getLastRow() > 1) {
+          // Comptem files amb TeamID no buit (columna B = índex 1)
+          var ids = inscSheet.getRange(2, 2, inscSheet.getLastRow() - 1, 1).getValues();
+          ids.forEach(function(r) { if (String(r[0]).trim()) count++; });
+        }
+      }
+      return jsonResponse({
+        ok:          true,
+        teamsCount:  count,
+        maxTeams:    maxTeams,
+        spotsLeft:   Math.max(0, maxTeams - count),
+        updatedAt:   new Date().toISOString(),
+      });
+    }
+
     // Health check
     return jsonResponse({
       ok: true,
@@ -2934,4 +2958,221 @@ function runMigrateJugadorsToInscripcions() {
     elapsed: elapsed + "s",
     log: log.join(" | "),
   };
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// RECOVERY AUTOMÀTIC — Leads calents que han arribat al Pas 4 i no han enviat
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * S'executa cada 2h via time-trigger (configurar amb setupLeadRecoveryTrigger).
+ * Cerca leads amb reason=step4_done o step3_done que:
+ *   1. Tenen entre 2 i 24h d'antiguitat
+ *   2. NO estan a la pestanya Inscripcions (no han completat)
+ *   3. Tenen Status = "Pendent" (no contactats prèviament)
+ *
+ * Envia WA (si META configurat) o email de recuperació.
+ * Actualitza Status → "Contactat" per evitar duplicats.
+ */
+function sendLeadRecoveryMessages() {
+  var props   = PropertiesService.getScriptProperties();
+  var sheetId = props.getProperty("SHEET_ID");
+  var siteUrl = (props.getProperty("SITE_URL") || "https://www.cbgrupbarna-3x3timechamber.com").replace(/\/$/, "");
+  if (!sheetId) { Logger.log("sendLeadRecoveryMessages: no SHEET_ID"); return; }
+
+  var ss         = SpreadsheetApp.openById(sheetId);
+  var abndSheet  = ss.getSheetByName("Abandonaments");
+  var inscSheet  = ss.getSheetByName("Inscripcions");
+  if (!abndSheet) { Logger.log("sendLeadRecoveryMessages: Abandonaments no trobat"); return; }
+
+  var now    = new Date();
+  var TWO_H  = 2  * 60 * 60 * 1000;
+  var DAY    = 24 * 60 * 60 * 1000;
+
+  // Recull TeamIDs ja inscrits per fer cross-check
+  var completedIds = {};
+  if (inscSheet) {
+    var inscData = inscSheet.getDataRange().getValues();
+    for (var i = 1; i < inscData.length; i++) {
+      var tid = String(inscData[i][1] || "").trim();
+      if (tid) completedIds[tid.toUpperCase()] = true;
+    }
+  }
+
+  var data    = abndSheet.getDataRange().getValues();
+  var headers = data[0];
+
+  // Índexs de columnes (ABANDONED_HEADERS)
+  // A=0 Timestamp, B=1 Reason, K=10 CaptainPhone, L=11 CaptainEmail,
+  // J=9 CaptainName, H=7 TeamName, P=15 Status, Q=16 Notes
+  var iTs     = 0;   // Timestamp
+  var iReason = 1;   // Reason
+  var iTeamId = 3;   // Step # → NO, mirem headers per seguretat
+  // Busquem índexs per nom per ser robust a canvis d'ordre
+  function col(name) {
+    for (var c = 0; c < headers.length; c++) {
+      if (String(headers[c]).trim() === name) return c;
+    }
+    return -1;
+  }
+  var iTimestamp   = col("Timestamp");
+  var iReasonC     = col("Reason");
+  var iCaptainName = col("Captain Name");
+  var iCaptainPhone= col("Captain Phone");
+  var iCaptainEmail= col("Captain Email");
+  var iTeamName    = col("Team Name");
+  var iStatus      = col("Status");
+  var iNotes       = col("Notes");
+
+  // Row indices in col terms are 0-based in data; sheet row = data index + 1
+  var sent = 0;
+  var RECOVERY_REASONS = ["step4_done", "step3_done"];
+
+  for (var r = 1; r < data.length; r++) {
+    var row    = data[r];
+    var reason = String(row[iReasonC] || "").trim();
+    if (RECOVERY_REASONS.indexOf(reason) === -1) continue;
+
+    var status = String(row[iStatus] || "").trim();
+    if (status && status !== "Pendent") continue; // ja contactat o descartat
+
+    var tsRaw = row[iTimestamp];
+    if (!tsRaw) continue;
+    var ts  = new Date(tsRaw);
+    var age = now - ts;
+    if (age < TWO_H || age > DAY) continue; // massa nou o massa antic
+
+    var captainPhone = String(row[iCaptainPhone] || "").trim();
+    var captainEmail = String(row[iCaptainEmail] || "").trim();
+    var captainName  = String(row[iCaptainName] || "").trim();
+    var teamName     = String(row[iTeamName] || "").trim();
+
+    if (!captainPhone && !captainEmail) continue; // sense contacte
+
+    // Dedup: no enviem si ja hi ha una fila amb el mateix email/phone i status Contactat
+    // (ja cobert pel check d'status, però defensem per si hi ha múltiples files)
+
+    // Cross-check: equip ja inscrit?
+    // (no tenim teamId a l'Abandonaments fàcilment, usem email com a proxy)
+    // Ja filtrat per status="Pendent" però millor no tornar a enviar el mateix
+
+    var channel = "none";
+    var waResult = { ok: false, reason: "not_tried" };
+
+    // Intent 1 — WhatsApp
+    if (captainPhone) {
+      waResult = sendWhatsAppLeadRecovery(captainPhone, captainName, teamName, siteUrl);
+      if (waResult.ok) channel = "whatsapp";
+    }
+
+    // Intent 2 — Email (fallback si WA falla o no configurat)
+    if (!waResult.ok && captainEmail) {
+      var emailSent = sendRecoveryEmail(captainEmail, captainName, teamName, siteUrl, reason);
+      if (emailSent) channel = "email";
+    }
+
+    if (channel === "none") continue;
+
+    // Actualitzar Status → Contactat + Notes
+    var sheetRow = r + 1;
+    if (iStatus  >= 0) abndSheet.getRange(sheetRow, iStatus  + 1).setValue("Contactat");
+    if (iNotes   >= 0) abndSheet.getRange(sheetRow, iNotes   + 1).setValue("Recovery " + channel + " " + Utilities.formatDate(now, "Europe/Madrid", "dd/MM/yy HH:mm"));
+
+    Logger.log("Recovery via " + channel + " → " + (captainEmail || captainPhone) + " [" + teamName + "]");
+    sent++;
+  }
+
+  Logger.log("sendLeadRecoveryMessages: " + sent + " missatges de recovery enviats");
+  return { ok: true, sent: sent };
+}
+
+/**
+ * Envia WhatsApp de recovery via Meta Cloud API.
+ * Usa template "3x3_lead_recovery" (cal crear-lo i aprovar-lo a Meta Business Manager).
+ * Template body suggerit:
+ *   "Hola {{1}}! 👋 Hem vist que estaves inscrivint "{{2}}" al 3×3 Westfield Glòries.
+ *    Acabes la inscripció aquí: {{3}}"
+ */
+function sendWhatsAppLeadRecovery(rawPhone, captainName, teamName, siteUrl) {
+  var props         = PropertiesService.getScriptProperties();
+  var phoneNumberId = props.getProperty("META_PHONE_NUMBER_ID");
+  var accessToken   = props.getProperty("META_ACCESS_TOKEN");
+
+  if (!phoneNumberId || !accessToken) {
+    return { ok: false, reason: "no_credentials" };
+  }
+
+  var phone = normalizePhone(rawPhone);
+  if (!phone) return { ok: false, reason: "invalid_phone" };
+
+  var firstName = (captainName || "").split(" ")[0] || captainName || "hola";
+  var inscLink  = siteUrl + "/inscripcion";
+  var language  = props.getProperty("WA_TEMPLATE_LANGUAGE") || "ca";
+
+  try {
+    var result = callMetaCloudAPI(phone, phoneNumberId, accessToken, [firstName, teamName || "el teu equip", inscLink], language, "3x3_lead_recovery");
+    var msgId  = result.messages && result.messages[0] && result.messages[0].id;
+    Logger.log("WA recovery OK → " + phone + " msgId=" + msgId);
+    return { ok: true, phone: phone, msgId: msgId };
+  } catch (err) {
+    Logger.log("WA recovery error: " + err);
+    return { ok: false, error: String(err) };
+  }
+}
+
+/**
+ * Envia email de recovery quan WA no disponible.
+ */
+function sendRecoveryEmail(email, captainName, teamName, siteUrl, reason) {
+  try {
+    var firstName  = (captainName || "").split(" ")[0] || "Hola";
+    var inscLink   = siteUrl + "/inscripcion";
+    var reasonText = reason === "step4_done"
+      ? "has introduït tots els jugadors però ha faltat confirmar"
+      : "has pujat el justificant però no has acabat d'omplir els jugadors";
+
+    var html = [
+      "<div style='font-family:sans-serif;max-width:480px;margin:0 auto'>",
+      "<h2 style='color:#e85d04'>🏀 Et queda poc per apuntar-te!</h2>",
+      "<p>Hola <strong>" + firstName + "</strong>,</p>",
+      "<p>Hem vist que " + reasonText + " la inscripció de <strong>" + (teamName || "el teu equip") + "</strong> al <strong>3×3 Westfield Glòries 2026</strong>.</p>",
+      "<p>Les places s'estan omplint. Torna quan vulguis i continua des d'on ho vas deixar:</p>",
+      "<p style='text-align:center;margin:24px 0'>",
+      "  <a href='" + inscLink + "' style='background:#e85d04;color:#fff;padding:12px 28px;border-radius:6px;text-decoration:none;font-weight:bold'>Acabar la inscripció →</a>",
+      "</p>",
+      "<p style='color:#888;font-size:13px'>Si ja us heu inscrit o no us interessa, ignoreu aquest missatge. No enviarem més recordatoris.</p>",
+      "<p style='color:#888;font-size:12px'>— CB Grup Barna · <a href='https://cbgrupbarna.com'>cbgrupbarna.com</a></p>",
+      "</div>",
+    ].join("");
+
+    GmailApp.sendEmail(
+      email,
+      "🏀 Falten pocs passos per inscriure't al 3×3 Westfield Glòries!",
+      "Hola " + firstName + ", et queda poc per completar la inscripció. Torna aquí: " + inscLink,
+      { htmlBody: html, name: "CB Grup Barna · 3×3 Westfield Glòries" }
+    );
+    return true;
+  } catch (err) {
+    Logger.log("sendRecoveryEmail error: " + err);
+    return false;
+  }
+}
+
+/**
+ * Configura el trigger per a sendLeadRecoveryMessages — executar UNA SOLA VEGADA.
+ * Crea un trigger que s'executa cada 2 hores.
+ */
+function setupLeadRecoveryTrigger() {
+  // Esborra triggers anteriors del mateix nom per evitar duplicats
+  ScriptApp.getProjectTriggers().forEach(function(t) {
+    if (t.getHandlerFunction() === "sendLeadRecoveryMessages") {
+      ScriptApp.deleteTrigger(t);
+    }
+  });
+  ScriptApp.newTrigger("sendLeadRecoveryMessages")
+    .timeBased()
+    .everyHours(2)
+    .create();
+  Logger.log("setupLeadRecoveryTrigger: trigger creat → sendLeadRecoveryMessages cada 2h");
+  return "OK — trigger creat";
 }

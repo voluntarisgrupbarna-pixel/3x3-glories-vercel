@@ -10157,3 +10157,65 @@ html {
   .wa-reg-player-size { font-size: 13px; padding: 9px 8px; min-height: 44px; }
   .wa-reg-row { grid-template-columns: 1fr; }
 }
+
+/* ── Banner places disponibles ────────────────────────────────────────────── */
+.wizard-spots-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  background: #fff3e0;
+  border: 1px solid #f08c00;
+  color: #b05000;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 16px;
+  text-align: center;
+}
+.wizard-spots-banner strong { color: #c04000; }
+.wizard-spots-banner--neutral {
+  background: #f0f7ff;
+  border-color: #90c0f0;
+  color: #1a5080;
+}
+.wizard-spots-banner--neutral strong { color: #1a5080; }
+.wizard-spots-count {
+  font-size: 18px;
+  font-weight: 700;
+  color: #c04000;
+}
+.wizard-spots-banner--neutral .wizard-spots-count { color: #1a5080; }
+
+/* ── Preview de preus al pas 1 ───────────────────────────────────────────── */
+.wizard-price-preview {
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-top: 24px;
+}
+.wizard-price-preview-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 10px;
+}
+.wizard-price-preview-grid {
+  display: grid;
+  gap: 6px;
+}
+.wizard-price-preview-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  padding: 4px 0;
+  border-bottom: 1px solid #ececec;
+}
+.wizard-price-preview-item:last-child { border-bottom: none; }
+.wizard-price-preview-name { color: #333; }
+.wizard-price-preview-price { white-space: nowrap; }

@@ -69,7 +69,11 @@ function sendWhatsAppConfirmation(payload, teamId) {
  * Crida directa a la Meta Cloud API.
  * Llança Error si l'HTTP response no és 2xx.
  */
-function callMetaCloudAPI(phone, phoneNumberId, accessToken, templateParams, language) {
+/**
+ * templateNameOverride és opcional — si no s'indica, usa WA_TEMPLATE_NAME per defecte.
+ * Permet usar la mateixa funció per a templates de confirmació i recovery.
+ */
+function callMetaCloudAPI(phone, phoneNumberId, accessToken, templateParams, language, templateNameOverride) {
   var props   = PropertiesService.getScriptProperties();
   var version = props.getProperty("META_API_VERSION") || WA_META_API_VERSION;
   var url     = "https://graph.facebook.com/" + version + "/" + phoneNumberId + "/messages";
@@ -79,7 +83,7 @@ function callMetaCloudAPI(phone, phoneNumberId, accessToken, templateParams, lan
     to:   phone,
     type: "template",
     template: {
-      name:     WA_TEMPLATE_NAME,
+      name:     templateNameOverride || WA_TEMPLATE_NAME,
       language: { code: language },
       components: [
         {

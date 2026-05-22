@@ -205,6 +205,24 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
   const [submitting, setSubmitting] = useState(false);
   const [submitResult, setSubmitResult] = useState<null | { ok: boolean; teamId?: string; playerIds?: string[]; error?: string }>(null);
 
+  // ── Stats: places en temps real ───────────────────────────────────────────
+  const [stats, setStats] = useState<{ teamsCount: number; maxTeams: number; spotsLeft: number } | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    async function fetchStats() {
+      try {
+        const res = await fetch("/api/stats");
+        if (!res.ok) return;
+        const data = await res.json() as { ok: boolean; teamsCount: number; maxTeams: number; spotsLeft: number };
+        if (!cancelled && data.ok) setStats(data);
+      } catch { /* silenci */ }
+    }
+    fetchStats();
+    // Refresca cada 60s mentre el formulari és obert
+    const interval = setInterval(fetchStats, 60_000);
+    return () => { cancelled = true; clearInterval(interval); };
+  }, []);
+
   const stateRef = useRef(state);
   const submitResultRef = useRef(submitResult);
   const abandonedEventsSent = useRef<Set<string>>(new Set());
@@ -715,6 +733,22 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
 
   return (
     <div className="wizard" ref={wizardRef}>
+      {/* Banner de places — visible quan hi ha dades i queden ≤16 places */}
+      {stats && stats.spotsLeft <= 16 && (
+        <div className="wizard-spots-banner">
+          <span className="wizard-spots-count">{stats.teamsCount}</span> equips inscrits
+          {stats.spotsLeft > 0
+            ? <> · <strong>{stats.spotsLeft} places restants</strong> 🔥</>
+            : <> · <strong>Places esgotades</strong> — llista d&apos;espera</>
+          }
+        </div>
+      )}
+      {/* Banner neutre quan hi ha marge */}
+      {stats && stats.spotsLeft > 16 && (
+        <div className="wizard-spots-banner wizard-spots-banner--neutral">
+          🏀 {stats.teamsCount} equips ja inscrits
+        </div>
+      )}
       <Stepper currentStep={state.step} isIndividual={state.packageKey === "individual"} waFlow={waFlow} />
 
       {state.step === 1 && (
@@ -1071,6 +1105,28 @@ function Step1Discounts({
         {earlyEmail.includes("@") && earlyEmail.includes(".") && (
           <p className="wizard-early-email-ok">✅ T&apos;avisarem de qualsevol novetat!</p>
         )}
+      </div>
+
+      {/* Preview de preus — sempre visible al pas 1 per eliminar sorpreses */}
+      <div className="wizard-price-preview">
+        <p className="wizard-price-preview-title">Preus{(rivalValid || promoValid || socialShareDone) ? " amb descomptes aplicats" : ""}:</p>
+        <div className="wizard-price-preview-grid">
+          {PACKAGES.map((p) => {
+            const d = calcDiscount(p.price, { earlyBird: earlyBirdActive, social: socialShareDone, rivalValid, promoValid });
+            const discounted = d.totalDiscount > 0;
+            return (
+              <div key={p.key} className="wizard-price-preview-item">
+                <span className="wizard-price-preview-name">{p.emoji} {p.title}</span>
+                <span className="wizard-price-preview-price">
+                  {discounted && <s style={{ color: "#999", marginRight: 4, fontSize: 12 }}>{p.price} €</s>}
+                  <strong style={{ color: discounted ? "#2a9d2a" : "inherit" }}>
+                    {d.finalPrice.toFixed(2).replace(".00", "")} €
+                  </strong>
+                </span>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       <div className="wizard-nav" style={{ marginTop: 28 }}>
