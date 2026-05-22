@@ -21,7 +21,7 @@ const CATEGORIES = [
   { label: "Màgics (esport inclusiu)", price: 75 },
 ];
 
-const SHIRT_SIZES = ["XS", "S", "M", "L", "XL", "XXL"];
+const SHIRT_SIZES = ["12-14", "XS", "S", "M", "L", "XL", "XXL"];
 
 type Player = { name: string; year: string; size: string; club: string };
 

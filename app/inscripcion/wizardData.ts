@@ -93,7 +93,7 @@ export const CATEGORIES = [
 
 export const POSITIONS = ["Base", "Aler", "Pivot", "Indiferent"];
 export const LEVELS = ["Iniciació", "Mig", "Avançat", "Federat"];
-export const SHIRT_SIZES = ["XS", "S", "M", "L", "XL", "XXL"];
+export const SHIRT_SIZES = ["12-14", "XS", "S", "M", "L", "XL", "XXL"];
 export const GENDERS = ["Masculí", "Femení", "Altre"];
 
 export const IBAN_INFO = {

@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 const POSITIONS = ["Base", "Aler", "Pivot", "Indiferent"];
 const LEVELS = ["Iniciació", "Mig", "Avançat", "Federat"];
-const SIZES = ["XS", "S", "M", "L", "XL", "XXL"];
+const SIZES = ["12-14", "XS", "S", "M", "L", "XL", "XXL"];
 const GENDERS = ["Masculí", "Femení", "Altre"];
 
 type FormState = {
