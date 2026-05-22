@@ -727,6 +727,8 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
         waFlow={waFlow}
         category={state.category}
         captainName={state.captain.fullName}
+        captainEmail={state.captain.email}
+        proofUploaded={Boolean(state.proofBase64)}
       />
     );
   }
@@ -1220,6 +1222,11 @@ function Step2Team({
                 ) : (
                   <span className="wizard-pkg-price">{p.price} €</span>
                 )}
+                {p.isTeam && (
+                  <span className="wizard-pkg-players-hint">
+                    {p.minPlayers === p.maxPlayers ? `${p.minPlayers} jugadors` : `${p.minPlayers}–${p.maxPlayers} jugadors`}
+                  </span>
+                )}
               </div>
               <p className="wizard-pkg-desc">{p.description}</p>
             </button>
@@ -1232,7 +1239,10 @@ function Step2Team({
         <label htmlFor="wizard-team-cat">Categoria *</label>
         <select id="wizard-team-cat" value={state.category} onChange={(e) => setCategory(e.target.value)} required>
           <option value="">Tria la categoria…</option>
-          {availableCategories.map((c) => <option key={c} value={c}>{c}</option>)}
+          {availableCategories.map((c) => {
+            const hint = getCategoryBirthHint(c);
+            return <option key={c} value={c}>{c}{hint ? ` — ${hint}` : ""}</option>;
+          })}
         </select>
       </div>
 
@@ -1432,8 +1442,11 @@ function Step3Payment({
         </div>
       </div>
 
-      <p className="wizard-help" style={{ marginTop: 6, marginBottom: 24 }}>
+      <p className="wizard-help" style={{ marginTop: 6, marginBottom: 8 }}>
         ⚠️ Posa exactament aquest concepte perquè puguem identificar el teu equip.
+      </p>
+      <p style={{ background: "#f0f7ff", border: "1px solid #b8d8f8", borderRadius: 8, padding: "10px 14px", fontSize: 13, color: "#1a5080", marginBottom: 20, lineHeight: 1.6 }}>
+        💡 <strong>No has de pagar ara.</strong> Pots enviar la inscripció sense justificant i tens <strong>48 hores</strong> per fer la transferència. Un cop pagada, envia&apos;ns el comprovant per <a href="https://wa.me/34698425153" target="_blank" rel="noreferrer" style={{ color: "#1a5080" }}>WhatsApp</a> amb el concepte indicat.
       </p>
 
       <div className="wizard-field wizard-field-full">
@@ -1600,8 +1613,8 @@ function Step4Players({
                 if (!range) return null;
                 const y = parseInt(p.birthYear);
                 return (y < range[0] - 1 || y > range[1] + 1) ? (
-                  <p style={{ color: "#f08c00", fontSize: 12, margin: "4px 0 0" }}>
-                    ⚠️ Any fora del rang de la categoria ({getCategoryBirthHint(p.category)})
+                  <p style={{ color: "#f08c00", fontSize: 12, margin: "4px 0 0", lineHeight: 1.5 }}>
+                    ⚠️ Any fora del rang ({getCategoryBirthHint(p.category)}). Es permet ±1 any per circumstàncies especials — ho revisarem manualment i us confirmem.
                   </p>
                 ) : null;
               })()}
@@ -1756,6 +1769,8 @@ function SuccessPanel({
   waFlow = false,
   category = "",
   captainName = "",
+  captainEmail = "",
+  proofUploaded = false,
 }: {
   teamId: string;
   playerIds: string[];
@@ -1765,6 +1780,8 @@ function SuccessPanel({
   waFlow?: boolean;
   category?: string;
   captainName?: string;
+  captainEmail?: string;
+  proofUploaded?: boolean;
 }) {
   const checkInUrl = `https://www.cbgrupbarna-3x3timechamber.com/check-in/${teamId}`;
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=10&data=${encodeURIComponent(checkInUrl)}`;
@@ -1782,12 +1799,54 @@ function SuccessPanel({
     <div className="wizard-success">
       <span className="wizard-success-emoji">🏀</span>
       <h2>Inscripció enviada!</h2>
-      <p>
-        {teamName && <><strong>{teamName}</strong> — </>}
-        Ja tenim totes les vostres dades. {waFlow
-          ? "Ara envia el justificant de pagament per WhatsApp i et confirmem la plaça en menys de 24h."
-          : "Validem el justificant en menys de 24h i us confirmem la plaça per WhatsApp i email."}
+      {teamName && <p style={{ fontSize: 18, fontWeight: 700, margin: "0 0 4px" }}>{teamName}</p>}
+      <p style={{ margin: "0 0 20px", color: "rgba(255,247,239,.75)", fontSize: 14 }}>
+        Codi d&apos;inscripció: <code className="wizard-success-code" style={{ fontSize: 13 }}>{teamId}</code>
       </p>
+
+      {/* Timeline — el que passa ara */}
+      <div className="wizard-success-timeline">
+        <div className="wizard-success-timeline-item wizard-success-timeline-item--done">
+          <span className="wizard-success-tl-dot">✓</span>
+          <div>
+            <strong>Inscripció rebuda</strong>
+            <p>Tenim totes les teves dades.</p>
+          </div>
+        </div>
+        <div className="wizard-success-timeline-item">
+          <span className="wizard-success-tl-dot">2</span>
+          <div>
+            <strong>Confirmació plaça — en menys de 24h</strong>
+            <p>
+              Rebràs WhatsApp + email a {captainEmail
+                ? <strong>{captainEmail}</strong>
+                : "l'adreça indicada"
+              }. Revisa la carpeta de spam si no arriba.
+            </p>
+            {!proofUploaded && (
+              <p style={{ marginTop: 4, color: "#f08c00", fontSize: 12 }}>
+                ⏳ Tens <strong>48h</strong> per enviar el justificant de pagament per{" "}
+                <a href={waProofHref} target="_blank" rel="noreferrer" style={{ color: "#f08c00" }}>WhatsApp</a>.
+              </p>
+            )}
+          </div>
+        </div>
+        <div className="wizard-success-timeline-item">
+          <span className="wizard-success-tl-dot">3</span>
+          <div>
+            <strong>Horaris i rivals — 1 setmana abans</strong>
+            <p>Us enviarem els horaris, pistes i els equips rivals per WhatsApp.</p>
+          </div>
+        </div>
+        <div className="wizard-success-timeline-item">
+          <span className="wizard-success-tl-dot">🏀</span>
+          <div>
+            <strong>Dia del torneig — 6-7 juny 2026</strong>
+            <p>Check-in a Westfield Glòries. Porta el QR aquí sota.</p>
+          </div>
+        </div>
+      </div>
+
       {waFlow && (
         <a
           href={waProofHref}
@@ -1799,19 +1858,17 @@ function SuccessPanel({
           Enviar justificant per WhatsApp
         </a>
       )}
+
       {disc.totalDiscount > 0 && (
         <div className="wizard-success-discount">
           <span>Estalvi total</span>
           <strong>−{disc.totalDiscount.toFixed(2).replace(".00", "")} € · Has pagat {finalPrice.toFixed(2).replace(".00", "")} €</strong>
         </div>
       )}
-      <div className="wizard-success-codes">
-        <span className="wizard-success-code-label">Codi d&apos;inscripció</span>
-        <code className="wizard-success-code">{teamId}</code>
-      </div>
+
       <div className="wizard-success-qr">
-        <Image src={qrUrl} alt={`QR check-in equip ${teamId}`} width={260} height={260} unoptimized priority />
-        <p><strong>Guarda aquest QR.</strong> Escanejant-lo accedeixes a la teva pàgina de check-in. Fes captura — també t&apos;ho enviarem per email.</p>
+        <Image src={qrUrl} alt={`QR check-in equip ${teamId}`} width={240} height={240} unoptimized priority />
+        <p><strong>Guarda aquest QR.</strong> El necessitaràs el dia del torneig per fer el check-in. Fes captura de pantalla ara.</p>
       </div>
       <a href={`/check-in/${teamId}`} className="wizard-btn wizard-btn-primary">Obrir pàgina de check-in →</a>
       {playerIds.length > 1 && (
@@ -1822,8 +1879,7 @@ function SuccessPanel({
           </ul>
         </details>
       )}
-      <p className="wizard-success-tip">El check-in del dia del torneig serà aquí mateix.</p>
-      <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center", marginTop: 8 }}>
+      <div style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "center", marginTop: 16 }}>
         <a href="/" className="wizard-btn wizard-btn-ghost">Tornar a l&apos;inici</a>
         <a
           href={`https://wa.me/34698425153?text=${encodeURIComponent(`Hola! Acabo d'inscriure l'equip ${teamId}${teamName ? ` (${teamName})` : ""}. Tinc un dubte.`)}`}
