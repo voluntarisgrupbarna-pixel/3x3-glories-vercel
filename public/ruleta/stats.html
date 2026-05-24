@@ -423,7 +423,7 @@ function render(d) {
   // Prizes
   const pb = document.getElementById('prizesBody');
   pb.innerHTML = Object.entries(d.stock).map(([code, st]) => {
-    const maxStr = st.max === null ? '∞' : st.max;
+    const maxStr  = st.max === null ? '∞' : st.max;
     const leftStr = st.left === null ? '<span class="badge-inf">il·limitat</span>' : st.left;
     let pctLeft = st.max === null ? 100 : Math.max(0, (st.left / st.max) * 100);
     let cls = '';
@@ -431,12 +431,15 @@ function render(d) {
       if (pctLeft <= 0)   cls = 'out';
       else if (pctLeft < 25) cls = 'low';
     }
+    const claimedTotalLabel = st.label
+      ? `<small style="color:#ffcc66;font-size:10px;display:block;margin-top:2px">⏱ ${st.label}</small>`
+      : '';
     return `<tr>
       <td class="em">${st.emoji}</td>
-      <td><strong>${st.short}</strong> <span class="code">${code}</span></td>
+      <td><strong>${st.short}</strong> <span class="code">${code}</span>${claimedTotalLabel}</td>
       <td class="r">${st.dealt}</td>
-      <td class="r"><strong>${st.claimed}</strong> / ${maxStr}</td>
-      <td class="r">${leftStr}
+      <td class="r"><strong>${st.claimed}</strong>${st.label ? '' : ' / ' + maxStr}</td>
+      <td class="r">${st.label ? `<strong>${leftStr}</strong> <small style="color:#5a6a7e">de ${st.max}</small>` : leftStr}
         ${st.max !== null ? `<div class="stk-bar"><div class="stk-fill ${cls}" style="width:${pctLeft}%"></div></div>` : ''}
       </td>
     </tr>`;
