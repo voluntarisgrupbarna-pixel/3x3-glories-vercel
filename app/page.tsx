@@ -1,5 +1,6 @@
 import EarlyBirdBanner from "./components/EarlyBirdBanner";
 import HeroFestival from "./components/HeroFestival";
+import RuletaBanner from "./components/RuletaBanner";
 import IdentityChipsStrip from "./components/IdentityChipsStrip";
 import SlideDos from "./components/SlideDos";
 import OccupancyGrid from "./components/OccupancyGrid";
@@ -25,6 +26,9 @@ export default function Home() {
         {/* === SLIDE DOS — rèplica del disseny original: el torneig === */}
         <SlideDos />
       </main>
+
+      {/* === BANNER RULETA — promociona el sorteig diari === */}
+      <RuletaBanner />
 
       {/* === FRANJA IDENTITAT — 5 valors del torneig === */}
       <IdentityChipsStrip />
