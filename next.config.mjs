@@ -18,8 +18,11 @@ const nextConfig = {
   async rewrites() {
     return [
       // Sorteig ruleta — fitxer estàtic a public/ruleta/index.html
-      { source: '/ruleta',  destination: '/ruleta/index.html' },
-      { source: '/ruleta/', destination: '/ruleta/index.html' },
+      { source: '/ruleta',          destination: '/ruleta/index.html' },
+      { source: '/ruleta/',         destination: '/ruleta/index.html' },
+      // Dashboard estadístiques
+      { source: '/ruleta/stats',    destination: '/ruleta/stats.html' },
+      { source: '/ruleta/stats/',   destination: '/ruleta/stats.html' },
     ];
   },
 };

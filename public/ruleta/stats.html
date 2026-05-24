@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stats Ruleta · CB Grup Barna</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      background:#05060a; color:#fff;
+      font-family:-apple-system,Arial,Helvetica,sans-serif;
+      min-height:100vh; padding:20px 16px 40px; font-size:14px;
+    }
+    .wrap { max-width:1100px; margin:0 auto; }
+    .head {
+      display:flex; flex-wrap:wrap; gap:12px;
+      align-items:center; justify-content:space-between;
+      margin-bottom:22px;
+    }
+    .head h1 { font-size:20px; font-weight:900; text-transform:uppercase; letter-spacing:1px; }
+    .head h1 span { color:#ff1f4f; }
+    .head .meta { font-size:11px; color:#5a6a7e; }
+    .head .meta b { color:#fff; }
+    .actions { display:flex; gap:8px; flex-wrap:wrap; }
+    .btn {
+      background:#1a2535; color:#fff; border:1px solid #2a3a50;
+      border-radius:50px; padding:8px 16px; font-size:12px; font-weight:700;
+      cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:6px;
+    }
+    .btn:hover { border-color:#ff1f4f; }
+    .btn.primary { background:linear-gradient(135deg,#ff1f4f,#ff6b35); border-color:transparent; }
+
+    /* KPI Cards */
+    .kpis {
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+      gap:12px; margin-bottom:24px;
+    }
+    .kpi {
+      background:#0d1018; border:1px solid #1e2a3a; border-radius:14px;
+      padding:18px 18px 16px;
+    }
+    .kpi .lbl { font-size:10px; letter-spacing:2px; color:#5a6a7e; text-transform:uppercase; font-weight:700; }
+    .kpi .val { font-size:32px; font-weight:900; color:#fff; line-height:1.1; margin-top:8px; }
+    .kpi .sub { font-size:11px; color:#7a8a9e; margin-top:4px; }
+    .kpi.green .val { color:#4ade80; }
+    .kpi.amber .val { color:#ffcc66; }
+    .kpi.red .val   { color:#ff6b6b; }
+    .kpi.blue .val  { color:#9ad0ff; }
+
+    /* Section */
+    .section {
+      background:#0d1018; border:1px solid #1e2a3a; border-radius:14px;
+      padding:20px 22px; margin-bottom:18px;
+    }
+    .section h2 {
+      font-size:13px; font-weight:900; text-transform:uppercase; letter-spacing:2px;
+      color:#ffcc66; margin-bottom:14px;
+      display:flex; align-items:center; gap:8px;
+    }
+    .section h2 .badge {
+      background:#1a3a6b; color:#9ad0ff; font-size:10px; padding:2px 8px; border-radius:10px;
+      letter-spacing:1px;
+    }
+
+    /* Bar chart per dia */
+    .day-row {
+      display:grid; grid-template-columns:80px 1fr 60px 60px 60px;
+      align-items:center; gap:10px;
+      padding:6px 0; border-bottom:1px solid #15202e;
+      font-size:12px; font-family:monospace;
+    }
+    .day-row:last-child { border-bottom:0; }
+    .day-row .date { color:#7a8a9e; }
+    .day-row .barwrap { background:#080c12; height:18px; border-radius:4px; overflow:hidden; display:flex; }
+    .day-row .b-lead { background:#2a4fa8; }
+    .day-row .b-spin { background:#ffcc66; }
+    .day-row .b-claim { background:#4ade80; }
+    .day-row .n { text-align:right; color:#fff; font-weight:700; }
+    .day-row .n.lead  { color:#9ad0ff; }
+    .day-row .n.spin  { color:#ffcc66; }
+    .day-row .n.claim { color:#4ade80; }
+    .day-head {
+      display:grid; grid-template-columns:80px 1fr 60px 60px 60px;
+      gap:10px; font-size:9px; color:#5a6a7e; text-transform:uppercase; letter-spacing:1px;
+      font-weight:700; padding-bottom:6px; border-bottom:1px solid #1e2a3a; margin-bottom:6px;
+    }
+    .day-head span { text-align:right; }
+    .day-head span:first-child, .day-head span:nth-child(2) { text-align:left; }
+
+    /* Prize table */
+    .ptable { width:100%; border-collapse:collapse; font-size:13px; }
+    .ptable thead { background:#1a3a6b; color:#fff; }
+    .ptable th { padding:10px 12px; text-align:left; font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:1px; }
+    .ptable th.r { text-align:right; }
+    .ptable td { padding:10px 12px; border-bottom:1px solid #15202e; }
+    .ptable td.r { text-align:right; font-family:monospace; }
+    .ptable tr:hover { background:#0a1428; }
+    .ptable .em { font-size:18px; }
+    .ptable .stk-bar {
+      height:6px; background:#15202e; border-radius:3px; overflow:hidden; margin-top:4px;
+    }
+    .ptable .stk-fill { height:100%; background:#4ade80; }
+    .ptable .stk-fill.low { background:#ffcc66; }
+    .ptable .stk-fill.out { background:#ff6b6b; }
+    .ptable td .badge-inf { color:#5a6a7e; font-size:11px; }
+    .ptable td .code {
+      display:inline-block; background:#0a1428; color:#9ad0ff; font-family:monospace;
+      font-size:11px; padding:2px 6px; border-radius:4px; margin-left:4px;
+    }
+
+    /* Funnel */
+    .funnel { display:flex; flex-direction:column; gap:8px; }
+    .funnel-step {
+      display:flex; align-items:center; gap:14px;
+      background:#080c12; border-radius:8px; padding:10px 14px;
+      border-left:4px solid #2a4fa8;
+    }
+    .funnel-step.spun  { border-color:#ffcc66; }
+    .funnel-step.claim { border-color:#4ade80; }
+    .funnel-step .icon { font-size:22px; }
+    .funnel-step .info { flex:1; }
+    .funnel-step .info .t { font-size:12px; color:#7a8a9e; }
+    .funnel-step .info .n { font-size:22px; font-weight:900; color:#fff; }
+    .funnel-step .pct { font-size:12px; color:#7a8a9e; font-family:monospace; }
+    .funnel-arrow { text-align:center; color:#3a4a5e; font-size:14px; line-height:1; }
+
+    /* Pending list */
+    .pending-row {
+      display:grid; grid-template-columns:1fr auto auto;
+      gap:12px; align-items:center;
+      padding:10px 12px; border-bottom:1px solid #15202e;
+      font-size:13px;
+    }
+    .pending-row:last-child { border-bottom:0; }
+    .pending-row .name { font-weight:700; }
+    .pending-row .name small { display:block; color:#5a6a7e; font-weight:400; font-size:11px; margin-top:2px; }
+    .pending-row .prizes { font-size:11px; color:#7a8a9e; font-family:monospace; }
+    .pending-row .wa {
+      background:#25D366; color:#fff; padding:6px 12px; border-radius:50px;
+      font-size:11px; font-weight:900; text-decoration:none;
+    }
+
+    /* Empty */
+    .empty { color:#5a6a7e; font-style:italic; text-align:center; padding:24px; font-size:13px; }
+
+    /* Login form */
+    .login {
+      max-width:380px; margin:80px auto 0;
+      background:#0d1018; border:1px solid #1e2a3a; border-radius:14px;
+      padding:28px 24px; text-align:center;
+    }
+    .login h2 { font-size:16px; margin-bottom:18px; }
+    .login input {
+      width:100%; background:#080c12; border:1px solid #1e2a3a; color:#fff;
+      padding:12px 14px; border-radius:10px; font-size:14px; margin-bottom:14px;
+      font-family:monospace; outline:none;
+    }
+    .login input:focus { border-color:#ff1f4f; }
+    .login button {
+      width:100%; background:linear-gradient(135deg,#ff1f4f,#ff6b35);
+      color:#fff; border:none; padding:14px; border-radius:50px;
+      font-size:14px; font-weight:900; text-transform:uppercase; letter-spacing:1px;
+      cursor:pointer;
+    }
+
+    .loader {
+      text-align:center; padding:80px 20px; color:#5a6a7e;
+    }
+    .spin { display:inline-block; animation:spin 1s linear infinite; font-size:24px; }
+    @keyframes spin { from { transform:rotate(0); } to { transform:rotate(360deg); } }
+
+    @media (max-width:500px) {
+      .kpi .val { font-size:24px; }
+      .day-row, .day-head { grid-template-columns:60px 1fr 40px 40px 40px; gap:6px; font-size:11px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div id="login" class="login" style="display:none">
+    <h2>🔒 Stats Ruleta 3×3</h2>
+    <input type="password" id="tokenInput" placeholder="Token" autofocus>
+    <button onclick="saveToken()">Entrar</button>
+  </div>
+
+  <div id="loading" class="loader">
+    <span class="spin">⏳</span><br><br>Carregant estadístiques...
+  </div>
+
+  <div id="content" style="display:none">
+
+    <div class="head">
+      <div>
+        <h1>📊 Stats <span>Ruleta 3×3</span></h1>
+        <div class="meta">Actualitzat: <b id="genAt">—</b> · Avui: <b id="todayStr">—</b></div>
+      </div>
+      <div class="actions">
+        <button class="btn" onclick="refresh()">🔄 Refrescar</button>
+        <a class="btn" id="csvBtn" href="#" download="contactes-ruleta.csv">📥 CSV</a>
+        <a class="btn" href="/ruleta" target="_blank">🎰 Veure ruleta</a>
+        <button class="btn" onclick="logout()" style="opacity:.5">Sortir</button>
+      </div>
+    </div>
+
+    <!-- KPIs principals -->
+    <div class="kpis">
+      <div class="kpi blue">
+        <div class="lbl">🎯 Total Leads</div>
+        <div class="val" id="kpi-leads">—</div>
+        <div class="sub">Persones registrades</div>
+      </div>
+      <div class="kpi amber">
+        <div class="lbl">🎰 Total Tirades</div>
+        <div class="val" id="kpi-spins">—</div>
+        <div class="sub">Han girat la roda</div>
+      </div>
+      <div class="kpi green">
+        <div class="lbl">🎁 Premis Reclamats</div>
+        <div class="val" id="kpi-claims">—</div>
+        <div class="sub">Han triat un premi</div>
+      </div>
+      <div class="kpi red">
+        <div class="lbl">⚠️ Pendents de pagar</div>
+        <div class="val" id="kpi-pending">—</div>
+        <div class="sub">Cal validar inscripció</div>
+      </div>
+    </div>
+
+    <!-- Activitat per dia -->
+    <div class="section">
+      <h2>📅 Activitat diària <span class="badge" id="todayBadge">avui: —</span></h2>
+      <div class="day-head">
+        <span>Data</span>
+        <span>Distribució</span>
+        <span>Leads</span>
+        <span>Tirades</span>
+        <span>Reclamats</span>
+      </div>
+      <div id="daysList"></div>
+    </div>
+
+    <!-- Funnel -->
+    <div class="section">
+      <h2>🔻 Embut de conversió</h2>
+      <div class="funnel" id="funnel"></div>
+    </div>
+
+    <!-- Premis -->
+    <div class="section">
+      <h2>🏆 Premis · stock i distribució</h2>
+      <table class="ptable">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Premi</th>
+            <th class="r">Sortit a la roda</th>
+            <th class="r">Reclamats</th>
+            <th class="r">Stock restant</th>
+          </tr>
+        </thead>
+        <tbody id="prizesBody"></tbody>
+      </table>
+    </div>
+
+    <!-- Social -->
+    <div class="section">
+      <h2>📱 Compliment social</h2>
+      <div class="kpis" style="margin-bottom:0">
+        <div class="kpi">
+          <div class="lbl">📸 Han seguit a Instagram</div>
+          <div class="val" id="kpi-ig">—</div>
+          <div class="sub" id="kpi-ig-pct">—</div>
+        </div>
+        <div class="kpi">
+          <div class="lbl">🎵 Han seguit a TikTok</div>
+          <div class="val" id="kpi-tk">—</div>
+          <div class="sub" id="kpi-tk-pct">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pendents de pagar -->
+    <div class="section">
+      <h2>⏳ Han girat però NO han reclamat <span class="badge" id="pendBadge">0</span></h2>
+      <div id="pendingList"></div>
+    </div>
+
+    <!-- Hores pic -->
+    <div class="section">
+      <h2>🕐 Hores amb més activitat</h2>
+      <div id="hoursList"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const API_URL = 'https://script.google.com/macros/s/AKfycbyLOfEUjKpj3ezbLp1L_ZaZVQ3482dfYFoFOc_WvIH_nQfuDjU6_7hqn16g4uGcIz-Z/exec';
+
+function saveToken() {
+  const t = document.getElementById('tokenInput').value.trim();
+  if (!t) return;
+  localStorage.setItem('ruleta_stats_token', t);
+  document.getElementById('login').style.display = 'none';
+  document.getElementById('loading').style.display = 'block';
+  load();
+}
+function logout() {
+  localStorage.removeItem('ruleta_stats_token');
+  location.reload();
+}
+function getToken() { return localStorage.getItem('ruleta_stats_token') || ''; }
+
+async function load() {
+  const token = getToken();
+  if (!token) {
+    document.getElementById('login').style.display = 'block';
+    document.getElementById('loading').style.display = 'none';
+    return;
+  }
+  try {
+    const res = await fetch(`${API_URL}?action=stats&token=${encodeURIComponent(token)}`);
+    const data = await res.json();
+    if (!data.ok) {
+      if (data.error === 'unauthorized') {
+        localStorage.removeItem('ruleta_stats_token');
+        location.reload();
+        return;
+      }
+      alert('Error: ' + data.error);
+      return;
+    }
+    render(data);
+  } catch (e) {
+    alert('Error de connexió: ' + e.message);
+  }
+}
+
+function refresh() {
+  document.getElementById('loading').style.display = 'block';
+  document.getElementById('content').style.display = 'none';
+  load();
+}
+
+function fmtPct(num, total) {
+  if (!total) return '—';
+  return (100 * num / total).toFixed(1) + '%';
+}
+
+function render(d) {
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('content').style.display = 'block';
+
+  // KPIs
+  document.getElementById('kpi-leads').textContent   = d.funnel.registered;
+  document.getElementById('kpi-spins').textContent   = d.funnel.spun;
+  document.getElementById('kpi-claims').textContent  = d.funnel.claimed;
+  document.getElementById('kpi-pending').textContent = d.pendingCount;
+
+  document.getElementById('genAt').textContent   = new Date(d.generatedAt).toLocaleString('ca-ES');
+  document.getElementById('todayStr').textContent = d.today;
+  document.getElementById('todayBadge').textContent = `avui: ${d.todayCount} regs / ${d.todayClaims} reclamats`;
+
+  // Days
+  const days = Object.keys(d.byDay).sort().reverse(); // recents primer
+  const dl = document.getElementById('daysList');
+  if (days.length === 0) {
+    dl.innerHTML = '<div class="empty">Encara no hi ha activitat.</div>';
+  } else {
+    const max = Math.max(...days.map(k => d.byDay[k].leads), 1);
+    dl.innerHTML = days.map(k => {
+      const row = d.byDay[k];
+      const pct = (row.leads / max) * 100;
+      const sPct = row.spins  ? (row.spins  / row.leads * pct) : 0;
+      const cPct = row.claims ? (row.claims / row.leads * pct) : 0;
+      return `<div class="day-row">
+        <span class="date">${k}</span>
+        <div class="barwrap">
+          <div class="b-lead"  style="width:${pct - sPct}%"></div>
+          <div class="b-spin"  style="width:${sPct - cPct}%"></div>
+          <div class="b-claim" style="width:${cPct}%"></div>
+        </div>
+        <span class="n lead">${row.leads}</span>
+        <span class="n spin">${row.spins}</span>
+        <span class="n claim">${row.claims}</span>
+      </div>`;
+    }).join('');
+  }
+
+  // Funnel
+  const f = d.funnel;
+  const fEl = document.getElementById('funnel');
+  fEl.innerHTML = `
+    <div class="funnel-step">
+      <div class="icon">📝</div>
+      <div class="info"><div class="t">Registrats (lead)</div><div class="n">${f.registered}</div></div>
+      <div class="pct">100%</div>
+    </div>
+    <div class="funnel-arrow">▼</div>
+    <div class="funnel-step spun">
+      <div class="icon">🎰</div>
+      <div class="info"><div class="t">Han tirat 3 cops</div><div class="n">${f.spun}</div></div>
+      <div class="pct">${fmtPct(f.spun, f.registered)}</div>
+    </div>
+    <div class="funnel-arrow">▼</div>
+    <div class="funnel-step claim">
+      <div class="icon">🎁</div>
+      <div class="info"><div class="t">Han reclamat premi</div><div class="n">${f.claimed}</div></div>
+      <div class="pct">${fmtPct(f.claimed, f.registered)}</div>
+    </div>
+  `;
+
+  // Prizes
+  const pb = document.getElementById('prizesBody');
+  pb.innerHTML = Object.entries(d.stock).map(([code, st]) => {
+    const maxStr = st.max === null ? '∞' : st.max;
+    const leftStr = st.left === null ? '<span class="badge-inf">il·limitat</span>' : st.left;
+    let pctLeft = st.max === null ? 100 : Math.max(0, (st.left / st.max) * 100);
+    let cls = '';
+    if (st.max !== null) {
+      if (pctLeft <= 0)   cls = 'out';
+      else if (pctLeft < 25) cls = 'low';
+    }
+    return `<tr>
+      <td class="em">${st.emoji}</td>
+      <td><strong>${st.short}</strong> <span class="code">${code}</span></td>
+      <td class="r">${st.dealt}</td>
+      <td class="r"><strong>${st.claimed}</strong> / ${maxStr}</td>
+      <td class="r">${leftStr}
+        ${st.max !== null ? `<div class="stk-bar"><div class="stk-fill ${cls}" style="width:${pctLeft}%"></div></div>` : ''}
+      </td>
+    </tr>`;
+  }).join('');
+
+  // Social
+  document.getElementById('kpi-ig').textContent = d.social.igYes;
+  document.getElementById('kpi-ig-pct').textContent = fmtPct(d.social.igYes, f.claimed) + ' dels reclamats';
+  document.getElementById('kpi-tk').textContent = d.social.tkYes;
+  document.getElementById('kpi-tk-pct').textContent = fmtPct(d.social.tkYes, f.claimed) + ' dels reclamats';
+
+  // Pending
+  document.getElementById('pendBadge').textContent = d.pendingCount;
+  const pl = document.getElementById('pendingList');
+  if (d.pending.length === 0) {
+    pl.innerHTML = '<div class="empty">Cap pendent. Tothom ha completat el flow!</div>';
+  } else {
+    pl.innerHTML = d.pending.map(p => {
+      const phone = p.mobil.replace(/\D/g,'');
+      const waText = encodeURIComponent(`Hola ${p.nom}! Has tirat la ruleta del 3×3 i tens un premi pendent de reclamar. Pots completar-ho a https://cbgrupbarna-3x3timechamber.com/ruleta`);
+      return `<div class="pending-row">
+        <div class="name">${p.nom} ${p.cognom}<small>${p.email} · ${p.mobil}</small></div>
+        <div class="prizes">${p.prizes.join(' · ')}</div>
+        ${phone ? `<a class="wa" href="https://wa.me/${phone}?text=${waText}" target="_blank">💬 WhatsApp</a>` : ''}
+      </div>`;
+    }).join('');
+  }
+
+  // Hours
+  const hours = Object.keys(d.byHour).map(Number).sort((a,b)=>a-b);
+  const hl = document.getElementById('hoursList');
+  if (hours.length === 0) {
+    hl.innerHTML = '<div class="empty">Encara no hi ha dades.</div>';
+  } else {
+    const maxH = Math.max(...hours.map(h => d.byHour[h]));
+    hl.innerHTML = hours.map(h => {
+      const v = d.byHour[h];
+      const w = (v / maxH) * 100;
+      return `<div class="day-row" style="grid-template-columns:60px 1fr 60px">
+        <span class="date">${String(h).padStart(2,'0')}:00</span>
+        <div class="barwrap"><div class="b-spin" style="width:${w}%"></div></div>
+        <span class="n spin">${v}</span>
+      </div>`;
+    }).join('');
+  }
+
+  // CSV export
+  const csvHeader = 'Timestamp,Nom,Cognom,Email,Mobil,Data,Premi1,Premi2,Premi3,PremiReclamat,Codi,DataReclamacio,Instagram,TikTok,Estat\n';
+  // CSV data lo construïm des de pending+claimedList per ara seria parcial — millor que descarregui directe del Sheet
+  document.getElementById('csvBtn').addEventListener('click', e => {
+    e.preventDefault();
+    const sheetId = '1tN2YSzGaxH_gKWpVI6hLguruYgVHGOxha7pLToikmWE';
+    window.open(`https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv`, '_blank');
+  });
+}
+
+// Init
+load();
+</script>
+</body>
+</html>
