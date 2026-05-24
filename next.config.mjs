@@ -15,6 +15,13 @@ const nextConfig = {
       },
     ];
   },
+  async rewrites() {
+    return [
+      // Sorteig ruleta — fitxer estàtic a public/ruleta/index.html
+      { source: '/ruleta',  destination: '/ruleta/index.html' },
+      { source: '/ruleta/', destination: '/ruleta/index.html' },
+    ];
+  },
 };
 
 export default nextConfig;
