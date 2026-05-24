@@ -143,6 +143,41 @@
     /* Empty */
     .empty { color:#5a6a7e; font-style:italic; text-align:center; padding:24px; font-size:13px; }
 
+    /* ── WhatsApp follow-up cards ── */
+    .wa-card {
+      background:#080c12; border:1px solid #1e2a3a; border-radius:12px;
+      padding:14px 16px; margin-bottom:10px;
+      display:grid; grid-template-columns:1fr auto; gap:12px; align-items:center;
+    }
+    .wa-card.sent { border-color:#4ade80; opacity:.6; }
+    .wa-card .info { min-width:0; }
+    .wa-card .info .name { font-size:14px; font-weight:900; color:#fff; }
+    .wa-card .info .meta { font-size:11px; color:#7a8a9e; margin-top:2px; }
+    .wa-card .info .prize {
+      display:inline-flex; align-items:center; gap:6px;
+      background:#0a1428; padding:4px 10px; border-radius:50px;
+      font-size:12px; font-weight:700; color:#9ad0ff; margin-top:6px;
+    }
+    .wa-card .info .prize .code {
+      background:#ffcc66; color:#090b12; padding:1px 6px; border-radius:4px;
+      font-family:monospace; font-size:11px; font-weight:900;
+    }
+    .wa-card .wa-btn {
+      display:flex; flex-direction:column; align-items:center; gap:4px;
+      background:#25D366; color:#fff; padding:10px 16px; border-radius:14px;
+      font-size:12px; font-weight:900; text-decoration:none; white-space:nowrap;
+      transition:transform .15s;
+    }
+    .wa-card .wa-btn:hover { transform:scale(1.05); }
+    .wa-card .wa-btn small { font-weight:400; opacity:.85; font-size:10px; }
+    .wa-card .wa-btn.disabled { background:#2a3a50; cursor:not-allowed; }
+    .wa-card .mark-sent {
+      display:block; margin-top:6px; background:none; border:none;
+      color:#5a6a7e; font-size:10px; cursor:pointer; text-align:center; width:100%;
+    }
+    .wa-card .mark-sent:hover { color:#4ade80; }
+    .wa-card.sent .mark-sent { color:#4ade80; font-weight:700; }
+
     /* Login form */
     .login {
       max-width:380px; margin:80px auto 0;
@@ -245,6 +280,24 @@
     <div class="section">
       <h2>🔻 Embut de conversió</h2>
       <div class="funnel" id="funnel"></div>
+    </div>
+
+    <!-- ✉️ WhatsApp follow-up — guanyadors a contactar -->
+    <div class="section" id="waSection">
+      <h2>💬 WhatsApp follow-up · Recorda als guanyadors
+        <span class="badge" id="waBadge">0</span>
+      </h2>
+      <p style="font-size:12px;color:#7a8a9e;margin-bottom:14px;line-height:1.5">
+        Llista de premis reclamats. Clica cada botó per obrir WhatsApp amb el missatge pre-escrit i confirmar al guanyador el seu codi.<br>
+        <strong style="color:#ffcc66">Recomanació:</strong> fes el follow-up <strong>al cap d'1 dia</strong> de la reclamació perquè recordin aplicar el codi al pagar la inscripció.
+      </p>
+      <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+        <button class="btn" onclick="filterWa('all')" id="waBtnAll">Tots</button>
+        <button class="btn" onclick="filterWa('today')" id="waBtnToday">Avui</button>
+        <button class="btn primary" onclick="filterWa('yesterday')" id="waBtnYest">Ahir ⭐</button>
+        <button class="btn" onclick="filterWa('week')" id="waBtnWeek">Setmana</button>
+      </div>
+      <div id="waList"></div>
     </div>
 
     <!-- Premis -->
@@ -468,6 +521,10 @@ function render(d) {
     }).join('');
   }
 
+  // WhatsApp follow-up — guarda data per renderitzar segons filtre
+  window._claimedListData = d.claimedList || [];
+  filterWa(window._waFilter || 'yesterday');
+
   // Hours
   const hours = Object.keys(d.byHour).map(Number).sort((a,b)=>a-b);
   const hl = document.getElementById('hoursList');
@@ -494,6 +551,96 @@ function render(d) {
     const sheetId = '1tN2YSzGaxH_gKWpVI6hLguruYgVHGOxha7pLToikmWE';
     window.open(`https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv`, '_blank');
   });
+}
+
+// ============================================================
+// WHATSAPP FOLLOW-UP
+// ============================================================
+
+// localStorage per recordar quins ja s'han enviat
+function getSentKey(email, claimTs) { return 'wa_sent_' + btoa(email + '|' + claimTs).replace(/[^a-z0-9]/gi,''); }
+function isSent(c) { return !!localStorage.getItem(getSentKey(c.email, c.claimTs)); }
+function markSent(c) { localStorage.setItem(getSentKey(c.email, c.claimTs), '1'); renderWaList(); }
+function unmarkSent(c) { localStorage.removeItem(getSentKey(c.email, c.claimTs)); renderWaList(); }
+
+function filterWa(period) {
+  window._waFilter = period;
+  // Actualitza estat botons
+  ['All','Today','Yest','Week'].forEach(suf => {
+    const btn = document.getElementById('waBtn' + suf);
+    if (btn) btn.classList.remove('primary');
+  });
+  const btnMap = { all:'All', today:'Today', yesterday:'Yest', week:'Week' };
+  const activeBtn = document.getElementById('waBtn' + (btnMap[period] || 'Yest'));
+  if (activeBtn) activeBtn.classList.add('primary');
+  renderWaList();
+}
+
+function renderWaList() {
+  const list = window._claimedListData || [];
+  const period = window._waFilter || 'yesterday';
+
+  const now = new Date();
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const yestStart  = new Date(todayStart.getTime() - 86400000);
+  const weekStart  = new Date(todayStart.getTime() - 7 * 86400000);
+
+  const filtered = list.filter(c => {
+    if (!c.claimTs) return period === 'all';
+    const t = new Date(c.claimTs);
+    if (period === 'today')     return t >= todayStart;
+    if (period === 'yesterday') return t >= yestStart && t < todayStart;
+    if (period === 'week')      return t >= weekStart;
+    return true; // all
+  });
+
+  document.getElementById('waBadge').textContent = filtered.length;
+  const el = document.getElementById('waList');
+  if (filtered.length === 0) {
+    el.innerHTML = '<div class="empty">Cap reclamat en aquest període.</div>';
+    return;
+  }
+
+  el.innerHTML = filtered.map(c => {
+    const phone = (c.mobil || '').replace(/\D/g, '');
+    const sent  = isSent(c);
+    const nomFull = ((c.nom || '') + ' ' + (c.cognom || '')).trim() || c.email;
+    const hasCode = c.code && c.code !== 'CAP';
+    const codeShort = hasCode ? c.code : '';
+
+    // Missatge pre-escrit CA + ES
+    const msg = encodeURIComponent(
+      `Hola ${c.nom || ''}! 🏀\n\n` +
+      `Soc l'Ana de CB Grup Barna. Ahir vas reclamar a la ruleta del 3×3 Westfield Glòries 2026 el premi *${c.prize}*` +
+      (hasCode ? ` amb el codi *${codeShort}*.\n\n` : '.\n\n') +
+      `🎁 Per fer-lo efectiu, aplica el codi al pagar la inscripció: https://cbgrupbarna-3x3timechamber.com/#inscripcio\n\n` +
+      `Si tens qualsevol dubte, respon-me aquí mateix! 💪\n\n` +
+      `— Hola! Soy Ana del CB Grup Barna. Ayer reclamaste el premio *${c.prize}*` +
+      (hasCode ? ` con el código *${codeShort}*.\n` : '.\n') +
+      `Aplícalo al pagar la inscripción al 3×3.`
+    );
+
+    const claimedDate = c.claimTs ? new Date(c.claimTs).toLocaleString('ca-ES', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' }) : '—';
+
+    return `<div class="wa-card ${sent ? 'sent' : ''}">
+      <div class="info">
+        <div class="name">${nomFull}</div>
+        <div class="meta">📧 ${c.email} · 📱 ${c.mobil || '—'} · ⏰ ${claimedDate}</div>
+        <div class="prize">
+          ${c.prize}
+          ${hasCode ? `<span class="code">${codeShort}</span>` : ''}
+        </div>
+      </div>
+      <div>
+        ${phone
+          ? `<a class="wa-btn" href="https://wa.me/${phone}?text=${msg}" target="_blank" onclick="markSent(${JSON.stringify(c).replace(/"/g,'&quot;')})">
+              💬 WhatsApp<small>${sent ? '✓ enviat' : 'enviar'}</small>
+            </a>`
+          : `<span class="wa-btn disabled">⚠️ Sense mòbil</span>`}
+        ${phone ? `<button class="mark-sent" onclick="${sent ? 'unmarkSent' : 'markSent'}(${JSON.stringify(c).replace(/"/g,'&quot;')})">${sent ? '↺ Marcar com a no enviat' : '✓ Marcar com a enviat'}</button>` : ''}
+      </div>
+    </div>`;
+  }).join('');
 }
 
 // Init
