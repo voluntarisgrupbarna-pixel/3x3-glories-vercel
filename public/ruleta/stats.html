@@ -311,7 +311,15 @@ function logout() {
   localStorage.removeItem('ruleta_stats_token');
   location.reload();
 }
-function getToken() { return localStorage.getItem('ruleta_stats_token') || ''; }
+function getToken() {
+  // 1r URL ?token=XYZ, 2n localStorage
+  const urlTok = new URLSearchParams(location.search).get('token');
+  if (urlTok) {
+    localStorage.setItem('ruleta_stats_token', urlTok);
+    return urlTok;
+  }
+  return localStorage.getItem('ruleta_stats_token') || '';
+}
 
 async function load() {
   const token = getToken();
