@@ -23,6 +23,9 @@ const nextConfig = {
       // Dashboard estadístiques
       { source: '/ruleta/stats',    destination: '/ruleta/stats.html' },
       { source: '/ruleta/stats/',   destination: '/ruleta/stats.html' },
+      // Rasca i Guanya — fitxer estàtic a public/rasca/index.html
+      { source: '/rasca',           destination: '/rasca/index.html' },
+      { source: '/rasca/',          destination: '/rasca/index.html' },
     ];
   },
 };

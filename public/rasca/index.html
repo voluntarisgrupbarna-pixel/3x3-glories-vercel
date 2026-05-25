@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Rasca i Guanya · 3×3 Westfield Glòries 2026</title>
+  <meta property="og:title" content="🎟️ Rasca i guanya el teu premi 3×3">
+  <meta property="og:description" content="Rasca la teva targeta i guanya descomptes, samarretes i fins a un equip complet gratis. 48 hores.">
+  <meta property="og:image" content="https://cbgrupbarna-3x3timechamber.com/og-image.png">
+  <style>
+    /* ── Reset ───────────────────────────── */
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      background:#05060a; color:#fff;
+      font-family:Arial,Helvetica,sans-serif;
+      min-height:100vh;
+      display:flex; flex-direction:column; align-items:center;
+      padding:0 16px 60px;
+      overflow-x:hidden;
+    }
+
+    /* ── Header ──────────────────────────── */
+    .hdr {
+      text-align:center; padding:22px 0 18px; width:100%; max-width:500px;
+    }
+    .badge {
+      display:inline-block; background:#ff1f4f; color:#fff;
+      font-size:11px; font-weight:900; text-transform:uppercase; letter-spacing:2px;
+      padding:5px 16px; border-radius:20px; margin-bottom:14px;
+    }
+    .hdr h1 {
+      font-size:30px; font-weight:900; text-transform:uppercase; line-height:1.1; margin-bottom:8px;
+    }
+    .hdr h1 span { color:#ff1f4f; }
+    .hdr h1 em   { color:#ffcc66; font-style:normal; }
+    .hdr-sub { font-size:12px; color:#5a6a7e; margin-top:6px; }
+
+    /* ── Countdown ───────────────────────── */
+    .countdown-wrap {
+      display:inline-flex; align-items:center; gap:4px;
+      background:#0d1018; border:1px solid #1e2a3a; border-radius:12px;
+      padding:8px 14px; margin:10px 0 4px;
+    }
+    .countdown-wrap .cd-label {
+      font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px;
+      color:#5a6a7e; margin-right:6px;
+    }
+    .cd-block {
+      text-align:center; min-width:36px;
+    }
+    .cd-num {
+      font-size:20px; font-weight:900; color:#ffcc66; letter-spacing:1px;
+      font-variant-numeric:tabular-nums;
+    }
+    .cd-unit {
+      font-size:8px; color:#3a4a5e; text-transform:uppercase; letter-spacing:1px;
+      margin-top:1px;
+    }
+    .cd-sep { font-size:18px; color:#2a3a50; font-weight:900; margin-bottom:8px; }
+    .countdown-wrap.expired { border-color:#ff4040; }
+    .countdown-wrap.expired .cd-num { color:#ff4040; }
+
+    /* ── Screens ─────────────────────────── */
+    .screen { width:100%; max-width:480px; display:none; flex-direction:column; align-items:center; }
+    .screen.active { display:flex; }
+
+    /* ── Card ────────────────────────────── */
+    .card {
+      background:#0d1018; border:1px solid #1e2a3a; border-radius:18px;
+      padding:24px 20px; width:100%; margin-top:6px;
+    }
+    .card h2 {
+      font-size:18px; font-weight:900; text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;
+    }
+    .card h2 span { color:#ffcc66; }
+    .card .lead { font-size:12px; color:#5a6a7e; margin-bottom:18px; line-height:1.55; }
+    .card .lead em { color:#3a4a5e; font-style:normal; }
+
+    /* ── Form ────────────────────────────── */
+    .row-2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .field { margin-bottom:14px; }
+    .field label {
+      display:block; font-size:10px; font-weight:700; letter-spacing:1.5px;
+      text-transform:uppercase; color:#5a6a7e; margin-bottom:6px;
+    }
+    .field input {
+      width:100%; background:#080c12; border:1px solid #1e2a3a; color:#fff;
+      font-family:Arial,sans-serif; font-size:15px; border-radius:10px;
+      padding:12px 14px; outline:none; transition:border-color .15s;
+      -webkit-appearance:none;
+    }
+    .field input:focus { border-color:#2a4fa8; }
+    .field input::placeholder { color:#2a3545; }
+    .rgpd-row {
+      display:flex; gap:10px; align-items:flex-start;
+      margin-bottom:14px; padding:12px 14px;
+      background:#080c12; border:1px solid #1a2535; border-radius:10px;
+    }
+    .rgpd-row input[type="checkbox"] {
+      width:18px; height:18px; min-width:18px; flex-shrink:0;
+      margin-top:1px; accent-color:#ff1f4f; cursor:pointer;
+    }
+    .rgpd-row label { font-size:11px; color:#4a5a6e; line-height:1.55; cursor:pointer; }
+
+    /* Equip toggle */
+    .equip-toggle {
+      display:flex; gap:10px; align-items:flex-start;
+      margin-bottom:18px; padding:14px;
+      background:#080c12; border:1px solid #1a3535; border-radius:10px;
+      cursor:pointer; transition:border-color .2s;
+    }
+    .equip-toggle:has(input:checked) { border-color:#ffcc66; background:#0a0e0a; }
+    .equip-toggle input[type="checkbox"] {
+      width:18px; height:18px; min-width:18px; flex-shrink:0;
+      margin-top:2px; accent-color:#ffcc66; cursor:pointer;
+    }
+    .equip-toggle label { cursor:pointer; }
+    .equip-toggle .et-title {
+      font-size:13px; font-weight:700; color:#fff; margin-bottom:3px;
+    }
+    .equip-toggle .et-sub {
+      font-size:11px; color:#5a6a7e; line-height:1.4;
+    }
+    .equip-toggle .et-badge {
+      display:inline-block; background:#1a3a1a; color:#4ade80;
+      font-size:9px; font-weight:900; letter-spacing:1px; text-transform:uppercase;
+      padding:2px 8px; border-radius:10px; margin-top:4px;
+    }
+
+    .form-error {
+      color:#ff7070; font-size:12px; margin-bottom:12px;
+      padding:8px 12px; background:#1a0a0a; border-radius:8px;
+      display:none; line-height:1.4;
+    }
+    .form-prefill {
+      display:none; color:#4ade80; font-size:12px; margin-bottom:12px;
+      padding:8px 12px; background:#081a0a; border:1px solid #1a4a1a; border-radius:8px;
+    }
+
+    /* ── Buttons ─────────────────────────── */
+    .btn-primary {
+      display:block; width:100%;
+      background:linear-gradient(135deg,#ff1f4f,#ff6b35);
+      color:#fff; font-family:Arial,sans-serif; font-size:15px; font-weight:900;
+      text-transform:uppercase; letter-spacing:2px; border:none; border-radius:50px;
+      padding:16px; cursor:pointer; transition:opacity .2s, transform .1s;
+      box-shadow:0 6px 24px rgba(255,31,79,.35);
+    }
+    .btn-primary:hover:not(:disabled) { opacity:.9; }
+    .btn-primary:active:not(:disabled) { transform:scale(.98); }
+    .btn-primary:disabled { opacity:.4; cursor:not-allowed; box-shadow:none; }
+    .btn-secondary {
+      display:block; width:100%;
+      background:transparent; color:#7a8a9e;
+      font-family:Arial,sans-serif; font-size:13px; font-weight:700;
+      border:1px solid #1e2a3a; border-radius:50px; padding:12px;
+      cursor:pointer; margin-top:10px; transition:border-color .2s;
+    }
+    .btn-secondary:hover { border-color:#3a4a5e; color:#fff; }
+
+    /* ── Scratch cards ───────────────────── */
+    .cards-row {
+      display:flex; gap:10px; justify-content:center;
+      margin:16px 0 10px; width:100%;
+    }
+    .sc-card {
+      position:relative;
+      flex:1; aspect-ratio:4/5; max-width:140px;
+      border-radius:14px; overflow:hidden;
+      background:#0a0e14;
+    }
+    .sc-under {
+      position:absolute; inset:0;
+      display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+      gap:4px; padding:8px;
+      border:2px solid var(--pc,#1e2a3a);
+      border-radius:14px;
+      background:var(--pb,#0d1018);
+      transition:box-shadow .4s;
+    }
+    .sc-card.revealed .sc-under {
+      box-shadow:0 0 22px var(--pg,rgba(255,255,255,0.1));
+    }
+    .sc-emoji { font-size:32px; line-height:1; }
+    .sc-label {
+      font-size:10px; font-weight:900; text-transform:uppercase; letter-spacing:.5px;
+      color:var(--pc,#fff); text-align:center; line-height:1.25; margin-top:2px;
+    }
+    .sc-sub { font-size:9px; color:#4a5a6e; text-align:center; line-height:1.3; }
+    .sc-canvas {
+      position:absolute; inset:0; width:100%; height:100%;
+      border-radius:14px; cursor:crosshair; touch-action:none; display:block;
+    }
+    .sc-card.revealed .sc-canvas { display:none; }
+
+    /* Scratch hint + progress */
+    .scratch-hint {
+      text-align:center; font-size:12px; color:#5a6a7e;
+      padding:6px 0 4px; letter-spacing:.5px;
+    }
+    .scratch-progress {
+      text-align:center; font-size:12px; color:#7a8a9e; margin:4px 0 12px;
+    }
+    .scratch-progress strong { color:#ffcc66; }
+
+    /* ── Choose grid ─────────────────────── */
+    .choose-grid { display:flex; flex-direction:column; gap:10px; margin-top:6px; }
+    .choose-item {
+      display:flex; align-items:center; gap:14px;
+      background:#080c12; border:1px solid #1e2a3a; border-radius:14px;
+      padding:14px 16px; cursor:pointer; transition:border-color .2s, background .2s;
+    }
+    .choose-item:hover { border-color:var(--pc,#3a5a3a); background:#0a0f14; }
+    .choose-item.selected { border-color:var(--pc,#ff1f4f); background:var(--pb,#0d1018); }
+    .choose-emoji { font-size:28px; flex-shrink:0; }
+    .choose-info { flex:1; }
+    .choose-label { font-size:13px; font-weight:900; text-transform:uppercase; color:var(--pc,#fff); letter-spacing:.5px; }
+    .choose-sub { font-size:11px; color:#5a6a7e; margin-top:2px; }
+    .choose-radio {
+      width:20px; height:20px; flex-shrink:0; border-radius:50%;
+      border:2px solid #2a3a4e; transition:border-color .2s, background .2s;
+    }
+    .choose-item.selected .choose-radio {
+      border-color:var(--pc,#ff1f4f); background:var(--pc,#ff1f4f);
+    }
+
+    /* ── Claim steps ─────────────────────── */
+    .claim-steps { display:flex; flex-direction:column; gap:10px; margin:8px 0 18px; }
+    .claim-step {
+      display:flex; align-items:center; gap:14px;
+      background:#080c12; border:1px solid #1e2a3a; border-radius:12px;
+      padding:14px 16px;
+    }
+    .claim-step.done { border-color:#1a4a1a; background:#060e06; }
+    .step-num {
+      width:28px; height:28px; border-radius:50%; border:2px solid #2a3a50;
+      display:flex; align-items:center; justify-content:center;
+      font-size:12px; font-weight:900; color:#5a6a7e; flex-shrink:0;
+      transition:all .3s;
+    }
+    .claim-step.done .step-num { border-color:#4ade80; background:#4ade80; color:#000; }
+    .step-body { flex:1; }
+    .step-title { font-size:13px; font-weight:700; margin-bottom:3px; }
+    .step-sub { font-size:11px; color:#5a6a7e; }
+    .step-btn {
+      background:linear-gradient(135deg,#1a2fa8,#2a4fd8); color:#fff;
+      font-size:11px; font-weight:900; text-transform:uppercase; letter-spacing:1px;
+      border:none; border-radius:20px; padding:8px 14px; cursor:pointer;
+      white-space:nowrap; flex-shrink:0; font-family:Arial,sans-serif;
+    }
+    .step-btn:disabled { opacity:.5; cursor:not-allowed; }
+    .claim-step.done .step-btn { background:#1a4a1a; color:#4ade80; cursor:default; }
+
+    /* ── Done screen ─────────────────────── */
+    .done-prize {
+      text-align:center; padding:20px 0;
+    }
+    .done-emoji { font-size:56px; margin-bottom:8px; }
+    .done-title { font-size:22px; font-weight:900; text-transform:uppercase; letter-spacing:1px; color:var(--pc,#fff); margin-bottom:4px; }
+    .done-sub { font-size:13px; color:#5a6a7e; }
+
+    .code-box {
+      background:#080c12; border:2px dashed #2a4fa8; border-radius:14px;
+      padding:18px 20px; text-align:center; margin:16px 0;
+    }
+    .code-box .code-label {
+      font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:2px;
+      color:#5a6a7e; margin-bottom:8px;
+    }
+    .code-val {
+      font-family:monospace; font-size:30px; font-weight:900;
+      letter-spacing:6px; color:#fff; cursor:pointer; user-select:all;
+    }
+    .code-copy { font-size:11px; color:#3a5a80; margin-top:6px; cursor:pointer; }
+    .code-copy.copied { color:#4ade80; }
+
+    .done-note {
+      background:#0a1428; border-left:3px solid #ffcc66;
+      border-radius:0 8px 8px 0; padding:12px 14px;
+      font-size:12px; color:#c0c8d8; line-height:1.6; margin-bottom:16px;
+    }
+    .done-note strong { color:#ffcc66; }
+    .done-note em { color:#7a8a9e; font-style:normal; }
+
+    /* Share (per SENSE_PREMI) */
+    .share-box {
+      background:#0a0a0a; border:1px solid #1e2a3a; border-radius:14px;
+      padding:20px; text-align:center; margin:12px 0;
+    }
+    .share-box .share-title { font-size:16px; font-weight:900; margin-bottom:6px; }
+    .share-box .share-sub { font-size:12px; color:#5a6a7e; margin-bottom:16px; line-height:1.5; }
+    .share-btns { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+    .share-btn {
+      display:flex; align-items:center; gap:6px;
+      padding:10px 18px; border-radius:50px;
+      font-size:12px; font-weight:900; text-transform:uppercase; letter-spacing:1px;
+      border:none; cursor:pointer; font-family:Arial,sans-serif; text-decoration:none;
+      color:#fff;
+    }
+    .share-btn.wa  { background:#25D366; }
+    .share-btn.ig  { background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); }
+    .share-btn.cp  { background:#2a3a50; border:1px solid #3a4a60; }
+
+    /* ── Buttons link ────────────────────── */
+    .btn-wa {
+      display:block; background:#25D366; color:#fff;
+      font-family:Arial,sans-serif; font-size:14px; font-weight:900;
+      text-decoration:none; text-align:center; border-radius:50px;
+      padding:14px; margin-top:12px;
+    }
+    .btn-inscription {
+      display:block; background:linear-gradient(135deg,#ff1f4f,#ff6b35); color:#fff;
+      font-family:Arial,sans-serif; font-size:14px; font-weight:900;
+      text-decoration:none; text-align:center; border-radius:50px; text-transform:uppercase;
+      letter-spacing:2px; padding:16px; margin-top:10px;
+      box-shadow:0 6px 20px rgba(255,31,79,.35);
+    }
+
+    /* ── Loading overlay ─────────────────── */
+    .loading-overlay {
+      position:fixed; inset:0; background:rgba(5,6,10,.8);
+      display:flex; align-items:center; justify-content:center; z-index:100;
+    }
+    .spinner {
+      width:42px; height:42px; border:3px solid #1e2a3a;
+      border-top-color:#ff1f4f; border-radius:50%;
+      animation:spin .7s linear infinite;
+    }
+    @keyframes spin { to { transform:rotate(360deg); } }
+
+    /* ── Expired screen ──────────────────── */
+    .expired-box {
+      text-align:center; padding:32px 20px;
+    }
+    .expired-box .exp-emoji { font-size:48px; margin-bottom:12px; }
+    .expired-box h2 { font-size:22px; font-weight:900; margin-bottom:8px; color:#ff4040; }
+    .expired-box p { font-size:13px; color:#5a6a7e; line-height:1.6; }
+
+    /* ── Misc ────────────────────────────── */
+    .divider { height:1px; background:#1e2a3a; margin:14px 0; }
+    .text-muted { font-size:11px; color:#3a4a5e; text-align:center; line-height:1.7; margin-top:12px; }
+    .pill-premium {
+      display:inline-block; background:#1a1a00; color:#ffcc66;
+      font-size:9px; font-weight:900; letter-spacing:1px; text-transform:uppercase;
+      padding:2px 8px; border-radius:10px; border:1px solid #3a3a00;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══ HEADER ═══ -->
+  <header class="hdr">
+    <div class="badge">🎟️ RASCA I GUANYA · Rasca y Gana</div>
+    <h1>RASCA <span>EL TEU</span><br><em>PREMI 3×3</em></h1>
+
+    <div class="countdown-wrap" id="countdown-wrap">
+      <span class="cd-label">⏱ Acaba en</span>
+      <div class="cd-block"><div class="cd-num" id="cd-h">--</div><div class="cd-unit">hores</div></div>
+      <span class="cd-sep">:</span>
+      <div class="cd-block"><div class="cd-num" id="cd-m">--</div><div class="cd-unit">min</div></div>
+      <span class="cd-sep">:</span>
+      <div class="cd-block"><div class="cd-num" id="cd-s">--</div><div class="cd-unit">seg</div></div>
+    </div>
+
+    <p class="hdr-sub">⚠️ Alguns premis només es desbloquegen amb equip inscrit</p>
+  </header>
+
+  <!-- ═══ SCREEN: FORMULARI ═══ -->
+  <section id="s-form" class="screen">
+    <div class="card">
+      <h2>Registra't <span>per rascar</span></h2>
+      <p class="lead">Una oportunitat per persona · Necessitem nom + email per validar el premi<br>
+        <em>Una oportunidad por persona · Necesitamos nombre + email para validar</em></p>
+
+      <div class="form-prefill" id="form-prefill">✅ Dades pre-omplertes des del mailing</div>
+      <div class="form-error"  id="form-error">Comprova les dades i torna-ho a intentar.</div>
+
+      <div class="row-2">
+        <div class="field">
+          <label for="f-nom">Nom</label>
+          <input type="text" id="f-nom" placeholder="Marc" autocomplete="given-name">
+        </div>
+        <div class="field">
+          <label for="f-cognom">Cognoms</label>
+          <input type="text" id="f-cognom" placeholder="García" autocomplete="family-name">
+        </div>
+      </div>
+      <div class="field">
+        <label for="f-email">Email</label>
+        <input type="email" id="f-email" placeholder="tu@email.com" autocomplete="email">
+      </div>
+      <div class="field">
+        <label for="f-mobil">Mòbil (per notificacions)</label>
+        <input type="tel" id="f-mobil" placeholder="+34 6xx xxx xxx" autocomplete="tel">
+      </div>
+
+      <!-- Toggle equip -->
+      <div class="equip-toggle" id="equip-toggle">
+        <input type="checkbox" id="f-equip">
+        <label for="f-equip">
+          <div class="et-title">🏀 Tinc equip inscrit al 3×3</div>
+          <div class="et-sub">Tengo equipo inscrito al torneo</div>
+          <div class="et-badge">🏆 Desbloqueja premi EQUIP GRATIS</div>
+        </label>
+      </div>
+
+      <div class="rgpd-row">
+        <input type="checkbox" id="f-rgpd">
+        <label for="f-rgpd">Accepto el tractament de les meves dades per CB Grup Barna per a la gestió del premi i comunicació sobre el 3×3 Westfield Glòries 2026. <em>Acepto el tratamiento de mis datos por CB Grup Barna para la gestión del premio y comunicación sobre el 3×3.</em></label>
+      </div>
+
+      <button class="btn-primary" id="btn-register" onclick="onRegister()">
+        🎟️ Vull rascar el meu premi
+      </button>
+      <p class="text-muted">Premi vàlid pagant la inscripció al 3×3 · Premios sujetos a disponibilidad</p>
+    </div>
+  </section>
+
+  <!-- ═══ SCREEN: RASCA ═══ -->
+  <section id="s-scratch" class="screen">
+    <div class="card">
+      <h2>🎟️ Rasca les <span>3 targetes</span></h2>
+      <p class="lead" id="scratch-lead">
+        Rasca cada targeta amb el dit · <em>Scratch each card with your finger</em><br>
+        Quan les obris totes, tria el premi que vols
+      </p>
+
+      <div class="cards-row" id="cards-row">
+        <div class="sc-card" id="card-0"><div class="sc-under" id="under-0"></div><canvas class="sc-canvas" id="canvas-0"></canvas></div>
+        <div class="sc-card" id="card-1"><div class="sc-under" id="under-1"></div><canvas class="sc-canvas" id="canvas-1"></canvas></div>
+        <div class="sc-card" id="card-2"><div class="sc-under" id="under-2"></div><canvas class="sc-canvas" id="canvas-2"></canvas></div>
+      </div>
+
+      <div class="scratch-hint" id="scratch-hint">👆 Rasca amb el dit · Scratch with your finger</div>
+      <div class="scratch-progress" id="scratch-progress" style="display:none">
+        <strong id="scratch-done">0</strong>/3 descobertes · Obre-les totes per triar
+      </div>
+
+      <button class="btn-primary" id="btn-go-choose" style="display:none" onclick="showChoose()">
+        ✅ Tria el teu premi
+      </button>
+    </div>
+  </section>
+
+  <!-- ═══ SCREEN: TRIA ═══ -->
+  <section id="s-choose" class="screen">
+    <div class="card">
+      <h2>🏆 Escull <span>1 premi</span></h2>
+      <p class="lead">Els altres 2 tornen al sorteig general · <em>Los otros 2 vuelven al sorteo</em></p>
+      <div class="choose-grid" id="choose-grid"></div>
+      <div style="height:12px"></div>
+      <button class="btn-primary" id="btn-confirm-choose" disabled onclick="onConfirmChoose()">
+        Confirma el premi →
+      </button>
+    </div>
+  </section>
+
+  <!-- ═══ SCREEN: RECLAMA ═══ -->
+  <section id="s-claim" class="screen">
+    <div class="card">
+      <h2>✅ Reclama <span>el teu premi</span></h2>
+      <p class="lead">Completa els 3 passos · <em>Completa los 3 pasos</em></p>
+
+      <div class="claim-steps">
+        <!-- Pas 1: Instagram -->
+        <div class="claim-step" id="step-ig">
+          <div class="step-num" id="num-ig">1</div>
+          <div class="step-body">
+            <div class="step-title">Segueix @cbgrupbarna a Instagram</div>
+            <div class="step-sub">Sigue @cbgrupbarna en Instagram</div>
+          </div>
+          <button class="step-btn" id="btn-ig" onclick="doStepIG()">Seguir IG</button>
+        </div>
+
+        <!-- Pas 2: TikTok -->
+        <div class="claim-step" id="step-tk">
+          <div class="step-num" id="num-tk">2</div>
+          <div class="step-body">
+            <div class="step-title">Segueix @cbgrupbarna a TikTok</div>
+            <div class="step-sub">Sigue @cbgrupbarna en TikTok</div>
+          </div>
+          <button class="step-btn" id="btn-tk" onclick="doStepTK()">Seguir TK</button>
+        </div>
+
+        <!-- Pas 3: Inscripció -->
+        <div class="claim-step" id="step-ins">
+          <div class="step-num" id="num-ins">3</div>
+          <div class="step-body">
+            <div class="step-title">Ves a la pàgina d'inscripció</div>
+            <div class="step-sub">Ve a la página de inscripción del 3×3</div>
+          </div>
+          <button class="step-btn" id="btn-ins" onclick="doStepIns()">Inscriu-te</button>
+        </div>
+      </div>
+
+      <div class="form-error" id="claim-error">Error en reclamar. Torna-ho a intentar.</div>
+      <button class="btn-primary" id="btn-claim" disabled onclick="onClaim()">
+        🎁 Envia el meu premi
+      </button>
+    </div>
+  </section>
+
+  <!-- ═══ SCREEN: FET ═══ -->
+  <section id="s-done" class="screen">
+    <div class="card" id="done-card"></div>
+  </section>
+
+  <!-- ═══ SCREEN: EXPIRAT ═══ -->
+  <section id="s-expired" class="screen">
+    <div class="card">
+      <div class="expired-box">
+        <div class="exp-emoji">⏰</div>
+        <h2>El Rasca ha acabat</h2>
+        <p>La promoció de 48 hores ha finalitzat.<br><em>La promoción de 48 horas ha finalizado.</em></p>
+        <div style="height:20px"></div>
+        <a href="https://cbgrupbarna-3x3timechamber.com/#inscripcio" class="btn-inscription">
+          🏀 Inscriu-te al 3×3 Westfield Glòries
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Loading -->
+  <div id="loading" class="loading-overlay" style="display:none">
+    <div class="spinner"></div>
+  </div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// CONFIG — canvia CAMPAIGN_END per controlar quan expira el rasca
+// ═══════════════════════════════════════════════════════════════
+const API          = 'https://script.google.com/macros/s/AKfycbyLOfEUjKpj3ezbLp1L_ZaZVQ3482dfYFoFOc_WvIH_nQfuDjU6_7hqn16g4uGcIz-Z/exec';
+const CAMPAIGN_END = new Date('2026-06-07T23:59:00+02:00').getTime(); // ← canvia aquí
+const IG_URL       = 'https://www.instagram.com/cbgrupbarna/';
+const TIKTOK_URL   = 'https://www.tiktok.com/@cbgrupbarna';
+const EVENT_URL    = 'https://cbgrupbarna-3x3timechamber.com/#inscripcio';
+const SHARE_URL    = 'https://cbgrupbarna-3x3timechamber.com/rasca/';
+
+// ── Mapeig visual dels premis ──
+const PRIZE_UI = {
+  RASCA5EUR:     { emoji:'💶', label:'5€ DESCOMPTE',       sub:'a la inscripció',    color:'#4ade80', glow:'rgba(74,222,128,.35)',    bg:'#030f08' },
+  BARNAR10:      { emoji:'🏀', label:'10% DESCOMPTE',      sub:'a la inscripció',    color:'#60a5fa', glow:'rgba(96,165,250,.35)',    bg:'#02060f' },
+  CAMISETA3X3:   { emoji:'👕', label:'SAMARRETA CBGB',     sub:'edició especial',    color:'#c084fc', glow:'rgba(192,132,252,.35)',   bg:'#080212' },
+  REGAL3X3:      { emoji:'🥤', label:'BEGUDA GRATIS',      sub:'partner oficial',    color:'#34d399', glow:'rgba(52,211,153,.35)',    bg:'#020e09' },
+  SORTEIG3X3:    { emoji:'🎟️', label:'PARTICIPA AL',       sub:'sorteig final',      color:'#fb923c', glow:'rgba(251,146,60,.35)',    bg:'#0f0500' },
+  PARTNER3X3:    { emoji:'🎁', label:'PREMI PARTNER',      sub:'sorpresa',           color:'#f472b6', glow:'rgba(244,114,182,.35)',   bg:'#0f0208' },
+  SENSE_PREMI:   { emoji:'😅', label:'GAIREBÉ!',           sub:'¡Casi!',             color:'#6b7280', glow:'rgba(107,114,128,.1)',    bg:'#0d1018' },
+  INDIVIDUAL3X3: { emoji:'⭐', label:'INSCRIPCIÓ',         sub:'individual gratis',  color:'#e2e8f0', glow:'rgba(226,232,240,.3)',    bg:'#080c14' },
+  EQUIP3X3:      { emoji:'🏆', label:'EQUIP COMPLET',      sub:'gratis 🔥',          color:'#fbbf24', glow:'rgba(251,191,36,.45)',    bg:'#0a0700' },
+};
+
+// ── Estat global ──
+const S = {
+  email:     '',
+  hasTeam:   false,
+  prizes:    [],          // [{code, short, emoji}, ...]
+  scratched: 0,
+  chosen:    null,        // codi del premi elegit
+  doneIG:    false,
+  doneTK:    false,
+  doneIns:   false,
+};
+
+// ─────────────────────────────────────────────────────────────
+// UTILS
+// ─────────────────────────────────────────────────────────────
+const $  = id => document.getElementById(id);
+const q  = sel => document.querySelector(sel);
+const pad = n => String(n).padStart(2,'0');
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+  $(id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function setLoading(on) { $('loading').style.display = on ? 'flex' : 'none'; }
+
+async function api(params) {
+  const url = API + '?' + new URLSearchParams(params);
+  const res = await fetch(url);
+  return res.json();
+}
+
+function prizeUI(code) { return PRIZE_UI[code] || PRIZE_UI.SENSE_PREMI; }
+
+function applyPrizeCSS(el, code) {
+  const ui = prizeUI(code);
+  el.style.setProperty('--pc', ui.color);
+  el.style.setProperty('--pb', ui.bg);
+  el.style.setProperty('--pg', ui.glow);
+}
+
+// ─────────────────────────────────────────────────────────────
+// COUNTDOWN
+// ─────────────────────────────────────────────────────────────
+function updateCountdown() {
+  const diff = CAMPAIGN_END - Date.now();
+  if (diff <= 0) {
+    $('cd-h').textContent = '00'; $('cd-m').textContent = '00'; $('cd-s').textContent = '00';
+    $('countdown-wrap').classList.add('expired');
+    return;
+  }
+  const h = Math.floor(diff / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+  $('cd-h').textContent = pad(h > 99 ? 99 : h);
+  $('cd-m').textContent = pad(m);
+  $('cd-s').textContent = pad(s);
+}
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
+// ─────────────────────────────────────────────────────────────
+// URL PARAMS — auto-fill del mailing Brevo
+// ─────────────────────────────────────────────────────────────
+(function autoFill() {
+  const p = new URLSearchParams(location.search);
+  const email  = p.get('ref')    || '';
+  const nom    = p.get('nom')    || '';
+  const cognom = p.get('cognom') || '';
+  const mobil  = p.get('mobil')  || '';
+  if (email || nom) {
+    if (email)  $('f-email').value  = decodeURIComponent(email);
+    if (nom)    $('f-nom').value    = decodeURIComponent(nom);
+    if (cognom) $('f-cognom').value = decodeURIComponent(cognom);
+    if (mobil)  $('f-mobil').value  = decodeURIComponent(mobil);
+    $('form-prefill').style.display = 'block';
+  }
+})();
+
+// ─────────────────────────────────────────────────────────────
+// INIT — comprova si ja existeix i on és
+// ─────────────────────────────────────────────────────────────
+async function init() {
+  // Comprova si expirat
+  if (Date.now() > CAMPAIGN_END) { showScreen('s-expired'); return; }
+
+  // Comprova email local (si torna de refresc)
+  const savedEmail = sessionStorage.getItem('rasca_email');
+  if (savedEmail) {
+    setLoading(true);
+    try {
+      const r = await api({ action:'rasca_check', email: savedEmail });
+      if (r.ok && r.registered) {
+        S.email   = savedEmail;
+        S.hasTeam = r.hasTeam || false;
+        if (r.state === 'TIRADES_FETES' && r.prizes && r.prizes.length) {
+          S.prizes = r.prizes.filter(Boolean);
+          showScreen('s-scratch');
+          initScratchScreenFromState(true);
+          setLoading(false);
+          return;
+        }
+        if (r.state === 'RECLAMAT') {
+          showDone({ code: r.claimedCode, short: r.claimedPrize });
+          setLoading(false);
+          return;
+        }
+      }
+    } catch (_) {}
+    setLoading(false);
+  }
+
+  showScreen('s-form');
+}
+
+// ─────────────────────────────────────────────────────────────
+// REGISTER
+// ─────────────────────────────────────────────────────────────
+async function onRegister() {
+  const nom    = $('f-nom').value.trim();
+  const cognom = $('f-cognom').value.trim();
+  const email  = $('f-email').value.trim().toLowerCase();
+  const mobil  = $('f-mobil').value.trim();
+  const rgpd   = $('f-rgpd').checked;
+  const equip  = $('f-equip').checked;
+
+  const errEl = $('form-error');
+  errEl.style.display = 'none';
+
+  if (!nom || !email) {
+    errEl.textContent = 'Nom i email obligatoris · Nombre y email obligatorios';
+    errEl.style.display = 'block'; return;
+  }
+  if (!rgpd) {
+    errEl.textContent = 'Has d\'acceptar el tractament de dades · Debes aceptar el tratamiento de datos';
+    errEl.style.display = 'block'; return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errEl.textContent = 'Email no vàlid · Email no válido';
+    errEl.style.display = 'block'; return;
+  }
+
+  $('btn-register').disabled = true;
+  setLoading(true);
+
+  try {
+    const r = await api({ action:'rasca_register', nom, cognom, email, mobil });
+    if (!r.ok) throw new Error(r.error || 'error');
+
+    S.email   = email;
+    S.hasTeam = equip;
+    sessionStorage.setItem('rasca_email', email);
+
+    if (r.alreadyRegistered) {
+      // Ja registrat — reconstruir estat
+      if (r.state === 'TIRADES_FETES' && r.prizes && r.prizes.length) {
+        // Necessita rascar: fem el scratch ara (ja tenim els premis)
+        S.prizes = r.prizes.map(code => ({ code, short:'', emoji:'' }));
+        showScreen('s-scratch');
+        // Hem de fer la crida scratch per obtenir el payload complet
+        const sr = await api({ action:'rasca_scratch', email, equip: equip ? '1' : '0' });
+        if (sr.ok && sr.prizes) S.prizes = sr.prizes;
+        initScratchScreenFromState(true);
+        setLoading(false);
+        return;
+      }
+      if (r.state === 'RECLAMAT') {
+        showDone({ code: r.claimedCode, short: r.claimedPrize });
+        setLoading(false);
+        return;
+      }
+    }
+
+    // Nou registre — fer scratch
+    const sr = await api({ action:'rasca_scratch', email, equip: equip ? '1' : '0' });
+    if (!sr.ok) throw new Error(sr.error || 'scratch_error');
+    S.prizes = sr.prizes;
+    showScreen('s-scratch');
+    initScratchScreen();
+
+  } catch (err) {
+    errEl.textContent = 'Error de connexió. Torna-ho a intentar · Error de conexión.';
+    errEl.style.display = 'block';
+    $('btn-register').disabled = false;
+  } finally {
+    setLoading(false);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// SCRATCH CARDS
+// ─────────────────────────────────────────────────────────────
+function renderUnder(idx, prize) {
+  const ui  = prizeUI(prize.code);
+  const el  = $(`under-${idx}`);
+  const card = $(`card-${idx}`);
+  el.innerHTML = `
+    <div class="sc-emoji">${prize.emoji || ui.emoji}</div>
+    <div class="sc-label">${ui.label}</div>
+    <div class="sc-sub">${ui.sub}</div>
+  `;
+  applyPrizeCSS(card, prize.code);
+}
+
+function drawSurface(ctx, w, h) {
+  // Gradient platejat
+  const g = ctx.createLinearGradient(0, 0, w, h);
+  g.addColorStop(0,    '#7a8a96');
+  g.addColorStop(0.3,  '#c0cdd6');
+  g.addColorStop(0.55, '#e8eff4');
+  g.addColorStop(0.75, '#c0cdd6');
+  g.addColorStop(1,    '#7a8a96');
+  ctx.fillStyle = g;
+  ctx.roundRect ? ctx.roundRect(0, 0, w, h, 14) : ctx.fillRect(0, 0, w, h);
+  ctx.fill();
+
+  // Línies de textura
+  ctx.globalCompositeOperation = 'source-over';
+  ctx.strokeStyle = 'rgba(255,255,255,0.25)';
+  ctx.lineWidth = 1;
+  for (let y = 4; y < h; y += 5) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+  }
+
+  // Text hint
+  ctx.globalCompositeOperation = 'source-over';
+  ctx.fillStyle = '#3a4a56';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.font = 'bold 13px Arial';
+  ctx.fillText('👆 RASCA', w / 2, h / 2 - 9);
+  ctx.font = '10px Arial';
+  ctx.fillStyle = '#5a6a76';
+  ctx.fillText('Scratch here', w / 2, h / 2 + 10);
+}
+
+function initScratchCard(idx, onReveal) {
+  const canvas = $(`canvas-${idx}`);
+  const card   = $(`card-${idx}`);
+
+  // Mida exacta del canvas = mida visual
+  const w = card.offsetWidth  || 110;
+  const h = card.offsetHeight || 140;
+  canvas.width  = w;
+  canvas.height = h;
+
+  const ctx = canvas.getContext('2d');
+  drawSurface(ctx, w, h);
+
+  let painting = false;
+  let revealed = false;
+
+  function getXY(e) {
+    const r   = canvas.getBoundingClientRect();
+    const src = e.touches ? e.touches[0] : e;
+    return [
+      (src.clientX - r.left) * (w / r.width),
+      (src.clientY - r.top)  * (h / r.height),
+    ];
+  }
+
+  function scratch(e) {
+    if (!painting || revealed) return;
+    e.preventDefault();
+    const [x, y] = getXY(e);
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.beginPath();
+    ctx.arc(x, y, 24, 0, Math.PI * 2);
+    ctx.fill();
+    checkReveal();
+  }
+
+  function checkReveal() {
+    const d = ctx.getImageData(0, 0, w, h).data;
+    let t = 0;
+    for (let i = 3; i < d.length; i += 4) if (d[i] < 128) t++;
+    if (t / (w * h) > 0.38) {
+      revealed = true;
+      ctx.clearRect(0, 0, w, h);
+      card.classList.add('revealed');
+      onReveal();
+    }
+  }
+
+  canvas.addEventListener('mousedown',  e => { painting = true; scratch(e); });
+  canvas.addEventListener('mousemove',  e => { scratch(e); });
+  window.addEventListener('mouseup',    () => { painting = false; });
+  canvas.addEventListener('touchstart', e => { painting = true; scratch(e); }, { passive: false });
+  canvas.addEventListener('touchmove',  e => { scratch(e); },                  { passive: false });
+  canvas.addEventListener('touchend',   () => { painting = false; });
+}
+
+function initScratchScreen() {
+  S.scratched = 0;
+  $('scratch-progress').style.display = 'none';
+  $('btn-go-choose').style.display    = 'none';
+  $('scratch-hint').style.display     = 'block';
+
+  S.prizes.forEach((prize, idx) => {
+    renderUnder(idx, prize);
+    initScratchCard(idx, () => onCardRevealed(idx));
+  });
+}
+
+function initScratchScreenFromState(alreadyScratched) {
+  // Cards ja raspades (retorn de sessió / ja registrat)
+  S.prizes.forEach((prize, idx) => {
+    renderUnder(idx, prize);
+    if (alreadyScratched) {
+      const card   = $(`card-${idx}`);
+      const canvas = $(`canvas-${idx}`);
+      card.classList.add('revealed');
+      canvas.style.display = 'none';
+    } else {
+      initScratchCard(idx, () => onCardRevealed(idx));
+    }
+  });
+  if (alreadyScratched) {
+    S.scratched = 3;
+    $('scratch-hint').style.display     = 'none';
+    $('scratch-progress').style.display = 'none';
+    $('btn-go-choose').style.display    = 'block';
+  }
+}
+
+function onCardRevealed(idx) {
+  S.scratched++;
+  $('scratch-hint').style.display     = 'none';
+  $('scratch-progress').style.display = 'block';
+  $('scratch-done').textContent        = S.scratched;
+
+  if (S.scratched >= 3) {
+    $('scratch-progress').style.display = 'none';
+    $('btn-go-choose').style.display    = 'block';
+    // Petita vibración
+    if (navigator.vibrate) navigator.vibrate([30, 20, 30]);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// CHOOSE
+// ─────────────────────────────────────────────────────────────
+function showChoose() {
+  const grid = $('choose-grid');
+  grid.innerHTML = '';
+
+  S.prizes.forEach(prize => {
+    const ui  = prizeUI(prize.code);
+    const div = document.createElement('div');
+    div.className = 'choose-item';
+    div.dataset.code = prize.code;
+    applyPrizeCSS(div, prize.code);
+    div.innerHTML = `
+      <div class="choose-emoji">${prize.emoji || ui.emoji}</div>
+      <div class="choose-info">
+        <div class="choose-label" style="color:var(--pc)">${ui.label}</div>
+        <div class="choose-sub">${ui.sub}${prize.code === 'EQUIP3X3' || prize.code === 'INDIVIDUAL3X3' ? ' &nbsp;<span class="pill-premium">PREMIUM</span>' : ''}</div>
+      </div>
+      <div class="choose-radio"></div>
+    `;
+    div.addEventListener('click', () => selectPrize(prize.code));
+    grid.appendChild(div);
+  });
+
+  showScreen('s-choose');
+}
+
+function selectPrize(code) {
+  S.chosen = code;
+  document.querySelectorAll('.choose-item').forEach(el => {
+    el.classList.toggle('selected', el.dataset.code === code);
+  });
+  $('btn-confirm-choose').disabled = false;
+}
+
+async function onConfirmChoose() {
+  if (!S.chosen) return;
+  showScreen('s-claim');
+  updateClaimBtn();
+}
+
+// ─────────────────────────────────────────────────────────────
+// CLAIM STEPS
+// ─────────────────────────────────────────────────────────────
+function markStepDone(stepId, numId) {
+  $(stepId).classList.add('done');
+  $(numId).textContent = '✓';
+  updateClaimBtn();
+}
+
+function doStepIG() {
+  window.open(IG_URL, '_blank');
+  setTimeout(() => { S.doneIG = true; markStepDone('step-ig', 'num-ig'); }, 1800);
+}
+function doStepTK() {
+  window.open(TIKTOK_URL, '_blank');
+  setTimeout(() => { S.doneTK = true; markStepDone('step-tk', 'num-tk'); }, 1800);
+}
+function doStepIns() {
+  window.open(EVENT_URL, '_blank');
+  setTimeout(() => { S.doneIns = true; markStepDone('step-ins', 'num-ins'); }, 1800);
+}
+
+function updateClaimBtn() {
+  $('btn-claim').disabled = !(S.doneIG && S.doneTK && S.doneIns);
+}
+
+async function onClaim() {
+  $('claim-error').style.display = 'none';
+  $('btn-claim').disabled = true;
+  setLoading(true);
+
+  try {
+    const r = await api({
+      action:    'rasca_claim',
+      email:     S.email,
+      code:      S.chosen,
+      instagram: S.doneIG  ? '1' : '0',
+      tiktok:    S.doneTK  ? '1' : '0',
+    });
+    if (!r.ok) throw new Error(r.error || 'claim_error');
+    showDone({ code: r.prize, short: r.short });
+  } catch (_) {
+    $('claim-error').style.display = 'block';
+    $('btn-claim').disabled = false;
+  } finally {
+    setLoading(false);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// DONE
+// ─────────────────────────────────────────────────────────────
+function showDone({ code, short }) {
+  const ui       = prizeUI(code || 'SENSE_PREMI');
+  const hasCode  = code && code !== 'SENSE_PREMI' && code !== 'CAP';
+  const card     = $('done-card');
+  const waText   = encodeURIComponent(
+    `Hola! He guanyat ${short || ui.label}` + (hasCode ? ` (codi ${code})` : '') +
+    ` al Rasca del 3×3 Glòries. Necessito ajuda.`
+  );
+  const shareText = encodeURIComponent(
+    `🎟️ Acaba de tocar-me premi al Rasca del 3×3 Westfield Glòries!\nRasca el teu: ${SHARE_URL}`
+  );
+
+  if (hasCode) {
+    card.innerHTML = `
+      <div class="done-prize" style="--pc:${ui.color}">
+        <div class="done-emoji">${ui.emoji}</div>
+        <div class="done-title" style="color:${ui.color}">${ui.label}</div>
+        <div class="done-sub">${ui.sub}</div>
+      </div>
+
+      <div class="code-box">
+        <div class="code-label">El teu codi · Tu código</div>
+        <div class="code-val" id="code-val" onclick="copyCode()">${code}</div>
+        <div class="code-copy" id="code-copy" onclick="copyCode()">👆 Toca per copiar · Tap to copy</div>
+      </div>
+
+      <div class="done-note">
+        <strong>Important:</strong> per fer efectiu el premi has de <strong>pagar la inscripció al 3×3</strong> i introduir el codi al pagament.<br>
+        <em>Para hacer efectivo el premio debes pagar la inscripción al 3×3 e introducir el código.</em>
+      </div>
+
+      <a href="https://cbgrupbarna-3x3timechamber.com/#inscripcio" class="btn-inscription">
+        🏀 INSCRIU-TE I APLICA EL CODI
+      </a>
+      <a href="https://wa.me/34698425153?text=${waText}" class="btn-wa">
+        💬 Dubtes? WhatsApp +34 698 425 153
+      </a>
+
+      <div class="divider"></div>
+      <div style="text-align:center;margin-top:8px">
+        <div style="font-size:12px;color:#5a6a7e;margin-bottom:10px">Comparteix la teva sort · Comparte tu suerte</div>
+        <div class="share-btns" style="justify-content:center">
+          <a class="share-btn wa" href="https://wa.me/?text=${shareText}" target="_blank">💬 WhatsApp</a>
+        </div>
+      </div>
+      <p class="text-muted">Et hem enviat el codi per email · Te hemos enviado el código por email</p>
+    `;
+  } else {
+    // SENSE_PREMI — pantalla "Casi"
+    card.innerHTML = `
+      <div class="done-prize">
+        <div class="done-emoji">😅</div>
+        <div class="done-title" style="color:#6b7280">GAIREBÉ!</div>
+        <div class="done-sub">¡Casi! · Esta no era la teva</div>
+      </div>
+
+      <div class="share-box">
+        <div class="share-title">🔄 Segona oportunitat</div>
+        <div class="share-sub">
+          Comparteix el Rasca i etiqueta <strong>@cbgrupbarna</strong> a les stories d'Instagram.<br>
+          <em>Comparte el Rasca y etiqueta @cbgrupbarna en tus stories.</em><br><br>
+          Ho veurem i et donarem una tirada extra! 👀
+        </div>
+        <div class="share-btns">
+          <a class="share-btn wa" href="https://wa.me/?text=${shareText}" target="_blank">💬 WA</a>
+          <a class="share-btn ig" href="https://www.instagram.com/cbgrupbarna/" target="_blank">📸 IG</a>
+          <button class="share-btn cp" onclick="copyShareLink()">🔗 Copia URL</button>
+        </div>
+      </div>
+
+      <a href="https://cbgrupbarna-3x3timechamber.com/#inscripcio" class="btn-inscription" style="margin-top:16px">
+        🏀 Inscriu-te igualment al 3×3
+      </a>
+      <p class="text-muted">L'equip d'organització valida les stories manualment · máx. 24 h</p>
+    `;
+  }
+
+  showScreen('s-done');
+}
+
+// ─────────────────────────────────────────────────────────────
+// HELPERS
+// ─────────────────────────────────────────────────────────────
+function copyCode() {
+  const val = $('code-val');
+  if (!val) return;
+  navigator.clipboard.writeText(val.textContent.trim()).then(() => {
+    const cp = $('code-copy');
+    if (cp) { cp.textContent = '✅ Copiat! · ¡Copiado!'; cp.classList.add('copied'); }
+  }).catch(() => {
+    const range = document.createRange();
+    range.selectNode(val);
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+  });
+}
+
+function copyShareLink() {
+  navigator.clipboard.writeText(SHARE_URL).then(() => {
+    alert('URL copiada! · URL copiada!');
+  });
+}
+
+// ─────────────────────────────────────────────────────────────
+// ARRANCA
+// ─────────────────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>
