@@ -64,19 +64,23 @@ export default function RuletaBanner() {
           flexWrap: "wrap",
         }}
       >
-        {/* Esquerra: wheel emoji + text */}
+        {/* Esquerra: imatge ruleta + text */}
         <div style={{ display: "flex", gap: 22, alignItems: "center", flex: "1 1 380px" }}>
           <div
             aria-hidden
             style={{
-              fontSize: 76,
-              filter: "drop-shadow(0 4px 18px rgba(255,31,79,0.6))",
-              animation: "spin 7s linear infinite",
-              lineHeight: 1,
               flexShrink: 0,
+              animation: "spin 8s linear infinite",
+              lineHeight: 1,
             }}
           >
-            🎰
+            <img
+              src="/ruleta-wheel.svg"
+              alt="Ruleta de premis"
+              width={88}
+              height={88}
+              style={{ display: "block", borderRadius: "50%" }}
+            />
           </div>
           <div>
             <div

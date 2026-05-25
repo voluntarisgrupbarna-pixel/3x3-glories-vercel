@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" width="320" height="320" style="border-radius:50%;filter:drop-shadow(0 8px 18px rgba(0,0,0,.6));">
+  <defs>
+    <linearGradient id="goldRim" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"  stop-color="#fff4c2"/>
+      <stop offset="35%" stop-color="#ffcc66"/>
+      <stop offset="65%" stop-color="#c89a00"/>
+      <stop offset="100%" stop-color="#8a6a00"/>
+    </linearGradient>
+    <radialGradient id="hubGrad" cx="50%" cy="40%" r="55%">
+      <stop offset="0%"  stop-color="#3b3424"/>
+      <stop offset="60%" stop-color="#15110a"/>
+      <stop offset="100%" stop-color="#000"/>
+    </radialGradient>
+    <radialGradient id="centerGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"  stop-color="rgba(255,204,102,.9)"/>
+      <stop offset="100%" stop-color="rgba(255,204,102,0)"/>
+    </radialGradient>
+  </defs>
+  <circle cx="160" cy="160" r="158" fill="url(#goldRim)"/>
+  <circle cx="160" cy="160" r="148" fill="none" stroke="#5a4400" stroke-width="1.5"/>
+  <circle cx="160" cy="160" r="146" fill="#0a0a14"/>
+  <path d="M160 160 L160 15 A145 145 0 0 1 262.53 57.47 Z" fill="#d50019"/>
+  <path d="M160 160 L262.53 57.47 A145 145 0 0 1 305 160 Z" fill="#0d0d14"/>
+  <path d="M160 160 L305 160 A145 145 0 0 1 262.53 262.53 Z" fill="#d50019"/>
+  <path d="M160 160 L262.53 262.53 A145 145 0 0 1 160 305 Z" fill="#0d0d14"/>
+  <path d="M160 160 L160 305 A145 145 0 0 1 57.47 262.53 Z" fill="#d50019"/>
+  <path d="M160 160 L57.47 262.53 A145 145 0 0 1 15 160 Z" fill="#0d0d14"/>
+  <path d="M160 160 L15 160 A145 145 0 0 1 57.47 57.47 Z" fill="#d50019"/>
+  <path d="M160 160 L57.47 57.47 A145 145 0 0 1 160 15 Z" fill="#0d0d14"/>
+  <line x1="160" y1="160" x2="160"    y2="15"     stroke="#c89a00" stroke-width="1.2"/>
+  <line x1="160" y1="160" x2="262.53" y2="57.47"  stroke="#c89a00" stroke-width="1.2"/>
+  <line x1="160" y1="160" x2="305"    y2="160"    stroke="#c89a00" stroke-width="1.2"/>
+  <line x1="160" y1="160" x2="262.53" y2="262.53" stroke="#c89a00" stroke-width="1.2"/>
+  <line x1="160" y1="160" x2="160"    y2="305"    stroke="#c89a00" stroke-width="1.2"/>
+  <line x1="160" y1="160" x2="57.47"  y2="262.53" stroke="#c89a00" stroke-width="1.2"/>
+  <line x1="160" y1="160" x2="15"     y2="160"    stroke="#c89a00" stroke-width="1.2"/>
+  <line x1="160" y1="160" x2="57.47"  y2="57.47"  stroke="#c89a00" stroke-width="1.2"/>
+  <circle cx="160"    cy="22"     r="4" fill="#fff4c2" stroke="#5a4400" stroke-width=".8"/>
+  <circle cx="258.6"  cy="61.4"   r="4" fill="#fff4c2" stroke="#5a4400" stroke-width=".8"/>
+  <circle cx="298"    cy="160"    r="4" fill="#fff4c2" stroke="#5a4400" stroke-width=".8"/>
+  <circle cx="258.6"  cy="258.6"  r="4" fill="#fff4c2" stroke="#5a4400" stroke-width=".8"/>
+  <circle cx="160"    cy="298"    r="4" fill="#fff4c2" stroke="#5a4400" stroke-width=".8"/>
+  <circle cx="61.4"   cy="258.6"  r="4" fill="#fff4c2" stroke="#5a4400" stroke-width=".8"/>
+  <circle cx="22"     cy="160"    r="4" fill="#fff4c2" stroke="#5a4400" stroke-width=".8"/>
+  <circle cx="61.4"   cy="61.4"   r="4" fill="#fff4c2" stroke="#5a4400" stroke-width=".8"/>
+  <text x="195" y="80"   font-size="22" text-anchor="middle">🎫</text>
+  <text x="245" y="135"  font-size="22" text-anchor="middle">🏀</text>
+  <text x="245" y="200"  font-size="22" text-anchor="middle">👕</text>
+  <text x="195" y="250"  font-size="22" text-anchor="middle">⭐</text>
+  <text x="125" y="250"  font-size="22" text-anchor="middle">🏆</text>
+  <text x="75"  y="200"  font-size="22" text-anchor="middle">🎁</text>
+  <text x="75"  y="135"  font-size="22" text-anchor="middle">🥤</text>
+  <text x="125" y="80"   font-size="22" text-anchor="middle">🎯</text>
+  <circle cx="160" cy="160" r="60" fill="none" stroke="#c89a00" stroke-width="1.2"/>
+  <circle cx="160" cy="160" r="50" fill="url(#centerGlow)"/>
+  <circle cx="160" cy="160" r="38" fill="url(#hubGrad)" stroke="#c89a00" stroke-width="2"/>
+  <circle cx="160" cy="160" r="32" fill="none" stroke="#5a4400" stroke-width="1"/>
+  <text x="160" y="158" font-size="14" text-anchor="middle" font-family="Georgia,serif" font-weight="bold" fill="#ffcc66" letter-spacing="2">LRB</text>
+  <text x="160" y="173" font-size="6"  text-anchor="middle" font-family="Arial,sans-serif" fill="#7a6a3a" letter-spacing="1.5">EST. 2026</text>
+  <ellipse cx="160" cy="60" rx="110" ry="22" fill="rgba(255,255,255,.05)"/>
+</svg>
