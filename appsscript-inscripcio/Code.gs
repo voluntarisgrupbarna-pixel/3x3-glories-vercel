@@ -3176,3 +3176,163 @@ function setupLeadRecoveryTrigger() {
   Logger.log("setupLeadRecoveryTrigger: trigger creat → sendLeadRecoveryMessages cada 2h");
   return "OK — trigger creat";
 }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// RECOVERY FORÇAT — envia a tots els leads "Pendent" sense límit d'edat
+// Útil per a leads >24h que el trigger automàtic no ha pillar.
+// Executar UNA SOLA VEGADA: Run > forceRecoveryAllPendent
+// ═══════════════════════════════════════════════════════════════════════════
+function forceRecoveryAllPendent() {
+  var props   = PropertiesService.getScriptProperties();
+  var sheetId = props.getProperty("SHEET_ID");
+  var siteUrl = (props.getProperty("SITE_URL") || "https://www.cbgrupbarna-3x3timechamber.com").replace(/\/$/, "");
+  if (!sheetId) { Logger.log("forceRecoveryAllPendent: no SHEET_ID"); return; }
+
+  var ss        = SpreadsheetApp.openById(sheetId);
+  var abndSheet = ss.getSheetByName("Abandonaments");
+  if (!abndSheet) { Logger.log("forceRecoveryAllPendent: Abandonaments no trobat"); return; }
+
+  var now  = new Date();
+  var data = abndSheet.getDataRange().getValues();
+  var headers = data[0];
+
+  function col(name) {
+    for (var c = 0; c < headers.length; c++) {
+      if (String(headers[c]).trim() === name) return c;
+    }
+    return -1;
+  }
+  var iReasonC      = col("Reason");
+  var iCaptainName  = col("Captain Name");
+  var iCaptainPhone = col("Captain Phone");
+  var iCaptainEmail = col("Captain Email");
+  var iTeamName     = col("Team Name");
+  var iStatus       = col("Status");
+  var iNotes        = col("Notes");
+
+  var RECOVERY_REASONS = ["step4_done", "step3_done"];
+  var sent = 0;
+
+  for (var r = 1; r < data.length; r++) {
+    var row    = data[r];
+    var reason = String(row[iReasonC] || "").trim();
+    if (RECOVERY_REASONS.indexOf(reason) === -1) continue;
+
+    var status = String(row[iStatus] || "").trim();
+    if (status && status !== "Pendent") continue; // ja contactat
+
+    var captainPhone = String(row[iCaptainPhone] || "").trim();
+    var captainEmail = String(row[iCaptainEmail] || "").trim();
+    var captainName  = String(row[iCaptainName] || "").trim();
+    var teamName     = String(row[iTeamName] || "").trim();
+    if (!captainPhone && !captainEmail) continue;
+
+    var channel  = "none";
+    var waResult = { ok: false, reason: "not_tried" };
+
+    if (captainPhone) {
+      waResult = sendWhatsAppLeadRecovery(captainPhone, captainName, teamName, siteUrl);
+      if (waResult.ok) channel = "whatsapp";
+    }
+    if (!waResult.ok && captainEmail) {
+      var emailSent = sendRecoveryEmail(captainEmail, captainName, teamName, siteUrl, reason);
+      if (emailSent) channel = "email";
+    }
+
+    if (channel === "none") {
+      Logger.log("forceRecovery: sense canal → " + (captainEmail || captainPhone));
+      continue;
+    }
+
+    var sheetRow = r + 1;
+    if (iStatus >= 0) abndSheet.getRange(sheetRow, iStatus + 1).setValue("Contactat");
+    if (iNotes  >= 0) abndSheet.getRange(sheetRow, iNotes  + 1).setValue("ForceRecovery " + channel + " " + Utilities.formatDate(now, "Europe/Madrid", "dd/MM/yy HH:mm"));
+
+    Logger.log("ForceRecovery via " + channel + " → " + (captainEmail || captainPhone) + " [" + teamName + "]");
+    sent++;
+  }
+
+  Logger.log("forceRecoveryAllPendent: " + sent + " missatges enviats");
+  return { ok: true, sent: sent };
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// CONFIRMACIÓ MANUAL — Los Huevos (estefaniamorata23@hotmail.com)
+// Marca com a "Inscrit" a Abandonaments i comprova Inscripcions.
+// Run > confirmLosHuevosManual
+// ═══════════════════════════════════════════════════════════════════════════
+function confirmLosHuevosManual() {
+  var TARGET_ID   = "1MG5_8cmeKOe5Jz8BWiJ2e1K669EcIdNNHN1gFGI2uPA";
+  var captainEmail = "estefaniamorata23@hotmail.com";
+  var captainPhone = "34679632704"; // +34 679 63 27 04
+  var teamName     = "Los Huevos";
+
+  var ss        = SpreadsheetApp.openById(TARGET_ID);
+  var abndSheet = ss.getSheetByName("Abandonaments");
+  var inscSheet = ss.getSheetByName("Inscripcions");
+
+  // ── 1. Marca Abandonaments com a Inscrit ─────────────────────────────────
+  var abndMarked = 0;
+  if (abndSheet) {
+    var lastRow  = abndSheet.getLastRow();
+    var emailCol = abndSheet.getRange(2, 12, lastRow - 1, 1).getValues(); // Col L
+    var statCol  = abndSheet.getRange(2, 16, lastRow - 1, 1).getValues(); // Col P
+    for (var i = 0; i < emailCol.length; i++) {
+      var rowEmail = String(emailCol[i][0]).trim().toLowerCase();
+      var status   = String(statCol[i][0]).trim();
+      if (rowEmail === captainEmail && status !== "Inscrit") {
+        abndSheet.getRange(i + 2, 16).setValue("Inscrit");
+        abndSheet.getRange(i + 2, 17).setValue("Confirmat manualment Ana " + Utilities.formatDate(new Date(), "Europe/Madrid", "dd/MM/yy HH:mm"));
+        abndMarked++;
+      }
+    }
+  }
+  Logger.log("Abandonaments marcats com a Inscrit: " + abndMarked);
+
+  // ── 2. Comprova si ja és a Inscripcions ──────────────────────────────────
+  var inscFound = false;
+  if (inscSheet) {
+    var iData = inscSheet.getDataRange().getValues();
+    for (var r = 1; r < iData.length; r++) {
+      // Busca per email capità o nom equip
+      var rowStr = JSON.stringify(iData[r]).toLowerCase();
+      if (rowStr.indexOf(captainEmail) !== -1 || rowStr.indexOf("los huevos") !== -1) {
+        inscFound = true;
+        Logger.log("✅ Los Huevos JA és a Inscripcions (fila " + (r + 1) + ")");
+        break;
+      }
+    }
+  }
+
+  if (!inscFound) {
+    // Afegim una fila bàsica a Inscripcions per no perdre el registre
+    var now   = new Date();
+    var teamId = "T3X3-2026-LOSHUEVOS";
+    var headers = inscSheet ? inscSheet.getRange(1, 1, 1, inscSheet.getLastColumn()).getValues()[0] : [];
+
+    // Mínima fila: Timestamp, TeamID, TeamName, Category, Package, CaptainEmail, CaptainPhone, Status
+    var newRow = [];
+    for (var h = 0; h < headers.length; h++) {
+      var hName = String(headers[h]).trim();
+      if (hName === "Timestamp")       newRow.push(now);
+      else if (hName === "TeamID")     newRow.push(teamId);
+      else if (hName === "Team Name" || hName === "TeamName") newRow.push(teamName);
+      else if (hName === "Category")   newRow.push("Cadet Femení");
+      else if (hName === "Package")    newRow.push("team-4");
+      else if (hName === "Captain Email" || hName === "CaptainEmail") newRow.push(captainEmail);
+      else if (hName === "Captain Phone" || hName === "CaptainPhone") newRow.push("+34 679 63 27 04");
+      else if (hName === "Captain Name" || hName === "CaptainName")   newRow.push("Estefania");
+      else if (hName === "Status")     newRow.push("Confirmat-manual");
+      else if (hName === "Notes")      newRow.push("Confirmat manualment Ana 23/05/26. Pagament pendent verificar.");
+      else newRow.push("");
+    }
+    if (inscSheet && newRow.length > 0) {
+      inscSheet.appendRow(newRow);
+      Logger.log("➕ Los Huevos afegit a Inscripcions amb TeamID: " + teamId);
+    } else {
+      Logger.log("⚠️ No s'ha pogut afegir la fila — comprova Inscripcions manualment");
+    }
+  }
+
+  Logger.log("✅ confirmLosHuevosManual completat");
+}

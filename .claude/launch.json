@@ -6,6 +6,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
       "port": 3000
+    },
+    {
+      "name": "rasca-static",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "public", "-p", "4299", "--no-clipboard"],
+      "port": 4299
     }
   ]
 }
