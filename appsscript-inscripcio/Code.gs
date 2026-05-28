@@ -1151,7 +1151,7 @@ function handleAbandoned(payload) {
 }
 
 function sendAbandonedEmail(payload, props) {
-  const adminEmail = props.getProperty("ADMIN_EMAIL") || "";
+  const adminEmail = props.getProperty("ADMIN_EMAIL") || "voluntarisgrupbarna@gmail.com,anafernandezduran78@gmail.com";
   if (!adminEmail) return; // No configurat → silenci
 
   // Ignora events sense cap contacte (impossible per validació, però per seguretat)
@@ -1676,6 +1676,53 @@ function setAdminEmail() {
 }
 
 /**
+ * Regularització admin (2026-05-28): passa TOTS els equips amb status
+ * "pending_payment" a "confirmed" en bloc i deixa traçabilitat a Notes.
+ * Usar quan s'ha decidit que els equips sense justificant pujat es considerin
+ * inscrits igualment (el seguiment de pagament es fa per WhatsApp/banc).
+ *
+ * Per executar: Apps Script editor → desplegable de funcions →
+ *   `markAllPendingAsConfirmed` → ▶ Executar
+ */
+function markAllPendingAsConfirmed() {
+  const props = PropertiesService.getScriptProperties();
+  const sheetId = props.getProperty("SHEET_ID");
+  if (!sheetId) throw new Error("SHEET_ID not configured");
+
+  const ss = SpreadsheetApp.openById(sheetId);
+  const sheet = ss.getSheetByName("Inscripcions");
+  if (!sheet) throw new Error("Pestanya 'Inscripcions' no trobada");
+
+  const data = sheet.getDataRange().getValues();
+  const headers = data[0];
+  const statusCol = headers.indexOf("Status") + 1;
+  const notesCol = headers.indexOf("Notes") + 1;
+  if (statusCol === 0) throw new Error("Columna 'Status' no trobada");
+  if (notesCol === 0) throw new Error("Columna 'Notes' no trobada");
+
+  const now = new Date();
+  const ts = Utilities.formatDate(now, "Europe/Madrid", "yyyy-MM-dd HH:mm");
+  const auditNote = "[" + ts + "] Confirmat en lote (sense pujar justificant) · regularització admin";
+
+  var updated = 0;
+  for (var r = 1; r < data.length; r++) {
+    var status = String(data[r][statusCol - 1] || "").trim();
+    if (status !== "pending_payment") continue;
+    sheet.getRange(r + 1, statusCol).setValue("confirmed");
+    var existingNotes = String(data[r][notesCol - 1] || "");
+    var newNotes = existingNotes ? (existingNotes + " · " + auditNote) : auditNote;
+    sheet.getRange(r + 1, notesCol).setValue(newNotes);
+    updated++;
+    Logger.log("✓ Row " + (r + 1) + " · " + data[r][1] + " → confirmed");
+  }
+
+  Logger.log("════════════════════════════════════════");
+  Logger.log("✅ Total actualitzats: " + updated);
+  Logger.log("════════════════════════════════════════");
+  return updated;
+}
+
+/**
  * Envia un email a tots els destinataris de la llista ADMIN_EMAIL (separats per comes).
  */
 function sendToAdmins(adminEmail, subject, html) {
@@ -1757,7 +1804,7 @@ function testHandleInscripcio() {
  */
 function sendEmails(payload, proofUrl, sheetId) {
   const props = PropertiesService.getScriptProperties();
-  const adminEmail = props.getProperty("ADMIN_EMAIL") || "";
+  const adminEmail = props.getProperty("ADMIN_EMAIL") || "voluntarisgrupbarna@gmail.com,anafernandezduran78@gmail.com";
   const siteUrl = (props.getProperty("SITE_URL") || "https://www.cbgrupbarna-3x3timechamber.com").replace(/\/$/, "");
 
   const qrData = siteUrl + "/equip?id=" + payload.teamId;
@@ -2561,7 +2608,7 @@ function sendConfirmEmailWR031() {
  */
 function resendAdminEmailWR032() {
   var props = PropertiesService.getScriptProperties();
-  var adminEmail = props.getProperty("ADMIN_EMAIL") || "";
+  var adminEmail = props.getProperty("ADMIN_EMAIL") || "voluntarisgrupbarna@gmail.com,anafernandezduran78@gmail.com";
   var sheetId = props.getProperty("SHEET_ID");
   var siteUrl = (props.getProperty("SITE_URL") || "https://www.cbgrupbarna-3x3timechamber.com").replace(/\/$/, "");
 
