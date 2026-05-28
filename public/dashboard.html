@@ -969,7 +969,7 @@ function saveApiUrl() {
   loadFromSheet();
 }
 
-// Recuperar URL guardada i autocarregar
+// Recuperar URL guardada i autocarregar (o usar la URL hardcoded si ja n'hi ha)
 (function() {
   try {
     var saved = localStorage.getItem('cbgb_api_url');
@@ -977,8 +977,10 @@ function saveApiUrl() {
       API_URL = saved;
       document.getElementById('api-url-input').value = saved;
       document.getElementById('api-url-saved').textContent = 'URL carregada des de memoria local.';
-      // Autocarregar despres d'un moment
-      setTimeout(loadFromSheet, 500);
+    }
+    // Si API_URL ja configurada (hardcoded o guardada), autocarregar
+    if (API_URL) {
+      setTimeout(loadFromSheet, 600);
     } else {
       showStatus('Configura la URL del Apps Script a la pestanya Contactar', 'warn');
     }
