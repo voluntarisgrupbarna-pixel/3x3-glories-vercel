@@ -260,7 +260,8 @@ Ana Fernandez - CB Grup Barna</textarea>
 // ============================================================
 // CONFIGURACIÓ API — posa aqui la URL del teu Apps Script
 // ============================================================
-var API_URL = ''; // <-- POSA AQUI LA URL DEL APPS SCRIPT
+// URL de l'Apps Script per carregar inscripcions en viu
+var API_URL = 'https://script.google.com/macros/s/AKfycbz69LQrY4bLSFWHFbeN28pUcvQaSMu-8bviAs05D8X0IhQ8xQ0oYflo_a2sKGJN5CqCVg/exec?action=inscripcions&token=5380d2190245826c46dac2000932c595fb3c48a5b5ebab3e67c2e7a057289f04';
 
 // Dades en memòria (s'actualitzen des de l'API o es fan servir les locals)
 var DATA_LOADED = false;
@@ -269,44 +270,102 @@ var LAST_UPDATE = null;
 // ============================================================
 // CÀRREGA DE DADES EN VIU
 // ============================================================
+function normalTeam_(s) {
+  return String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/\s+/g,' ').trim();
+}
+
+function apiToLocal_(e) {
+  var p = String(e.pagament_estat||'').toLowerCase();
+  var hasProof = !!(e.justificant_drive_url && String(e.justificant_drive_url).startsWith('http'));
+  var status = hasProof ? 'pending_payment' : 'pending_proof';
+  if (p === 'verificat') status = 'confirmed';
+  var catData = CC[e.categoria] || {};
+  var gen = catData.gen || (String(e.genere||'').charAt(0).toUpperCase() === 'F' ? 'F' : 'M');
+  return {
+    id:       e.codi_wr || e.team_id || '',
+    team:     e.nom_equip || '',
+    cat:      e.categoria || '',
+    gen:      gen,
+    dia:      catData.dia || '?/6',
+    cap:      e.capita || '',
+    email:    e.email || '',
+    phone:    String(e.telefon||'').replace(/\s+/g,''),
+    jug:      (e.jugadors||[]).length || 4,
+    jugadors: (e.jugadors||[]).map(function(j){ return j.nom||j; }),
+    status:   status,
+    proof:    hasProof,
+    proofUrl: e.justificant_drive_url || '',
+    total:    parseFloat(e.total)||0,
+    club:     'pendent',
+    individual: e.tipus === 'individual',
+    note:     e.notes || ''
+  };
+}
+
 function loadFromSheet() {
   if (!API_URL) {
-    showStatus('Configuració pendent: afegeix la URL del Apps Script a la variable API_URL', 'warn');
+    showStatus('Configura la URL del Apps Script a la pestanya Contactar', 'warn');
     return;
   }
   showStatus('Carregant dades del Sheet...', 'info');
   document.getElementById('refresh-btn').textContent = 'Carregant...';
   document.getElementById('refresh-btn').disabled = true;
-  
+
   fetch(API_URL)
     .then(function(r) { return r.json(); })
     .then(function(res) {
-      if (!res.ok) throw new Error(res.error || 'Error desconegut');
-      var d = res.data;
-      
-      // Fusionar equips i individuals al DATA global
-      DATA = [];
-      (d.equips || []).forEach(function(e) {
-        DATA.push(normalizeEntry(e, false));
-      });
-      (d.individuals || []).forEach(function(e) {
-        DATA.push(normalizeEntry(e, true));
-      });
-      
+      if (res.error) throw new Error(res.error);
+
+      var liveEntries = [];
+
+      // Format 1 (nou): { ok: true, data: { equips: [...], individuals: [...] } }
+      if (res.ok && res.data) {
+        (res.data.equips||[]).forEach(function(e){ liveEntries.push(normalizeEntry(e, false)); });
+        (res.data.individuals||[]).forEach(function(e){ liveEntries.push(normalizeEntry(e, true)); });
+
+      // Format 2 (Apps Script): { inscripcions: [...], ts: "..." }
+      } else if (res.inscripcions) {
+        res.inscripcions.forEach(function(e){
+          liveEntries.push(apiToLocal_(e));
+        });
+      } else {
+        throw new Error('Format de resposta desconegut');
+      }
+
+      // MERGE: actualitza status/proof/total per equip coincident (nom normalitzat)
+      // Manté els 58 estàtics i sobreescriu els camps dinàmics amb les dades del Sheet
+      if (liveEntries.length > 0) {
+        var merged = DATA.map(function(d){ return Object.assign({}, d); });
+        liveEntries.forEach(function(live) {
+          var norm = normalTeam_(live.team);
+          var found = false;
+          for (var i = 0; i < merged.length; i++) {
+            if (normalTeam_(merged[i].team) === norm) {
+              merged[i].status   = live.status;
+              merged[i].proof    = live.proof;
+              merged[i].proofUrl = live.proofUrl || '';
+              if (live.total > 0) merged[i].total = live.total;
+              found = true; break;
+            }
+          }
+          if (!found) merged.push(live);
+        });
+        DATA = merged;
+        showStatus('Live · ' + liveEntries.length + ' equips del Sheet · ' + new Date().toLocaleTimeString('ca-ES'), 'ok');
+      } else {
+        showStatus('Sheet buit — usant dades locals', 'warn');
+      }
+
       DATA_LOADED = true;
       LAST_UPDATE = new Date();
-      showStatus('Actualitzat: ' + LAST_UPDATE.toLocaleTimeString('ca-ES'), 'ok');
-      document.getElementById('refresh-btn').textContent = 'Actualitzar';
+      document.getElementById('refresh-btn').textContent = '↻ Refresca';
       document.getElementById('refresh-btn').disabled = false;
-      
-      // Re-renderitzar tot
-      kpis();
-      renderCats();
+      kpis(); renderCats();
       if (document.getElementById('view-list').classList.contains('on')) renderList();
     })
     .catch(function(err) {
-      showStatus('Error: ' + err.message + ' (usant dades locals)', 'err');
-      document.getElementById('refresh-btn').textContent = 'Actualitzar';
+      showStatus('Error API: ' + err.message + ' · usant dades locals', 'err');
+      document.getElementById('refresh-btn').textContent = '↻ Refresca';
       document.getElementById('refresh-btn').disabled = false;
     });
 }
