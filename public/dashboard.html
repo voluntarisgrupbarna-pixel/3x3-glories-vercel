@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>3×3 Westfield Glòries 2026 · Dashboard Staff</title>
+<meta name="robots" content="noindex,nofollow"/>
+<style>
+:root{
+  --red:#c8102e;--red-light:#fee2e2;
+  --green:#15803d;--green-light:#d4f4dd;
+  --orange:#b45309;--orange-light:#fef3c7;
+  --grey:#6b7280;--grey-light:#f3f4f6;
+  --border:#e5e7eb;--bg:#f9fafb;--card:#fff;
+  --text:#111827;--text2:#6b7280;
+  --radius:8px;--shadow:0 1px 3px rgba(0,0,0,.07);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
+/* ── PIN GATE ── */
+#pin-gate{position:fixed;inset:0;background:#111827;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;gap:24px}
+#pin-gate h1{color:#fff;font-size:22px;font-weight:700}
+#pin-gate p{color:#9ca3af;font-size:14px}
+#pin-input{background:#1f2937;border:2px solid #374151;border-radius:12px;color:#fff;font-size:32px;font-weight:700;letter-spacing:.5em;text-align:center;width:180px;padding:12px 16px;outline:none}
+#pin-input:focus{border-color:var(--red)}
+#pin-error{color:#f87171;font-size:13px;min-height:20px}
+/* ── LAYOUT ── */
+#app{display:none;min-height:100vh}
+header{background:var(--red);color:#fff;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;position:sticky;top:0;z-index:100}
+header h1{font-size:16px;font-weight:700}
+.header-right{display:flex;align-items:center;gap:10px;font-size:13px}
+#countdown-badge{background:rgba(255,255,255,.2);border-radius:20px;padding:4px 12px;font-weight:600}
+#last-update{color:rgba(255,255,255,.7);font-size:12px}
+#btn-refresh{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:12px}
+#btn-refresh:hover{background:rgba(255,255,255,.25)}
+main{max-width:1280px;margin:0 auto;padding:20px 16px}
+/* ── KPIs ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:20px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow)}
+.kpi-label{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.kpi-val{font-size:26px;font-weight:700}
+.kpi-sub{font-size:11px;color:var(--text2);margin-top:2px}
+.kv-green{color:var(--green)}.kv-orange{color:var(--orange)}.kv-red{color:#dc2626}.kv-red2{color:var(--red)}
+/* ── FILTER BAR ── */
+.filter-bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;align-items:center}
+.filter-bar input,.filter-bar select{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:13px;color:var(--text);outline:none}
+.filter-bar input:focus,.filter-bar select:focus{border-color:var(--red)}
+.filter-bar input{flex:1;min-width:180px}
+#result-count{font-size:12px;color:var(--text2);margin-left:auto}
+/* ── TEAM TABLE ── */
+.team-table{width:100%;border-collapse:collapse;background:var(--card);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
+.team-table th{background:var(--grey-light);font-size:11px;text-transform:uppercase;letter-spacing:.4px;padding:8px 10px;text-align:left;color:var(--text2);border-bottom:1px solid var(--border);position:sticky;top:57px;z-index:10}
+.team-table td{padding:9px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+.team-table tr:last-child td{border-bottom:none}
+.team-table tr:hover td{background:#fafafa}
+.team-name{font-weight:600;color:var(--text)}
+.team-id{font-family:monospace;font-size:11px;color:var(--text2)}
+.team-cap{font-size:12px;color:var(--text2)}
+.badge{display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;white-space:nowrap}
+.b-green{background:var(--green-light);color:var(--green)}
+.b-orange{background:var(--orange-light);color:var(--orange)}
+.b-red{background:var(--red-light);color:#dc2626}
+.b-grey{background:var(--grey-light);color:var(--grey)}
+/* ── CATEGORY SUMMARY ── */
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-bottom:20px}
+.cat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;box-shadow:var(--shadow)}
+.cat-name{font-weight:600;font-size:13px;margin-bottom:4px}
+.cat-bars{display:flex;gap:4px;font-size:11px;color:var(--text2)}
+.cat-bars span{white-space:nowrap}
+/* ── SECTIONS ── */
+.section-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text2);margin:20px 0 8px}
+/* ── LOADING/ERROR ── */
+#loading{text-align:center;padding:60px;color:var(--text2)}
+#error-msg{background:#fee2e2;border:1px solid #fca5a5;border-radius:var(--radius);padding:14px;color:#991b1b;margin-bottom:16px;display:none}
+/* ── MOBILE ── */
+@media(max-width:640px){
+  .team-table thead{display:none}
+  .team-table,.team-table tbody,.team-table tr,.team-table td{display:block}
+  .team-table td{padding:4px 12px}
+  .team-table td:first-child{padding-top:10px}
+  .team-table td:last-child{padding-bottom:10px;border-bottom:1px solid var(--border)}
+  .team-table td[data-label]::before{content:attr(data-label)": ";font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.3px;display:block}
+}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<!-- PIN GATE -->
+<div id="pin-gate">
+  <div style="text-align:center">
+    <div style="font-size:32px;margin-bottom:8px">🏀</div>
+    <h1>3×3 Westfield Glòries 2026</h1>
+    <p>Dashboard Staff · Introdueix el PIN per continuar</p>
+  </div>
+  <input id="pin-input" type="password" inputmode="numeric" maxlength="4" pattern="[0-9]*" placeholder="• • • •" autocomplete="off"/>
+  <div id="pin-error"></div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <header>
+    <div>
+      <h1>🏀 3×3 Westfield Glòries 2026 · Dashboard Staff</h1>
+    </div>
+    <div class="header-right">
+      <span id="countdown-badge">…</span>
+      <span id="last-update">Carregant…</span>
+      <button id="btn-refresh">↻ Refresca</button>
+    </div>
+  </header>
+
+  <main>
+    <div id="error-msg"></div>
+    <div id="loading">⏳ Carregant dades del Sheet…</div>
+
+    <div id="dashboard" class="hidden">
+      <!-- KPIs -->
+      <div class="kpi-grid">
+        <div class="kpi"><div class="kpi-label">Total equips</div><div class="kpi-val" id="kpi-total">—</div></div>
+        <div class="kpi"><div class="kpi-label">✅ Confirmats</div><div class="kpi-val kv-green" id="kpi-ok">—</div></div>
+        <div class="kpi"><div class="kpi-label">🟠 Pend. pagament</div><div class="kpi-val kv-orange" id="kpi-pend">—</div></div>
+        <div class="kpi"><div class="kpi-label">🔴 Sense justificant</div><div class="kpi-val kv-red" id="kpi-noproof">—</div></div>
+        <div class="kpi"><div class="kpi-label">💶 Total recaptat</div><div class="kpi-val kv-red2" id="kpi-rev">—</div></div>
+        <div class="kpi"><div class="kpi-label">👥 Jugadors</div><div class="kpi-val" id="kpi-players">—</div></div>
+      </div>
+
+      <!-- CATEGORIES -->
+      <div class="section-title">Resum per categoria</div>
+      <div class="cat-grid" id="cat-grid"></div>
+
+      <!-- FILTERS -->
+      <div class="filter-bar">
+        <input id="search" type="search" placeholder="🔍 Cerca equip, capità, email…"/>
+        <select id="f-status"><option value="">Tots els estats</option><option value="verificat">✅ Verificat</option><option value="pendent">🟡 Pendent</option></select>
+        <select id="f-proof"><option value="">Amb/sense just.</option><option value="yes">Té justificant</option><option value="no">Sense justificant</option></select>
+        <select id="f-cat"><option value="">Totes les categories</option></select>
+        <span id="result-count"></span>
+      </div>
+
+      <!-- TABLE -->
+      <div style="overflow-x:auto">
+        <table class="team-table">
+          <thead>
+            <tr>
+              <th>Codi WR</th>
+              <th>Equip</th>
+              <th>Categoria</th>
+              <th>Capità</th>
+              <th>Contacte</th>
+              <th>Estat</th>
+              <th>Just.</th>
+              <th>Total €</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+    </div><!-- /dashboard -->
+  </main>
+</div><!-- /app -->
+
+<script>
+const PIN = "3326";
+const API = "https://script.google.com/macros/s/AKfycbz69LQrY4bLSFWHFbeN28pUcvQaSMu-8bviAs05D8X0IhQ8xQ0oYflo_a2sKGJN5CqCVg/exec";
+const TOKEN = "5380d2190245826c46dac2000932c595fb3c48a5b5ebab3e67c2e7a057289f04";
+const UNLOCK_KEY = "dash_3x3_unlocked";
+
+// ── PIN GATE ──────────────────────────────────────────────
+function checkUnlocked(){
+  return sessionStorage.getItem(UNLOCK_KEY) === "1";
+}
+function unlock(){
+  sessionStorage.setItem(UNLOCK_KEY,"1");
+  document.getElementById("pin-gate").style.display="none";
+  document.getElementById("app").style.display="block";
+  loadData();
+}
+
+if(checkUnlocked()){
+  document.getElementById("pin-gate").style.display="none";
+  document.getElementById("app").style.display="block";
+}
+
+const pinInput = document.getElementById("pin-input");
+const pinError = document.getElementById("pin-error");
+pinInput.addEventListener("input", function(){
+  const v = this.value.replace(/\D/g,"");
+  this.value = v;
+  pinError.textContent="";
+  if(v.length===4){
+    if(v===PIN){ unlock(); }
+    else{ pinError.textContent="PIN incorrecte. Torna a provar."; this.value=""; this.focus(); }
+  }
+});
+if(!checkUnlocked()) pinInput.focus();
+
+// ── COUNTDOWN ──────────────────────────────────────────────
+function updateCountdown(){
+  const event=new Date("2026-06-06T09:00:00");
+  const now=new Date();
+  const days=Math.ceil((event-now)/(1000*60*60*24));
+  const el=document.getElementById("countdown-badge");
+  if(days>0) el.textContent=days+" dies per al torneig 🏀";
+  else if(days===0) el.textContent="AVUI! 🏀";
+  else el.textContent="Torneig finalitzat";
+}
+updateCountdown();
+
+// ── DATA FETCH ──────────────────────────────────────────────
+let allData=[];
+
+async function loadData(){
+  document.getElementById("loading").style.display="block";
+  document.getElementById("dashboard").classList.add("hidden");
+  document.getElementById("error-msg").style.display="none";
+
+  const url=`${API}?action=inscripcions&token=${encodeURIComponent(TOKEN)}`;
+  try{
+    const r=await fetch(url);
+    const json=await r.json();
+    if(json.error){
+      showError("Error API: "+json.error+" — Comprova que METRICS_TOKEN estigui configurat a Apps Script.");
+      return;
+    }
+    allData=json.inscripcions||[];
+    document.getElementById("last-update").textContent="Actualitzat: "+new Date().toLocaleTimeString("ca-ES");
+    document.getElementById("loading").style.display="none";
+    document.getElementById("dashboard").classList.remove("hidden");
+    buildCatFilter();
+    render();
+  }catch(err){
+    showError("No s'han pogut carregar les dades. Comprova la connexió. Detall: "+err.message);
+  }
+}
+
+function showError(msg){
+  const el=document.getElementById("error-msg");
+  el.textContent=msg;
+  el.style.display="block";
+  document.getElementById("loading").style.display="none";
+}
+
+document.getElementById("btn-refresh").addEventListener("click",loadData);
+
+// ── HELPERS ──────────────────────────────────────────────
+function esc(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));}
+
+function statusLabel(row){
+  const estat=(row.pagament_estat||"pendent").toLowerCase();
+  if(/verificat|confirmat|pagat|ok/.test(estat)) return {label:"✅ Verificat",cls:"b-green"};
+  const hasProof=!!(row.justificant_drive_url||"").trim();
+  if(hasProof) return {label:"🟠 Pend. pagament",cls:"b-orange"};
+  return {label:"🔴 Sense just.",cls:"b-red"};
+}
+
+function proofBadge(row){
+  const hasProof=!!(row.justificant_drive_url||"").trim();
+  return hasProof
+    ? `<a href="${esc(row.justificant_drive_url)}" target="_blank" class="badge b-green">✓ Veure ↗</a>`
+    : `<span class="badge b-red">✗ No</span>`;
+}
+
+// ── CATEGORY FILTER ──────────────────────────────────────
+function buildCatFilter(){
+  const cats=[...new Set(allData.map(d=>d.categoria||""))].filter(Boolean).sort();
+  const sel=document.getElementById("f-cat");
+  sel.innerHTML='<option value="">Totes les categories</option>';
+  cats.forEach(c=>{const o=document.createElement("option");o.value=c;o.textContent=c;sel.appendChild(o);});
+}
+
+// ── CATEGORY SUMMARY ──────────────────────────────────────
+function renderCats(filtered){
+  const grid=document.getElementById("cat-grid");
+  const bycat={};
+  filtered.forEach(d=>{
+    const c=d.categoria||"(sense)";
+    if(!bycat[c]) bycat[c]={ok:0,pend:0,noproof:0};
+    const st=statusLabel(d);
+    if(st.cls==="b-green") bycat[c].ok++;
+    else if(st.cls==="b-orange") bycat[c].pend++;
+    else bycat[c].noproof++;
+  });
+  grid.innerHTML=Object.keys(bycat).sort().map(cat=>{
+    const c=bycat[cat];
+    const total=c.ok+c.pend+c.noproof;
+    return `<div class="cat-card">
+      <div class="cat-name">${esc(cat)}</div>
+      <div class="cat-bars">
+        ${c.ok?`<span style="color:var(--green)">✅ ${c.ok}</span>`:""}
+        ${c.pend?`<span style="color:var(--orange)">🟠 ${c.pend}</span>`:""}
+        ${c.noproof?`<span style="color:#dc2626">🔴 ${c.noproof}</span>`:""}
+        <span style="margin-left:auto">= ${total}</span>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+// ── MAIN RENDER ──────────────────────────────────────────
+function getFiltered(){
+  const q=document.getElementById("search").value.toLowerCase().trim();
+  const fst=document.getElementById("f-status").value;
+  const fp=document.getElementById("f-proof").value;
+  const fcat=document.getElementById("f-cat").value;
+
+  return allData.filter(d=>{
+    const st=statusLabel(d);
+    if(fst==="verificat" && st.cls!=="b-green") return false;
+    if(fst==="pendent" && st.cls==="b-green") return false;
+    if(fp==="yes" && !(d.justificant_drive_url||"").trim()) return false;
+    if(fp==="no" && !!(d.justificant_drive_url||"").trim()) return false;
+    if(fcat && d.categoria!==fcat) return false;
+    if(!q) return true;
+    const hay=[d.nom_equip,d.capita,d.email,d.telefon,d.codi_wr,d.categoria].join(" ").toLowerCase();
+    return hay.includes(q);
+  });
+}
+
+function render(){
+  const filtered=getFiltered();
+  document.getElementById("result-count").textContent=`Mostrant ${filtered.length} de ${allData.length}`;
+
+  // KPIs (sempre sobre el total)
+  const all=allData;
+  document.getElementById("kpi-total").textContent=all.length;
+  document.getElementById("kpi-ok").textContent=all.filter(d=>statusLabel(d).cls==="b-green").length;
+  document.getElementById("kpi-pend").textContent=all.filter(d=>statusLabel(d).cls==="b-orange").length;
+  document.getElementById("kpi-noproof").textContent=all.filter(d=>statusLabel(d).cls==="b-red").length;
+  document.getElementById("kpi-rev").textContent=all.reduce((s,d)=>s+(d.total||0),0).toFixed(0)+"€";
+  document.getElementById("kpi-players").textContent=all.reduce((s,d)=>s+(d.jugadors||[]).length,0);
+
+  renderCats(all);
+
+  const tbody=document.getElementById("tbody");
+  tbody.innerHTML=filtered.map(d=>{
+    const st=statusLabel(d);
+    const prf=proofBadge(d);
+    const tel=d.telefon?(
+      `<a href="https://wa.me/${d.telefon.replace(/\D/g,"").replace(/^(?!34)/,"34")}" target="_blank" style="color:var(--green);text-decoration:none">💬 ${esc(d.telefon)}</a>`
+    ):"—";
+    return `<tr>
+      <td data-label="Codi WR"><span class="team-id">${esc(d.codi_wr||"—")}</span></td>
+      <td data-label="Equip"><div class="team-name">${esc(d.nom_equip)}</div></td>
+      <td data-label="Categoria"><span class="badge b-grey">${esc(d.categoria||"—")}</span></td>
+      <td data-label="Capità"><div class="team-cap">${esc(d.capita||"—")}</div></td>
+      <td data-label="Contacte" style="font-size:12px;color:var(--text2)">
+        <div>${esc(d.email||"—")}</div>
+        <div>${tel}</div>
+      </td>
+      <td data-label="Estat"><span class="badge ${st.cls}">${st.label}</span></td>
+      <td data-label="Just.">${prf}</td>
+      <td data-label="Total €" style="font-weight:600">${d.total||0}€</td>
+    </tr>`;
+  }).join("") || `<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--text2)">Cap resultat</td></tr>`;
+}
+
+["search","f-status","f-proof","f-cat"].forEach(id=>
+  document.getElementById(id).addEventListener("input",render)
+);
+
+if(checkUnlocked()) loadData();
+</script>
+</body>
+</html>
