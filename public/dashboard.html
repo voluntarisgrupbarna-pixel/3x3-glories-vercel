@@ -1,364 +1,950 @@
 <!DOCTYPE html>
 <html lang="ca">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>3×3 Westfield Glòries 2026 · Dashboard Staff</title>
-<meta name="robots" content="noindex,nofollow"/>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Dashboard 3x3 - Westfield Glories 2026</title>
 <style>
-:root{
-  --red:#c8102e;--red-light:#fee2e2;
-  --green:#15803d;--green-light:#d4f4dd;
-  --orange:#b45309;--orange-light:#fef3c7;
-  --grey:#6b7280;--grey-light:#f3f4f6;
-  --border:#e5e7eb;--bg:#f9fafb;--card:#fff;
-  --text:#111827;--text2:#6b7280;
-  --radius:8px;--shadow:0 1px 3px rgba(0,0,0,.07);
-}
+:root{--bg:#faf8f5;--bg-card:#fff;--bg-sec:#f3efe9;--border:#e6e1d8;--text:#1a1a1a;--text2:#6b6b6b;--text3:#999;--red:#c8102e;--rd:#9a0d23;--gold:#c8932a;--ok:#2d7d3a;--ok-bg:#e8f5e9;--warn:#b45309;--warn-bg:#fef3c7;--err:#b91c1c;--err-bg:#fee2e2;--info:#1e40af;--fem:#9c27b0;--fem-bg:#f3e5f5;--masc:#1565c0;--masc-bg:#e3f2fd;--r:8px;--sh:0 1px 4px rgba(0,0,0,.07)}
+@media(prefers-color-scheme:dark){:root{--bg:#1a1714;--bg-card:#25211d;--bg-sec:#2e2925;--border:#3a342e;--text:#f5f0e8;--text2:#b8b0a3;--text3:#888}}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
-/* ── PIN GATE ── */
-#pin-gate{position:fixed;inset:0;background:#111827;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;gap:24px}
-#pin-gate h1{color:#fff;font-size:22px;font-weight:700}
-#pin-gate p{color:#9ca3af;font-size:14px}
-#pin-input{background:#1f2937;border:2px solid #374151;border-radius:12px;color:#fff;font-size:32px;font-weight:700;letter-spacing:.5em;text-align:center;width:180px;padding:12px 16px;outline:none}
-#pin-input:focus{border-color:var(--red)}
-#pin-error{color:#f87171;font-size:13px;min-height:20px}
-/* ── LAYOUT ── */
-#app{display:none;min-height:100vh}
-header{background:var(--red);color:#fff;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;position:sticky;top:0;z-index:100}
-header h1{font-size:16px;font-weight:700}
-.header-right{display:flex;align-items:center;gap:10px;font-size:13px}
-#countdown-badge{background:rgba(255,255,255,.2);border-radius:20px;padding:4px 12px;font-weight:600}
-#last-update{color:rgba(255,255,255,.7);font-size:12px}
-#btn-refresh{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:6px;padding:4px 10px;cursor:pointer;font-size:12px}
-#btn-refresh:hover{background:rgba(255,255,255,.25)}
-main{max-width:1280px;margin:0 auto;padding:20px 16px}
-/* ── KPIs ── */
-.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:20px}
-.kpi{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow)}
-.kpi-label{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
-.kpi-val{font-size:26px;font-weight:700}
-.kpi-sub{font-size:11px;color:var(--text2);margin-top:2px}
-.kv-green{color:var(--green)}.kv-orange{color:var(--orange)}.kv-red{color:#dc2626}.kv-red2{color:var(--red)}
-/* ── FILTER BAR ── */
-.filter-bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;align-items:center}
-.filter-bar input,.filter-bar select{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:13px;color:var(--text);outline:none}
-.filter-bar input:focus,.filter-bar select:focus{border-color:var(--red)}
-.filter-bar input{flex:1;min-width:180px}
-#result-count{font-size:12px;color:var(--text2);margin-left:auto}
-/* ── TEAM TABLE ── */
-.team-table{width:100%;border-collapse:collapse;background:var(--card);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow)}
-.team-table th{background:var(--grey-light);font-size:11px;text-transform:uppercase;letter-spacing:.4px;padding:8px 10px;text-align:left;color:var(--text2);border-bottom:1px solid var(--border);position:sticky;top:57px;z-index:10}
-.team-table td{padding:9px 10px;border-bottom:1px solid var(--border);vertical-align:top}
-.team-table tr:last-child td{border-bottom:none}
-.team-table tr:hover td{background:#fafafa}
-.team-name{font-weight:600;color:var(--text)}
-.team-id{font-family:monospace;font-size:11px;color:var(--text2)}
-.team-cap{font-size:12px;color:var(--text2)}
-.badge{display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:10px;white-space:nowrap}
-.b-green{background:var(--green-light);color:var(--green)}
-.b-orange{background:var(--orange-light);color:var(--orange)}
-.b-red{background:var(--red-light);color:#dc2626}
-.b-grey{background:var(--grey-light);color:var(--grey)}
-/* ── CATEGORY SUMMARY ── */
-.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-bottom:20px}
-.cat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;box-shadow:var(--shadow)}
-.cat-name{font-weight:600;font-size:13px;margin-bottom:4px}
-.cat-bars{display:flex;gap:4px;font-size:11px;color:var(--text2)}
-.cat-bars span{white-space:nowrap}
-/* ── SECTIONS ── */
-.section-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text2);margin:20px 0 8px}
-/* ── LOADING/ERROR ── */
-#loading{text-align:center;padding:60px;color:var(--text2)}
-#error-msg{background:#fee2e2;border:1px solid #fca5a5;border-radius:var(--radius);padding:14px;color:#991b1b;margin-bottom:16px;display:none}
-/* ── MOBILE ── */
-@media(max-width:640px){
-  .team-table thead{display:none}
-  .team-table,.team-table tbody,.team-table tr,.team-table td{display:block}
-  .team-table td{padding:4px 12px}
-  .team-table td:first-child{padding-top:10px}
-  .team-table td:last-child{padding-bottom:10px;border-bottom:1px solid var(--border)}
-  .team-table td[data-label]::before{content:attr(data-label)": ";font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.3px;display:block}
-}
-.hidden{display:none!important}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);font-size:14px}
+.topbar{background:var(--red);color:white;padding:14px 20px 0;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:8px}
+.topbar h1{font-size:18px;font-weight:700}
+.topbar .sub{font-size:11px;opacity:.7;margin-top:2px}
+.cd{background:rgba(0,0,0,.2);padding:5px 11px;border-radius:20px;font-size:12px;font-weight:600;margin-bottom:12px}
+.tabs{background:var(--rd);display:flex;padding:0 20px}
+.tab{padding:12px 18px;color:rgba(255,255,255,.65);cursor:pointer;font-size:12px;font-weight:600;border-bottom:3px solid transparent;transition:all .15s}
+.tab:hover{color:white}
+.tab.on{color:white;border-bottom-color:white}
+.kpis{background:var(--bg-card);border-bottom:1px solid var(--border);padding:10px 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(85px,1fr));gap:8px}
+.kpi{text-align:center}
+.kv{font-size:20px;font-weight:700}
+.kl{font-size:9px;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-top:1px}
+.kv.r{color:var(--red)}.kv.g{color:var(--ok)}.kv.go{color:var(--gold)}
+.content{padding:14px 20px;max-width:1200px;margin:0 auto}
+.view{display:none}.view.on{display:block}
+.sec-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text2);margin-bottom:10px}
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:9px;margin-bottom:18px}
+.cc{background:var(--bg-card);border:1.5px solid var(--border);border-radius:var(--r);padding:13px 14px;cursor:pointer;transition:all .15s;box-shadow:var(--sh)}
+.cc:hover{transform:translateY(-2px);box-shadow:0 4px 14px rgba(0,0,0,.1)}
+.cc.on{border-color:var(--red);box-shadow:0 0 0 3px rgba(200,16,46,.12)}
+.cc.fem{border-left:4px solid var(--fem)}.cc.masc{border-left:4px solid var(--masc)}
+.cc.full{background:var(--err-bg);border-color:var(--err)}.cc.almost{background:var(--warn-bg);border-color:var(--warn)}
+.gbadge{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:2px 6px;border-radius:10px;display:inline-block;margin-bottom:5px}
+.gbadge.f{background:var(--fem-bg);color:var(--fem)}.gbadge.m{background:var(--masc-bg);color:var(--masc)}
+.cn{font-size:13px;font-weight:700;margin-bottom:6px}
+.ceq{font-size:22px;font-weight:700;color:var(--red);margin-bottom:3px}
+.cbar-w{background:var(--bg-sec);border-radius:10px;height:5px;margin-bottom:5px;overflow:hidden}
+.cbar{height:100%;border-radius:10px;background:var(--red)}.cbar.fb{background:var(--err)}.cbar.ab{background:var(--warn)}
+.cst{display:flex;justify-content:space-between;font-size:11px;color:var(--text2)}
+.pl.ok{color:var(--ok)}.pl.w{color:var(--warn)}.pl.no{color:var(--err);font-weight:700}
+.det{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:14px;display:none;box-shadow:var(--sh)}
+.det.on{display:block}
+.det-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.det-t{font-size:15px;font-weight:700}.det-m{font-size:12px;color:var(--text2)}
+.tl{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:7px}
+.ti{background:var(--bg-sec);border:1px solid var(--border);border-radius:6px;padding:8px 11px}
+.ti-n{font-weight:600;font-size:13px;margin-bottom:3px}
+.ti-m{font-size:11px;color:var(--text2);display:flex;gap:7px;flex-wrap:wrap}
+.sdot{width:6px;height:6px;border-radius:50%;display:inline-block;margin-right:3px;vertical-align:middle}
+.sc{background:var(--ok)}.sp{background:var(--warn)}.sn{background:var(--err)}
+.ctrls{display:flex;gap:7px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
+.sw{flex:1;min-width:150px;position:relative}
+.si{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none}
+input[type=text]{padding:8px 8px 8px 28px;border:1px solid var(--border);border-radius:var(--r);background:var(--bg-card);color:var(--text);font-size:13px;font-family:inherit;width:100%}
+select{padding:7px 9px;border:1px solid var(--border);border-radius:var(--r);background:var(--bg-card);color:var(--text);font-size:13px;font-family:inherit}
+button,.btn{padding:7px 12px;border:1px solid var(--border);background:var(--bg-card);color:var(--text);border-radius:var(--r);cursor:pointer;font-size:12px;font-family:inherit;display:inline-flex;align-items:center;gap:4px}
+button:hover{background:var(--bg-sec)}
+.pr{background:var(--red)!important;color:white!important;border-color:var(--red)!important}
+.wa-btn{background:#25D366!important;color:white!important;border-color:#1ea952!important}
+.er{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-bottom:1px solid var(--border);font-size:13px;gap:8px;flex-wrap:wrap}
+.er:last-child{border-bottom:none}
+.er:hover{background:var(--bg-sec)}
+.badge{font-size:10px;padding:2px 6px;border-radius:10px;font-weight:500;white-space:nowrap}
+.bs{background:var(--ok-bg);color:var(--ok)}.bw{background:var(--warn-bg);color:var(--warn)}.bd{background:var(--err-bg);color:var(--err)}.bn{background:var(--bg-sec);color:var(--text2)}
+textarea.tmpl{width:100%;height:130px;border:1px solid var(--border);border-radius:6px;padding:10px;font-size:13px;font-family:inherit;resize:vertical;background:var(--bg-card);color:var(--text)}
+
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center;padding:20px}
+.modal-bg.on{display:flex}
+.modal{background:var(--bg-card);border-radius:var(--r);padding:20px;max-width:520px;width:100%;max-height:88vh;overflow-y:auto;box-shadow:0 20px 50px rgba(0,0,0,.3)}
+.mh{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;gap:10px}
+.mt{font-size:18px;font-weight:700}
+.ms{font-size:12px;color:var(--text2);margin-top:3px}
+.mrow{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;gap:10px}
+.mrow:last-child{border-bottom:none}
+.ml{color:var(--text2);font-size:12px;min-width:120px}
+.mv{font-weight:500;text-align:right}
+.mjug{background:var(--bg-sec);border-radius:6px;padding:10px 12px;margin-top:10px}
+.mjug-title{font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text2);margin-bottom:7px}
+.mjug-item{font-size:13px;padding:4px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px}
+.mjug-item:last-child{border-bottom:none}
+.mactions{display:flex;gap:7px;margin-top:14px;flex-wrap:wrap}
+
+.qf-btn{padding:8px 14px;border:1.5px solid var(--border);background:var(--bg-card);color:var(--text2);border-radius:20px;cursor:pointer;font-size:12px;font-weight:600;font-family:inherit;transition:all .15s;}
+.qf-btn:hover{background:var(--bg-sec);}
+.qf-btn.qf-active{background:var(--red);color:white;border-color:var(--red);}
+.qf-item{display:flex;justify-content:space-between;align-items:flex-start;padding:11px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s;}
+.qf-item:last-child{border-bottom:none;}
+.qf-item:hover{background:var(--bg-sec);}
+.qf-item-name{font-weight:700;font-size:14px;margin-bottom:3px;}
+.qf-item-meta{font-size:11px;color:var(--text2);display:flex;gap:8px;flex-wrap:wrap;}
+.qf-item-right{text-align:right;flex-shrink:0;}
+/* PIN overlay */
+#pin-overlay{position:fixed;inset:0;background:#1a1714;z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px}
+#pin-overlay.hidden{display:none}
+.pin-box{background:#25211d;border:1px solid #3a342e;border-radius:12px;padding:32px 28px;width:min(320px,90vw);text-align:center}
+.pin-logo{font-size:28px;font-weight:800;color:#c8102e;margin-bottom:4px;letter-spacing:-1px}
+.pin-sub{font-size:12px;color:#b8b0a3;margin-bottom:24px}
+.pin-dots{display:flex;gap:10px;justify-content:center;margin-bottom:20px}
+.pin-dot{width:14px;height:14px;border-radius:50%;background:#3a342e;transition:background .15s}
+.pin-dot.filled{background:#c8102e}
+.pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.pin-btn{padding:14px;background:#2e2925;border:1px solid #3a342e;border-radius:8px;color:#f5f0e8;font-size:18px;font-weight:600;cursor:pointer;transition:background .1s;border:none}
+.pin-btn:hover{background:#3a342e}
+.pin-btn:active{background:#c8102e}
+.pin-err{color:#ef4444;font-size:12px;margin-top:8px;min-height:18px}
+#pin-lock-btn{position:fixed;top:12px;right:14px;z-index:10000;background:rgba(200,16,46,.15);border:1px solid rgba(200,16,46,.3);color:#c8102e;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;display:none}
 </style>
 </head>
 <body>
-
-<!-- PIN GATE -->
-<div id="pin-gate">
-  <div style="text-align:center">
-    <div style="font-size:32px;margin-bottom:8px">🏀</div>
-    <h1>3×3 Westfield Glòries 2026</h1>
-    <p>Dashboard Staff · Introdueix el PIN per continuar</p>
+<div id="pin-overlay">
+  <div class="pin-box">
+    <div class="pin-logo">CB Grup Barna</div>
+    <div class="pin-sub">Dashboard 3×3 · Accés restringit</div>
+    <div class="pin-dots">
+      <div class="pin-dot" id="d0"></div>
+      <div class="pin-dot" id="d1"></div>
+      <div class="pin-dot" id="d2"></div>
+      <div class="pin-dot" id="d3"></div>
+    </div>
+    <div class="pin-pad">
+      <button class="pin-btn" onclick="pinKey('1')">1</button>
+      <button class="pin-btn" onclick="pinKey('2')">2</button>
+      <button class="pin-btn" onclick="pinKey('3')">3</button>
+      <button class="pin-btn" onclick="pinKey('4')">4</button>
+      <button class="pin-btn" onclick="pinKey('5')">5</button>
+      <button class="pin-btn" onclick="pinKey('6')">6</button>
+      <button class="pin-btn" onclick="pinKey('7')">7</button>
+      <button class="pin-btn" onclick="pinKey('8')">8</button>
+      <button class="pin-btn" onclick="pinKey('9')">9</button>
+      <button class="pin-btn" onclick="pinClear()" style="font-size:13px;">✕</button>
+      <button class="pin-btn" onclick="pinKey('0')">0</button>
+      <button class="pin-btn" onclick="pinBack()" style="font-size:16px;">⌫</button>
+    </div>
+    <div class="pin-err" id="pin-err"></div>
   </div>
-  <input id="pin-input" type="password" inputmode="numeric" maxlength="4" pattern="[0-9]*" placeholder="• • • •" autocomplete="off"/>
-  <div id="pin-error"></div>
+</div>
+<button id="pin-lock-btn" onclick="lockDash()">🔒 Bloquejar</button>
+<script>
+const PIN='3326';const KEY='dash_3x3_ok';
+let pinBuf='';
+(function(){if(localStorage.getItem(KEY)==='1'){unlock();}})();
+function unlock(){document.getElementById('pin-overlay').classList.add('hidden');document.getElementById('pin-lock-btn').style.display='block';}
+function lockDash(){localStorage.removeItem(KEY);pinBuf='';updateDots();document.getElementById('pin-overlay').classList.remove('hidden');document.getElementById('pin-lock-btn').style.display='none';}
+function updateDots(){for(let i=0;i<4;i++){document.getElementById('d'+i).classList.toggle('filled',i<pinBuf.length);}}
+function pinKey(d){if(pinBuf.length>=4)return;pinBuf+=d;updateDots();if(pinBuf.length===4){if(pinBuf===PIN){localStorage.setItem(KEY,'1');setTimeout(unlock,200);}else{document.getElementById('pin-err').textContent='PIN incorrecte. Torna a provar.';setTimeout(()=>{pinBuf='';updateDots();document.getElementById('pin-err').textContent='';},800);}}}
+function pinBack(){pinBuf=pinBuf.slice(0,-1);updateDots();}
+function pinClear(){pinBuf='';updateDots();}
+</script>
+
+<div class="topbar">
+  <div><h1>3x3 Westfield Glories 2026</h1><div class="sub">CB Grup Barna - Dashboard inscripcions</div></div>
+  <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;"><div class="cd" id="cd">...</div><button id="refresh-btn" onclick="loadFromSheet()" style="background:rgba(255,255,255,.15);color:white;border:1px solid rgba(255,255,255,.3);padding:5px 12px;border-radius:20px;cursor:pointer;font-size:12px;font-weight:600;">&#8635; Actualitzar</button><span id="api-status" style="font-size:11px;opacity:.8;"></span></div>
+</div>
+<div class="tabs">
+  <div class="tab on" onclick="sv('cats')">Categories</div>
+  <div class="tab" onclick="sv('list')">Llista equips</div>
+  <div class="tab" onclick="sv('contact')">Contactar</div>
+</div>
+<div class="kpis">
+  <div class="kpi"><div class="kv r" id="k0">-</div><div class="kl">Equips</div></div>
+  <div class="kpi"><div class="kv" id="k1" style="font-size:14px;">-</div><div class="kl">Amb/Sense just.</div></div>
+  <div class="kpi"><div class="kv g" id="k2">-</div><div class="kl">Confirmats</div></div>
+  <div class="kpi"><div class="kv go" id="k3">-</div><div class="kl">Places lliures</div></div>
+  <div class="kpi"><div class="kv" id="k4" style="color:var(--fem)">-</div><div class="kl">Equips Fem</div></div>
+  <div class="kpi"><div class="kv" id="k5" style="color:var(--masc)">-</div><div class="kl">Equips Masc</div></div>
+  <div class="kpi"><div class="kv" id="k6">-</div><div class="kl">Recaptat EUR</div></div>
+  <div class="kpi"><div class="kv" id="k7" style="color:var(--info,#1e40af)">-</div><div class="kl">Individuals</div></div>
+  <div class="kpi"><div class="kv" id="k8">-</div><div class="kl">Total persones</div></div>
 </div>
 
-<!-- APP -->
-<div id="app">
-  <header>
-    <div>
-      <h1>🏀 3×3 Westfield Glòries 2026 · Dashboard Staff</h1>
+<div style="background:#fff0f0;border-bottom:2px solid #c8102e;padding:10px 20px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+  <span style="font-size:12px;font-weight:700;color:#c8102e;">PENDENTS AVUI:</span>
+  
+  <span style="font-size:12px;background:#fee2e2;color:#b91c1c;padding:3px 9px;border-radius:12px;">Jaime - All 4 One falta justificant + confirmar categoria</span><span style="font-size:12px;background:#fee2e2;color:#b91c1c;padding:3px 9px;border-radius:12px;">Helena - Dream Team falta justificant</span>
+  <span style="font-size:12px;background:#fee2e2;color:#b91c1c;padding:3px 9px;border-radius:12px;">Andrea - EEMB Cheeseburger falta justificant</span>
+  <span style="font-size:12px;background:#fef3c7;color:#b45309;padding:3px 9px;border-radius:12px;">Confirmar pista dia 5 a Centremedicmartorell</span>
+  <span style="font-size:12px;background:#fef3c7;color:#b45309;padding:3px 9px;border-radius:12px;">Cartells Maria Cinta + verificar Merino</span>
+  <span style="font-size:12px;background:#fef3c7;color:#b45309;padding:3px 9px;border-radius:12px;">Reunio Alicia Westfield - dijous 16h</span>
+  <span style="font-size:12px;background:#fef3c7;color:#b45309;padding:3px 9px;border-radius:12px;">Iandrey - logo camiseta pendent</span>
+</div>
+<div class="content">
+
+<div class="view on" id="view-cats">
+  <div class="det" id="det">
+    <div class="det-h">
+      <div><div class="det-t" id="dt"></div><div class="det-m" id="dm"></div></div>
+      <button onclick="closeDet()">X Tancar</button>
     </div>
-    <div class="header-right">
-      <span id="countdown-badge">…</span>
-      <span id="last-update">Carregant…</span>
-      <button id="btn-refresh">↻ Refresca</button>
+    <div class="tl" id="dtl"></div>
+  </div>
+  <div class="sec-title">Clica una categoria per veure els equips inscrits</div>
+  <div class="cat-grid" id="catgrid"></div>
+</div>
+
+<div class="view" id="view-list">
+  <div class="ctrls">
+    <div class="sw"><span class="si">&#128269;</span><input type="text" id="sq" placeholder="Cerca equip, capita, ID..."/></div>
+    <select id="fcat"><option value="">Totes categories</option></select>
+    <select id="fgen"><option value="">Tot</option><option value="F">Femeni</option><option value="M">Masculi</option></select>
+    <select id="fst"><option value="">Tots estats</option><option value="confirmed">Confirmats</option><option value="pending_payment">Pendent pag.</option><option value="pending_proof">Sense just.</option></select>
+    <button class="pr" onclick="exportCSV()">CSV</button>
+  </div>
+  <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh);">
+    <div style="padding:9px 13px;border-bottom:1px solid var(--border);font-size:12px;color:var(--text2);" id="lcount"></div>
+    <div id="elist"></div>
+  </div>
+</div>
+
+<div class="view" id="view-contact">
+<div style="background:var(--warn-bg);border:1px solid var(--warn);border-radius:var(--r);padding:12px 14px;margin-bottom:12px;" id="api-config-box">
+  <div style="font-size:12px;font-weight:700;color:var(--warn);margin-bottom:7px;">Connexio al Google Sheet</div>
+  <div style="font-size:12px;color:var(--text2);margin-bottom:8px;">Enganxa la URL del teu Apps Script per carregar les dades en temps real.</div>
+  <div style="display:flex;gap:7px;flex-wrap:wrap;">
+    <input type="text" id="api-url-input" placeholder="https://script.google.com/macros/s/..." style="flex:1;min-width:200px;padding:7px 10px;font-size:12px;" />
+    <button onclick="saveApiUrl()" class="pr">Guardar i connectar</button>
+  </div>
+  <div style="font-size:11px;color:var(--text3);margin-top:6px;" id="api-url-saved"></div>
+</div>
+
+  <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:12px;box-shadow:var(--sh);">
+    <div class="sec-title">Contactar equips filtrats</div>
+    <div style="margin-bottom:10px;">
+      <select id="cfcat" onchange="updateCI()" style="margin-right:7px;margin-bottom:6px;"><option value="">Totes categories</option></select>
+      <select id="cfst" onchange="updateCI()" style="margin-bottom:6px;"><option value="">Tots estats</option><option value="confirmed">Confirmats</option><option value="pending_payment">Pendent pag.</option><option value="pending_proof">Sense just.</option></select>
     </div>
-  </header>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:10px;" id="ci">-</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;">
+      <button class="pr" onclick="openMail()">Gmail BCC</button>
+      <button class="wa-btn" onclick="openWA()">WhatsApp</button>
+      <button onclick="copyEmails()">Copiar emails</button>
+      <button onclick="copyPhones()">Copiar telefons</button>
+    </div>
+  </div>
+  <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r);padding:14px;box-shadow:var(--sh);">
+    <div class="sec-title">Missatge (usa [NOM] [EQUIP] [ID] [DIA])</div>
+    <div style="margin-bottom:8px;">
+      <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:3px;">ASSUMPTE</label>
+      <input type="text" id="msubj" value="3x3 Westfield Glories 2026 - Confirma les dades del teu equip" style="padding:8px 10px;" />
+    </div>
+    <textarea class="tmpl" id="mbody">Hola [NOM]!
 
-  <main>
-    <div id="error-msg"></div>
-    <div id="loading">⏳ Carregant dades del Sheet…</div>
+Soc l'Ana del CB Grup Barna.
 
-    <div id="dashboard" class="hidden">
-      <!-- KPIs -->
-      <div class="kpi-grid">
-        <div class="kpi"><div class="kpi-label">Total equips</div><div class="kpi-val" id="kpi-total">—</div></div>
-        <div class="kpi"><div class="kpi-label">✅ Confirmats</div><div class="kpi-val kv-green" id="kpi-ok">—</div></div>
-        <div class="kpi"><div class="kpi-label">🟠 Pend. pagament</div><div class="kpi-val kv-orange" id="kpi-pend">—</div></div>
-        <div class="kpi"><div class="kpi-label">🔴 Sense justificant</div><div class="kpi-val kv-red" id="kpi-noproof">—</div></div>
-        <div class="kpi"><div class="kpi-label">💶 Total recaptat</div><div class="kpi-val kv-red2" id="kpi-rev">—</div></div>
-        <div class="kpi"><div class="kpi-label">👥 Jugadors</div><div class="kpi-val" id="kpi-players">—</div></div>
-      </div>
+Tens la inscripcio de [EQUIP] al 3x3 Westfield Glories 2026 (6-7 de juny).
 
-      <!-- CATEGORIES -->
-      <div class="section-title">Resum per categoria</div>
-      <div class="cat-grid" id="cat-grid"></div>
+Completa les dades del teu equip:
+https://cbgrupbarna-3x3timechamber.com/completar?id=[ID]
 
-      <!-- FILTERS -->
-      <div class="filter-bar">
-        <input id="search" type="search" placeholder="🔍 Cerca equip, capità, email…"/>
-        <select id="f-status"><option value="">Tots els estats</option><option value="verificat">✅ Verificat</option><option value="pendent">🟡 Pendent</option></select>
-        <select id="f-proof"><option value="">Amb/sense just.</option><option value="yes">Té justificant</option><option value="no">Sense justificant</option></select>
-        <select id="f-cat"><option value="">Totes les categories</option></select>
-        <span id="result-count"></span>
-      </div>
+Qualsevol dubte, em dius!
+Ana Fernandez - CB Grup Barna</textarea>
+    <div style="margin-top:8px;">
+      <button onclick="copyPers()">Copiar tots els missatges personalitzats</button>
+    </div>
+  </div>
+</div>
 
-      <!-- TABLE -->
-      <div style="overflow-x:auto">
-        <table class="team-table">
-          <thead>
-            <tr>
-              <th>Codi WR</th>
-              <th>Equip</th>
-              <th>Categoria</th>
-              <th>Capità</th>
-              <th>Contacte</th>
-              <th>Estat</th>
-              <th>Just.</th>
-              <th>Total €</th>
-            </tr>
-          </thead>
-          <tbody id="tbody"></tbody>
-        </table>
-      </div>
-    </div><!-- /dashboard -->
-  </main>
-</div><!-- /app -->
+</div>
 
 <script>
-const PIN = "3326";
-const API = "https://script.google.com/macros/s/AKfycbz69LQrY4bLSFWHFbeN28pUcvQaSMu-8bviAs05D8X0IhQ8xQ0oYflo_a2sKGJN5CqCVg/exec";
-const TOKEN = "5380d2190245826c46dac2000932c595fb3c48a5b5ebab3e67c2e7a057289f04";
-const UNLOCK_KEY = "dash_3x3_unlocked";
+// ============================================================
+// CONFIGURACIÓ API — posa aqui la URL del teu Apps Script
+// ============================================================
+var API_URL = ''; // <-- POSA AQUI LA URL DEL APPS SCRIPT
 
-// ── PIN GATE ──────────────────────────────────────────────
-function checkUnlocked(){
-  return sessionStorage.getItem(UNLOCK_KEY) === "1";
-}
-function unlock(){
-  sessionStorage.setItem(UNLOCK_KEY,"1");
-  document.getElementById("pin-gate").style.display="none";
-  document.getElementById("app").style.display="block";
-  loadData();
-}
+// Dades en memòria (s'actualitzen des de l'API o es fan servir les locals)
+var DATA_LOADED = false;
+var LAST_UPDATE = null;
 
-if(checkUnlocked()){
-  document.getElementById("pin-gate").style.display="none";
-  document.getElementById("app").style.display="block";
-}
-
-const pinInput = document.getElementById("pin-input");
-const pinError = document.getElementById("pin-error");
-pinInput.addEventListener("input", function(){
-  const v = this.value.replace(/\D/g,"");
-  this.value = v;
-  pinError.textContent="";
-  if(v.length===4){
-    if(v===PIN){ unlock(); }
-    else{ pinError.textContent="PIN incorrecte. Torna a provar."; this.value=""; this.focus(); }
+// ============================================================
+// CÀRREGA DE DADES EN VIU
+// ============================================================
+function loadFromSheet() {
+  if (!API_URL) {
+    showStatus('Configuració pendent: afegeix la URL del Apps Script a la variable API_URL', 'warn');
+    return;
   }
-});
-if(!checkUnlocked()) pinInput.focus();
-
-// ── COUNTDOWN ──────────────────────────────────────────────
-function updateCountdown(){
-  const event=new Date("2026-06-06T09:00:00");
-  const now=new Date();
-  const days=Math.ceil((event-now)/(1000*60*60*24));
-  const el=document.getElementById("countdown-badge");
-  if(days>0) el.textContent=days+" dies per al torneig 🏀";
-  else if(days===0) el.textContent="AVUI! 🏀";
-  else el.textContent="Torneig finalitzat";
+  showStatus('Carregant dades del Sheet...', 'info');
+  document.getElementById('refresh-btn').textContent = 'Carregant...';
+  document.getElementById('refresh-btn').disabled = true;
+  
+  fetch(API_URL)
+    .then(function(r) { return r.json(); })
+    .then(function(res) {
+      if (!res.ok) throw new Error(res.error || 'Error desconegut');
+      var d = res.data;
+      
+      // Fusionar equips i individuals al DATA global
+      DATA = [];
+      (d.equips || []).forEach(function(e) {
+        DATA.push(normalizeEntry(e, false));
+      });
+      (d.individuals || []).forEach(function(e) {
+        DATA.push(normalizeEntry(e, true));
+      });
+      
+      DATA_LOADED = true;
+      LAST_UPDATE = new Date();
+      showStatus('Actualitzat: ' + LAST_UPDATE.toLocaleTimeString('ca-ES'), 'ok');
+      document.getElementById('refresh-btn').textContent = 'Actualitzar';
+      document.getElementById('refresh-btn').disabled = false;
+      
+      // Re-renderitzar tot
+      kpis();
+      renderCats();
+      if (document.getElementById('view-list').classList.contains('on')) renderList();
+    })
+    .catch(function(err) {
+      showStatus('Error: ' + err.message + ' (usant dades locals)', 'err');
+      document.getElementById('refresh-btn').textContent = 'Actualitzar';
+      document.getElementById('refresh-btn').disabled = false;
+    });
 }
-updateCountdown();
 
-// ── DATA FETCH ──────────────────────────────────────────────
-let allData=[];
+function normalizeEntry(e, isIndiv) {
+  return {
+    id: e.id || '',
+    team: e.team || '',
+    cat: e.cat || '',
+    gen: e.gen || 'M',
+    dia: e.dia || '?/6',
+    cap: e.cap || '',
+    email: e.email || '',
+    phone: String(e.phone || ''),
+    jug: parseInt(e.jug) || (isIndiv ? 1 : 4),
+    jugadors: e.jugadors || [],
+    status: e.status || 'pending_payment',
+    proof: !!e.proof,
+    total: parseFloat(e.total) || 0,
+    club: e.club || 'pendent',
+    individual: isIndiv,
+    note: e.note || ''
+  };
+}
 
-async function loadData(){
-  document.getElementById("loading").style.display="block";
-  document.getElementById("dashboard").classList.add("hidden");
-  document.getElementById("error-msg").style.display="none";
+function showStatus(msg, type) {
+  var el = document.getElementById('api-status');
+  if (!el) return;
+  var colors = {ok:'var(--ok)',warn:'var(--warn)',err:'var(--err)',info:'var(--text2)'};
+  el.textContent = msg;
+  el.style.color = colors[type] || 'var(--text2)';
+}
 
-  const url=`${API}?action=inscripcions&token=${encodeURIComponent(TOKEN)}`;
-  try{
-    const r=await fetch(url);
-    const json=await r.json();
-    if(json.error){
-      showError("Error API: "+json.error+" — Comprova que METRICS_TOKEN estigui configurat a Apps Script.");
-      return;
-    }
-    allData=json.inscripcions||[];
-    document.getElementById("last-update").textContent="Actualitzat: "+new Date().toLocaleTimeString("ca-ES");
-    document.getElementById("loading").style.display="none";
-    document.getElementById("dashboard").classList.remove("hidden");
-    buildCatFilter();
-    render();
-  }catch(err){
-    showError("No s'han pogut carregar les dades. Comprova la connexió. Detall: "+err.message);
+
+var CC = {
+  "Escola M":     {limit:4,  dia:"6/6", gen:"M"},
+  "Escola F":     {limit:4,  dia:"6/6", gen:"F"},
+  "Escoleta M":   {limit:6,  dia:"7/6", gen:"M"},
+  "Escoleta F":   {limit:6,  dia:"7/6", gen:"F"},
+  "Premini M":    {limit:8,  dia:"6/6", gen:"M"},
+  "Premini F":    {limit:8,  dia:"6/6", gen:"F"},
+  "Mini M":       {limit:10, dia:"6/6", gen:"M"},
+  "Mini F":       {limit:8,  dia:"6/6", gen:"F"},
+  "Infantil M":   {limit:10, dia:"7/6", gen:"M"},
+  "Infantil F":   {limit:8,  dia:"7/6", gen:"F"},
+  "Cadet M":      {limit:8,  dia:"7/6", gen:"M"},
+  "Cadet F":      {limit:8,  dia:"7/6", gen:"F"},
+  "Junior M":     {limit:4,  dia:"7/6", gen:"M"},
+  "Junior F":     {limit:4,  dia:"7/6", gen:"F"},
+  "Seniors M":    {limit:6,  dia:"6/6", gen:"M"},
+  "Seniors F":    {limit:6,  dia:"6/6", gen:"F"},
+  "Senior Pro M": {limit:6,  dia:"6/6", gen:"M"},
+  "Veterans M":   {limit:6,  dia:"6/6", gen:"M"},
+  "Veterans F":   {limit:6,  dia:"6/6", gen:"F"}
+};
+
+var DATA = [
+  {id:"T3X3-2026-9R3VB",team:"KABRAS KABREADAS",cat:"Infantil M",gen:"M",dia:"7/6",cap:"Ander Sanchez",email:"aitor.sanchez@avvale.com",phone:"34609085305",jug:4,jugadors:["Ander Sanchez Lopez","Alex Porto Alfonso","Jon Navarro Rodriguez","Guillem Vidal Morato"],status:"confirmed",proof:true,total:75,club:"cbgb",note:"Talles: tots M. Tots CB Grup Barna. Confirmat 23/05. Mail confirmacio enviat 28/05."},
+  {id:"WR-031",team:"Croqueta Mentality",cat:"Cadet F",gen:"F",dia:"7/6",cap:"Pilar Franco",email:"pilufranco@gmail.com",phone:"34608522753",jug:4,status:"confirmed",proof:false,total:67.5,club:"cbgb",note:"Mail confirmacio enviat 28/05."},
+  {id:"WR-032",team:"The Walking Dead",cat:"Veterans M",gen:"M",dia:"6/6",cap:"Alberto Mari",email:"almari_21@hotmail.com",phone:"",jug:4,status:"confirmed",proof:false,total:67.5,club:"extern",note:"Mail confirmacio enviat 28/05."},
+  {id:"WR-033",team:"The Microwaves",cat:"Infantil M",gen:"M",dia:"7/6",cap:"Eric Garcia",email:"oscgarvid@gmail.com",phone:"656167822",jug:4,status:"confirmed",proof:false,total:67.5,club:"cbgb",note:"Mail confirmacio enviat 28/05."},
+  {id:"WR-034",team:"Ice Barna",cat:"Cadet M",gen:"M",dia:"7/6",cap:"Lluc Seseras",email:"llucsepe@gmail.com",phone:"639304918",jug:4,status:"confirmed",proof:false,total:67.5,club:"cbgb",note:"Mail confirmacio enviat 28/05."},
+  {id:"WR-039",team:"MEWE",cat:"Infantil F",gen:"F",dia:"7/6",cap:"Anna Vaz-Romero",email:"magda.blazquez@movistar.es",phone:"600403608",jug:4,status:"confirmed",proof:true,total:67.5,club:"pendent",note:"Mail confirmacio enviat 28/05."},
+  {id:"T3X3-2026-E7XZ5",team:"CENTREMEDICMARTORELL",cat:"Senior Pro M",gen:"M",dia:"6/6",cap:"Pau Truno Soms",email:"ptrunoj16@gmail.com",phone:"622670508",jug:4,jugadors:["Pau Truno Soms","Alberto Vicente","Javier Valeiras","Alex Almenta"],status:"pending_payment",proof:true,total:76.5,club:"extern",note:"Pendent confirmar-li acces pista dia 5 de juny per entrenar"},
+  {id:"T3X3-2026-XX97H",team:"Bocadillo jamon y queso",cat:"Infantil M",gen:"M",dia:"7/6",cap:"Isaac Montaner",email:"dulga76@gmail.com",phone:"630438251",jug:4,status:"pending_payment",proof:true,total:63.75,club:"pendent"},
+  {id:"T3X3-2026-T574C",team:"BCN Mini rockets",cat:"Escoleta F",gen:"F",dia:"7/6",cap:"Diana Aparicio",email:"daparicioo@gmail.com",phone:"620749316",jug:5,status:"pending_payment",proof:false,total:81,club:"cbgb"},
+  {id:"T3X3-2026-ZLGFV",team:"las leonas",cat:"Premini F",gen:"F",dia:"6/6",cap:"Aurelie Dehesdin",email:"aurelie.dehesdin@gmail.com",phone:"34657907992",jug:4,jugadors:["Chloé Loaiza","Nina Gomez","Gal.la Estudis","Uxia Sabater"],status:"pending_payment",proof:true,total:67.5,club:"extern"},
+  {id:"WR-036",team:"Sharks 67ers",cat:"Infantil M",gen:"M",dia:"7/6",cap:"Martin Gonzalez",email:"carlosgonzalezaguera@gmail.com",phone:"658896573",jug:4,status:"pending_payment",proof:true,total:71.25,club:"pendent"},
+  {id:"WR-037",team:"Sercosers",cat:"Cadet M",gen:"M",dia:"7/6",cap:"Bruno Cunado",email:"torralbaliso@gmail.com",phone:"611670575",jug:4,status:"pending_payment",proof:true,total:67.5,club:"pendent"},
+  {id:"WR-038",team:"Fire Girls",cat:"Mini F",gen:"F",dia:"6/6",cap:"Maria Navales",email:"susana.lareo@gmail.com",phone:"696501660",jug:5,status:"pending_payment",proof:true,total:81,club:"pendent"},
+  {id:"WR-040",team:"Black Mambas",cat:"Mini F",gen:"F",dia:"6/6",cap:"Elsa Miguel",email:"marga.lopez.cor@gmail.com",phone:"34667703418",jug:5,status:"pending_payment",proof:true,total:81,club:"pendent"},
+  {id:"WR-041",team:"All 4 One",cat:"Mini M",gen:"M",dia:"6/6",cap:"Biel Garcia",email:"unlimited792@gmail.com",phone:"667516599",jug:4,status:"pending_payment",proof:true,total:67.5,club:"pendent",note:"Jaime Garcia (pare) confirma pagat. Pendent enviar-li justificant i confirmar categoria Mini M (fill 12 anys). 23/05 demana confirmacio."},
+  {id:"WR-042",team:"Fade away",cat:"Mini M",gen:"M",dia:"6/6",cap:"Pau Filella",email:"miriamgn@hotmail.com",phone:"636519326",jug:4,status:"pending_payment",proof:true,total:67.5,club:"pendent"},
+  {id:"WR-043",team:"TETONES",cat:"Cadet M",gen:"M",dia:"7/6",cap:"Ricard Benavent Gonzalez",email:"ricard.benavent10@gmail.com",phone:"722441110",jug:4,status:"confirmed",proof:true,total:67.5,club:"cbgb",note:"Email confirmacio pendent a ygonzape@hotmail.com (Yol, pare). 28/05 prometida confirmacio avui. Mail confirmacio enviat 28/05."},
+  {id:"WR-044",team:"Chihuabrown",cat:"Mini M",gen:"M",dia:"6/6",cap:"Guillem Martinez",email:"torralbaliso@gmail.com",phone:"676513393",jug:4,status:"pending_payment",proof:true,total:67.5,club:"pendent"},
+  {id:"WR-045",team:"Las Divas",cat:"Infantil F",gen:"F",dia:"7/6",cap:"Laia Filella",email:"miriamgn@hotmail.com",phone:"636519326",jug:4,status:"pending_payment",proof:true,total:67.5,club:"pendent"},
+  {id:"WR-046",team:"Street Ball Sants",cat:"Seniors F",gen:"F",dia:"6/6",cap:"Lina Zaraual",email:"linazaraual142@gmail.com",phone:"633676031",jug:4,status:"pending_payment",proof:true,total:76.5,club:"extern"},
+  {id:"WR-047",team:"Los platano de canarias",cat:"Infantil F",gen:"F",dia:"7/6",cap:"Jana Quera",email:"mpizarro27@gmail.com",phone:"667945841",jug:4,status:"pending_payment",proof:true,total:67.5,club:"pendent"},
+  {id:"WR-048",team:"Golden Tigers",cat:"Premini M",gen:"M",dia:"6/6",cap:"Marc Buchidau",email:"egliga4@gmail.com",phone:"672576332",jug:4,status:"pending_payment",proof:true,total:63.75,club:"pendent"},
+  {id:"WR-049",team:"BARNA PANTHERS",cat:"Escola M",gen:"M",dia:"6/6",cap:"Gael Garcia",email:"v.cucchiararo@gmail.com",phone:"622247503",jug:4,status:"pending_payment",proof:true,total:63.75,club:"cbgb"},
+  {id:"WR-050",team:"BCN STRAW HATS",cat:"Mini M",gen:"M",dia:"6/6",cap:"Bernat Auge",email:"verovirus_@hotmail.com",phone:"620670029",jug:4,status:"pending_payment",proof:true,total:67.5,club:"pendent"},
+  {id:"WR-051",team:"Barrets de palla",cat:"Mini M",gen:"M",dia:"6/6",cap:"Nico Farre",email:"ngyague@gmail.com",phone:"610496061",jug:5,status:"pending_payment",proof:true,total:76.5,club:"pendent"},
+  {id:"WR-052",team:"BasketQueens",cat:"Infantil F",gen:"F",dia:"7/6",cap:"Kena Daniel",email:"alejandra.manrique@gmail.com",phone:"623989676",jug:4,status:"pending_payment",proof:true,total:63.75,club:"pendent"},
+  {id:"WR-053",team:"Lulihuka",cat:"Junior M",gen:"M",dia:"7/6",cap:"Oriol Filella",email:"miriamgn@hotmail.com",phone:"636519326",jug:4,status:"pending_payment",proof:true,total:67.5,club:"pendent"},
+  {id:"WR-054",team:"Timechamber Blue",cat:"Cadet F",gen:"F",dia:"7/6",cap:"Ale Serra",email:"isiserra@hotmail.com",phone:"626314619",jug:4,status:"pending_payment",proof:true,total:67.5,club:"cbgb"},
+  {id:"WR-055",team:"Grup Sabarclar",cat:"Infantil M",gen:"M",dia:"7/6",cap:"Gerard Punti",email:"Puntmix@msn.com",phone:"744883972",jug:4,status:"pending_payment",proof:true,total:67.5,club:"cbgb"},
+  {id:"WR-056",team:"REDDEVILS",cat:"Mini M",gen:"M",dia:"6/6",cap:"Pol Mari",email:"aldiclapol@gmail.com",phone:"649564399",jug:4,status:"pending_payment",proof:true,total:67.5,club:"pendent"},
+  {id:"WR-057",team:"No Mercy Hoops",cat:"Cadet M",gen:"M",dia:"7/6",cap:"Rohan Thomas",email:"marysarroca@hotmail.com",phone:"649844811",jug:4,status:"pending_payment",proof:true,total:67.5,club:"pendent"},
+  {id:"WR-058",team:"Step Back",cat:"Premini M",gen:"M",dia:"6/6",cap:"Lluc Puig",email:"andreupuig14@gmail.com",phone:"662115774",jug:4,status:"pending_payment",proof:true,total:67.5,club:"pendent"},
+  {id:"WR-059",team:"Com a Casa Menjadors",cat:"Premini M",gen:"M",dia:"6/6",cap:"Jordi Prim",email:"jordiprim@comacasamenjadors.cat",phone:"677233516",jug:4,status:"pending_payment",proof:false,total:67.5,club:"pendent"},
+  {id:"T3X3-2026-KKH7K",team:"BOYS 6-7",cat:"Mini M",gen:"M",dia:"6/6",cap:"Wences Artunedo",email:"wenartu@gmail.com",phone:"647577886",jug:4,jugadors:["Biel Artunedo","Hugo Lozano","Rodrigo Andres","Biel Coronas"],status:"pending_payment",proof:true,total:67.5,club:"extern",note:"Inscrit 19/05 22:06 via web. Jugadors complets."},
+  {id:"WR-060",team:"Lilie/Chloe",cat:"Premini F",gen:"F",dia:"6/6",cap:"Lilie (pendent)",email:"",phone:"",jug:4,status:"pending_proof",proof:false,total:67.5,club:"pendent"},
+  {id:"T3X3-2026-CXZKE",team:"Los Huevos",cat:"Cadet F",gen:"F",dia:"7/6",cap:"Estefania Morata",email:"estefaniamorata23@hotmail.com",phone:"679632704",jug:4,jugadors:["Ana Rufian Morata","Adriana Acedo","Sara Valero Velasco","Meritxell Copete"],status:"pending_payment",proof:true,total:67.5,club:"extern",note:"Inscrit 20/05 17:22"},
+  {id:"T3X3-2026-A7R3F",team:"Green&Blacks",cat:"Premini M",gen:"M",dia:"6/6",cap:"Javi Mulero",email:"javi.muleror@gmail.com",phone:"34625037045",jug:4,jugadors:["Teo Mulero","Mauro","Jan","Alex"],status:"pending_payment",proof:true,total:67.5,club:"extern",note:"Inscrit 20/05 17:39. Tutor: Teo Mulero."},
+  {id:"T3X3-2026-8HP5Z",team:"Dream Team",cat:"Infantil M",gen:"M",dia:"7/6",cap:"Helena Alcantud",email:"helenaah1984@gmail.com",phone:"637301312",jug:4,jugadors:["Eric Garcia Alcantud","Arnau Espejo","Alejandro Sarlabous","Aleix Hernandez"],status:"confirmed",proof:true,total:67.5,club:"extern",note:"Confirmat 23/05. Justificant verificat. Eric Garcia Alcantud + 3 jugadors. Mail confirmacio enviat 28/05."},
+  {id:"T3X3-2026-PESFJ",team:"EEMB Cheeseburger",cat:"Mini M",gen:"M",dia:"6/6",cap:"Andrea Garcia Rodriguez",email:"andrea_bcn_04@hotmail.es",phone:"648800590",jug:3,jugadors:["Brais Duran Garcia","Manuel Paredes Vazquez","Eric Seoane Quijada"],status:"pending_payment",proof:false,total:67.5,club:"extern",note:"Inscrit 20/05. 3 jugadors. Falta justificant."},
+  {id:"T3X3-2026-AN49T",team:"Venimos a por la camiseta",cat:"Cadet F",gen:"F",dia:"7/6",cap:"Esther Plaza Coca",email:"estherucha_@hotmail.com",phone:"657230700",jug:4,jugadors:["Naiara Sabanes Plaza","Sara Navales Mesas","Linda Bertin","Hafsa Zairi"],status:"pending_payment",proof:true,total:75,club:"extern",note:"Vilabasquet. Justificant rebut 22/05."},
+  {id:"T3X3-2026-RS8ZJ",team:"Los mas duros del barrio",cat:"Infantil M",gen:"M",dia:"7/6",cap:"Esther Plaza Coca",email:"estherucha_@hotmail.com",phone:"657230700",jug:4,jugadors:["Biel Sabanes Plaza","Miquel De Lucas","Olivier Ocanas","Iker Lopez"],status:"pending_payment",proof:true,total:75,club:"extern",note:"Vilabasquet. Justificant rebut 22/05."},
+  {id:"T3X3-2026-SAM5G",team:"mios (Oscar)",cat:"Cadet M",gen:"M",dia:"7/6",cap:"Oscar Gabas Esteban",email:"angelgabas74@gmail.com",phone:"667413038",jug:4,jugadors:["Oscar Gabas Esteban","Jan Arlandiz Palleja","Anwar Younes Azzoug","Martin Moll Arregui"],status:"confirmed",proof:true,total:71.25,club:"extern",note:"Lima Horta. Fill Oscar. Confirmat 21/05. Mail confirmacio enviat 28/05."},
+  {id:"T3X3-2026-PNJ4Q",team:"mios (Angel)",cat:"Cadet M",gen:"M",dia:"7/6",cap:"Angel Gabas Polo",email:"angelgabas74@gmail.com",phone:"667413038",jug:4,jugadors:["Oscar Gabas Esteban","Jan Arlandiz Palleja","Anwar Younes Azzoug","Bruno Olmo"],status:"pending_payment",proof:false,total:71.25,club:"extern",note:"Lima Horta. Fill Angel. Inscrit 21/05. Falta justificant."},
+  {id:"T3X3-2026-GEY2Z",team:"LAS LAURA",cat:"Mini F",gen:"F",dia:"6/6",cap:"Cristina Altabas Pellicer",email:"nicrisnitina@gmail.com",phone:"619912163",jug:4,jugadors:["Guiomar Cemeli","Lalie Bossard","Nina Navarro","Sumati Gahan Fernandez"],status:"pending_payment",proof:false,total:90,club:"cbgb",note:"Inscrit 21/05. CB Grup Barna! Falta justificant."},
+  {id:"T3X3-2026-N65DJ",team:"Tax 3x3",cat:"Senior Pro M",gen:"M",dia:"6/6",cap:"Pol Pages Hernandez",email:"ppagesh@gmail.com",phone:"644326388",jug:4,jugadors:["Pol Pages Hernandez","Pol Saiz Fuentes","Vanilson Mandim Silva","Jaume Arnal Diaz"],status:"confirmed",proof:true,total:85,club:"extern",note:"Confirmat 28/05. PolPa ha mostrat justificant. Talles: L,L,XL,L. Mail confirmacio pendent. Mail confirmacio enviat 28/05."},
+  {id:"T3X3-2026-AAMYN",team:"BANA BULLS",cat:"Premini M",gen:"M",dia:"6/6",cap:"Maria Cinta Sarroca",email:"marysarroca@hotmail.com",phone:"649844811",jug:4,status:"pending_payment",proof:true,total:75,club:"cbgb",note:"Cistella petita! Inscrit 22/05 11:36. Maria Cinta. Te justificant."},
+  {id:"T3X3-2026-P3NUJ",team:"Team Shoko",cat:"Senior Pro M",gen:"M",dia:"6/6",cap:"Gabriel Augusto Vizcaino",email:"gabrielaugustovizcaino@gmail.com",phone:"610052634",jug:4,jugadors:["Gabriel Augusto Vizcaino","Ferran Mauri Guillem","Adrian Torres de la Torre","Diego Niebla Santos"],status:"pending_payment",proof:true,total:85,club:"cbgb",note:"Inscrit 22/05 13:53. Team Shoko (va posar Time Shoko al concepte). Joventut Badalona. Justificant: IMG_0811.jpeg"},
+  {id:"T3X3-2026-LU6KZ",team:"Sassarolis",cat:"Cadet M",gen:"M",dia:"7/6",cap:"Cristina Fernandez Marcos",email:"crisfernandezmarcos@yahoo.es",phone:"636304337",jug:4,status:"pending_payment",proof:false,total:71.25,club:"extern",note:"Inscrit 21/05 21:02. Falta justificant."},
+  {id:"T3X3-2026-VPF86",team:"Dribble Queens",cat:"Infantil F",gen:"F",dia:"7/6",cap:"Aina Flamarich",email:"dflamarich@gmail.com",phone:"677977747",jug:4,status:"pending_payment",proof:false,total:75,club:"extern",note:"Inscrit 25/05 20:52. Tutor: David Flamarich Zampalo."},
+  {id:"T3X3-2026-6XRVE",team:"Picasso team",cat:"Junior M",gen:"M",dia:"7/6",cap:"Carlos Bernal Osuna",email:"shaqosuna34@gmail.com",phone:"685664099",jug:4,status:"pending_payment",proof:false,total:67.5,club:"extern",note:"Inscrit 25/05 21:18. Promo -7.5EUR. Era lead shaqosuna34."},
+  {id:"T3X3-2026-H7SNJ",team:"John Pork",cat:"Cadet M",gen:"M",dia:"7/6",cap:"Paul Texier",email:"texier2009@gmail.com",phone:"628234623",jug:4,jugadors:["Paul Texier","Atlas Erpul","Mika Rodriguez","Victor Rocandio"],status:"confirmed",proof:true,total:75,club:"extern",note:"Tutora: Maria Asuncion Fernandez Artiga. Pagament 75EUR CaixaBank 25/05 22:17. Talles: XL,L,L,XL."},
+  {id:"T3X3-2026-MAMBR",team:"Mamberos",cat:"Cadet M",gen:"M",dia:"7/6",cap:"Biel Pamies Catalan",email:"bielpamiesc10@gmail.com",phone:"644988836",jug:4,jugadors:["Biel Pamies Catalan","Marti Porta Mas","Bruno Pachon Cabezas","David Diez Donaire"],status:"confirmed",proof:true,total:71.25,club:"pendent",note:"Inscrit 27/05 per WA. Pagament 71.25EUR confirmat. Talles: M,L,M,M. Anys: 2010,2010,?,2010."},
+  {id:"T3X3-2026-66Q32",team:"Shooter Kids",cat:"Premini M",gen:"M",dia:"6/6",cap:"Javi Mulero",email:"javi.muleror@gmail.com",phone:"625037045",jug:4,status:"pending_payment",proof:false,total:75,club:"extern",note:"Inscrit 26/05. Tutor: Jon Mulero i Jaime Crespo (jcb.crespo@gmail.com). Falta justificant."},
+  {id:"T3X3-2026-NP32Z",team:"AHMANI Knights",cat:"Infantil M",gen:"M",dia:"7/6",cap:"Sergi Gil San Jose",email:"sergi.gilsanjose@gmail.com",phone:"646652654",jug:4,jugadors:["Ahren Palau Sala","Mourtala Mbaye Ndiaye","Arnau Lopez Saiz","Nicolau Gil Jacome"],status:"confirmed",proof:true,total:75,club:"extern",note:"Confirmat per Ana 27/05. Jugadors 2012: Basket Almeda, Badalona BBC, Martinenc, Badalona BBC. Talles: L,XL,L,L."},
+  {id:"T3X3-2026-VGMCN",team:"Veterinaries Muntaner",cat:"Cadet F",gen:"F",dia:"7/6",cap:"Marta Casas Morales",email:"martacasas72@gmail.com",phone:"638392277",jug:3,jugadors:["Sara Fuster Casas","Berta Fuster Casas","Leire Garrido Fernandez"],status:"pending_payment",proof:true,total:75,club:"extern",note:"Nom canviat de SALEBE TEAM a Veterinaries Muntaner 28/05. 3 jugadores (falta J4). Clubs: CB Grup Barna, CB Santfeliuenc, Femeni Sant Adria."},
+  {id:"T3X3-2026-TLATO",team:"Los Tlatoanis",cat:"Senior Pro M",gen:"M",dia:"6/6",cap:"Alan Said Marin Kassab",email:"alansaid69@gmail.com",phone:"661484185",jug:4,jugadors:["Alan Said Marin Kassab","Pedro Vidales Rosales","Victor Alfredo Payan Navarro",""],status:"confirmed",proof:true,total:85,club:"extern",note:"Confirmat 28/05. BBVA 85EUR Alan Said Marin Kassab. Ref: 26503618500575. 4t jugador pendent. Mail confirmacio pendent (prometit a la tarda). Mail confirmacio enviat 28/05."},
+  {id:"L-ANNACAT",team:"Anna Maria Catalan (pendent)",cat:"Cadet F",gen:"F",dia:"7/6",cap:"Anna Maria Catalan Porta",email:"annacatalan13@gmail.com",phone:"616104221",jug:4,status:"pending_payment",proof:true,total:75,club:"pendent",note:"Lead actiu 26/05. Ha pujat justificant i jugadors pero no ha completat inscripcio. Cal contactar per tancar."},
+  {id:"T3X3-2026-JDJDJ",team:"Jdjdj",cat:"Premini M",gen:"M",dia:"6/6",cap:"Jaime Crespo",email:"jcb.crespo@gmail.com",phone:"659057235",jug:4,status:"pending_payment",proof:false,total:75,club:"extern",note:"Inscrit 26/05. Tutor: Jaime Crespo (pare Diego). Ha completat equip pendent pagament. Confirmat per WA 28/05."},
+  {id:"T3X3-2026-L9SZ8",team:"Ada Gomez Pulido",cat:"Escoleta F",gen:"F",dia:"7/6",cap:"David Gomez (tutor)",email:"dgandres10@gmail.com",phone:"34620539379",jug:1,status:"pending_payment",proof:true,total:17,club:"cbgb",individual:true},
+  {id:"T3X3-2026-L3PWJ",team:"Marc Lainez Royo",cat:"Escoleta M",gen:"M",dia:"7/6",cap:"Marc Lainez",email:"lainezroyo@gmail.com",phone:"625431071",jug:1,status:"confirmed",proof:true,total:18,club:"pendent",individual:true},
+  {id:"T3X3-2026-VNQC9",team:"Franklin Cuevas Ferreras",cat:"Escoleta M",gen:"M",dia:"7/6",cap:"Franklin Cuevas",email:"klindelclow@gmail.com",phone:"34640913313",jug:1,status:"pending_payment",proof:true,total:18,club:"pendent",individual:true},
+  {id:"solo-gill",team:"Gill Nfumi Ngache",cat:"Seniors M",gen:"M",dia:"6/6",cap:"Gill Nfumi",email:"nfumingachegill@gmail.com",phone:"660085901",jug:1,status:"pending_payment",proof:false,total:20,club:"pendent",individual:true},
+  {id:"solo-gael",team:"Gael Nanvou Barniol",cat:"Escola M",gen:"M",dia:"6/6",cap:"Gael Nanvou",email:"nuriabarniol88@gmail.com",phone:"688901801",jug:1,status:"pending_payment",proof:false,total:20,club:"cbgb",individual:true},
+  {id:"WRI-LUCA",team:"Luca (Escoleta)",cat:"Escoleta M",gen:"M",dia:"7/6",cap:"Familia Luca",email:"",phone:"",jug:1,status:"pending_proof",proof:false,total:18,club:"cbgb",individual:true},
+  {id:"solo-clarenz",team:"Clarenz Villanueva",cat:"Infantil M",gen:"M",dia:"7/6",cap:"Clarenz Villanueva",email:"clarenzgabriel0@gmail.com",phone:"695653970",jug:1,status:"pending_payment",proof:true,total:20,club:"CE Vila Olimpica",individual:true,note:"Individual Infantil M. Nat 2010-01-15. Talla M. Aler. Federat. CE Vila Olimpica. Pagament 20EUR confirmat 25/05 per WA."},
+  {id:"T3X3-2026-CJHQH",team:"Jordan Rollins",cat:"Veterans M",gen:"M",dia:"6/6",cap:"Jordan Rollins",email:"carpeomniavino@gmail.com",phone:"16302511846",jug:1,status:"pending_payment",proof:true,total:18,club:"extern",individual:true,note:"Individual Veterans Masculí. Inscrit 19/05 23:11."}
+];
+
+
+var _currentTeam = null;
+
+function showTeam(id) {
+  var d = null;
+  for(var i=0;i<DATA.length;i++){if(DATA[i].id===id){d=DATA[i];break;}}
+  if(!d) return;
+  _currentTeam = d;
+
+  document.getElementById('m-team').textContent = d.team;
+  document.getElementById('m-meta').textContent = d.cat + ' - ' + d.dia + (d.individual?' - Individual':'');
+
+  var status = {confirmed:'Confirmat',pending_payment:'Pendent pagament',pending_payment:'Sense justificant'}[d.status]||d.status;
+  var sdot = d.status==='confirmed'?'#2d7d3a':d.status==='pending_payment'?'#b45309':'#b91c1c';
+
+  var rows = [
+    ['ID',d.id],
+    ['Estat','<span style="display:inline-flex;align-items:center;gap:5px;"><span style="width:8px;height:8px;border-radius:50%;background:'+sdot+';display:inline-block;"></span>'+status+'</span>'],
+    ['Categoria',d.cat],
+    ['Dia',d.dia],
+    ['Genere',d.gen==='F'?'Femeni':'Masculi'],
+    ['Capita / Tutor',d.cap||'---'],
+    ['Email',d.email||'---'],
+    ['Telefon',d.phone||'---'],
+    ['Jugadors',d.jug],
+    ['Justificant',d.proof?'Si':'No'],
+    ['Total',d.total+'EUR'],
+    ['Club',d.club==='cbgb'?'CB Grup Barna':d.club==='extern'?'Extern':'Pendent confirmar']
+  ];
+
+  var html = rows.map(function(r){
+    return '<div class="mrow"><span class="ml">'+r[0]+'</span><span class="mv">'+r[1]+'</span></div>';
+  }).join('');
+
+  if(d.note) {
+    html += '<div style="background:var(--warn-bg);border-radius:5px;padding:8px 10px;margin-top:10px;font-size:12px;color:var(--warn);">'+esc(d.note)+'</div>';
   }
+
+  document.getElementById('m-body').innerHTML = html;
+
+  var waBtn = document.getElementById('m-wa');
+  var mailBtn = document.getElementById('m-mail');
+  waBtn.style.display = (d.phone && d.phone.length>5) ? 'inline-flex' : 'none';
+  mailBtn.style.display = (d.email && d.email.indexOf('@')>0) ? 'inline-flex' : 'none';
+
+  document.getElementById('team-modal').classList.add('on');
 }
 
-function showError(msg){
-  const el=document.getElementById("error-msg");
-  el.textContent=msg;
-  el.style.display="block";
-  document.getElementById("loading").style.display="none";
+function closeTeam() {
+  document.getElementById('team-modal').classList.remove('on');
+  _currentTeam = null;
 }
 
-document.getElementById("btn-refresh").addEventListener("click",loadData);
-
-// ── HELPERS ──────────────────────────────────────────────
-function esc(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));}
-
-function statusLabel(row){
-  const estat=(row.pagament_estat||"pendent").toLowerCase();
-  if(/verificat|confirmat|pagat|ok/.test(estat)) return {label:"✅ Verificat",cls:"b-green"};
-  const hasProof=!!(row.justificant_drive_url||"").trim();
-  if(hasProof) return {label:"🟠 Pend. pagament",cls:"b-orange"};
-  return {label:"🔴 Sense just.",cls:"b-red"};
+function openTeamWA() {
+  if(!_currentTeam||!_currentTeam.phone) return;
+  var p = _currentTeam.phone.replace(/[^0-9]/g,'');
+  if(!p.startsWith('34')) p='34'+p;
+  var msg = 'Hola '+(_currentTeam.cap||'').split(' ')[0]+'! Soc l\'Ana del CB Grup Barna respecte al 3x3 Westfield Glories 2026.';
+  window.open('https://wa.me/'+p+'?text='+encodeURIComponent(msg),'_blank');
 }
 
-function proofBadge(row){
-  const hasProof=!!(row.justificant_drive_url||"").trim();
-  return hasProof
-    ? `<a href="${esc(row.justificant_drive_url)}" target="_blank" class="badge b-green">✓ Veure ↗</a>`
-    : `<span class="badge b-red">✗ No</span>`;
+function openTeamMail() {
+  if(!_currentTeam||!_currentTeam.email) return;
+  window.location.href='mailto:'+_currentTeam.email+'?subject=3x3 Westfield Glories 2026 - '+encodeURIComponent(_currentTeam.team);
 }
 
-// ── CATEGORY FILTER ──────────────────────────────────────
-function buildCatFilter(){
-  const cats=[...new Set(allData.map(d=>d.categoria||""))].filter(Boolean).sort();
-  const sel=document.getElementById("f-cat");
-  sel.innerHTML='<option value="">Totes les categories</option>';
-  cats.forEach(c=>{const o=document.createElement("option");o.value=c;o.textContent=c;sel.appendChild(o);});
+function copyTeamInfo() {
+  if(!_currentTeam) return;
+  var d=_currentTeam;
+  var status={confirmed:'Confirmat',pending_payment:'Pendent pagament',pending_payment:'Sense justificant'}[d.status]||d.status;
+  var txt = [
+    '=== '+d.team+' ===',
+    'ID: '+d.id,
+    'Categoria: '+d.cat+' ('+d.dia+')',
+    'Estat: '+status,
+    'Capita: '+d.cap,
+    'Email: '+(d.email||'---'),
+    'Telefon: '+(d.phone||'---'),
+    'Jugadors: '+d.jug,
+    'Justificant: '+(d.proof?'Si':'No'),
+    'Total: '+d.total+'EUR'
+  ].join('\n');
+  if(d.note) txt += '\nNota: '+d.note;
+  navigator.clipboard.writeText(txt).then(function(){alert('Info copiada!');});
 }
 
-// ── CATEGORY SUMMARY ──────────────────────────────────────
-function renderCats(filtered){
-  const grid=document.getElementById("cat-grid");
-  const bycat={};
-  filtered.forEach(d=>{
-    const c=d.categoria||"(sense)";
-    if(!bycat[c]) bycat[c]={ok:0,pend:0,noproof:0};
-    const st=statusLabel(d);
-    if(st.cls==="b-green") bycat[c].ok++;
-    else if(st.cls==="b-orange") bycat[c].pend++;
-    else bycat[c].noproof++;
+var SL = {confirmed:"Confirmat",pending_payment:"Pend. pag.",pending_payment:"Sense just."};
+var SC = {confirmed:"bs",pending_payment:"bw",pending_payment:"bd"};
+
+function esc(s) {
+  return String(s||'').replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":'&#39;'}[c];});
+}
+
+// Countdown
+(function(){
+  var d = Math.ceil((new Date('2026-06-06T09:00:00')-new Date())/864e5);
+  document.getElementById('cd').textContent = d>0 ? d+' dies fins al torneig' : 'AVUI!';
+})();
+
+// Tabs
+function sv(v) {
+  ['cats','list','contact'].forEach(function(n,i){
+    document.getElementById('view-'+n).className = 'view'+(v===n?' on':'');
+    document.querySelectorAll('.tab')[i].className = 'tab'+(v===n?' on':'');
   });
-  grid.innerHTML=Object.keys(bycat).sort().map(cat=>{
-    const c=bycat[cat];
-    const total=c.ok+c.pend+c.noproof;
-    return `<div class="cat-card">
-      <div class="cat-name">${esc(cat)}</div>
-      <div class="cat-bars">
-        ${c.ok?`<span style="color:var(--green)">✅ ${c.ok}</span>`:""}
-        ${c.pend?`<span style="color:var(--orange)">🟠 ${c.pend}</span>`:""}
-        ${c.noproof?`<span style="color:#dc2626">🔴 ${c.noproof}</span>`:""}
-        <span style="margin-left:auto">= ${total}</span>
-      </div>
-    </div>`;
-  }).join("");
+  if(v==='list') renderList();
+  if(v==='contact') updateCI();
 }
 
-// ── MAIN RENDER ──────────────────────────────────────────
-function getFiltered(){
-  const q=document.getElementById("search").value.toLowerCase().trim();
-  const fst=document.getElementById("f-status").value;
-  const fp=document.getElementById("f-proof").value;
-  const fcat=document.getElementById("f-cat").value;
+// Categories obj
+function getCats() {
+  var c = {};
+  DATA.filter(function(d){return !d.individual;}).forEach(function(d){
+    if(!c[d.cat]) c[d.cat]=[];
+    c[d.cat].push(d);
+  });
+  return c;
+}
 
-  return allData.filter(d=>{
-    const st=statusLabel(d);
-    if(fst==="verificat" && st.cls!=="b-green") return false;
-    if(fst==="pendent" && st.cls==="b-green") return false;
-    if(fp==="yes" && !(d.justificant_drive_url||"").trim()) return false;
-    if(fp==="no" && !!(d.justificant_drive_url||"").trim()) return false;
-    if(fcat && d.categoria!==fcat) return false;
+// KPIs globals
+// ============================================================
+// FILTRES RAPIDS
+// ============================================================
+var _qf = 'all';
+
+function setQF(filter) {
+  _qf = filter;
+  // Actualitzar botons
+  ['all','confirmed','fem','masc','individual'].forEach(function(f) {
+    var btn = document.getElementById('qf-' + f);
+    if (btn) btn.className = 'qf-btn' + (f === filter ? ' qf-active' : '');
+    // Restaurar colors
+    if (f === 'fem' && f !== filter) { btn.style.borderColor='var(--fem)'; btn.style.color='var(--fem)'; }
+    if (f === 'masc' && f !== filter) { btn.style.borderColor='var(--masc)'; btn.style.color='var(--masc)'; }
+    if (f === 'individual' && f !== filter) { btn.style.borderColor='#1e40af'; btn.style.color='#1e40af'; }
+  });
+
+  var qfList = document.getElementById('qf-list');
+  var catGrid = document.getElementById('catgrid');
+  var catsTitle = document.getElementById('cats-title');
+
+  if (filter === 'all') {
+    qfList.style.display = 'none';
+    catGrid.style.display = 'grid';
+    catsTitle.style.display = 'block';
+    closeDet();
+    return;
+  }
+
+  // Filtrar DATA
+  var filtered = DATA.filter(function(d) {
+    if (filter === 'confirmed') return !d.individual && d.status === 'confirmed';
+    if (filter === 'fem') return !d.individual && d.gen === 'F';
+    if (filter === 'masc') return !d.individual && d.gen === 'M';
+    if (filter === 'individual') return d.individual;
+    return true;
+  });
+
+  catGrid.style.display = 'none';
+  catsTitle.style.display = 'none';
+  closeDet();
+
+  var labels = {confirmed:'Confirmats ('+filtered.length+')',fem:'Equips Femenins ('+filtered.length+')',masc:'Equips Masculins ('+filtered.length+')',individual:'Individuals ('+filtered.length+')'};
+  
+  qfList.innerHTML = '<div style="padding:9px 14px;border-bottom:2px solid var(--border);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text2);">' + (labels[filter]||'') + '</div>' +
+    filtered.map(function(d) {
+      var sd = d.status==='confirmed'?'sc':d.status==='pending_payment'?'sp':'sn';
+      var genBadge = d.individual ? '<span class="badge" style="background:#dbeafe;color:#1e40af;">Individual</span>' :
+        d.gen==='F' ? '<span class="badge" style="background:var(--fem-bg);color:var(--fem);">F</span>' :
+        '<span class="badge" style="background:var(--masc-bg);color:var(--masc);">M</span>';
+      var jugadors = d.jugadors && d.jugadors.length > 0 ? d.jugadors.filter(function(j){return j;}).join(', ') : '—';
+      return '<div class="qf-item" data-qfid="'+esc(d.id)+'">' +
+        '<div style="flex:1;">' +
+        '<div class="qf-item-name">'+esc(d.team)+'</div>' +
+        '<div class="qf-item-meta">' +
+        '<span><span class="sdot '+sd+'"></span>'+esc(SL[d.status]||d.status)+'</span>' +
+        '<span>'+esc(d.cat)+'</span>' +
+        '<span>'+d.dia+'</span>' +
+        (d.cap?'<span>'+esc(d.cap)+'</span>':'') +
+        '</div>' +
+        (jugadors!=='—'?'<div style="font-size:11px;color:var(--text3);margin-top:3px;">'+esc(jugadors)+'</div>':'') +
+        '</div>' +
+        '<div class="qf-item-right" style="margin-left:10px;">'+genBadge+'</div>' +
+        '</div>';
+    }).join('');
+
+  qfList.style.display = 'block';
+  qfList.querySelectorAll('[data-qfid]').forEach(function(el) {
+    el.addEventListener('click', function() { showTeam(this.getAttribute('data-qfid')); });
+  });
+}
+
+
+// ============================================================
+// EXPORTAR A EXCEL
+// ============================================================
+function exportXLS() {
+  var teams = DATA.filter(function(d){ return !d.individual; });
+  var indivs = DATA.filter(function(d){ return d.individual; });
+  
+  // Capçaleres
+  var headers = ['ID','Equip','Categoria','Genere','Dia','Estat','Justificant','Capita','Email','Telefon','Jugadors','J1','J2','J3','J4','J5','Total EUR','Club','Notes'];
+  
+  var rows = [];
+  
+  // Equips
+  teams.forEach(function(d) {
+    var jugs = d.jugadors || [];
+    var st = {confirmed:'Confirmat',pending_payment:'Pendent pagament',pending_proof:'Sense justificant'}[d.status]||d.status;
+    rows.push([
+      d.id, d.team, d.cat, d.gen==='F'?'Femeni':'Masculi', d.dia,
+      st, d.proof?'Si':'No',
+      d.cap, d.email||'', d.phone||'',
+      d.jug,
+      jugs[0]||'', jugs[1]||'', jugs[2]||'', jugs[3]||'', jugs[4]||'',
+      d.total, d.club, d.note||''
+    ]);
+  });
+  
+  // Separador
+  rows.push(['--- INDIVIDUALS ---','','','','','','','','','','','','','','','','','','']);
+  
+  // Individuals
+  indivs.forEach(function(d) {
+    var st = {confirmed:'Confirmat',pending_payment:'Pendent pagament',pending_proof:'Sense justificant'}[d.status]||d.status;
+    rows.push([
+      d.id, d.team, d.cat, d.gen==='F'?'Femeni':'Masculi', d.dia,
+      st, d.proof?'Si':'No',
+      d.cap, d.email||'', d.phone||'',
+      1, d.cap, '','','','',
+      d.total, d.club, d.note||''
+    ]);
+  });
+  
+  // Generar CSV amb BOM per Excel
+  var csv = [headers].concat(rows).map(function(row) {
+    return row.map(function(c) {
+      var s = String(c===null||c===undefined?'':c);
+      // Escapar cometes i comes
+      if (s.indexOf(',')>-1 || s.indexOf('"')>-1 || s.indexOf('\n')>-1) {
+        s = '"' + s.replace(/"/g,'""') + '"';
+      }
+      return s;
+    }).join(',');
+  }).join('\n');
+  
+  // BOM per Excel UTF-8
+  var blob = new Blob(['\uFEFF' + csv], {type:'text/csv;charset=utf-8;'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = '3x3_Westfield_Glories_2026_' + new Date().toISOString().slice(0,10) + '.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function kpis() {
+  var cats = getCats();
+  var teams = DATA.filter(function(d){ return !d.individual; });
+  var indivs = DATA.filter(function(d){ return d.individual; });
+  var fem = teams.filter(function(d){ return d.gen==='F'; }).length;
+  var masc = teams.filter(function(d){ return d.gen==='M'; }).length;
+  var rev = DATA.reduce(function(s,d){ return s+d.total; }, 0);
+  var jugTeams = teams.reduce(function(s,d){ return s+d.jug; }, 0);
+  var jugIndiv = indivs.length;
+  var conf = DATA.filter(function(d){ return d.status==='confirmed'; }).length;
+  var withProof = teams.filter(function(d){ return d.proof; }).length;
+  var noProof = teams.filter(function(d){ return !d.proof; }).length;
+  var places = 0;
+  Object.keys(cats).forEach(function(cat){
+    var cfg=CC[cat]||{limit:8};
+    places+=Math.max(0,cfg.limit-cats[cat].length);
+  });
+  document.getElementById('k0').textContent = teams.length;
+  document.getElementById('k1').textContent = withProof+' / '+noProof+' sense';
+  document.getElementById('k2').textContent = conf;
+  document.getElementById('k3').textContent = places;
+  document.getElementById('k4').textContent = fem;
+  document.getElementById('k5').textContent = masc;
+  document.getElementById('k6').textContent = Math.round(rev)+'EUR';
+  document.getElementById('k7').textContent = jugIndiv;
+  document.getElementById('k8').textContent = '~'+(jugTeams+jugIndiv);
+}
+
+
+// Render categories
+var _acCat = null;
+function renderCats() {
+  var cats = getCats();
+  var names = Object.keys(cats).sort();
+  var grid = document.getElementById('catgrid');
+  
+  // Poblar selects
+  ['fcat','cfcat'].forEach(function(sid){
+    var sel=document.getElementById(sid);
+    if(!sel) return;
+    sel.innerHTML='<option value="">Totes categories</option>';
+    names.forEach(function(n){var o=document.createElement('option');o.value=n;o.textContent=n;sel.appendChild(o);});
+  });
+  
+  grid.innerHTML = names.map(function(cat){
+    var teams=cats[cat];
+    var cfg=CC[cat]||{limit:8,gen:'M',dia:'?'};
+    var lim=cfg.limit;
+    var pct=Math.min(100,Math.round((teams.length/lim)*100));
+    var ll=Math.max(0,lim-teams.length);
+    var full=ll===0, almost=!full&&ll<=2;
+    var g=cfg.gen;
+    var gc=g==='F'?'f':'m';
+    var gl=g==='F'?'FEM':'MASC';
+    var cc='cc '+(g==='F'?'fem':'masc')+(full?' full':almost?' almost':'');
+    var bc='cbar'+(full?' fb':almost?' ab':'');
+    var pc='pl '+(full?'no':almost?'w':'ok');
+    var pt=full?'COMPLET':ll+' places';
+    return '<div class="'+cc+'" onclick="showCat(\''+esc(cat)+'\')" id="cc_'+cat.replace(/ /g,'_')+'">'+
+      '<div class="gbadge '+gc+'">'+gl+'</div>'+
+      '<div class="ceq">'+teams.length+'/'+lim+'</div>'+
+      '<div class="cn">'+esc(cat)+'</div>'+
+      '<div class="cbar-w"><div class="'+bc+'" style="width:'+pct+'%"></div></div>'+
+      '<div class="cst"><span>'+cfg.dia+'</span><span class="'+pc+'">'+pt+'</span></div>'+
+      '</div>';
+  }).join('');
+  document.getElementById('elist').querySelectorAll('[data-lid]').forEach(function(el){
+    el.addEventListener('click', function(){ showTeam(this.getAttribute('data-lid')); });
+  });
+}
+
+function showCat(cat) {
+  var cats=getCats();
+  var teams=cats[cat]||[];
+  var cfg=CC[cat]||{limit:8,gen:'M',dia:'?'};
+  var ll=Math.max(0,cfg.limit-teams.length);
+  _acCat=cat;
+  document.querySelectorAll('.cc').forEach(function(el){el.classList.remove('on');});
+  var card=document.getElementById('cc_'+cat.replace(/ /g,'_'));
+  if(card) card.classList.add('on');
+  document.getElementById('dt').textContent=cat;
+  document.getElementById('dm').textContent=teams.length+' equips - '+ll+' places lliures de '+cfg.limit+' - Dia '+cfg.dia;
+  var html='';
+  teams.forEach(function(d){
+    var sd=d.status==='confirmed'?'sc':d.status==='pending_payment'?'sp':'sn';
+    var statusTxt=SL[d.status]||d.status;
+    html+='<div class="ti" data-teamid="'+d.id+'" style="cursor:pointer;">';
+    html+='<div class="ti-n">'+esc(d.team)+' <span style="font-size:10px;color:var(--text3);">&#8594;</span></div>';
+    html+='<div class="ti-m">';
+    html+='<span><span class="sdot '+sd+'"></span>'+esc(statusTxt)+'</span>';
+    html+='<span>'+esc(d.cap)+'</span>';
+    if(d.phone) html+='<span>'+esc(d.phone)+'</span>';
+    html+='<span style="font-family:monospace;font-size:10px;">'+esc(d.id)+'</span>';
+    html+='</div>';
+    if(d.note) html+='<div style="font-size:10px;color:#b45309;margin-top:3px;background:#fef3c7;padding:2px 5px;border-radius:3px;">'+esc(d.note)+'</div>';
+    html+='</div>';
+  });
+  document.getElementById('dtl').innerHTML=html;
+  document.getElementById('dtl').querySelectorAll('[data-teamid]').forEach(function(el){
+    el.addEventListener('click',function(){showTeam(this.getAttribute('data-teamid'));});
+  });
+  var det=document.getElementById('det');
+  det.classList.add('on');
+  det.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function closeDet() {
+  document.getElementById('det').classList.remove('on');
+  document.querySelectorAll('.cc').forEach(function(el){el.classList.remove('on');});
+  _acCat=null;
+}
+
+// Llista equips
+function getLF() {
+  var q=document.getElementById('sq').value.toLowerCase().trim();
+  var fc=document.getElementById('fcat').value;
+  var fg=document.getElementById('fgen').value;
+  var fs=document.getElementById('fst').value;
+  return DATA.filter(function(d){
+    if(fc&&d.cat!==fc) return false;
+    if(fg&&d.gen!==fg) return false;
+    if(fs&&d.status!==fs) return false;
     if(!q) return true;
-    const hay=[d.nom_equip,d.capita,d.email,d.telefon,d.codi_wr,d.categoria].join(" ").toLowerCase();
-    return hay.includes(q);
+    return (d.team+' '+d.cap+' '+d.id+' '+(d.email||'')).toLowerCase().indexOf(q)>=0;
   });
 }
+function renderList() {
+  var f=getLF();
+  document.getElementById('elist').querySelectorAll('[data-lid]').forEach(function(el){el.addEventListener('click',function(){showTeam(this.getAttribute('data-lid'));});});
+  document.getElementById('lcount').textContent='Mostrant '+f.length+' de '+DATA.length;
+  document.getElementById('elist').innerHTML=f.map(function(d){
+    var gb=d.gen==='F'?'<span class="badge" style="background:var(--fem-bg);color:var(--fem);">F</span>':'<span class="badge" style="background:var(--masc-bg);color:var(--masc);">M</span>';
+    return '<div class="er" data-lid="'+esc(d.id)+'" style="cursor:pointer;">'+
+      '<div style="min-width:150px;"><div style="font-weight:600;">'+esc(d.team)+'</div>'+
+      '<div style="font-size:11px;color:var(--text2);">'+esc(d.cap)+(d.phone?' - '+esc(d.phone):'')+'</div></div>'+
+      '<div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap;">'+
+      gb+'<span class="badge bn">'+esc(d.cat)+'</span>'+
+      '<span class="badge '+SC[d.status]+'">'+SL[d.status]+'</span>'+
+      '<span style="font-size:11px;color:var(--text3);">'+esc(d.id)+'</span>'+
+      '</div></div>';
+  }).join('');
+}
+['sq','fcat','fgen','fst'].forEach(function(id){
+  var el=document.getElementById(id);
+  if(el) el.addEventListener('input',renderList);
+});
 
-function render(){
-  const filtered=getFiltered();
-  document.getElementById("result-count").textContent=`Mostrant ${filtered.length} de ${allData.length}`;
-
-  // KPIs (sempre sobre el total)
-  const all=allData;
-  document.getElementById("kpi-total").textContent=all.length;
-  document.getElementById("kpi-ok").textContent=all.filter(d=>statusLabel(d).cls==="b-green").length;
-  document.getElementById("kpi-pend").textContent=all.filter(d=>statusLabel(d).cls==="b-orange").length;
-  document.getElementById("kpi-noproof").textContent=all.filter(d=>statusLabel(d).cls==="b-red").length;
-  document.getElementById("kpi-rev").textContent=all.reduce((s,d)=>s+(d.total||0),0).toFixed(0)+"€";
-  document.getElementById("kpi-players").textContent=all.reduce((s,d)=>s+(d.jugadors||[]).length,0);
-
-  renderCats(all);
-
-  const tbody=document.getElementById("tbody");
-  tbody.innerHTML=filtered.map(d=>{
-    const st=statusLabel(d);
-    const prf=proofBadge(d);
-    const tel=d.telefon?(
-      `<a href="https://wa.me/${d.telefon.replace(/\D/g,"").replace(/^(?!34)/,"34")}" target="_blank" style="color:var(--green);text-decoration:none">💬 ${esc(d.telefon)}</a>`
-    ):"—";
-    return `<tr>
-      <td data-label="Codi WR"><span class="team-id">${esc(d.codi_wr||"—")}</span></td>
-      <td data-label="Equip"><div class="team-name">${esc(d.nom_equip)}</div></td>
-      <td data-label="Categoria"><span class="badge b-grey">${esc(d.categoria||"—")}</span></td>
-      <td data-label="Capità"><div class="team-cap">${esc(d.capita||"—")}</div></td>
-      <td data-label="Contacte" style="font-size:12px;color:var(--text2)">
-        <div>${esc(d.email||"—")}</div>
-        <div>${tel}</div>
-      </td>
-      <td data-label="Estat"><span class="badge ${st.cls}">${st.label}</span></td>
-      <td data-label="Just.">${prf}</td>
-      <td data-label="Total €" style="font-weight:600">${d.total||0}€</td>
-    </tr>`;
-  }).join("") || `<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--text2)">Cap resultat</td></tr>`;
+function exportCSV() {
+  var f=getLF();
+  var h=['ID','Equip','Cat','Gen','Dia','Status','Just','Capita','Email','Telefon','Jug','Total'];
+  var r=f.map(function(d){return[d.id,d.team,d.cat,d.gen,d.dia,SL[d.status],d.proof?'Si':'No',d.cap,d.email||'',d.phone||'',d.jug,d.total];});
+  var csv=[h].concat(r).map(function(row){return row.map(function(c){return'"'+String(c).replace(/"/g,'""')+'"';}).join(',');}).join('\n');
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'}));
+  a.download='3x3_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
 }
 
-["search","f-status","f-proof","f-cat"].forEach(id=>
-  document.getElementById(id).addEventListener("input",render)
-);
+// Contactar
+function getCT() {
+  var fc=document.getElementById('cfcat').value;
+  var fs=document.getElementById('cfst').value;
+  return DATA.filter(function(d){
+    if(fc&&d.cat!==fc) return false;
+    if(fs&&d.status!==fs) return false;
+    return true;
+  });
+}
+function updateCI() {
+  var f=getCT();
+  var we=f.filter(function(d){return d.email&&d.email.indexOf('@')>0;}).length;
+  var wp=f.filter(function(d){return d.phone&&d.phone.length>5;}).length;
+  document.getElementById('ci').textContent=f.length+' equips - '+we+' amb email - '+wp+' amb telefon';
+}
+function openMail() {
+  var f=getCT();
+  var emails=f.filter(function(d){return d.email&&d.email.indexOf('@')>0;}).map(function(d){return d.email;});
+  if(!emails.length){alert('Cap equip te email.');return;}
+  var s=encodeURIComponent(document.getElementById('msubj').value||'3x3');
+  var b=encodeURIComponent(document.getElementById('mbody').value||'');
+  window.location.href='mailto:voluntarisgrupbarna@gmail.com?bcc='+emails.join(',')+'&subject='+s+'&body='+b;
+}
+function openWA() {
+  var msg=document.getElementById('mbody').value||'';
+  navigator.clipboard.writeText(msg).then(function(){alert('Missatge copiat! Obre WhatsApp Web.');window.open('https://web.whatsapp.com/','_blank');});
+}
+function copyEmails() {
+  var emails=getCT().filter(function(d){return d.email&&d.email.indexOf('@')>0;}).map(function(d){return d.email;});
+  navigator.clipboard.writeText(emails.join(', ')).then(function(){alert(emails.length+' emails copiats!');});
+}
+function copyPhones() {
+  var phones=getCT().filter(function(d){return d.phone&&d.phone.length>5;}).map(function(d){return d.team+': '+d.phone;});
+  navigator.clipboard.writeText(phones.join('\n')).then(function(){alert(phones.length+' telefons copiats!');});
+}
+function copyPers() {
+  var f=getCT();
+  var tmpl=document.getElementById('mbody').value||'';
+  var subj=document.getElementById('msubj').value||'';
+  var lines=f.map(function(d){
+    var contact=d.email||d.phone||'sense';
+    var msg=tmpl.replace(/\[NOM\]/g,(d.cap||'').split(' ')[0]).replace(/\[EQUIP\]/g,d.team||'').replace(/\[ID\]/g,d.id||'').replace(/\[DIA\]/g,d.dia||'');
+    return '=== '+d.team+' | '+contact+' ===\nASSUMPTE: '+subj+'\n\n'+msg;
+  }).join('\n----------------------------------------\n\n');
+  navigator.clipboard.writeText(lines).then(function(){alert(f.length+' missatges copiats!');});
+}
 
-if(checkUnlocked()) loadData();
+// Init
+kpis();
+renderCats();
+
+function saveApiUrl() {
+  var url = document.getElementById('api-url-input').value.trim();
+  if (!url) { alert('Enganxa la URL primer'); return; }
+  API_URL = url;
+  try { localStorage.setItem('cbgb_api_url', url); } catch(e) {}
+  document.getElementById('api-url-saved').textContent = 'URL guardada localment. Connectant...';
+  document.getElementById('api-config-box').style.borderColor = 'var(--ok)';
+  loadFromSheet();
+}
+
+// Recuperar URL guardada i autocarregar
+(function() {
+  try {
+    var saved = localStorage.getItem('cbgb_api_url');
+    if (saved) {
+      API_URL = saved;
+      document.getElementById('api-url-input').value = saved;
+      document.getElementById('api-url-saved').textContent = 'URL carregada des de memoria local.';
+      // Autocarregar despres d'un moment
+      setTimeout(loadFromSheet, 500);
+    } else {
+      showStatus('Configura la URL del Apps Script a la pestanya Contactar', 'warn');
+    }
+  } catch(e) {}
+})();
+
 </script>
+
+<div class="modal-bg" id="team-modal" onclick="if(event.target===this)closeTeam()">
+  <div class="modal">
+    <div class="mh">
+      <div>
+        <div class="mt" id="m-team">---</div>
+        <div class="ms" id="m-meta">---</div>
+      </div>
+      <button onclick="closeTeam()" style="flex-shrink:0;">&#10005; Tancar</button>
+    </div>
+    <div id="m-body"></div>
+    <div class="mactions">
+      <button id="m-wa" class="wa-btn" onclick="openTeamWA()" style="display:none;">&#128172; WhatsApp</button>
+      <button id="m-mail" onclick="openTeamMail()" style="display:none;">&#128140; Email</button>
+      <button onclick="copyTeamInfo()">&#128203; Copiar info</button>
+      <button onclick="closeTeam()">Tancar</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>

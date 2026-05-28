@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Valida les dades del teu equip · 3x3 Westfield Glories 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+:root{--red:#c8102e;--rd:#9a0d23;--gold:#c8932a;--bg:#f5f0e8;--card:#fff;--border:#ddd6c8;--text:#1a1a1a;--text2:#555;--text3:#999;--pre-bg:#eef5ff;--pre-bd:#a8c4e8;--pre-tx:#1a4a8a;--ok:#1a7a3a;--ok-bg:#e8f5ec;--warn:#b45309;--warn-bg:#fef3c7;--err:#b91c1c;--r:10px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);padding-bottom:60px;font-size:15px}
+.header{background:var(--red);color:white;padding:16px 20px 0;text-align:center}
+.header h1{font-size:19px;font-weight:800}
+.header .sub{font-size:11px;opacity:.75;margin-top:2px;margin-bottom:14px}
+.team-banner{background:linear-gradient(135deg,#1a0a0e,#3d1822);color:white;padding:16px 20px;text-align:center;border-bottom:3px solid var(--gold)}
+.team-name{font-size:22px;font-weight:800}
+.team-meta{font-size:12px;color:rgba(255,255,255,.65);margin-top:3px}
+.team-id{font-family:monospace;font-size:11px;color:var(--gold);margin-top:4px}
+.qr-row{background:white;border-bottom:1px solid var(--border);padding:14px 20px;display:flex;gap:12px;align-items:center}
+.qr-box{background:white;border:2px solid var(--border);border-radius:6px;padding:5px;flex-shrink:0}
+.qr-info h3{font-size:13px;font-weight:700;margin-bottom:2px}
+.qr-info p{font-size:11px;color:var(--text2)}
+.main{max-width:640px;margin:0 auto;padding:14px 16px}
+.notice{background:var(--warn-bg);border-left:4px solid var(--gold);padding:11px 14px;border-radius:0 6px 6px 0;font-size:13px;color:#7a5a00;margin-bottom:14px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);margin-bottom:12px;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,.06)}
+.card-hdr{background:linear-gradient(90deg,var(--red),var(--rd));color:white;padding:10px 15px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.card-body{padding:14px}
+.jblock{border:1.5px solid var(--border);border-radius:7px;padding:12px;margin-bottom:10px;background:#fdfbf8}
+.jblock.has-data{background:var(--pre-bg);border-color:var(--pre-bd)}
+.jlabel{font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.jnum{background:var(--red);color:white;width:20px;height:20px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0}
+.dbadge{margin-left:auto;font-size:10px;background:var(--pre-bg);color:var(--pre-tx);border:1px solid var(--pre-bd);padding:2px 6px;border-radius:10px}
+.dbadge.pend{background:#fff8e8;color:#7a5a00;border-color:#e8c87a}
+.cols-2{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:9px}
+.cols-3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:9px;margin-bottom:9px}
+.cols-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:9px;margin-bottom:9px}
+.field label{font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.3px;display:block;margin-bottom:4px}
+.req{color:var(--red)}
+.field input,.field select,.field textarea{width:100%;padding:9px 11px;border:1.5px solid var(--border);border-radius:7px;font-size:14px;font-family:inherit;color:var(--text);background:white;transition:border-color .15s}
+.field input:focus,.field select:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px rgba(200,16,46,.1)}
+.field input.pre,.field select.pre{background:var(--pre-bg);border-color:var(--pre-bd);color:var(--pre-tx)}
+.field input.err,.field select.err{border-color:#f5b0b0;background:#fff5f5}
+.gtoggle{display:flex;border:1.5px solid var(--border);border-radius:7px;overflow:hidden}
+.gtoggle input{display:none}
+.gtoggle label{flex:1;padding:9px;text-align:center;font-size:13px;font-weight:600;cursor:pointer;background:white;color:var(--text2);transition:all .15s;user-select:none}
+.gtoggle input:checked+label{background:var(--red);color:white}
+.add-btn{width:100%;padding:11px;border:2px dashed var(--border);border-radius:7px;background:none;color:var(--text2);font-size:13px;cursor:pointer;font-family:inherit;transition:all .15s;margin-bottom:4px}
+.add-btn:hover{border-color:var(--red);color:var(--red)}
+.check-row{display:flex;gap:9px;align-items:flex-start;margin-bottom:10px;padding:9px;border-radius:7px;background:#fafafa;border:1px solid var(--border)}
+.check-row input[type=checkbox]{width:20px;height:20px;margin-top:1px;flex-shrink:0;accent-color:var(--red);cursor:pointer}
+.check-row label{font-size:13px;color:var(--text2);cursor:pointer;line-height:1.4}
+.form-err{display:none;background:#fff0f0;border:1px solid #f5b0b0;border-radius:7px;padding:11px 14px;font-size:13px;color:#b00;margin-bottom:12px}
+.submit-btn{width:100%;background:var(--red);color:white;border:none;border-radius:var(--r);padding:16px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .15s}
+.submit-btn:hover:not(:disabled){background:var(--rd)}
+.submit-btn:disabled{background:#ccc;cursor:not-allowed}
+.success{display:none;text-align:center;padding:50px 20px}
+.success .ico{font-size:64px;margin-bottom:14px}
+.success h2{font-size:22px;font-weight:800;color:var(--ok);margin-bottom:8px}
+.success p{font-size:14px;color:var(--text2);line-height:1.5}
+.already{display:none;background:var(--ok-bg);border:1px solid #8fd4a8;border-radius:7px;padding:11px 14px;font-size:13px;color:var(--ok);margin-bottom:12px}
+.not-found{text-align:center;padding:60px 20px;color:var(--text2)}
+@media(max-width:500px){.cols-2,.cols-3,.cols-4{grid-template-columns:1fr 1fr}.cols-3>:first-child{grid-column:1/-1}.qr-row{flex-direction:column;text-align:center}}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>3x3 Westfield Glories 2026</h1>
+  <div class="sub">CB Grup Barna · Clot, Barcelona · 6 i 7 de juny</div>
+</div>
+<div class="team-banner">
+  <div class="team-name" id="tnom">Carregant...</div>
+  <div class="team-meta" id="tmeta"></div>
+  <div class="team-id" id="tid2"></div>
+</div>
+<div class="qr-row">
+  <div class="qr-box" id="qrbox"></div>
+  <div class="qr-info">
+    <h3>El teu QR de check-in</h3>
+    <p>Guarda o fes captura d'aquest codi.<br>Presenteu-lo a l'entrada el dia del torneig.</p>
+  </div>
+</div>
+<div class="main">
+  <div class="already" id="already">Has enviat les dades abans. Pots modificar i tornar a enviar si cal.</div>
+  <div id="form-wrap">
+    <div class="notice">Revisa les dades que tenim i <strong>omple els camps buits</strong>. Les dades en blau ja les tenim — modifica-les si han canviat.</div>
+    <div style="font-size:12px;color:var(--text3);margin-bottom:12px;"><span style="color:var(--red)">*</span> Camp obligatori</div>
+
+    <div class="card">
+      <div class="card-hdr">Equip i capita</div>
+      <div class="card-body">
+        <div class="cols-2" style="margin-bottom:10px;">
+          <div class="field">
+            <label>Nom de l'equip <span class="req">*</span></label>
+            <input type="text" id="f-equip" placeholder="Nom de l'equip"/>
+          </div>
+          <div class="field">
+            <label>Categoria</label>
+            <input type="text" id="f-cat" readonly style="background:#f5f5f5;color:#888;"/>
+          </div>
+        </div>
+        <div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px;">Capita / Tutor o Tutora responsable</div>
+        <div class="cols-2" style="margin-bottom:10px;">
+          <div class="field">
+            <label>Nom i cognoms <span class="req">*</span></label>
+            <input type="text" id="f-cap" placeholder="Nom complet" autocomplete="name"/>
+          </div>
+          <div class="field">
+            <label>Genere <span class="req">*</span></label>
+            <div class="gtoggle">
+              <input type="radio" name="cap-gen" id="cap-m" value="M"/>
+              <label for="cap-m">Masculi</label>
+              <input type="radio" name="cap-gen" id="cap-f" value="F"/>
+              <label for="cap-f">Femeni</label>
+            </div>
+          </div>
+        </div>
+        <div class="cols-2">
+          <div class="field">
+            <label>Correu <span class="req">*</span></label>
+            <input type="email" id="f-email" placeholder="correu@exemple.com" autocomplete="email"/>
+          </div>
+          <div class="field">
+            <label>Mobil / WhatsApp <span class="req">*</span></label>
+            <input type="tel" id="f-phone" placeholder="600 000 000" autocomplete="tel"/>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-hdr">Jugadors / Jugadores</div>
+      <div class="card-body">
+        <div id="jugs-wrap"></div>
+        <button class="add-btn" id="add-btn" type="button" onclick="addJug()">+ Afegir jugador/a (max 5)</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-hdr">Comentaris</div>
+      <div class="card-body">
+        <div class="field">
+          <label>Canvis, dubtes o comentaris (opcional)</label>
+          <textarea id="f-notes" rows="3" placeholder="Ex: canviem un jugador, dubte sobre l'horari..." style="resize:vertical;"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-hdr">Proteccio de dades</div>
+      <div class="card-body">
+        <div class="check-row">
+          <input type="checkbox" id="rgpd"/>
+          <label for="rgpd"><strong>Accepto</strong> que CB Grup Barna tracti les dades personals dels jugadors/es per a la gestio del 3x3 Westfield Glories 2026 (RGPD). <span class="req">*</span></label>
+        </div>
+        <div class="check-row">
+          <input type="checkbox" id="imatge"/>
+          <label for="imatge">Autoritzo l'us de fotografies i videos on apareixin els jugadors/es per a la comunicacio del torneig per part de CB Grup Barna i Westfield Glories.</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-err" id="form-err"></div>
+    <button class="submit-btn" id="submit-btn" type="button" onclick="submitForm()">Confirmar i enviar les dades</button>
+  </div>
+  <div class="success" id="success">
+    <div class="ico">🏀</div>
+    <h2>Dades confirmades!</h2>
+    <p>Hem rebut la informacio de <strong id="s-nom"></strong>.<br>Ens veiem a Westfield Glories el <strong id="s-dia"></strong>!</p>
+    <div id="s-qr" style="margin:20px auto;display:inline-block;background:white;padding:10px;border-radius:8px;border:2px solid var(--border);"></div>
+  </div>
+  <div class="not-found" id="not-found" style="display:none;">
+    <div style="font-size:48px;margin-bottom:12px;">❓</div>
+    <p>Equip no trobat.<br>Comprova que l'enllas sigui correcte.</p>
+  </div>
+</div>
+<script>
+const WEBAPP_URL = "POSA_AQUI_LA_URL_DEL_APPS_SCRIPT";
+const BASE_CHECKIN = "https://cbgrupbarna-3x3timechamber.com/checkin";
+const TALLES = ["","XS","S","M","L","XL","XXL","8","10","12-14","16"];
+var EQUIPS = {
+  "T3X3-2026-9R3VB":{nom:"KABRAS KABREADAS",cat:"Infantil M",gen:"M",dia:"7/6",cap:"Ander Sanchez",email:"aitor.sanchez@avvale.com",phone:"34609085305",numJug:4,individual:false,jugadors:[{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""}]},
+  "WR-031":{nom:"Croqueta Mentality",cat:"Cadet F",gen:"F",dia:"7/6",cap:"Pilar Franco",email:"pilufranco@gmail.com",phone:"34608522753",numJug:4,individual:false,jugadors:[{nom:"",any:"",gen:"F",club:"",talla:""},{nom:"",any:"",gen:"F",club:"",talla:""},{nom:"",any:"",gen:"F",club:"",talla:""},{nom:"",any:"",gen:"F",club:"",talla:""}]},
+  "WR-032":{nom:"The Walking Dead",cat:"Veterans M",gen:"M",dia:"6/6",cap:"Alberto Mari",email:"almari_21@hotmail.com",phone:"",numJug:4,individual:false,jugadors:[{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""}]},
+  "WR-033":{nom:"The Microwaves",cat:"Infantil M",gen:"M",dia:"7/6",cap:"Eric Garcia",email:"oscgarvid@gmail.com",phone:"656167822",numJug:4,individual:false,jugadors:[{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""}]},
+  "WR-034":{nom:"Ice Barna",cat:"Cadet M",gen:"M",dia:"7/6",cap:"Lluc Seseras",email:"llucsepe@gmail.com",phone:"639304918",numJug:4,individual:false,jugadors:[{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""}]},
+  "WR-039":{nom:"MEWE",cat:"Infantil F",gen:"F",dia:"7/6",cap:"Anna Vaz-Romero",email:"magda.blazquez@movistar.es",phone:"600403608",numJug:4,individual:false,jugadors:[{nom:"",any:"",gen:"F",club:"",talla:""},{nom:"",any:"",gen:"F",club:"",talla:""},{nom:"",any:"",gen:"F",club:"",talla:""},{nom:"",any:"",gen:"F",club:"",talla:""}]},
+  "T3X3-2026-E7XZ5":{nom:"CENTREMEDICMARTORELL",cat:"Senior Pro M",gen:"M",dia:"6/6",cap:"Pau Truno Soms",email:"ptrunoj16@gmail.com",phone:"622670508",numJug:4,individual:false,jugadors:[{nom:"Pau Truno Soms",any:"",gen:"M",club:"",talla:""},{nom:"Alberto Vicente",any:"",gen:"M",club:"",talla:""},{nom:"Javier Valeiras",any:"",gen:"M",club:"",talla:""},{nom:"Alex Almenta",any:"",gen:"M",club:"",talla:""}]},
+  "T3X3-2026-XX97H":{nom:"Bocadillo jamon y queso",cat:"Infantil M",gen:"M",dia:"7/6",cap:"Isaac Montaner",email:"dulga76@gmail.com",phone:"630438251",numJug:4,individual:false,jugadors:[{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""}]},
+  "T3X3-2026-T574C":{nom:"BCN Mini rockets",cat:"Escoleta F",gen:"F",dia:"7/6",cap:"Diana Aparicio",email:"daparicioo@gmail.com",phone:"620749316",numJug:5,individual:false,jugadors:[{nom:"",any:"",gen:"F",club:"",talla:""},{nom:"",any:"",gen:"F",club:"",talla:""},{nom:"",any:"",gen:"F",club:"",talla:""},{nom:"",any:"",gen:"F",club:"",talla:""},{nom:"",any:"",gen:"F",club:"",talla:""}]},
+  "T3X3-2026-ZLGFV":{nom:"las leonas",cat:"Premini F",gen:"F",dia:"6/6",cap:"Aurelie Dehesdin",email:"aurelie.dehesdin@gmail.com",phone:"34657907992",numJug:4,individual:false,jugadors:[{nom:"Chloé Loaiza",any:"",gen:"F",club:"",talla:""},{nom:"Nina Gomez",any:"",gen:"F",club:"",talla:""},{nom:"Gal.la Estudis",any:"",gen:"F",club:"",talla:""},{nom:"Uxia Sabater",any:"",gen:"F",club:"",talla:""}]},
+  "WR-036":{nom:"Sharks 67ers",cat:"Infantil M",gen:"M",dia:"7/6",cap:"Martin Gonzalez",email:"carlosgonzalezaguera@gmail.com",phone:"658896573",numJug:4,individual:false,jugadors:[{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""}]},
+  "WR-037":{nom:"Sercosers",cat:"Cadet M",gen:"M",dia:"7/6",cap:"Bruno Cunado",email:"torralbaliso@gmail.com",phone:"611670575",numJug:4,individual:false,jugadors:[{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""}]},
+  "WR-038":{nom:"Fire Girls",cat:"Mini F",gen:"F",dia:"6/6",cap:"Maria Navales",email:"susana.lareo@gmail.com",phone:"696501660",numJug:5,individual:false,jugadors:[{nom:"",any:"",gen:"F",club:"",talla:""},{nom:"",any:"",gen:"F",club:"",talla:""},{nom:"",any:"",gen:"F",club:"",talla:""},{nom:"",any:"",gen:"F",club:"",talla:""},{nom:"",any:"",gen:"F",club:"",talla:""}]},
+  "WR-040":{nom:"Black Mambas",cat:"Mini F",gen:"F",dia:"6/6",cap:"Elsa Miguel",email:"marga.lopez.cor@gmail.com",phone:"34667703418",numJug:5,individual:false,jugadors:[{nom:"",any:"",gen:"F",club:"",talla:""},{nom:"",any:"",gen:"F",club:"",talla:""},{nom:"",any:"",gen:"F",club:"",talla:""},{nom:"",any:"",gen:"F",club:"",talla:""},{nom:"",any:"",gen:"F",club:"",talla:""}]},
+  "WR-041":{nom:"All 4 One",cat:"Mini M",gen:"M",dia:"6/6",cap:"Biel Garcia",email:"unlimited792@gmail.com",phone:"667516599",numJug:4,individual:false,jugadors:[{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""}]},
+  "WR-042":{nom:"Fade away",cat:"Mini M",gen:"M",dia:"6/6",cap:"Pau Filella",email:"miriamgn@hotmail.com",phone:"636519326",numJug:4,individual:false,jugadors:[{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""}]},
+  "WR-043":{nom:"TETONES",cat:"Cadet M",gen:"M",dia:"7/6",cap:"Ricard Benavent",email:"ricard.benavent10@gmail.com",phone:"722441110",numJug:4,individual:false,jugadors:[{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""}]},
+  "WR-044":{nom:"Chihuabrown",cat:"Mini M",gen:"M",dia:"6/6",cap:"Guillem Martinez",email:"torralbaliso@gmail.com",phone:"676513393",numJug:4,individual:false,jugadors:[{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""}]},
+  "WR-045":{nom:"Las Divas",cat:"Infantil F",gen:"F",dia:"7/6",cap:"Laia Filella",email:"miriamgn@hotmail.com",phone:"636519326",numJug:4,individual:false,jugadors:[{nom:"",any:"",gen:"F",club:"",talla:""},{nom:"",any:"",gen:"F",club:"",talla:""},{nom:"",any:"",gen:"F",club:"",talla:""},{nom:"",any:"",gen:"F",club:"",talla:""}]},
+  "WR-046":{nom:"Street Ball Sants",cat:"Seniors F",gen:"F",dia:"6/6",cap:"Lina Zaraual",email:"linazaraual142@gmail.com",phone:"633676031",numJug:4,individual:false,jugadors:[{nom:"",any:"",gen:"F",club:"",talla:""},{nom:"",any:"",gen:"F",club:"",talla:""},{nom:"",any:"",gen:"F",club:"",talla:""},{nom:"",any:"",gen:"F",club:"",talla:""}]},
+  "WR-047":{nom:"Los platano de canarias",cat:"Infantil F",gen:"F",dia:"7/6",cap:"Jana Quera",email:"mpizarro27@gmail.com",phone:"667945841",numJug:4,individual:false,jugadors:[{nom:"",any:"",gen:"F",club:"",talla:""},{nom:"",any:"",gen:"F",club:"",talla:""},{nom:"",any:"",gen:"F",club:"",talla:""},{nom:"",any:"",gen:"F",club:"",talla:""}]},
+  "WR-048":{nom:"Golden Tigers",cat:"Premini M",gen:"M",dia:"6/6",cap:"Marc Buchidau",email:"egliga4@gmail.com",phone:"672576332",numJug:4,individual:false,jugadors:[{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""}]},
+  "WR-049":{nom:"BARNA PANTHERS",cat:"Escola M",gen:"M",dia:"6/6",cap:"Gael Garcia",email:"v.cucchiararo@gmail.com",phone:"622247503",numJug:4,individual:false,jugadors:[{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""}]},
+  "WR-050":{nom:"BCN STRAW HATS",cat:"Mini M",gen:"M",dia:"6/6",cap:"Bernat Auge",email:"verovirus_@hotmail.com",phone:"620670029",numJug:4,individual:false,jugadors:[{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""}]},
+  "WR-051":{nom:"Barrets de palla",cat:"Mini M",gen:"M",dia:"6/6",cap:"Nico Farre",email:"ngyague@gmail.com",phone:"610496061",numJug:5,individual:false,jugadors:[{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""}]},
+  "WR-052":{nom:"BasketQueens",cat:"Infantil F",gen:"F",dia:"7/6",cap:"Kena Daniel",email:"alejandra.manrique@gmail.com",phone:"623989676",numJug:4,individual:false,jugadors:[{nom:"",any:"",gen:"F",club:"",talla:""},{nom:"",any:"",gen:"F",club:"",talla:""},{nom:"",any:"",gen:"F",club:"",talla:""},{nom:"",any:"",gen:"F",club:"",talla:""}]},
+  "WR-053":{nom:"Lulihuka",cat:"Junior M",gen:"M",dia:"7/6",cap:"Oriol Filella",email:"miriamgn@hotmail.com",phone:"636519326",numJug:4,individual:false,jugadors:[{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""}]},
+  "WR-054":{nom:"Timechamber Blue",cat:"Cadet F",gen:"F",dia:"7/6",cap:"Ale Serra",email:"isiserra@hotmail.com",phone:"626314619",numJug:4,individual:false,jugadors:[{nom:"",any:"",gen:"F",club:"",talla:""},{nom:"",any:"",gen:"F",club:"",talla:""},{nom:"",any:"",gen:"F",club:"",talla:""},{nom:"",any:"",gen:"F",club:"",talla:""}]},
+  "WR-055":{nom:"Grup Sabarclar",cat:"Infantil M",gen:"M",dia:"7/6",cap:"Gerard Punti",email:"Puntmix@msn.com",phone:"744883972",numJug:4,individual:false,jugadors:[{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""}]},
+  "WR-056":{nom:"REDDEVILS",cat:"Mini M",gen:"M",dia:"6/6",cap:"Pol Mari",email:"aldiclapol@gmail.com",phone:"649564399",numJug:4,individual:false,jugadors:[{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""}]},
+  "WR-057":{nom:"No Mercy Hoops",cat:"Cadet M",gen:"M",dia:"7/6",cap:"Rohan Thomas",email:"marysarroca@hotmail.com",phone:"649844811",numJug:4,individual:false,jugadors:[{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""}]},
+  "WR-058":{nom:"Step Back",cat:"Premini M",gen:"M",dia:"6/6",cap:"Lluc Puig",email:"andreupuig14@gmail.com",phone:"662115774",numJug:4,individual:false,jugadors:[{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""}]},
+  "WR-059":{nom:"Com a Casa Menjadors",cat:"Premini M",gen:"M",dia:"6/6",cap:"Jordi Prim",email:"jordiprim@comacasamenjadors.cat",phone:"677233516",numJug:4,individual:false,jugadors:[{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""}]},
+  "T3X3-2026-KKH7K":{nom:"BOYS 6-7",cat:"Mini M",gen:"M",dia:"6/6",cap:"Wences Artunedo",email:"wenartu@gmail.com",phone:"647577886",numJug:4,individual:false,jugadors:[{nom:"Biel Artunedo",any:"",gen:"M",club:"",talla:""},{nom:"Hugo Lozano",any:"",gen:"M",club:"",talla:""},{nom:"Rodrigo Andres",any:"",gen:"M",club:"",talla:""},{nom:"Biel Coronas",any:"",gen:"M",club:"",talla:""}]},
+  "WR-060":{nom:"Lilie/Chloe",cat:"Premini F",gen:"F",dia:"6/6",cap:"Lilie (pendent)",email:"",phone:"",numJug:4,individual:false,jugadors:[{nom:"",any:"",gen:"F",club:"",talla:""},{nom:"",any:"",gen:"F",club:"",talla:""},{nom:"",any:"",gen:"F",club:"",talla:""},{nom:"",any:"",gen:"F",club:"",talla:""}]},
+  "T3X3-2026-CXZKE":{nom:"Los Huevos",cat:"Cadet F",gen:"F",dia:"7/6",cap:"Estefania Morata",email:"estefaniamorata23@hotmail.com",phone:"679632704",numJug:4,individual:false,jugadors:[{nom:"Ana Rufian Morata",any:"",gen:"F",club:"",talla:""},{nom:"Adriana Acedo",any:"",gen:"F",club:"",talla:""},{nom:"Sara Valero Velasco",any:"",gen:"F",club:"",talla:""},{nom:"Meritxell Copete",any:"",gen:"F",club:"",talla:""}]},
+  "T3X3-2026-A7R3F":{nom:"Green&Blacks",cat:"Premini M",gen:"M",dia:"6/6",cap:"Javi Mulero",email:"javi.muleror@gmail.com",phone:"34625037045",numJug:4,individual:false,jugadors:[{nom:"Teo Mulero",any:"",gen:"M",club:"",talla:""},{nom:"Mauro",any:"",gen:"M",club:"",talla:""},{nom:"Jan",any:"",gen:"M",club:"",talla:""},{nom:"Alex",any:"",gen:"M",club:"",talla:""}]},
+  "T3X3-2026-8HP5Z":{nom:"Dream Team",cat:"Infantil M",gen:"M",dia:"7/6",cap:"Helena Alcantud",email:"helenaah1984@gmail.com",phone:"637301312",numJug:4,individual:false,jugadors:[{nom:"Eric Garcia Alcantud",any:"",gen:"M",club:"",talla:""},{nom:"Arnau Espejo",any:"",gen:"M",club:"",talla:""},{nom:"Alejandro Sarlabous",any:"",gen:"M",club:"",talla:""},{nom:"Aleix Hernandez",any:"",gen:"M",club:"",talla:""}]},
+  "T3X3-2026-PESFJ":{nom:"EEMB Cheeseburger",cat:"Mini M",gen:"M",dia:"6/6",cap:"Andrea Garcia Rodriguez",email:"andrea_bcn_04@hotmail.es",phone:"648800590",numJug:3,individual:false,jugadors:[{nom:"Brais Duran Garcia",any:"",gen:"M",club:"",talla:""},{nom:"Manuel Paredes Vazquez",any:"",gen:"M",club:"",talla:""},{nom:"Eric Seoane Quijada",any:"",gen:"M",club:"",talla:""}]},
+  "T3X3-2026-AN49T":{nom:"Venimos a por la camiseta",cat:"Cadet F",gen:"F",dia:"7/6",cap:"Esther Plaza Coca",email:"estherucha_@hotmail.com",phone:"657230700",numJug:4,individual:false,jugadors:[{nom:"Naiara Sabanes Plaza",any:"",gen:"F",club:"",talla:""},{nom:"—",any:"",gen:"F",club:"",talla:""},{nom:"—",any:"",gen:"F",club:"",talla:""},{nom:"—",any:"",gen:"F",club:"",talla:""}]},
+  "T3X3-2026-RS8ZJ":{nom:"Los mas duros del barrio",cat:"Infantil M",gen:"M",dia:"7/6",cap:"Esther Plaza Coca",email:"estherucha_@hotmail.com",phone:"657230700",numJug:4,individual:false,jugadors:[{nom:"Biel Sabanes Plaza",any:"",gen:"M",club:"",talla:""},{nom:"Miquel De Lucas",any:"",gen:"M",club:"",talla:""},{nom:"Olivier Ocanas",any:"",gen:"M",club:"",talla:""},{nom:"Iker Lopez",any:"",gen:"M",club:"",talla:""}]},
+  "T3X3-2026-SAM5G":{nom:"mios (Oscar)",cat:"Cadet M",gen:"M",dia:"7/6",cap:"Oscar Gabas Esteban",email:"angelgabas74@gmail.com",phone:"667413038",numJug:4,individual:false,jugadors:[{nom:"Oscar Gabas Esteban",any:"",gen:"M",club:"",talla:""},{nom:"Jan Arlandiz Palleja",any:"",gen:"M",club:"",talla:""},{nom:"Anwar Younes Azzoug",any:"",gen:"M",club:"",talla:""},{nom:"Martin Moll Arregui",any:"",gen:"M",club:"",talla:""}]},
+  "T3X3-2026-PNJ4Q":{nom:"mios (Angel)",cat:"Cadet M",gen:"M",dia:"7/6",cap:"Angel Gabas Polo",email:"angelgabas74@gmail.com",phone:"667413038",numJug:4,individual:false,jugadors:[{nom:"Oscar Gabas Esteban",any:"",gen:"M",club:"",talla:""},{nom:"Jan Arlandiz Palleja",any:"",gen:"M",club:"",talla:""},{nom:"Anwar Younes Azzoug",any:"",gen:"M",club:"",talla:""},{nom:"Bruno Olmo",any:"",gen:"M",club:"",talla:""}]},
+  "T3X3-2026-GEY2Z":{nom:"LAS LAURA",cat:"Mini F",gen:"F",dia:"6/6",cap:"Cristina Altabas Pellicer",email:"nicrisnitina@gmail.com",phone:"619912163",numJug:4,individual:false,jugadors:[{nom:"Guiomar Cemeli",any:"",gen:"F",club:"",talla:""},{nom:"Lalie Bossard",any:"",gen:"F",club:"",talla:""},{nom:"Nina Navarro",any:"",gen:"F",club:"",talla:""},{nom:"Sumati Gahan Fernandez",any:"",gen:"F",club:"",talla:""}]},
+  "T3X3-2026-AAMYN":{nom:"BANA BULLS",cat:"Premini M",gen:"M",dia:"6/6",cap:"Maria Cinta Sarroca",email:"marysarroca@hotmail.com",phone:"649844811",numJug:4,individual:false,jugadors:[{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""}]},
+  "T3X3-2026-SHOKO":{nom:"Team Shoko",cat:"Senior Pro M",gen:"M",dia:"6/6",cap:"Gabriel Vizcaino",email:"gabrielaugustovizcaino@gmail.com",phone:"610052634",numJug:4,individual:false,jugadors:[{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""}]},
+  "T3X3-2026-LU6KZ":{nom:"Sassarolis",cat:"Cadet M",gen:"M",dia:"7/6",cap:"Cristina Fernandez Marcos",email:"crisfernandezmarcos@yahoo.es",phone:"636304337",numJug:4,individual:false,jugadors:[{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""},{nom:"",any:"",gen:"M",club:"",talla:""}]},
+  "T3X3-2026-L9SZ8":{nom:"Ada Gomez Pulido",cat:"Escoleta F",gen:"F",dia:"7/6",cap:"David Gomez (tutor)",email:"dgandres10@gmail.com",phone:"34620539379",numJug:1,individual:true,jugadors:[{nom:"",any:"",gen:"F",club:"",talla:""}]},
+  "T3X3-2026-L3PWJ":{nom:"Marc Lainez Royo",cat:"Escoleta M",gen:"M",dia:"7/6",cap:"Marc Lainez",email:"lainezroyo@gmail.com",phone:"625431071",numJug:1,individual:true,jugadors:[{nom:"",any:"",gen:"M",club:"",talla:""}]},
+  "T3X3-2026-VNQC9":{nom:"Franklin Cuevas Ferreras",cat:"Escoleta M",gen:"M",dia:"7/6",cap:"Franklin Cuevas",email:"klindelclow@gmail.com",phone:"34640913313",numJug:1,individual:true,jugadors:[{nom:"",any:"",gen:"M",club:"",talla:""}]},
+  "solo-gill":{nom:"Gill Nfumi Ngache",cat:"Seniors M",gen:"M",dia:"6/6",cap:"Gill Nfumi",email:"nfumingachegill@gmail.com",phone:"660085901",numJug:1,individual:true,jugadors:[{nom:"",any:"",gen:"M",club:"",talla:""}]},
+  "solo-gael":{nom:"Gael Nanvou Barniol",cat:"Escola M",gen:"M",dia:"6/6",cap:"Gael Nanvou",email:"nuriabarniol88@gmail.com",phone:"688901801",numJug:1,individual:true,jugadors:[{nom:"",any:"",gen:"M",club:"",talla:""}]},
+  "WRI-LUCA":{nom:"Luca (Escoleta)",cat:"Escoleta M",gen:"M",dia:"7/6",cap:"Familia Luca",email:"",phone:"",numJug:1,individual:true,jugadors:[{nom:"",any:"",gen:"M",club:"",talla:""}]},
+  "T3X3-2026-CJHQH":{nom:"Jordan Rollins",cat:"Veterans M",gen:"M",dia:"6/6",cap:"Jordan Rollins",email:"carpeomniavino@gmail.com",phone:"16302511846",numJug:1,individual:true,jugadors:[{nom:"",any:"",gen:"M",club:"",talla:""}]}
+};
+let teamId = '', equip = null, jugCount = 0;
+
+window.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  teamId = params.get('id') || '';
+  equip = EQUIPS[teamId];
+  if (!equip) { document.getElementById('not-found').style.display = 'block'; document.getElementById('form-wrap').style.display = 'none'; document.getElementById('already').style.display = 'none'; return; }
+  document.getElementById('tnom').textContent = equip.nom;
+  document.getElementById('tmeta').textContent = equip.cat + ' · ' + equip.dia;
+  document.getElementById('tid2').textContent = 'ID: ' + teamId;
+  document.title = equip.nom + ' · 3x3 Westfield Glories 2026';
+  // QR
+  const qrUrl = BASE_CHECKIN + '?id=' + encodeURIComponent(teamId) + '&nom=' + encodeURIComponent(equip.nom) + '&cat=' + encodeURIComponent(equip.cat) + '&dia=' + encodeURIComponent(equip.dia);
+  try { new QRCode(document.getElementById('qrbox'), {text:qrUrl,width:90,height:90,colorDark:'#000',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.M}); } catch(e){}
+  // Prefill capita
+  setVal('f-equip', equip.nom);
+  setVal('f-cat', equip.cat);
+  setVal('f-cap', equip.cap);
+  setVal('f-email', equip.email);
+  setVal('f-phone', equip.phone);
+  if (equip.gen === 'M') document.getElementById('cap-m').checked = true;
+  if (equip.gen === 'F') document.getElementById('cap-f').checked = true;
+  // Jugadors
+  const jugs = equip.jugadors && equip.jugadors.length > 0 ? equip.jugadors : Array(equip.numJug || 4).fill({nom:'',any:'',gen:'',club:'',talla:''});
+  jugs.forEach((j, i) => addJugBlock(i+1, j));
+  jugCount = jugs.length;
+  updateAddBtn();
+  if (localStorage.getItem('cbgb_done_' + teamId)) { document.getElementById('already').style.display = 'block'; }
+});
+
+function setVal(id, val) {
+  const el = document.getElementById(id);
+  if (!el || !val) return;
+  el.value = val;
+  if (val.trim()) el.classList.add('pre');
+}
+
+function updateAddBtn() {
+  document.getElementById('add-btn').style.display = jugCount >= 5 ? 'none' : 'block';
+}
+
+function addJugBlock(num, data) {
+  data = data || {nom:'',any:'',gen:'',club:'',talla:''};
+  const hasData = data.nom && data.nom.trim();
+  const div = document.createElement('div');
+  div.className = 'jblock' + (hasData ? ' has-data' : '');
+  div.id = 'jb-' + num;
+  const dbadge = hasData ? '<span class="dbadge">dades registrades</span>' : '<span class="dbadge pend">pendent</span>';
+  const preNom = data.nom ? ' pre' : '';
+  const preAny = data.any ? ' pre' : '';
+  const preClub = data.club ? ' pre' : '';
+  const genM = data.gen === 'M' ? ' checked' : '';
+  const genF = data.gen === 'F' ? ' checked' : '';
+  const talla_opts = TALLES.map(t => '<option value="' + t + '"' + (data.talla===t?' selected':'') + '>' + (t||'-- Tria --') + '</option>').join('');
+  div.innerHTML = '<div class="jlabel"><span class="jnum">' + num + '</span>Jugador/a ' + num + (num===1?' (capita/a)':'') + dbadge + '</div>' +
+    '<div class="cols-3" style="margin-bottom:9px;"><div class="field"><label>Nom i cognoms <span class="req">*</span></label><input type="text" id="j' + num + '_nom" value="' + esc(data.nom) + '" placeholder="Nom complet" class="' + preNom + '"/></div>' +
+    '<div class="field"><label>Any naix. <span class="req">*</span></label><input type="number" id="j' + num + '_any" value="' + esc(data.any) + '" placeholder="2010" min="2003" max="2022" class="' + preAny + '" style="text-align:center;"/></div>' +
+    '<div class="field"><label>Genere <span class="req">*</span></label><select id="j' + num + '_gen"><option value="">--</option><option value="M"' + (data.gen==='M'?' selected':'') + '>Masculi</option><option value="F"' + (data.gen==='F'?' selected':'') + '>Femeni</option></select></div></div>' +
+    '<div class="cols-2"><div class="field"><label>Club <span class="req">*</span></label><input type="text" id="j' + num + '_club" value="' + esc(data.club) + '" placeholder="Club o Sense club" class="' + preClub + '"/></div>' +
+    '<div class="field"><label>Talla samarreta <span class="req">*</span></label><select id="j' + num + '_talla">' + talla_opts + '</select></div></div>';
+  document.getElementById('jugs-wrap').appendChild(div);
+}
+
+function addJug() {
+  if (jugCount >= 5) return;
+  jugCount++;
+  addJugBlock(jugCount, {nom:'',any:'',gen:equip?equip.gen:'',club:'',talla:''});
+  updateAddBtn();
+}
+
+function esc(s) { return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+async function submitForm() {
+  if (!document.getElementById('rgpd').checked) { showErr("Has d'acceptar la politica de proteccio de dades."); return; }
+  const j1 = document.getElementById('j1_nom')?.value?.trim();
+  if (!j1) { showErr('El nom del primer jugador/a es obligatori.'); return; }
+  const cap = document.getElementById('f-cap').value.trim();
+  if (!cap) { showErr("El nom del capita o tutor/a es obligatori."); return; }
+  const email = document.getElementById('f-email').value.trim();
+  if (!email || !email.includes('@')) { showErr("El correu electronic es obligatori."); return; }
+  const phone = document.getElementById('f-phone').value.trim();
+  if (!phone) { showErr('El mobil es obligatori.'); return; }
+  const capGen = document.querySelector('input[name="cap-gen"]:checked')?.value;
+  if (!capGen) { showErr("El genere del capita/a es obligatori."); return; }
+  // Validar jugadors
+  const errs = [];
+  for (let i = 1; i <= jugCount; i++) {
+    const n = document.getElementById('j'+i+'_nom')?.value?.trim();
+    const a = document.getElementById('j'+i+'_any')?.value?.trim();
+    const g = document.getElementById('j'+i+'_gen')?.value;
+    const c = document.getElementById('j'+i+'_club')?.value?.trim();
+    const t = document.getElementById('j'+i+'_talla')?.value;
+    if (!n) errs.push('Nom jugador/a ' + i);
+    if (!a) errs.push('Any naix. jugador/a ' + i);
+    if (!g) errs.push('Genere jugador/a ' + i);
+    if (!c) errs.push('Club jugador/a ' + i);
+    if (!t) errs.push('Talla jugador/a ' + i);
+  }
+  if (errs.length) { showErr('Falten camps obligatoris: ' + errs.join(', ')); return; }
+  document.getElementById('form-err').style.display = 'none';
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true; btn.textContent = 'Enviant...';
+  const payload = {teamId, teamNom:equip.nom, teamCat:equip.cat, cap_nom:cap, cap_email:email, cap_phone:phone, cap_gen:capGen, notes:document.getElementById('f-notes').value.trim(), imatge:document.getElementById('imatge').checked?'TRUE':'FALSE', num_players:jugCount, userAgent:navigator.userAgent};
+  for (let i = 1; i <= jugCount; i++) {
+    payload['j'+i+'_nom'] = document.getElementById('j'+i+'_nom')?.value?.trim()||'';
+    payload['j'+i+'_any'] = document.getElementById('j'+i+'_any')?.value?.trim()||'';
+    payload['j'+i+'_gen'] = document.getElementById('j'+i+'_gen')?.value||'';
+    payload['j'+i+'_club'] = document.getElementById('j'+i+'_club')?.value?.trim()||'';
+    payload['j'+i+'_talla'] = document.getElementById('j'+i+'_talla')?.value||'';
+  }
+  try { await fetch(WEBAPP_URL, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),mode:'no-cors'}); } catch(e){}
+  localStorage.setItem('cbgb_done_'+teamId, new Date().toISOString());
+  showSuccess();
+}
+
+function showSuccess() {
+  document.getElementById('form-wrap').style.display = 'none';
+  const sc = document.getElementById('success');
+  sc.style.display = 'block';
+  document.getElementById('s-nom').textContent = equip.nom;
+  document.getElementById('s-dia').textContent = equip.dia;
+  const qrUrl = BASE_CHECKIN + '?id=' + encodeURIComponent(teamId) + '&nom=' + encodeURIComponent(equip.nom);
+  try { new QRCode(document.getElementById('s-qr'), {text:qrUrl,width:140,height:140,colorDark:'#000',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.M}); } catch(e){}
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function showErr(msg) {
+  const el = document.getElementById('form-err');
+  el.textContent = '⚠️ ' + msg;
+  el.style.display = 'block';
+  el.scrollIntoView({behavior:'smooth',block:'center'});
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = false; btn.textContent = 'Confirmar i enviar les dades';
+}
+</script>
+</body>
+</html>
