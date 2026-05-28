@@ -135,7 +135,7 @@ export const CATEGORY_BIRTH_YEARS: Record<string, [number, number]> = {
   "Cadet":       [2010, 2011],   // U16
   "Júnior":      [2008, 2009],   // U18
   "Sub-23":      [2003, 2007],   // U23
-  "Sènior":      [1960, 2002],   // fins 2002
+  "Sènior":      [1960, 2008],   // 18+ (Open Sènior · solapament permès amb Sub-23)
   "Veterans":    [1900, 1986],   // nascut fins 1986
 };
 
