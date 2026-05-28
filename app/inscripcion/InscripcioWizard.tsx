@@ -130,6 +130,18 @@ function isValidMinorCaptain(tutor: Tutor): boolean {
   return true;
 }
 
+/**
+ * Per Inscripció Individual + Formativa: només cal el nom del menor.
+ * Phone/email del menor són opcionals (el contacte vàlid és el del tutor adult al `captain`).
+ */
+function isValidMinorPlayerName(tutor: Tutor): boolean {
+  if (!tutor.fullName.trim()) return false;
+  // Si l'usuari ha posat phone/email opcionals, validem el format
+  if (tutor.phone.trim() && !isValidPhone(tutor.phone)) return false;
+  if (tutor.email.trim() && (!tutor.email.includes("@") || !tutor.email.includes("."))) return false;
+  return true;
+}
+
 /** Retorna true si el gènere del jugador és compatible amb la categoria (soft check) */
 function genderMatchesCategory(gender: string, cat: string): boolean {
   if (!gender || gender === "Altre") return true;
@@ -557,7 +569,12 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
     if (!c.fullName.trim() || !c.phone.trim() || !c.email.trim()) return false;
     if (!isValidPhone(c.phone)) return false;
     if (!c.email.includes("@") || !c.email.includes(".")) return false;
-    if (state.needsTutor && !isValidMinorCaptain(state.tutor)) return false;
+    // Inscripció Individual + Formativa: cal el nom del menor (jugador real)
+    if (state.packageKey === "individual" && state.needsTutor) {
+      if (!isValidMinorPlayerName(state.tutor)) return false;
+    } else if (state.needsTutor && !isValidMinorCaptain(state.tutor)) {
+      return false;
+    }
     // Camps addicionals obligatoris per inscripció individual
     if (state.packageKey === "individual") {
       if (!state.indivBirthYear || !isValidBirthYear(state.indivBirthYear)) return false;
@@ -600,7 +617,13 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
     if (!c.email.trim()) m.push("email del capità/a");
     else if (!c.email.includes("@") || !c.email.includes(".")) m.push("format d'email invàlid");
 
-    if (state.needsTutor && hasMinorCaptain(state.tutor)) {
+    // Inscripció Individual + Formativa: el menor és el jugador inscrit → cal el nom
+    if (state.packageKey === "individual" && state.needsTutor) {
+      const t = state.tutor;
+      if (!t.fullName.trim()) m.push("nom del jugador/a menor inscrit/a");
+      if (t.phone.trim() && !isValidPhone(t.phone)) m.push("telèfon del menor invàlid");
+      if (t.email.trim() && (!t.email.includes("@") || !t.email.includes("."))) m.push("format d'email del menor invàlid");
+    } else if (state.needsTutor && hasMinorCaptain(state.tutor)) {
       const t = state.tutor;
       if (!t.fullName.trim()) m.push("nom del capità/a menor");
       if (!t.phone.trim()) m.push("telèfon del capità/a menor");
@@ -649,10 +672,19 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
     setSubmitting(true);
     setSubmitResult(null);
     try {
+      // BUG FIX (2026-05-28): per Inscripció Individual + Formativa el JUGADOR
+      // és el menor (state.tutor.fullName), no el tutor adult (state.captain).
+      // Cas Bruno Cuevas: l'inscripció es registrava amb el nom del pare (Franklin)
+      // en lloc del nen (Bruno). Vegeu /Abandonaments + /Inscripcions sheet.
+      const isIndividualMinor =
+        !pkg.isTeam && state.needsTutor && Boolean(state.tutor.fullName.trim());
+      const playerName = isIndividualMinor ? state.tutor.fullName : state.captain.fullName;
+      const playerPhone = isIndividualMinor && state.tutor.phone.trim() ? state.tutor.phone : state.captain.phone;
+      const playerEmail = isIndividualMinor && state.tutor.email.trim() ? state.tutor.email : state.captain.email;
       const players =
         pkg.isTeam
           ? state.players
-          : [{ fullName: state.captain.fullName, club: "Individual", category: state.category, birthYear: state.indivBirthYear, gender: state.indivGender, phone: state.captain.phone, shirtSize: state.captain.shirtSize, email: state.captain.email }];
+          : [{ fullName: playerName, club: "Individual", category: state.category, birthYear: state.indivBirthYear, gender: state.indivGender, phone: playerPhone, shirtSize: state.captain.shirtSize, email: playerEmail }];
 
       const payload = {
         packageKey: state.packageKey,
@@ -1335,8 +1367,44 @@ function Step2Team({
         </>)}
       </div>
 
-      {/* Capità menor (si formativa) */}
-      {state.needsTutor && (
+      {/* Menor: variant Individual+Formativa (jugador inscrit) vs Equip+Formativa (capità menor opcional) */}
+      {state.needsTutor && state.packageKey === "individual" && (
+        <>
+          <h3 className="wizard-section-title" style={{ marginTop: 28 }}>
+            Jugador/a inscrit/a (menor) <span style={{ color: "#ef4444" }}>*</span>
+          </h3>
+          <p style={{ marginBottom: 12, color: "#aaa", fontSize: 14 }}>
+            És el nom del <strong>nen/a o adolescent que jugarà</strong>. Les dades de contacte (telèfon/email)
+            ja les hem agafat del tutor/a a dalt — només cal el nom del jugador menor.
+          </p>
+          <div className="wizard-grid-2">
+            <div className="wizard-field wizard-field-full">
+              <label htmlFor="wizard-minor-name">Nom i cognoms del jugador/a menor *</label>
+              <input
+                id="wizard-minor-name"
+                type="text"
+                value={state.tutor.fullName}
+                onChange={(e) => updateTutor("fullName", e.target.value)}
+                placeholder="Bruno Cuevas Medina"
+                maxLength={80}
+                autoComplete="off"
+                required
+              />
+            </div>
+            <div className="wizard-field">
+              <label htmlFor="wizard-minor-phone">Telèfon propi del menor <span style={{ fontWeight: 400, color: "#888" }}>(opcional)</span></label>
+              <input id="wizard-minor-phone" type="tel" value={state.tutor.phone} onChange={(e) => updateTutor("phone", e.target.value)} placeholder="(si en té)" maxLength={20} autoComplete="off" />
+            </div>
+            <div className="wizard-field">
+              <label htmlFor="wizard-minor-email">Email propi del menor <span style={{ fontWeight: 400, color: "#888" }}>(opcional)</span></label>
+              <input id="wizard-minor-email" type="email" value={state.tutor.email} onChange={(e) => updateTutor("email", e.target.value)} placeholder="(si en té)" maxLength={100} autoComplete="off" />
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Capità menor (només per Equip + Formativa) */}
+      {state.needsTutor && state.packageKey !== "individual" && (
         <>
           <h3 className="wizard-section-title" style={{ marginTop: 28 }}>Capità/a de l&apos;equip (menor, opcional)</h3>
           <p style={{ marginBottom: 12, color: "#aaa", fontSize: 14 }}>
@@ -1445,9 +1513,14 @@ function Step3Payment({
       <p className="wizard-help" style={{ marginTop: 6, marginBottom: 8 }}>
         ⚠️ Posa exactament aquest concepte perquè puguem identificar el teu equip.
       </p>
-      <p style={{ background: "#f0f7ff", border: "1px solid #b8d8f8", borderRadius: 8, padding: "10px 14px", fontSize: 13, color: "#1a5080", marginBottom: 20, lineHeight: 1.6 }}>
-        💡 <strong>No has de pagar ara.</strong> Pots enviar la inscripció sense justificant i tens <strong>48 hores</strong> per fer la transferència. Un cop pagada, envia&apos;ns el comprovant per <a href="https://wa.me/34698425153" target="_blank" rel="noreferrer" style={{ color: "#1a5080" }}>WhatsApp</a> amb el concepte indicat.
-      </p>
+      <div style={{ background: "#f0f7ff", border: "1px solid #b8d8f8", borderRadius: 8, padding: "10px 14px", fontSize: 13, color: "#1a5080", marginBottom: 20, lineHeight: 1.6 }}>
+        <p style={{ margin: "0 0 6px" }}>
+          ✅ <strong>Si ja has pagat la transferència:</strong> puja el justificant aquí mateix per validar la inscripció avui i rebre el QR de check-in.
+        </p>
+        <p style={{ margin: 0 }}>
+          ⏳ <strong>Si pagaràs després:</strong> pots enviar la inscripció sense justificant. Tens <strong>48 hores</strong> per fer la transferència i enviar-nos el comprovant per <a href="https://wa.me/34698425153" target="_blank" rel="noreferrer" style={{ color: "#1a5080" }}>WhatsApp</a> amb el concepte indicat.
+        </p>
+      </div>
 
       <div className="wizard-field wizard-field-full">
         <label htmlFor="proof">
@@ -1712,8 +1785,13 @@ function Step5Confirm({
         <div className="wizard-summary-row"><span>Paquet</span><strong>{pkg.emoji} {pkg.title}</strong></div>
         {pkg.isTeam && state.teamName && <div className="wizard-summary-row"><span>Equip</span><strong>{state.teamName}</strong></div>}
         <div className="wizard-summary-row"><span>Categoria</span><strong>{state.category}</strong></div>
-        <div className="wizard-summary-row"><span>{state.needsTutor ? "Tutor/a" : "Capità/a"}</span><strong>{state.captain.fullName} · {state.captain.phone}</strong></div>
-        {state.needsTutor && state.tutor.fullName && <div className="wizard-summary-row"><span>Capità/a equip</span><strong>{state.tutor.fullName}</strong></div>}
+        <div className="wizard-summary-row"><span>{state.needsTutor ? "Tutor/a responsable" : "Capità/a"}</span><strong>{state.captain.fullName} · {state.captain.phone}</strong></div>
+        {state.needsTutor && state.tutor.fullName && (
+          <div className="wizard-summary-row">
+            <span>{state.packageKey === "individual" ? "Jugador/a inscrit/a" : "Capità/a equip"}</span>
+            <strong>{state.tutor.fullName}</strong>
+          </div>
+        )}
         {pkg.isTeam && <div className="wizard-summary-row"><span>Jugadors</span><strong>{state.players.length}</strong></div>}
         <div className="wizard-summary-row"><span>Justificant</span><strong>{state.proofFileName || "—"}</strong></div>
         {disc.earlyBirdAmt > 0 && <div className="wizard-summary-row wizard-summary-row-discount"><span>🔥 Early Bird −10 %</span><strong>−{disc.earlyBirdAmt.toFixed(2).replace(".00", "")} €</strong></div>}
