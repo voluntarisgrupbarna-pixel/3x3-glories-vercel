@@ -26,6 +26,15 @@ const nextConfig = {
       // Rasca i Guanya — fitxer estàtic a public/rasca/index.html
       { source: '/rasca',           destination: '/rasca/index.html' },
       { source: '/rasca/',          destination: '/rasca/index.html' },
+      // Completar dades — formulari per a equips inscrits
+      { source: '/completar',       destination: '/completar.html' },
+      { source: '/completar/',      destination: '/completar.html' },
+      // Dashboard admin
+      { source: '/dashboard',       destination: '/dashboard.html' },
+      { source: '/dashboard/',      destination: '/dashboard.html' },
+      // Check-in app per a voluntaris
+      { source: '/checkin',         destination: '/checkin.html' },
+      { source: '/checkin/',        destination: '/checkin.html' },
     ];
   },
 };
