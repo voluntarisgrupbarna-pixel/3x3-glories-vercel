@@ -147,7 +147,7 @@ function pinBack(){pinBuf=pinBuf.slice(0,-1);updateDots();}
 function pinClear(){pinBuf='';updateDots();}
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
 <div class="topbar">
   <div><h1>3x3 Westfield Glories 2026</h1><div class="sub">CB Grup Barna - Dashboard inscripcions</div></div>
   <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap;"><div class="cd" id="cd">...</div><button id="refresh-btn" onclick="loadFromSheet()" style="background:rgba(255,255,255,.15);color:white;border:1px solid rgba(255,255,255,.3);padding:5px 12px;border-radius:20px;cursor:pointer;font-size:12px;font-weight:600;">&#8635; Actualitzar</button><button onclick="exportXLSX()" style="background:#16a34a;color:white;border:1px solid #15803d;padding:5px 14px;border-radius:20px;cursor:pointer;font-size:12px;font-weight:700;">&#128202; Descarregar Excel</button><span id="api-status" style="font-size:11px;opacity:.8;"></span></div>
@@ -818,69 +818,303 @@ function showKPI(type) {
 }
 
 // ============================================================
-// EXPORTAR A EXCEL (multi-sheet, una pestanya per categoria)
+// EXPORTAR A EXCEL (multi-sheet, formatat amb estils)
 // ============================================================
 function exportXLSX() {
   if (typeof XLSX === 'undefined') {
     alert('La llibreria Excel no s\'ha carregat. Recarrega la pagina i torna a provar.');
     return;
   }
-  var wb = XLSX.utils.book_new();
-  var allHeaders = ['ID','Equip','Categoria','Dia','Genere','Estat','Justificant','Capita','Email','Telefon','J1','J2','J3','J4','J5','Num Jugadors','Total EUR','Club','Notes'];
 
-  function rowFor(d) {
-    var j = d.jugadors||[];
-    var st = {confirmed:'Confirmat',pending_payment:'Pendent pagament',pending_proof:'Sense justificant'}[d.status]||d.status;
-    return [
-      d.id, d.team, d.cat, d.dia, d.gen==='F'?'Femeni':'Masculi',
-      st, d.proof?'Si':'No',
-      d.cap||'', d.email||'', d.phone||'',
-      j[0]||'', j[1]||'', j[2]||'', j[3]||'', j[4]||'',
-      d.jug||0, d.total||0, d.club||'', d.note||''
-    ];
+  // === ESTILS ===
+  var BORDER_THIN = {style:'thin', color:{rgb:'D1D5DB'}};
+  var BORDER_ALL = {top:BORDER_THIN, bottom:BORDER_THIN, left:BORDER_THIN, right:BORDER_THIN};
+
+  var TITLE_STYLE = {
+    font:{bold:true, sz:18, color:{rgb:'FFFFFF'}},
+    fill:{fgColor:{rgb:'C8102E'}},
+    alignment:{horizontal:'center', vertical:'center'},
+    border:BORDER_ALL
+  };
+  var SUBTITLE_STYLE = {
+    font:{bold:true, sz:11, color:{rgb:'6B7280'}, italic:true},
+    alignment:{horizontal:'center', vertical:'center'},
+    fill:{fgColor:{rgb:'FEF2F2'}}
+  };
+  var HEADER_STYLE = {
+    font:{bold:true, sz:11, color:{rgb:'FFFFFF'}},
+    fill:{fgColor:{rgb:'1F2937'}},
+    alignment:{horizontal:'center', vertical:'center', wrapText:true},
+    border:BORDER_ALL
+  };
+  var CELL_BASE = {
+    font:{sz:10, color:{rgb:'111827'}},
+    alignment:{vertical:'center', wrapText:true},
+    border:BORDER_ALL
+  };
+  var CELL_ALT = {
+    font:{sz:10, color:{rgb:'111827'}},
+    alignment:{vertical:'center', wrapText:true},
+    border:BORDER_ALL,
+    fill:{fgColor:{rgb:'F9FAFB'}}
+  };
+  var TEAM_NAME_STYLE = {
+    font:{bold:true, sz:11, color:{rgb:'C8102E'}},
+    alignment:{vertical:'center', horizontal:'left'},
+    border:BORDER_ALL
+  };
+  function statusStyle(st, alt) {
+    var bg = {confirmed:'DCFCE7', pending_payment:'FEF3C7', pending_proof:'FEE2E2'}[st]||'F3F4F6';
+    var fg = {confirmed:'166534', pending_payment:'B45309', pending_proof:'B91C1C'}[st]||'374151';
+    return {
+      font:{bold:true, sz:10, color:{rgb:fg}},
+      fill:{fgColor:{rgb:bg}},
+      alignment:{horizontal:'center', vertical:'center'},
+      border:BORDER_ALL
+    };
+  }
+  function genderStyle(g) {
+    if (g === 'F') return {
+      font:{bold:true, sz:10, color:{rgb:'BE185D'}},
+      fill:{fgColor:{rgb:'FCE7F3'}},
+      alignment:{horizontal:'center', vertical:'center'},
+      border:BORDER_ALL
+    };
+    return {
+      font:{bold:true, sz:10, color:{rgb:'1D4ED8'}},
+      fill:{fgColor:{rgb:'DBEAFE'}},
+      alignment:{horizontal:'center', vertical:'center'},
+      border:BORDER_ALL
+    };
+  }
+  function jugCountStyle(filled, total) {
+    var pct = total > 0 ? filled/total : 0;
+    var bg = pct >= 1 ? 'DCFCE7' : pct >= 0.75 ? 'FEF3C7' : 'FEE2E2';
+    var fg = pct >= 1 ? '166534' : pct >= 0.75 ? 'B45309' : 'B91C1C';
+    return {
+      font:{bold:true, sz:11, color:{rgb:fg}},
+      fill:{fgColor:{rgb:bg}},
+      alignment:{horizontal:'center', vertical:'center'},
+      border:BORDER_ALL
+    };
+  }
+  var PROOF_YES = {
+    font:{bold:true, sz:11, color:{rgb:'166534'}},
+    fill:{fgColor:{rgb:'DCFCE7'}},
+    alignment:{horizontal:'center', vertical:'center'},
+    border:BORDER_ALL
+  };
+  var PROOF_NO = {
+    font:{bold:true, sz:11, color:{rgb:'B91C1C'}},
+    fill:{fgColor:{rgb:'FEE2E2'}},
+    alignment:{horizontal:'center', vertical:'center'},
+    border:BORDER_ALL
+  };
+  var MONEY_STYLE = {
+    font:{bold:true, sz:10, color:{rgb:'111827'}},
+    alignment:{horizontal:'right', vertical:'center'},
+    numFmt:'#,##0.00 "€"',
+    border:BORDER_ALL
+  };
+
+  // === COLUMNES ===
+  var COLS = [
+    {h:'#', w:5},
+    {h:'ID', w:18},
+    {h:'EQUIP', w:30},
+    {h:'Categoria', w:14},
+    {h:'Dia', w:7},
+    {h:'Gènere', w:9},
+    {h:'Estat', w:18},
+    {h:'Just.', w:8},
+    {h:'Capità / Tutor', w:24},
+    {h:'Email', w:28},
+    {h:'Telèfon', w:14},
+    {h:'Jug.', w:8},
+    {h:'Jugador 1', w:24},
+    {h:'Jugador 2', w:24},
+    {h:'Jugador 3', w:24},
+    {h:'Jugador 4', w:24},
+    {h:'Jugador 5', w:24},
+    {h:'Total', w:11},
+    {h:'Club', w:12},
+    {h:'Notes', w:40}
+  ];
+  var COL_WIDTHS = COLS.map(function(c){return {wch:c.w};});
+  var HEADERS = COLS.map(function(c){return c.h;});
+
+  function statusLabel(st) {
+    return {confirmed:'✓ Confirmat', pending_payment:'⏳ Pendent pag.', pending_proof:'⚠ Sense just.'}[st]||st;
   }
 
-  // Sheet 1: RESUM (tots els equips i individuals)
-  var allRows = [allHeaders];
-  DATA.filter(function(d){return !d.individual;}).forEach(function(d){ allRows.push(rowFor(d)); });
-  allRows.push([]);
-  allRows.push(['=== INDIVIDUALS ===']);
-  allRows.push(allHeaders);
-  DATA.filter(function(d){return d.individual;}).forEach(function(d){ allRows.push(rowFor(d)); });
-  var wsAll = XLSX.utils.aoa_to_sheet(allRows);
-  XLSX.utils.book_append_sheet(wb, wsAll, 'RESUM');
+  // === CREAR UNA PESTANYA ===
+  function createSheet(title, subtitle, teamList) {
+    var aoa = [];
+    var nCols = COLS.length;
 
-  // Sheet per categoria (separat M/F via ordre dins categoria)
+    // Fila 0: títol
+    aoa.push([title].concat(new Array(nCols-1).fill('')));
+    // Fila 1: subtítol
+    aoa.push([subtitle].concat(new Array(nCols-1).fill('')));
+    // Fila 2: buida
+    aoa.push(new Array(nCols).fill(''));
+    // Fila 3: headers
+    aoa.push(HEADERS.slice());
+
+    // Files de dades
+    teamList.forEach(function(d, idx) {
+      var j = (d.jugadors||[]).map(function(x){return x||'';});
+      while (j.length < 5) j.push('');
+      var filled = j.filter(function(x){return x;}).length;
+      var jugCountText = filled + '/' + (d.jug||(d.individual?1:4));
+      aoa.push([
+        idx+1,
+        d.id,
+        d.team,
+        d.cat,
+        d.dia,
+        d.gen==='F'?'♀ Fem':'♂ Masc',
+        statusLabel(d.status),
+        d.proof?'✓':'✗',
+        d.cap||'',
+        d.email||'',
+        d.phone||'',
+        jugCountText,
+        j[0]||'', j[1]||'', j[2]||'', j[3]||'', j[4]||'',
+        d.total||0,
+        d.club==='cbgb'?'CB Grup Barna':d.club==='extern'?'Extern':'Pendent',
+        d.note||''
+      ]);
+    });
+
+    // Fila TOTAL
+    var totalSum = teamList.reduce(function(s,d){return s+(d.total||0);}, 0);
+    var totalJug = teamList.reduce(function(s,d){
+      return s + (d.jugadors||[]).filter(function(x){return x;}).length;
+    }, 0);
+    aoa.push(new Array(nCols).fill(''));
+    var totalRow = new Array(nCols).fill('');
+    totalRow[2] = 'TOTAL ' + teamList.length + ' equips';
+    totalRow[11] = totalJug + ' jugadors';
+    totalRow[17] = totalSum;
+    aoa.push(totalRow);
+
+    var ws = XLSX.utils.aoa_to_sheet(aoa);
+
+    // Cols width
+    ws['!cols'] = COL_WIDTHS;
+
+    // Row heights
+    ws['!rows'] = [];
+    ws['!rows'][0] = {hpx:34};
+    ws['!rows'][1] = {hpx:20};
+    ws['!rows'][3] = {hpx:32};
+    for (var r=4; r < 4+teamList.length; r++) ws['!rows'][r] = {hpx:24};
+
+    // Merges per títol/subtítol
+    ws['!merges'] = [
+      {s:{r:0,c:0}, e:{r:0,c:nCols-1}},
+      {s:{r:1,c:0}, e:{r:1,c:nCols-1}}
+    ];
+
+    // Freeze panes (headers fixos)
+    ws['!freeze'] = {xSplit:0, ySplit:4};
+    ws['!views'] = [{state:'frozen', xSplit:0, ySplit:4}];
+
+    // === APLICAR ESTILS ===
+    function setStyle(addr, style) {
+      if (!ws[addr]) ws[addr] = {t:'s', v:''};
+      ws[addr].s = style;
+    }
+    function colLetter(i) {
+      var s = '';
+      i++;
+      while (i > 0) { var m = (i-1) % 26; s = String.fromCharCode(65+m) + s; i = Math.floor((i-1)/26); }
+      return s;
+    }
+
+    // Títol
+    for (var c=0; c<nCols; c++) setStyle(colLetter(c)+'1', TITLE_STYLE);
+    for (var c=0; c<nCols; c++) setStyle(colLetter(c)+'2', SUBTITLE_STYLE);
+    // Headers (fila 4)
+    for (var c=0; c<nCols; c++) setStyle(colLetter(c)+'4', HEADER_STYLE);
+
+    // Dades
+    teamList.forEach(function(d, idx) {
+      var r = 5 + idx; // fila Excel 1-based
+      var base = (idx % 2 === 0) ? CELL_BASE : CELL_ALT;
+      for (var c=0; c<nCols; c++) setStyle(colLetter(c)+r, base);
+      setStyle('C'+r, TEAM_NAME_STYLE);
+      setStyle('F'+r, genderStyle(d.gen));
+      setStyle('G'+r, statusStyle(d.status));
+      setStyle('H'+r, d.proof?PROOF_YES:PROOF_NO);
+      var filled = (d.jugadors||[]).filter(function(x){return x;}).length;
+      setStyle('L'+r, jugCountStyle(filled, d.jug||(d.individual?1:4)));
+      setStyle('R'+r, MONEY_STYLE);
+    });
+
+    // Fila TOTAL
+    var totalR = 5 + teamList.length + 1;
+    var TOTAL_STYLE = {
+      font:{bold:true, sz:12, color:{rgb:'FFFFFF'}},
+      fill:{fgColor:{rgb:'C8102E'}},
+      alignment:{horizontal:'center', vertical:'center'},
+      border:BORDER_ALL
+    };
+    var TOTAL_MONEY = {
+      font:{bold:true, sz:12, color:{rgb:'FFFFFF'}},
+      fill:{fgColor:{rgb:'C8102E'}},
+      alignment:{horizontal:'right', vertical:'center'},
+      numFmt:'#,##0.00 "€"',
+      border:BORDER_ALL
+    };
+    for (var c=0; c<nCols; c++) setStyle(colLetter(c)+totalR, TOTAL_STYLE);
+    setStyle('R'+totalR, TOTAL_MONEY);
+
+    return ws;
+  }
+
+  var wb = XLSX.utils.book_new();
+  var todayStr = new Date().toLocaleDateString('ca-ES');
+
+  // 1) RESUM general
+  var allTeams = DATA.filter(function(d){return !d.individual;}).slice().sort(function(a,b){
+    if (a.cat !== b.cat) return a.cat.localeCompare(b.cat);
+    if (a.gen !== b.gen) return a.gen === 'F' ? -1 : 1;
+    return (a.team||'').localeCompare(b.team||'');
+  });
+  XLSX.utils.book_append_sheet(wb, createSheet('3x3 WESTFIELD GLÒRIES 2026 — RESUM EQUIPS', 'CB Grup Barna · ' + todayStr + ' · ' + allTeams.length + ' equips inscrits', allTeams), 'RESUM');
+
+  // 2) Una pestanya per categoria
   var cats = getCats();
   Object.keys(cats).sort().forEach(function(cat){
     var teams = cats[cat].slice().sort(function(a,b){
       if (a.gen !== b.gen) return a.gen === 'F' ? -1 : 1;
       return (a.team||'').localeCompare(b.team||'');
     });
-    var rows = [allHeaders];
-    teams.forEach(function(d){ rows.push(rowFor(d)); });
-    var ws = XLSX.utils.aoa_to_sheet(rows);
+    var cfg = CC[cat]||{limit:8,dia:'?'};
+    var subtitle = 'Dia ' + cfg.dia + ' · ' + teams.length + '/' + cfg.limit + ' equips · ' + Math.max(0,cfg.limit-teams.length) + ' places lliures';
     var sheetName = cat.replace(/[\\\/\?\*\[\]:]/g,'_').substring(0,31);
-    XLSX.utils.book_append_sheet(wb, ws, sheetName);
+    XLSX.utils.book_append_sheet(wb, createSheet(cat.toUpperCase(), subtitle, teams), sheetName);
   });
 
-  // Sheet FEMENINS i MASCULINS (resums separats)
+  // 3) FEMENINS i MASCULINS
   ['F','M'].forEach(function(g){
     var teams = DATA.filter(function(d){return !d.individual && d.gen===g;}).sort(function(a,b){
       if (a.cat !== b.cat) return a.cat.localeCompare(b.cat);
       return (a.team||'').localeCompare(b.team||'');
     });
-    var rows = [allHeaders];
-    teams.forEach(function(d){ rows.push(rowFor(d)); });
-    var ws = XLSX.utils.aoa_to_sheet(rows);
-    XLSX.utils.book_append_sheet(wb, ws, g==='F'?'FEMENINS':'MASCULINS');
+    var title = g==='F' ? 'EQUIPS FEMENINS' : 'EQUIPS MASCULINS';
+    var subtitle = teams.length + ' equips · ' + new Set(teams.map(function(t){return t.cat;})).size + ' categories';
+    XLSX.utils.book_append_sheet(wb, createSheet(title, subtitle, teams), g==='F'?'FEMENINS':'MASCULINS');
   });
 
-  // Sheet INDIVIDUALS
-  var indivRows = [allHeaders];
-  DATA.filter(function(d){return d.individual;}).forEach(function(d){ indivRows.push(rowFor(d)); });
-  var wsInd = XLSX.utils.aoa_to_sheet(indivRows);
-  XLSX.utils.book_append_sheet(wb, wsInd, 'INDIVIDUALS');
+  // 4) INDIVIDUALS
+  var indivs = DATA.filter(function(d){return d.individual;}).sort(function(a,b){
+    if (a.cat !== b.cat) return a.cat.localeCompare(b.cat);
+    return (a.team||'').localeCompare(b.team||'');
+  });
+  XLSX.utils.book_append_sheet(wb, createSheet('JUGADORS INDIVIDUALS', indivs.length + ' jugadors inscrits individualment', indivs), 'INDIVIDUALS');
 
   var filename = '3x3_Westfield_Glories_2026_' + new Date().toISOString().slice(0,10) + '.xlsx';
   XLSX.writeFile(wb, filename);
