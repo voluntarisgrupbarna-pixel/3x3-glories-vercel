@@ -783,6 +783,30 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
           🏀 {stats.teamsCount} equips ja inscrits
         </div>
       )}
+
+      {/* Avís de deadline (29/05/2026) */}
+      <div style={{
+        background: "linear-gradient(135deg, #fef3c7, #fde68a)",
+        border: "2px solid #f59e0b",
+        borderRadius: 12,
+        padding: "12px 16px",
+        margin: "8px 0 12px",
+        textAlign: "center",
+        fontSize: 14,
+        color: "#78350f",
+        fontWeight: 600,
+        lineHeight: 1.5,
+      }}>
+        ⏰ <strong>Tanquem inscripcions dimecres 4 de juny a les 23:59 h.</strong>
+        <br />
+        <span style={{ fontWeight: 500, fontSize: 13 }}>
+          Després, no entra ningú més. Queden 8 dies pel torneig (6-7 juny).
+        </span>
+      </div>
+
+      {/* Status places per categoria (29/05/2026) */}
+      <CategoryStatusGrid />
+
       <Stepper currentStep={state.step} isIndividual={state.packageKey === "individual"} waFlow={waFlow} />
 
       {state.step === 1 && (
@@ -1969,5 +1993,72 @@ function SuccessPanel({
         </a>
       </div>
     </div>
+  );
+}
+
+// ── Estat de places per categoria (actualitzat 29/05/2026) ─────────────────
+// Dades manuals — coincideixen amb el missatge WhatsApp enviat per Ana.
+// Quan canviï la situació, actualitzar aquest objecte.
+const CATEGORY_STATUS: Array<{ name: string; left: number }> = [
+  { name: "Escoleta",       left: 1 },
+  { name: "Premini Masc.",  left: 1 },
+  { name: "Premini Fem.",   left: 5 },
+  { name: "Mini",           left: 2 },
+  { name: "Preinfantil",    left: 4 },
+  { name: "Infantil",       left: 3 },
+  { name: "Cadet Masc.",    left: 1 },
+  { name: "Cadet Fem.",     left: 2 },
+  { name: "Júnior",         left: 5 },
+  { name: "Sènior Masc.",   left: 1 },
+  { name: "Sènior Fem.",    left: 3 },
+  { name: "Veterans",       left: 4 },
+];
+
+function CategoryStatusGrid() {
+  return (
+    <details style={{
+      background: "#0f1115",
+      border: "1px solid #1f2937",
+      borderRadius: 12,
+      padding: "10px 14px",
+      margin: "0 0 14px",
+      color: "#e5e7eb",
+      fontSize: 13,
+      lineHeight: 1.6,
+    }}>
+      <summary style={{ cursor: "pointer", fontWeight: 600, listStyle: "none", display: "flex", justifyContent: "space-between", alignItems: "center", userSelect: "none" }}>
+        <span>📊 Places restants per categoria</span>
+        <span style={{ color: "#9ca3af", fontSize: 12, fontWeight: 400 }}>(toca per veure)</span>
+      </summary>
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
+        gap: 6,
+        marginTop: 10,
+      }}>
+        {CATEGORY_STATUS.map((c) => {
+          const isCritical = c.left === 1;
+          const isLow      = c.left === 2 || c.left === 3;
+          const color = c.left === 0 ? "#ef4444" : isCritical ? "#f97316" : isLow ? "#facc15" : "#22c55e";
+          const icon  = c.left === 0 ? "🚫" : isCritical ? "🔥" : isLow ? "⚠️" : "✅";
+          return (
+            <div key={c.name} style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: "6px 10px",
+              background: "rgba(255,255,255,0.02)",
+              borderLeft: `3px solid ${color}`,
+              borderRadius: 4,
+            }}>
+              <span style={{ fontSize: 13 }}>{icon} {c.name}</span>
+              <strong style={{ color, fontSize: 13 }}>
+                {c.left === 0 ? "TANCADA" : `${c.left} ${c.left === 1 ? "plaça" : "places"}`}
+              </strong>
+            </div>
+          );
+        })}
+      </div>
+    </details>
   );
 }

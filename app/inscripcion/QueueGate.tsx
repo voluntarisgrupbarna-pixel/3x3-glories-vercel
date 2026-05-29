@@ -30,11 +30,16 @@ const TOAST_TEAMS = [
   { team: "Sharks del Raval",          cat: "Sub-23 Fem." },
 ];
 
-// Toast especial d'escassetat per categories quasi plenes
+// Toast especial d'escassetat per categories quasi plenes (actualitzat 29/05/2026)
 const URGENCY_TOASTS = [
-  "⚠️ Sènior Femení — 3 places restants",
-  "🔥 Sènior Masculí — últimes 4 places",
-  "⚠️ Veterans Masc. — 2 places restants",
+  "🔥 Sènior Masc. — ÚLTIMA plaça!",
+  "🔥 Cadet Masc. — ÚLTIMA plaça!",
+  "🔥 Premini Masc. — ÚLTIMA plaça!",
+  "🔥 Escoleta — ÚLTIMA plaça!",
+  "⚠️ Mini — 2 places restants",
+  "⚠️ Cadet Fem. — 2 places restants",
+  "⚠️ Sènior Fem. — 3 places restants",
+  "⚠️ Infantil — 3 places restants",
 ];
 
 interface Toast {
