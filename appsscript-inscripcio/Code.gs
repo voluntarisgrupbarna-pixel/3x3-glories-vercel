@@ -39,6 +39,11 @@ function doPost(e) {
       return jsonResponse(result);
     }
 
+    if (payload.action === "completar" || payload.action === "completar_dades") {
+      const result = handleCompletar(payload);
+      return jsonResponse(result);
+    }
+
     const result = handleInscripcio(payload);
     return jsonResponse(result);
   } catch (err) {
