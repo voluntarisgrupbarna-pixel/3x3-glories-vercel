@@ -147,9 +147,10 @@ function pinBack(){pinBuf=pinBuf.slice(0,-1);updateDots();}
 function pinClear(){pinBuf='';updateDots();}
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <div class="topbar">
   <div><h1>3x3 Westfield Glories 2026</h1><div class="sub">CB Grup Barna - Dashboard inscripcions</div></div>
-  <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;"><div class="cd" id="cd">...</div><button id="refresh-btn" onclick="loadFromSheet()" style="background:rgba(255,255,255,.15);color:white;border:1px solid rgba(255,255,255,.3);padding:5px 12px;border-radius:20px;cursor:pointer;font-size:12px;font-weight:600;">&#8635; Actualitzar</button><span id="api-status" style="font-size:11px;opacity:.8;"></span></div>
+  <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap;"><div class="cd" id="cd">...</div><button id="refresh-btn" onclick="loadFromSheet()" style="background:rgba(255,255,255,.15);color:white;border:1px solid rgba(255,255,255,.3);padding:5px 12px;border-radius:20px;cursor:pointer;font-size:12px;font-weight:600;">&#8635; Actualitzar</button><button onclick="exportXLSX()" style="background:#16a34a;color:white;border:1px solid #15803d;padding:5px 14px;border-radius:20px;cursor:pointer;font-size:12px;font-weight:700;">&#128202; Descarregar Excel</button><span id="api-status" style="font-size:11px;opacity:.8;"></span></div>
 </div>
 <div class="tabs">
   <div class="tab on" onclick="sv('cats')">Categories</div>
@@ -157,15 +158,22 @@ function pinClear(){pinBuf='';updateDots();}
   <div class="tab" onclick="sv('contact')">Contactar</div>
 </div>
 <div class="kpis">
-  <div class="kpi"><div class="kv r" id="k0">-</div><div class="kl">Equips</div></div>
-  <div class="kpi"><div class="kv" id="k1" style="font-size:14px;">-</div><div class="kl">Amb/Sense just.</div></div>
-  <div class="kpi"><div class="kv g" id="k2">-</div><div class="kl">Confirmats</div></div>
-  <div class="kpi"><div class="kv go" id="k3">-</div><div class="kl">Places lliures</div></div>
-  <div class="kpi"><div class="kv" id="k4" style="color:var(--fem)">-</div><div class="kl">Equips Fem</div></div>
-  <div class="kpi"><div class="kv" id="k5" style="color:var(--masc)">-</div><div class="kl">Equips Masc</div></div>
-  <div class="kpi"><div class="kv" id="k6">-</div><div class="kl">Recaptat EUR</div></div>
-  <div class="kpi"><div class="kv" id="k7" style="color:var(--info,#1e40af)">-</div><div class="kl">Individuals</div></div>
-  <div class="kpi"><div class="kv" id="k8">-</div><div class="kl">Total persones</div></div>
+  <div class="kpi" style="cursor:pointer;" onclick="showKPI('all')"><div class="kv r" id="k0">-</div><div class="kl">Equips</div></div>
+  <div class="kpi" style="cursor:pointer;" onclick="showKPI('proof')"><div class="kv" id="k1" style="font-size:14px;">-</div><div class="kl">Amb/Sense just.</div></div>
+  <div class="kpi" style="cursor:pointer;" onclick="showKPI('confirmed')"><div class="kv g" id="k2">-</div><div class="kl">Confirmats</div></div>
+  <div class="kpi" style="cursor:pointer;" onclick="showKPI('places')"><div class="kv go" id="k3">-</div><div class="kl">Places lliures</div></div>
+  <div class="kpi" style="cursor:pointer;" onclick="showKPI('fem')"><div class="kv" id="k4" style="color:var(--fem)">-</div><div class="kl">Equips Fem</div></div>
+  <div class="kpi" style="cursor:pointer;" onclick="showKPI('masc')"><div class="kv" id="k5" style="color:var(--masc)">-</div><div class="kl">Equips Masc</div></div>
+  <div class="kpi" style="cursor:pointer;" onclick="showKPI('revenue')"><div class="kv" id="k6">-</div><div class="kl">Recaptat EUR</div></div>
+  <div class="kpi" style="cursor:pointer;" onclick="showKPI('individual')"><div class="kv" id="k7" style="color:var(--info,#1e40af)">-</div><div class="kl">Individuals</div></div>
+  <div class="kpi" style="cursor:pointer;" onclick="showKPI('persons')"><div class="kv" id="k8">-</div><div class="kl">Total persones</div></div>
+</div>
+<div id="kpi-panel" style="display:none;background:#fff;border:2px solid #c8102e;border-radius:12px;margin:14px 20px;box-shadow:0 4px 12px rgba(0,0,0,.1);overflow:hidden;">
+  <div style="background:#c8102e;color:white;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;">
+    <div style="font-weight:700;font-size:14px;" id="kpi-panel-title">--</div>
+    <button onclick="document.getElementById('kpi-panel').style.display='none'" style="background:rgba(255,255,255,.2);color:white;border:none;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:12px;">&#10005; Tancar</button>
+  </div>
+  <div id="kpi-panel-body" style="max-height:60vh;overflow-y:auto;"></div>
 </div>
 
 <div style="background:#fff0f0;border-bottom:2px solid #c8102e;padding:10px 20px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
@@ -518,7 +526,7 @@ function showTeam(id) {
     ['Capita / Tutor',d.cap||'---'],
     ['Email',d.email||'---'],
     ['Telefon',d.phone||'---'],
-    ['Jugadors',d.jug],
+    ['Num jugadors',d.jug],
     ['Justificant',d.proof?'Si':'No'],
     ['Total',d.total+'EUR'],
     ['Club',d.club==='cbgb'?'CB Grup Barna':d.club==='extern'?'Extern':'Pendent confirmar']
@@ -527,6 +535,20 @@ function showTeam(id) {
   var html = rows.map(function(r){
     return '<div class="mrow"><span class="ml">'+r[0]+'</span><span class="mv">'+r[1]+'</span></div>';
   }).join('');
+
+  // Llistat de jugadors detallat
+  if (d.jugadors && d.jugadors.length > 0) {
+    var jugList = d.jugadors.filter(function(j){return j;}).map(function(j,i){
+      return '<div style="padding:6px 10px;border-bottom:1px solid #f3f4f6;font-size:13px;"><span style="display:inline-block;width:22px;height:22px;border-radius:50%;background:#c8102e;color:white;text-align:center;line-height:22px;font-size:11px;font-weight:700;margin-right:8px;">' + (i+1) + '</span>' + esc(j) + '</div>';
+    }).join('');
+    var missing = (d.jug||4) - d.jugadors.filter(function(j){return j;}).length;
+    if (missing > 0) {
+      jugList += '<div style="padding:6px 10px;font-size:12px;color:#b45309;background:#fef3c7;">⚠ Falten ' + missing + ' jugador(s) per omplir</div>';
+    }
+    html += '<div style="margin-top:14px;background:#f9fafb;border-radius:6px;padding:8px;"><div style="font-weight:700;font-size:12px;color:#374151;margin-bottom:6px;padding:0 4px;">JUGADORS (' + d.jugadors.filter(function(j){return j;}).length + '/' + (d.jug||4) + ')</div>' + jugList + '</div>';
+  } else if (!d.individual) {
+    html += '<div style="margin-top:14px;background:#fef3c7;color:#b45309;padding:10px;border-radius:6px;font-size:12px;">⚠ Encara no s\'han registrat els jugadors. Envia el formulari de completar dades.</div>';
+  }
 
   if(d.note) {
     html += '<div style="background:var(--warn-bg);border-radius:5px;padding:8px 10px;margin-top:10px;font-size:12px;color:var(--warn);">'+esc(d.note)+'</div>';
@@ -688,8 +710,182 @@ function setQF(filter) {
 
 
 // ============================================================
-// EXPORTAR A EXCEL
+// CLIC EN KPI — mostra detall sota els indicadors
 // ============================================================
+function showKPI(type) {
+  var panel = document.getElementById('kpi-panel');
+  var title = document.getElementById('kpi-panel-title');
+  var body = document.getElementById('kpi-panel-body');
+
+  var teams = DATA.filter(function(d){ return !d.individual; });
+  var indivs = DATA.filter(function(d){ return d.individual; });
+  var list = [];
+  var t = '';
+  var extraHTML = '';
+
+  if (type === 'all') { list = teams; t = 'EQUIPS (' + teams.length + ')'; }
+  else if (type === 'confirmed') { list = DATA.filter(function(d){return d.status==='confirmed';}); t = 'CONFIRMATS (' + list.length + ')'; }
+  else if (type === 'fem') { list = teams.filter(function(d){return d.gen==='F';}); t = 'EQUIPS FEMENINS (' + list.length + ')'; }
+  else if (type === 'masc') { list = teams.filter(function(d){return d.gen==='M';}); t = 'EQUIPS MASCULINS (' + list.length + ')'; }
+  else if (type === 'individual') { list = indivs; t = 'JUGADORS INDIVIDUALS (' + list.length + ')'; }
+  else if (type === 'proof') {
+    var withP = teams.filter(function(d){return d.proof;});
+    var noP = teams.filter(function(d){return !d.proof;});
+    t = 'JUSTIFICANT: ' + withP.length + ' SI / ' + noP.length + ' NO';
+    extraHTML = '<div style="padding:14px 16px;background:#f0fdf4;border-bottom:1px solid #d1fae5;"><div style="font-weight:700;color:#166534;margin-bottom:6px;">AMB JUSTIFICANT (' + withP.length + ')</div></div>';
+    list = withP.concat([{__separator:'SENSE JUSTIFICANT (' + noP.length + ')'}]).concat(noP);
+  }
+  else if (type === 'places') {
+    var cats = getCats();
+    var rows = '';
+    var totalLliures = 0;
+    Object.keys(CC).sort().forEach(function(cat){
+      var cfg = CC[cat];
+      var inscrits = (cats[cat]||[]).length;
+      var lliures = Math.max(0, cfg.limit - inscrits);
+      totalLliures += lliures;
+      var color = lliures===0 ? '#b91c1c' : lliures<=2 ? '#b45309' : '#16a34a';
+      var bg = lliures===0 ? '#fee2e2' : lliures<=2 ? '#fef3c7' : '#dcfce7';
+      rows += '<div style="display:flex;justify-content:space-between;padding:10px 16px;border-bottom:1px solid #f3f4f6;align-items:center;">' +
+        '<div><span style="font-weight:600;">' + esc(cat) + '</span> <span style="font-size:11px;color:#6b7280;">- Dia ' + cfg.dia + '</span></div>' +
+        '<div style="display:flex;gap:8px;align-items:center;">' +
+        '<span style="font-size:11px;color:#6b7280;">' + inscrits + '/' + cfg.limit + '</span>' +
+        '<span style="background:' + bg + ';color:' + color + ';padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700;">' +
+        (lliures===0 ? 'COMPLET' : lliures + ' lliures') + '</span></div></div>';
+    });
+    title.textContent = 'PLACES LLIURES (' + totalLliures + ' totals)';
+    body.innerHTML = rows;
+    panel.style.display = 'block';
+    panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+    return;
+  }
+  else if (type === 'revenue') {
+    var rev = DATA.reduce(function(s,d){return s+(d.total||0);}, 0);
+    var revConf = DATA.filter(function(d){return d.status==='confirmed';}).reduce(function(s,d){return s+(d.total||0);}, 0);
+    var revPend = rev - revConf;
+    title.textContent = 'RECAPTAT: ' + Math.round(rev) + 'EUR';
+    body.innerHTML = '<div style="padding:18px 16px;">' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:18px;">' +
+      '<div style="background:#dcfce7;border-radius:8px;padding:12px;text-align:center;"><div style="font-size:24px;font-weight:800;color:#166534;">' + Math.round(revConf) + 'EUR</div><div style="font-size:11px;color:#166534;">Confirmat (cobrat)</div></div>' +
+      '<div style="background:#fef3c7;border-radius:8px;padding:12px;text-align:center;"><div style="font-size:24px;font-weight:800;color:#b45309;">' + Math.round(revPend) + 'EUR</div><div style="font-size:11px;color:#b45309;">Pendent</div></div>' +
+      '<div style="background:#fee2e2;border-radius:8px;padding:12px;text-align:center;"><div style="font-size:24px;font-weight:800;color:#b91c1c;">' + Math.round(rev) + 'EUR</div><div style="font-size:11px;color:#b91c1c;">Total inscrit</div></div>' +
+      '</div>' +
+      '<div style="font-size:12px;color:#6b7280;">Desglossat per equip al tab "Llista equips" o descarregant l\'Excel.</div></div>';
+    panel.style.display = 'block';
+    panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+    return;
+  }
+  else if (type === 'persons') {
+    var jugTeams = teams.reduce(function(s,d){return s+(d.jug||4);}, 0);
+    title.textContent = 'TOTAL PERSONES (~' + (jugTeams + indivs.length) + ')';
+    body.innerHTML = '<div style="padding:18px 16px;">' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">' +
+      '<div style="background:#fce7f3;border-radius:8px;padding:12px;text-align:center;"><div style="font-size:28px;font-weight:800;color:#be185d;">' + jugTeams + '</div><div style="font-size:11px;color:#be185d;">Jugadors d\'equips</div></div>' +
+      '<div style="background:#dbeafe;border-radius:8px;padding:12px;text-align:center;"><div style="font-size:28px;font-weight:800;color:#1e40af;">' + indivs.length + '</div><div style="font-size:11px;color:#1e40af;">Individuals</div></div>' +
+      '<div style="background:#fee2e2;border-radius:8px;padding:12px;text-align:center;"><div style="font-size:28px;font-weight:800;color:#c8102e;">' + (jugTeams + indivs.length) + '</div><div style="font-size:11px;color:#c8102e;">TOTAL</div></div>' +
+      '</div></div>';
+    panel.style.display = 'block';
+    panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+    return;
+  }
+
+  title.textContent = t;
+  body.innerHTML = extraHTML + list.map(function(d) {
+    if (d.__separator) {
+      return '<div style="padding:10px 16px;background:#fef2f2;border-top:1px solid #fecaca;border-bottom:1px solid #fecaca;font-weight:700;color:#b91c1c;">' + esc(d.__separator) + '</div>';
+    }
+    var sd = d.status==='confirmed'?'#16a34a':d.status==='pending_payment'?'#b45309':'#b91c1c';
+    var statusTxt = SL[d.status]||d.status;
+    var genBadge = d.individual ? '<span style="background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;">IND</span>' :
+      d.gen==='F' ? '<span style="background:#fce7f3;color:#be185d;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;">F</span>' :
+      '<span style="background:#dbeafe;color:#1d4ed8;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;">M</span>';
+    var jugadors = d.jugadors && d.jugadors.length > 0 ? d.jugadors.filter(function(j){return j;}).join(', ') : '';
+    return '<div onclick="showTeam(\'' + esc(d.id) + '\')" style="padding:10px 16px;border-bottom:1px solid #f3f4f6;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:10px;" onmouseover="this.style.background=\'#fafafa\'" onmouseout="this.style.background=\'\'">' +
+      '<div style="flex:1;min-width:0;">' +
+      '<div style="font-weight:600;font-size:13px;">' + esc(d.team) + ' <span style="font-size:10px;color:#9ca3af;">' + esc(d.id) + '</span></div>' +
+      '<div style="font-size:11px;color:#6b7280;margin-top:2px;">' +
+      '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:' + sd + ';margin-right:4px;"></span>' +
+      esc(statusTxt) + ' · ' + esc(d.cat) + ' · ' + d.dia + ' · ' + esc(d.cap||'') + (d.phone?' · ' + esc(d.phone):'') +
+      '</div>' +
+      (jugadors ? '<div style="font-size:11px;color:#4b5563;margin-top:3px;font-style:italic;">' + esc(jugadors) + '</div>' : '') +
+      '</div>' +
+      '<div style="display:flex;gap:4px;align-items:center;">' + genBadge + (d.proof?'<span style="background:#dcfce7;color:#166534;padding:2px 6px;border-radius:8px;font-size:10px;font-weight:700;">JUST</span>':'') + '</div>' +
+      '</div>';
+  }).join('');
+
+  panel.style.display = 'block';
+  panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+// ============================================================
+// EXPORTAR A EXCEL (multi-sheet, una pestanya per categoria)
+// ============================================================
+function exportXLSX() {
+  if (typeof XLSX === 'undefined') {
+    alert('La llibreria Excel no s\'ha carregat. Recarrega la pagina i torna a provar.');
+    return;
+  }
+  var wb = XLSX.utils.book_new();
+  var allHeaders = ['ID','Equip','Categoria','Dia','Genere','Estat','Justificant','Capita','Email','Telefon','J1','J2','J3','J4','J5','Num Jugadors','Total EUR','Club','Notes'];
+
+  function rowFor(d) {
+    var j = d.jugadors||[];
+    var st = {confirmed:'Confirmat',pending_payment:'Pendent pagament',pending_proof:'Sense justificant'}[d.status]||d.status;
+    return [
+      d.id, d.team, d.cat, d.dia, d.gen==='F'?'Femeni':'Masculi',
+      st, d.proof?'Si':'No',
+      d.cap||'', d.email||'', d.phone||'',
+      j[0]||'', j[1]||'', j[2]||'', j[3]||'', j[4]||'',
+      d.jug||0, d.total||0, d.club||'', d.note||''
+    ];
+  }
+
+  // Sheet 1: RESUM (tots els equips i individuals)
+  var allRows = [allHeaders];
+  DATA.filter(function(d){return !d.individual;}).forEach(function(d){ allRows.push(rowFor(d)); });
+  allRows.push([]);
+  allRows.push(['=== INDIVIDUALS ===']);
+  allRows.push(allHeaders);
+  DATA.filter(function(d){return d.individual;}).forEach(function(d){ allRows.push(rowFor(d)); });
+  var wsAll = XLSX.utils.aoa_to_sheet(allRows);
+  XLSX.utils.book_append_sheet(wb, wsAll, 'RESUM');
+
+  // Sheet per categoria (separat M/F via ordre dins categoria)
+  var cats = getCats();
+  Object.keys(cats).sort().forEach(function(cat){
+    var teams = cats[cat].slice().sort(function(a,b){
+      if (a.gen !== b.gen) return a.gen === 'F' ? -1 : 1;
+      return (a.team||'').localeCompare(b.team||'');
+    });
+    var rows = [allHeaders];
+    teams.forEach(function(d){ rows.push(rowFor(d)); });
+    var ws = XLSX.utils.aoa_to_sheet(rows);
+    var sheetName = cat.replace(/[\\\/\?\*\[\]:]/g,'_').substring(0,31);
+    XLSX.utils.book_append_sheet(wb, ws, sheetName);
+  });
+
+  // Sheet FEMENINS i MASCULINS (resums separats)
+  ['F','M'].forEach(function(g){
+    var teams = DATA.filter(function(d){return !d.individual && d.gen===g;}).sort(function(a,b){
+      if (a.cat !== b.cat) return a.cat.localeCompare(b.cat);
+      return (a.team||'').localeCompare(b.team||'');
+    });
+    var rows = [allHeaders];
+    teams.forEach(function(d){ rows.push(rowFor(d)); });
+    var ws = XLSX.utils.aoa_to_sheet(rows);
+    XLSX.utils.book_append_sheet(wb, ws, g==='F'?'FEMENINS':'MASCULINS');
+  });
+
+  // Sheet INDIVIDUALS
+  var indivRows = [allHeaders];
+  DATA.filter(function(d){return d.individual;}).forEach(function(d){ indivRows.push(rowFor(d)); });
+  var wsInd = XLSX.utils.aoa_to_sheet(indivRows);
+  XLSX.utils.book_append_sheet(wb, wsInd, 'INDIVIDUALS');
+
+  var filename = '3x3_Westfield_Glories_2026_' + new Date().toISOString().slice(0,10) + '.xlsx';
+  XLSX.writeFile(wb, filename);
+}
+
 function exportXLS() {
   var teams = DATA.filter(function(d){ return !d.individual; });
   var indivs = DATA.filter(function(d){ return d.individual; });
