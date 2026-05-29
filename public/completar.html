@@ -174,7 +174,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
   </div>
 </div>
 <script>
-const WEBAPP_URL = "POSA_AQUI_LA_URL_DEL_APPS_SCRIPT";
+const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbz69LQrY4bLSFWHFbeN28pUcvQaSMu-8bviAs05D8X0IhQ8xQ0oYflo_a2sKGJN5CqCVg/exec";
 const BASE_CHECKIN = "https://cbgrupbarna-3x3timechamber.com/checkin";
 const TALLES = ["","XS","S","M","L","XL","XXL","8","10","12-14","16"];
 var EQUIPS = {
@@ -335,13 +335,23 @@ async function submitForm() {
   document.getElementById('form-err').style.display = 'none';
   const btn = document.getElementById('submit-btn');
   btn.disabled = true; btn.textContent = 'Enviant...';
-  const payload = {teamId, teamNom:equip.nom, teamCat:equip.cat, cap_nom:cap, cap_email:email, cap_phone:phone, cap_gen:capGen, notes:document.getElementById('f-notes').value.trim(), imatge:document.getElementById('imatge').checked?'TRUE':'FALSE', num_players:jugCount, userAgent:navigator.userAgent};
+  const payload = {action:"completar", teamId, id:teamId, teamNom:equip.nom, team:equip.nom, nom_equip:equip.nom, teamCat:equip.cat, cat:equip.cat, categoria:equip.cat, dia:equip.dia, cap_nom:cap, cap:cap, capita:cap, cap_email:email, email:email, cap_phone:phone, phone:phone, cap_gen:capGen, individual:equip.individual||false, tipus:equip.individual?'individual':'equip', notes:document.getElementById('f-notes').value.trim(), rgpd:document.getElementById('rgpd').checked, imatge:document.getElementById('imatge').checked, num_players:jugCount, userAgent:navigator.userAgent};
+  payload.jugadors = [];
   for (let i = 1; i <= jugCount; i++) {
-    payload['j'+i+'_nom'] = document.getElementById('j'+i+'_nom')?.value?.trim()||'';
-    payload['j'+i+'_any'] = document.getElementById('j'+i+'_any')?.value?.trim()||'';
-    payload['j'+i+'_gen'] = document.getElementById('j'+i+'_gen')?.value||'';
-    payload['j'+i+'_club'] = document.getElementById('j'+i+'_club')?.value?.trim()||'';
-    payload['j'+i+'_talla'] = document.getElementById('j'+i+'_talla')?.value||'';
+    const j = {
+      nom: document.getElementById('j'+i+'_nom')?.value?.trim()||'',
+      any: document.getElementById('j'+i+'_any')?.value?.trim()||'',
+      gen: document.getElementById('j'+i+'_gen')?.value||'',
+      club: document.getElementById('j'+i+'_club')?.value?.trim()||'',
+      talla: document.getElementById('j'+i+'_talla')?.value||''
+    };
+    payload.jugadors.push(j);
+    // També format flat per compatibilitat amb scripts antics
+    payload['j'+i+'_nom'] = j.nom;
+    payload['j'+i+'_any'] = j.any;
+    payload['j'+i+'_gen'] = j.gen;
+    payload['j'+i+'_club'] = j.club;
+    payload['j'+i+'_talla'] = j.talla;
   }
   try { await fetch(WEBAPP_URL, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),mode:'no-cors'}); } catch(e){}
   localStorage.setItem('cbgb_done_'+teamId, new Date().toISOString());
