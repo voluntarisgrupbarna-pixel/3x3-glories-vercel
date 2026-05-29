@@ -1997,11 +1997,12 @@ function SuccessPanel({
 }
 
 // ── Estat de places per categoria (actualitzat 29/05/2026) ─────────────────
-// Dades manuals — coincideixen amb el missatge WhatsApp enviat per Ana.
-// Quan canviï la situació, actualitzar aquest objecte.
-const CATEGORY_STATUS: Array<{ name: string; left: number }> = [
+// Estratègia de captació: NO mostrar mai "0 places" — sempre 1 mínim per
+// generar urgència i atraure més inscripcions. Si volem tancar una categoria
+// definitivament, posar `closed: true`.
+const CATEGORY_STATUS: Array<{ name: string; left: number; closed?: boolean }> = [
   { name: "Escoleta",       left: 1 },
-  { name: "Premini Masc.",  left: 1 },
+  { name: "Premini Masc.",  left: 1 },  // Anabela acaba d'omplir, però deixem 1 per atraure
   { name: "Premini Fem.",   left: 5 },
   { name: "Mini",           left: 2 },
   { name: "Preinfantil",    left: 4 },
@@ -2037,10 +2038,12 @@ function CategoryStatusGrid() {
         marginTop: 10,
       }}>
         {CATEGORY_STATUS.map((c) => {
-          const isCritical = c.left === 1;
-          const isLow      = c.left === 2 || c.left === 3;
-          const color = c.left === 0 ? "#ef4444" : isCritical ? "#f97316" : isLow ? "#facc15" : "#22c55e";
-          const icon  = c.left === 0 ? "🚫" : isCritical ? "🔥" : isLow ? "⚠️" : "✅";
+          // Si no està tancada explícitament, mai mostrem menys d'1 plaça
+          const displayed = c.closed ? 0 : Math.max(1, c.left);
+          const isCritical = displayed === 1;
+          const isLow      = displayed === 2 || displayed === 3;
+          const color = c.closed ? "#ef4444" : isCritical ? "#f97316" : isLow ? "#facc15" : "#22c55e";
+          const icon  = c.closed ? "🚫" : isCritical ? "🔥" : isLow ? "⚠️" : "✅";
           return (
             <div key={c.name} style={{
               display: "flex",
@@ -2053,7 +2056,7 @@ function CategoryStatusGrid() {
             }}>
               <span style={{ fontSize: 13 }}>{icon} {c.name}</span>
               <strong style={{ color, fontSize: 13 }}>
-                {c.left === 0 ? "TANCADA" : `${c.left} ${c.left === 1 ? "plaça" : "places"}`}
+                {c.closed ? "TANCADA" : `${displayed} ${displayed === 1 ? "plaça" : "places"}`}
               </strong>
             </div>
           );
