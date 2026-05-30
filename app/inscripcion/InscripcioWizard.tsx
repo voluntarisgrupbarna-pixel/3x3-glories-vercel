@@ -659,8 +659,8 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
         }
       }
       if (!p.gender) f.push("gènere");
-      if (!p.club.trim()) f.push("club");
-      if (!p.shirtSize) f.push("talla");
+      // club i talla: recomanats però NO bloquegen (s'indiquen al check-in)
+      if (!p.shirtSize) f.push("talla (opcional al check-in)");
       if (f.length) m.push(`Jugador/a ${n}: ${f.join(", ")}`);
     });
     return m;
