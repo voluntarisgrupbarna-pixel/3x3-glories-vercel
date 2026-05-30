@@ -44,51 +44,45 @@ export default function EarlyBirdBanner() {
       className="early-bird-bar"
       role="banner"
       style={{
-        background: "linear-gradient(90deg, #7f1d1d 0%, #991b1b 50%, #7f1d1d 100%)",
-        borderBottom: "2px solid #f87171",
+        background: "#ccff00",
+        borderBottom: "2px solid #aadd00",
+        padding: "5px 12px",
+        minHeight: 0,
+        flexWrap: "nowrap",
+        gap: 8,
       }}
     >
-      {/* Missatge urgència — esquerra */}
-      <div className="eb-promo" style={{ gap: 6 }}>
-        <span className="eb-flame" aria-hidden="true">🚨</span>
-        <span className="eb-text" style={{ fontSize: "0.78rem", lineHeight: 1.3 }}>
-          <strong style={{ color: "#fbbf24", fontSize: "0.85rem" }}>🔥 TANQUEM EL 3 DE JUNY A LES 24H</strong>
-          <span style={{ color: "#fecaca", marginLeft: 6 }}>
-            Ja som 100 equips · Hem ampliat places i s&apos;han tornat a omplir · Queden molt poques places
-          </span>
-        </span>
-      </div>
+      {/* Emoji + text compacte */}
+      <span style={{ fontSize: "0.8rem", fontWeight: 800, color: "#111", whiteSpace: "nowrap", flexShrink: 0 }}>
+        🔥 TANQUEM 3 JUNY
+      </span>
 
-      <span className="eb-sep" aria-hidden="true" />
+      <span style={{ fontSize: "0.72rem", color: "#222", fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+        100 equips · Ampliat i ple · Poques places!
+      </span>
 
-      {/* Compte enrere */}
-      <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
-        <span style={{ color: "#fecaca", fontSize: "0.72rem", fontWeight: 600, whiteSpace: "nowrap" }}>
-          TANCA EN
-        </span>
-        <span className="eb-timer" style={{ fontSize: "0.78rem" }}>
-          <span>{String(days).padStart(1, "0")}D</span>
-          <span>{String(hours).padStart(2, "0")}H</span>
-          <span>{String(minutes).padStart(2, "0")}M</span>
-          <span>{String(seconds).padStart(2, "0")}S</span>
-        </span>
-      </div>
-
-      <span className="eb-sep" aria-hidden="true" />
+      {/* Compte enrere compacte */}
+      <span style={{
+        display: "inline-flex", gap: 3, alignItems: "center",
+        fontFamily: "monospace", fontWeight: 800, fontSize: "0.78rem",
+        color: "#111", flexShrink: 0,
+      }}>
+        {String(days).padStart(2,"0")}d {String(hours).padStart(2,"0")}h {String(minutes).padStart(2,"0")}m {String(seconds).padStart(2,"0")}s
+      </span>
 
       {/* CTA */}
       <Link
         href="/inscripcion"
-        className="eb-cta"
         style={{
-          background: "#f87171",
-          color: "#fff",
-          padding: "4px 12px",
-          borderRadius: 6,
-          fontWeight: 700,
-          fontSize: "0.78rem",
+          background: "#111",
+          color: "#ccff00",
+          padding: "3px 10px",
+          borderRadius: 5,
+          fontWeight: 800,
+          fontSize: "0.75rem",
           whiteSpace: "nowrap",
           textDecoration: "none",
+          flexShrink: 0,
         }}
       >
         Inscriu-te →
