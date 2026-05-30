@@ -52,9 +52,9 @@ export default function EarlyBirdBanner() {
       <div className="eb-promo" style={{ gap: 6 }}>
         <span className="eb-flame" aria-hidden="true">🚨</span>
         <span className="eb-text" style={{ fontSize: "0.78rem", lineHeight: 1.3 }}>
-          <strong style={{ color: "#fbbf24", fontSize: "0.85rem" }}>TANQUEM EL 3 DE JUNY · 24H</strong>
+          <strong style={{ color: "#fbbf24", fontSize: "0.85rem" }}>🔥 TANQUEM EL 3 DE JUNY A LES 24H</strong>
           <span style={{ color: "#fecaca", marginLeft: 6 }}>
-            100+ equips inscrits · Hem ampliat i s&apos;han tornat a omplir
+            Ja som 100 equips · Hem ampliat places i s&apos;han tornat a omplir · Queden molt poques places
           </span>
         </span>
       </div>
