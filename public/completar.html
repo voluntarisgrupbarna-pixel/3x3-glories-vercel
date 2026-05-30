@@ -166,6 +166,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
     <div class="ico">🏀</div>
     <h2>Dades confirmades!</h2>
     <p>Hem rebut la informacio de <strong id="s-nom"></strong>.<br>Ens veiem a Westfield Glories el <strong id="s-dia"></strong>!</p>
+    <div style="background:#fff3cd;border:1px solid #ffe08a;border-radius:8px;padding:14px;margin:18px auto;max-width:380px;">
+      <p style="font-size:13px;color:#7a5b00;margin:0 0 10px;">📲 <strong>Important:</strong> prem el boto per enviar-nos les dades per WhatsApp i confirmar la inscripcio.</p>
+      <a id="wa-send-btn" href="#" target="_blank" style="display:none;background:#25D366;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:700;font-size:15px;">💬 Enviar dades per WhatsApp</a>
+    </div>
     <div id="s-qr" style="margin:20px auto;display:inline-block;background:white;padding:10px;border-radius:8px;border:2px solid var(--border);"></div>
   </div>
   <div class="not-found" id="not-found" style="display:none;">
@@ -377,9 +381,27 @@ async function submitForm() {
     payload['j'+i+'_club'] = j.club;
     payload['j'+i+'_talla'] = j.talla;
   }
+  // Intent de guardar al backend (si està disponible)
   try { await fetch(WEBAPP_URL, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),mode:'no-cors'}); } catch(e){}
+  // Construir missatge de WhatsApp cap al club amb totes les dades
+  var wamsg = 'DADES 3x3 - ' + equip.nom + ' (' + equip.cat + ')\n';
+  wamsg += 'ID: ' + teamId + '\n';
+  wamsg += 'Capita/Tutor: ' + cap + ' (' + (capGen==='F'?'F':'M') + ')\n';
+  wamsg += 'Email: ' + email + ' | Mobil: ' + phone + '\n';
+  wamsg += '----- JUGADORS -----\n';
+  for (var i = 1; i <= jugCount; i++) {
+    wamsg += i + '. ' + (payload['j'+i+'_nom']||'') + ' | ' + (payload['j'+i+'_any']||'') + ' | ' + (payload['j'+i+'_gen']||'') + ' | ' + (payload['j'+i+'_club']||'') + ' | talla ' + (payload['j'+i+'_talla']||'') + '\n';
+  }
+  var notesV = document.getElementById('f-notes').value.trim();
+  if (notesV) wamsg += 'Comentaris: ' + notesV + '\n';
+  wamsg += 'RGPD: SI' + (document.getElementById('imatge').checked?' | Imatge: SI':'');
+  var waUrl = 'https://wa.me/34698425153?text=' + encodeURIComponent(wamsg);
   localStorage.setItem('cbgb_done_'+teamId, new Date().toISOString());
   showSuccess();
+  // Obrir WhatsApp cap al club amb les dades
+  window.open(waUrl, '_blank');
+  // Guardar tambe el link al boto de la pantalla d'exit per si no s'obre sol
+  try { var wb = document.getElementById('wa-send-btn'); if(wb){ wb.href = waUrl; wb.style.display='inline-block'; } } catch(e){}
 }
 
 function showSuccess() {
