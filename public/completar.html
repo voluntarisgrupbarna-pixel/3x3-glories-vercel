@@ -383,6 +383,33 @@ async function submitForm() {
   }
   // Intent de guardar al backend (si està disponible)
   try { await fetch(WEBAPP_URL, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),mode:'no-cors'}); } catch(e){}
+  // Enviar el formulari per EMAIL al club (FormSubmit) - arriba a voluntarisgrupbarna@gmail.com
+  try {
+    var fsData = {
+      _subject: '[3x3 FORM] ' + equip.nom + ' (' + equip.cat + ') - dades completades',
+      _template: 'table',
+      _captcha: 'false',
+      'Equip': equip.nom,
+      'ID': teamId,
+      'Categoria': equip.cat,
+      'Dia': equip.dia,
+      'Capita_Tutor': cap + ' (' + capGen + ')',
+      'Email': email,
+      'Mobil': phone,
+      'Tipus': equip.individual ? 'Individual' : 'Equip',
+      'RGPD': document.getElementById('rgpd').checked ? 'SI' : 'NO',
+      'Drets_imatge': document.getElementById('imatge').checked ? 'SI' : 'NO',
+      'Comentaris': document.getElementById('f-notes').value.trim() || '-'
+    };
+    for (var k = 1; k <= jugCount; k++) {
+      fsData['Jugador_' + k] = (payload['j'+k+'_nom']||'') + ' | any ' + (payload['j'+k+'_any']||'') + ' | ' + (payload['j'+k+'_gen']||'') + ' | ' + (payload['j'+k+'_club']||'') + ' | talla ' + (payload['j'+k+'_talla']||'');
+    }
+    await fetch('https://formsubmit.co/ajax/voluntarisgrupbarna@gmail.com', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(fsData)
+    });
+  } catch(e){}
   // Construir missatge de WhatsApp cap al club amb totes les dades
   var wamsg = 'DADES 3x3 - ' + equip.nom + ' (' + equip.cat + ')\n';
   wamsg += 'ID: ' + teamId + '\n';
