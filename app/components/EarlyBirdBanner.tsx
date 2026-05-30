@@ -1,21 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
-const DEADLINE = new Date("2026-05-21T00:00:00+02:00");
-
-const EB_LOGOS: Array<{
-  src: string | null;
-  alt: string;
-  dark: boolean;
-  featured?: boolean;
-  instagram: string;
-}> = [
-  { src: "/logos/westfield.svg",        alt: "Westfield Glòries", dark: false,           instagram: "https://www.instagram.com/westfieldglories/" },
-  { src: "/cb-grup-barna-logo-192.png", alt: "CB Grup Barna",     dark: false, featured: true, instagram: "https://www.instagram.com/cbgrupbarna/" },
-  { src: "/logos/timechamber.webp",     alt: "Time Chamber",      dark: true,            instagram: "https://www.instagram.com/timechamber_es/" },
-  { src: "/logos/eix-clot-oficial.png",  alt: "Eix Clot",          dark: false,           instagram: "https://www.instagram.com/eixclot/" },
-];
+// Banner d'urgència: tancament d'inscripcions 3 juny 2026 a les 24h
+const CLOSE_DATE = new Date("2026-06-03T23:59:59+02:00");
 
 function getCountdown(target: Date) {
   const diff = Math.max(0, target.getTime() - Date.now());
@@ -30,13 +19,12 @@ export default function EarlyBirdBanner() {
   const [countdown, setCountdown] = useState<ReturnType<typeof getCountdown> | null>(null);
 
   useEffect(() => {
-    setCountdown(getCountdown(DEADLINE));
-    const id = setInterval(() => setCountdown(getCountdown(DEADLINE)), 1000);
+    setCountdown(getCountdown(CLOSE_DATE));
+    const id = setInterval(() => setCountdown(getCountdown(CLOSE_DATE)), 1000);
     return () => clearInterval(id);
   }, []);
 
   useEffect(() => {
-    // Sempre afegim la classe perquè el banner és permanent (mentre l'oferta sigui vigent)
     if (countdown && countdown.diff > 0) {
       document.documentElement.classList.add("has-eb-banner");
     } else {
@@ -52,43 +40,33 @@ export default function EarlyBirdBanner() {
   const { days, hours, minutes, seconds } = countdown;
 
   return (
-    <div className="early-bird-bar" role="banner">
-      {/* Co-organizer logos — esquerra, clicar → Instagram */}
-      <div className="eb-logos">
-        {EB_LOGOS.map((l) => (
-          <a
-            key={l.alt}
-            href={l.instagram}
-            target="_blank"
-            rel="noreferrer"
-            className="eb-logo-link"
-            aria-label={`Instagram de ${l.alt}`}
-          >
-            {l.src ? (
-              <img
-                src={l.src}
-                alt={l.alt}
-                className={[
-                  "eb-logo",
-                  l.dark     ? "eb-logo--dark"     : "",
-                  l.featured ? "eb-logo--featured" : "",
-                ].filter(Boolean).join(" ")}
-              />
-            ) : (
-              <span className="eb-logo-text">{l.alt}</span>
-            )}
-          </a>
-        ))}
+    <div
+      className="early-bird-bar"
+      role="banner"
+      style={{
+        background: "linear-gradient(90deg, #7f1d1d 0%, #991b1b 50%, #7f1d1d 100%)",
+        borderBottom: "2px solid #f87171",
+      }}
+    >
+      {/* Missatge urgència — esquerra */}
+      <div className="eb-promo" style={{ gap: 6 }}>
+        <span className="eb-flame" aria-hidden="true">🚨</span>
+        <span className="eb-text" style={{ fontSize: "0.78rem", lineHeight: 1.3 }}>
+          <strong style={{ color: "#fbbf24", fontSize: "0.85rem" }}>TANQUEM EL 3 DE JUNY · 24H</strong>
+          <span style={{ color: "#fecaca", marginLeft: 6 }}>
+            100+ equips inscrits · Hem ampliat i s&apos;han tornat a omplir
+          </span>
+        </span>
       </div>
 
       <span className="eb-sep" aria-hidden="true" />
 
-      {/* Promo Early Bird — centre, descompte MOLT més gran */}
-      <div className="eb-promo">
-        <span className="eb-flame" aria-hidden="true">🔥</span>
-        <span className="eb-discount-big" aria-label="Descompte del 10 per cent">−10%</span>
-        <span className="eb-text"><strong>EARLY BIRD</strong> · ACABA EN</span>
-        <span className="eb-timer">
+      {/* Compte enrere */}
+      <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
+        <span style={{ color: "#fecaca", fontSize: "0.72rem", fontWeight: 600, whiteSpace: "nowrap" }}>
+          TANCA EN
+        </span>
+        <span className="eb-timer" style={{ fontSize: "0.78rem" }}>
           <span>{String(days).padStart(1, "0")}D</span>
           <span>{String(hours).padStart(2, "0")}H</span>
           <span>{String(minutes).padStart(2, "0")}M</span>
@@ -96,7 +74,25 @@ export default function EarlyBirdBanner() {
         </span>
       </div>
 
-      {/* No es pot tancar — banner permanent fins el deadline */}
+      <span className="eb-sep" aria-hidden="true" />
+
+      {/* CTA */}
+      <Link
+        href="/inscripcion"
+        className="eb-cta"
+        style={{
+          background: "#f87171",
+          color: "#fff",
+          padding: "4px 12px",
+          borderRadius: 6,
+          fontWeight: 700,
+          fontSize: "0.78rem",
+          whiteSpace: "nowrap",
+          textDecoration: "none",
+        }}
+      >
+        Inscriu-te →
+      </Link>
     </div>
   );
 }
