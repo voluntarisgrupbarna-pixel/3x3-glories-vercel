@@ -1163,15 +1163,25 @@ function sendAbandonedEmail(payload, props) {
   const hasContact = payload.captainEmail || payload.captainPhone;
   if (!hasContact) return;
 
-  // ── FILTRE 1: Només enviem email per events significatius ──────────────
-  // phone_entered, email_entered, hidden, beforeunload → es graven al Sheet
-  // però NO generen email (massa sorollosos, 3-5 per sessió per persona)
+  // ── FILTRE 1: Events que generen email ────────────────────────────────
+  // INCLOSOS: tots els events on l'usuari ha capturat contacte significatiu.
+  // El dedup següent (10 min per contacte) evita rebre 3-5 emails per sessió.
+  // hidden i beforeunload encara els excloïm — són massa sorollosos i no
+  // afegeixen contacte nou si no hi havia step* o phone/email_entered abans.
   const reason = payload.reason || "";
-  const emailWorthyReasons = ["step1_email", "step2_done", "step3_done", "step4_done"];
+  const emailWorthyReasons = [
+    "email_entered",   // 📬 acaba d'entrar el seu email — LEAD CALENT
+    "phone_entered",   // 📱 acaba d'entrar el seu telèfon — LEAD CALENT
+    "step1_email",     // Email al pas 1
+    "step2_done",      // Ha completat l'Equip
+    "step3_done",      // Ha completat el Pagament
+    "step4_done",      // Ha completat els Jugadors
+  ];
   if (emailWorthyReasons.indexOf(reason) === -1) return;
 
-  // ── FILTRE 2: Dedup per persona — 1 email cada 10 minuts ──────────────
-  // Evita dobles si la mateixa persona activa 2 events significatius seguits
+  // ── FILTRE 2: Dedup per persona — 1 email cada 15 minuts ──────────────
+  // Evita rebre múltiples emails per la mateixa persona en una sessió.
+  // Window ampliada a 15 min perquè ara entrem en més events.
   try {
     var cache = CacheService.getScriptCache();
     var contactKey = ((payload.captainEmail || "") + (payload.captainPhone || ""))
@@ -1182,7 +1192,7 @@ function sendAbandonedEmail(payload, props) {
         Logger.log("sendAbandonedEmail: skipped dedup (" + reason + ") per " + (payload.captainEmail || payload.captainPhone));
         return;
       }
-      cache.put(cacheKey, reason, 600); // 10 minuts
+      cache.put(cacheKey, reason, 900); // 15 minuts
     }
   } catch(e) { /* CacheService falla en tests locals → ignorem */ }
 
