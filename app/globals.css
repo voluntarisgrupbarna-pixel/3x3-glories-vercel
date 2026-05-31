@@ -1294,9 +1294,10 @@ textarea:focus-visible {
 @media (max-width: 760px) {
   .wa-floating-button {
     right: 12px;
-    bottom: 94px;
-    min-height: 48px;
-    padding: 0 14px;
+    bottom: 16px; /* abans 94px — tapava el CTA del hero */
+    min-height: 44px;
+    padding: 0 12px;
+    font-size: 13px;
   }
 
   .wa-lead-overlay {
@@ -4924,6 +4925,7 @@ html {
   border: 1px solid rgba(234, 255, 0, 0.32);
   box-shadow: 0 0 22px rgba(234, 255, 0, 0.18), 0 14px 40px rgba(0, 0, 0, 0.45);
 }
+
 
 .hero-festival-countdown-box {
   display: flex;
@@ -10710,7 +10712,7 @@ html {
   .hero-festival-chip        { order: 1; }
   /* Títol gran */
   .hero-festival-title       { order: 2; }
-  /* CTAs: visibles immediatament sense scroll */
+  /* CTAs PRINCIPAL: visibles immediatament sense scroll i mai tapats */
   .hero-festival-actions     { order: 3; margin-top: 4px; }
   /* FOMO: "64% ocupat" just sota del CTA */
   .hero-festival-progress    { order: 4; }
@@ -10723,6 +10725,9 @@ html {
   .hero-festival-stats       { order: 8; }
   /* CTA individual i share al final */
   .hero-festival-solo-cta    { order: 9; font-size: 12px; }
+  /* Countdown ha d'anar DESPRÉS del CTA principal per no tapar-lo */
+  .hero-festival-countdown,
+  .hero-festival-countdown--inline { order: 10 !important; }
 
   /* Amagar SlideActionBar dins panel en mòbil (sticky bar cobreix la funció) */
   .hero-festival-panel > [class*="slide-action"] {
@@ -10732,7 +10737,7 @@ html {
   /* Countdown: mostra'l dins el panel en mòbil (era al footer del hero) */
   .hero-festival-countdown {
     display: flex;
-    order: 3;
+    order: 10; /* sempre DESPRÉS del CTA principal */
     position: static;
     transform: none;
     right: auto;
@@ -10740,7 +10745,7 @@ html {
     background: rgba(8, 12, 22, 0.5);
     border: 1px solid rgba(234, 255, 0, 0.25);
     align-self: flex-start;
-    margin-bottom: 4px;
+    margin-top: 8px;
     padding: 6px 10px;
     gap: 5px;
   }

@@ -37,10 +37,13 @@ export default function StickyCtaBar() {
 
   async function handleShare() {
     try {
-      if (typeof navigator !== "undefined" && "share" in navigator) {
-        await navigator.share({ title: "3×3 Westfield Glòries 2026", text: SHARE_TEXT, url: SHARE_URL });
-      } else if (typeof navigator !== "undefined" && navigator.clipboard) {
-        await navigator.clipboard.writeText(SHARE_URL);
+      if (typeof navigator === "undefined") return;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const nav = navigator as any;
+      if (typeof nav.share === "function") {
+        await nav.share({ title: "3×3 Westfield Glòries 2026", text: SHARE_TEXT, url: SHARE_URL });
+      } else if (nav.clipboard && typeof nav.clipboard.writeText === "function") {
+        await nav.clipboard.writeText(SHARE_URL);
         setShared(true);
         setTimeout(() => setShared(false), 2200);
       }
