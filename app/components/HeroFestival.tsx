@@ -50,6 +50,7 @@ export default function HeroFestival() {
   const [scrolled, setScrolled] = useState(false);
   const [countdown, setCountdown] = useState<ReturnType<typeof getCountdown> | null>(null);
   const [slide, setSlide] = useState(0);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -96,6 +97,7 @@ export default function HeroFestival() {
 
       {/* Top nav */}
       <header className={`hero-festival-nav${scrolled ? " hero-festival-nav-scrolled" : ""}`}>
+        {/* Desktop links */}
         <nav className="hero-festival-links">
           {NAV_LINKS.map((l) => (
             <a key={l.href} href={l.href} className="hero-festival-link">
@@ -106,6 +108,30 @@ export default function HeroFestival() {
             Inscriu-te
           </a>
         </nav>
+
+        {/* Mobile hamburger */}
+        <button
+          className="hero-festival-hamburger"
+          aria-label={mobileMenuOpen ? "Tancar menú" : "Obrir menú"}
+          aria-expanded={mobileMenuOpen}
+          onClick={() => setMobileMenuOpen((o) => !o)}
+        >
+          <span /><span /><span />
+        </button>
+
+        {/* Mobile drawer */}
+        {mobileMenuOpen && (
+          <nav className="hero-festival-mobile-menu" onClick={() => setMobileMenuOpen(false)}>
+            {NAV_LINKS.map((l) => (
+              <a key={l.href} href={l.href} className="hero-festival-mobile-link">
+                {l.label}
+              </a>
+            ))}
+            <a href="/inscripcion" className="hero-festival-mobile-cta">
+              🏀 Inscriu-te
+            </a>
+          </nav>
+        )}
       </header>
 
       {/* Left panel */}

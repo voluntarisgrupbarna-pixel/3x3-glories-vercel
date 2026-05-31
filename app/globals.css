@@ -3341,6 +3341,27 @@ html {
   cursor: not-allowed;
 }
 
+/* Loading spinner dins el botó d'enviar */
+@keyframes wizard-spin {
+  to { transform: rotate(360deg); }
+}
+.wizard-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(5, 5, 5, 0.25);
+  border-top-color: #050505;
+  border-radius: 50%;
+  animation: wizard-spin 0.7s linear infinite;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+.wizard-btn--loading {
+  opacity: 0.75;
+  cursor: wait;
+  gap: 6px;
+}
+
 .wizard-btn-ghost {
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.18);
@@ -4474,6 +4495,9 @@ html {
 }
 
 /* === Top nav === */
+/* Hamburger hidden on desktop — only shows via mobile media query */
+.hero-festival-hamburger { display: none; }
+
 .hero-festival-nav {
   position: absolute;
   top: 0;
@@ -4970,6 +4994,70 @@ html {
 
   .hero-festival-links {
     display: none;
+  }
+
+  /* Hamburger button — visible only on mobile */
+  .hero-festival-hamburger {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 40px;
+    height: 40px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.22);
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 8px;
+    position: absolute;
+    top: 14px;
+    left: 16px;
+    z-index: 10;
+  }
+  .hero-festival-hamburger span {
+    display: block;
+    height: 2px;
+    background: #fff;
+    border-radius: 2px;
+    width: 100%;
+  }
+
+  /* Mobile drawer — full-width dropdown below nav */
+  .hero-festival-mobile-menu {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    right: 0;
+    background: rgba(5, 5, 5, 0.96);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    flex-direction: column;
+    padding: 8px 0 16px;
+    z-index: 20;
+  }
+  .hero-festival-mobile-link {
+    padding: 14px 20px;
+    color: rgba(255,255,255,0.85);
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .hero-festival-mobile-link:hover {
+    color: #25d366;
+    background: rgba(37,211,102,0.06);
+  }
+  .hero-festival-mobile-cta {
+    margin: 12px 16px 0;
+    padding: 14px;
+    background: #25d366;
+    color: #050505;
+    font-weight: 800;
+    font-size: 15px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 10px;
   }
 
   .hero-festival-nav-cta {

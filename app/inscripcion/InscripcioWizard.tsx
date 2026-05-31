@@ -1852,8 +1852,10 @@ function Step5Confirm({
 
       <div className="wizard-nav">
         <button type="button" className="wizard-btn wizard-btn-ghost" onClick={onPrev} disabled={submitting}>← Enrere</button>
-        <button type="button" className="wizard-btn wizard-btn-primary" onClick={onSubmit} disabled={!canSubmit || submitting}>
-          {submitting ? "Enviant…" : "Enviar inscripció ✓"}
+        <button type="button" className={`wizard-btn wizard-btn-primary${submitting ? " wizard-btn--loading" : ""}`} onClick={onSubmit} disabled={!canSubmit || submitting}>
+          {submitting ? (
+            <><span className="wizard-spinner" aria-hidden="true" /> Enviant…</>
+          ) : "Enviar inscripció ✓"}
         </button>
       </div>
     </div>
