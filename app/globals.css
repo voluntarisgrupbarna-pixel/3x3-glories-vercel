@@ -1733,8 +1733,8 @@ html {
 }
 
 /* Adjust hero panel when banner is visible */
-.has-eb-banner .hero-panel {
-  margin-top: 114px;
+.has-eb-banner .hero-festival-panel {
+  top: calc(50% + 45px); /* desplaça el centre cap avall: meitat dels 90px del banner */
 }
 
 .has-eb-banner .hero-festival-nav {
@@ -1774,8 +1774,8 @@ html {
     min-width: 22px;
   }
 
-  .has-eb-banner .hero-panel {
-    margin-top: 68px;
+  .has-eb-banner .hero-festival-panel {
+    top: calc(50% + 26px); /* meitat dels 52px del banner en mòbil */
   }
 
   .has-eb-banner .hero-festival-nav {
