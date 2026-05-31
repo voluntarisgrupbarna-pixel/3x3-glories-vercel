@@ -223,7 +223,8 @@ textarea:focus-visible {
   right: 24px;
   bottom: 24px;
   display: grid;
-  grid-template-columns: repeat(3, minmax(116px, 1fr));
+  grid-template-columns: repeat(3, minmax(100px, 1fr));
+  max-width: calc(100vw - 48px); /* evita overflow en pantalles estretes */
   gap: 1px;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.14);
@@ -1465,7 +1466,7 @@ html {
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: rgba(255, 255, 255, 0.04);
   color: #fff7ef;
-  font-size: 14px;
+  font-size: 16px; /* mínim 16px per evitar zoom automàtic iOS */
   text-transform: none;
   letter-spacing: 0;
   font-weight: 500;
@@ -6372,19 +6373,20 @@ html {
 }
 
 .cal-close {
-  width: 32px;
-  height: 32px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   border: 1px solid rgba(255, 255, 255, 0.2);
   background: transparent;
   color: #fff7ef;
-  font-size: 20px;
+  font-size: 22px;
   cursor: pointer;
   display: grid;
   place-items: center;
   font: inherit;
   line-height: 1;
   transition: background 0.15s;
+  flex-shrink: 0;
 }
 
 .cal-close:hover {
@@ -7263,6 +7265,12 @@ html {
   }
 }
 
+@media (max-width: 480px) {
+  .prizes-grid {
+    grid-template-columns: 1fr; /* 1 columna en pantalles molt estretes */
+  }
+}
+
 /* =====================================================
    INSCRIPCIÓ PAGE — hero amb foto + seccions visuals
    ===================================================== */
@@ -7812,17 +7820,18 @@ html {
 .site-nav-drawer-close {
   display: grid;
   place-items: center;
-  width: 32px;
-  height: 32px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   border: 1px solid rgba(255, 255, 255, 0.15);
   background: rgba(255, 255, 255, 0.05);
   color: #fff7ef;
-  font-size: 18px;
+  font-size: 20px;
   cursor: pointer;
   line-height: 1;
   font: inherit;
   transition: background 0.15s;
+  flex-shrink: 0;
 }
 .site-nav-drawer-close:hover {
   background: rgba(255, 255, 255, 0.1);
@@ -8873,7 +8882,7 @@ html {
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 8px;
   color: #fff;
-  font-size: 14px;
+  font-size: 16px; /* mínim 16px per evitar zoom automàtic iOS */
   font-family: inherit;
   padding: 10px 12px;
   outline: none;
@@ -9168,7 +9177,7 @@ html {
   background: rgba(255, 255, 255, 0.07);
   color: #fff;
   font: inherit;
-  font-size: 13px;
+  font-size: 16px; /* mínim 16px per evitar zoom automàtic iOS */
   width: 156px;
   outline: none;
   transition: border-color 0.15s;
