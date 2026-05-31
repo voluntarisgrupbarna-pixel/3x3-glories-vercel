@@ -155,7 +155,8 @@ export default async function InscripcionPage({ searchParams }: InscripcionPageP
             <span>📍 3 seus al Clot</span>
           </div>
         </div>
-        <a href="#form" className="insc-hero-scroll" aria-label="Anar al formulari">
+        <a href="#form" className="insc-hero-scroll" aria-label="Anar al formulari d'inscripció">
+          <span className="insc-hero-scroll-text">Comença la inscripció</span>
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.5">
             <path d="M6 9l6 6 6-6" />
           </svg>
