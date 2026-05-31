@@ -58,7 +58,7 @@ export default function ContactePage() {
 
         {/* Email */}
         <a
-          href="mailto:CBGRUpbarna@gmail.com?subject=3x3%20Westfield%20Gl%C3%B2ries%202026"
+          href="mailto:voluntarisgrupbarna@gmail.com?subject=3x3%20Westfield%20Gl%C3%B2ries%202026"
           style={{
             display: "flex", alignItems: "center", gap: 14,
             background: "rgba(255,255,255,0.06)",
@@ -69,7 +69,7 @@ export default function ContactePage() {
           <span style={{ fontSize: "1.6rem" }}>✉️</span>
           <div>
             <div style={{ color: "#fff", fontWeight: 800, fontSize: "0.95rem" }}>Email</div>
-            <div style={{ color: "rgba(255,255,255,0.55)", fontSize: "0.82rem" }}>CBGRUpbarna@gmail.com</div>
+            <div style={{ color: "rgba(255,255,255,0.55)", fontSize: "0.82rem" }}>voluntarisgrupbarna@gmail.com</div>
           </div>
         </a>
 
