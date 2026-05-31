@@ -5069,35 +5069,68 @@ html {
   }
 
   .hero-festival-panel {
-    padding: 24px;
+    padding: 20px;
     top: auto;
-    bottom: 64px;
-    transform: translateX(-50%);
-    border-radius: 14px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    transform: none;
+    border-radius: 20px 20px 0 0;
+    max-height: 75svh;
+    overflow-y: auto;
+    border: none;
+    border-top: 1px solid rgba(37, 211, 102, 0.2);
+    box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.65);
+  }
+
+  /* Drag handle visual */
+  .hero-festival-panel::before {
+    content: "";
+    display: block;
+    width: 40px;
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.2);
+    margin: 0 auto 16px;
+  }
+
+  /* Parity line massa llarga en mòbil */
+  .hero-festival-parity-line {
+    font-size: 12px;
   }
 
   .hero-festival-stats {
     grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    padding: 14px;
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .hero-festival-stat-value {
+    font-size: 20px;
   }
 
   .hero-festival-actions {
     flex-direction: column;
     align-items: stretch;
+    gap: 8px;
   }
 
-  .hero-festival-cta-primary,
+  .hero-festival-cta-primary {
+    justify-content: center;
+    padding: 16px;
+    font-size: 15px;
+  }
+
   .hero-festival-cta-secondary {
     justify-content: center;
+    padding: 12px;
+    font-size: 13px;
   }
 
   .hero-festival-countdown {
-    bottom: 12px;
-    right: 50%;
-    transform: translateX(50%);
-    gap: 6px;
-    padding: 8px 10px;
+    /* En mòbil el countdown queda dins el panel (visible en scroll) */
+    display: none;
   }
 
   .hero-festival-countdown-box {
@@ -5565,141 +5598,196 @@ html {
   }
 }
 
-/* ══════════════════════════════════════════════════════════════
-   STICKY CTA BAR — Pack Rival + Inscriure'm sol (totes les pàgines)
-   Posició: cantonada inferior ESQUERRA (WA i countdown estan a la dreta)
-══════════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════════
+   STICKY CTA BAR — barra flotant inferior global (activada al scroll)
+   Mòbil: full-width bottom bar. Desktop: pill a la cantonada inferior dreta.
+═══════════════════════════════════════════════════════════════ */
+
 .sticky-cta-bar {
   position: fixed;
-  left: 18px;
-  bottom: 20px;
-  z-index: 18;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 60;
   display: flex;
-  flex-direction: column;
-  gap: 6px;
-  align-items: flex-start;
-  /* Els botons entren des de baix amb una animació suau */
-  animation: sticky-cta-in 0.4s ease both;
+  align-items: stretch;
+  background: rgba(7, 8, 12, 0.97);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(37, 211, 102, 0.25);
+  box-shadow: 0 -4px 28px rgba(0, 0, 0, 0.55);
+  animation: sticky-bar-up 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+  padding-bottom: env(safe-area-inset-bottom, 0px); /* iPhone home indicator */
 }
 
-@keyframes sticky-cta-in {
-  from { opacity: 0; transform: translateY(16px); }
-  to   { opacity: 1; transform: translateY(0); }
+@keyframes sticky-bar-up {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
 }
 
-.sticky-cta-register,
-.sticky-cta-contact {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  padding: 9px 13px;
-  border-radius: 10px;
-  text-decoration: none;
-  transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s;
-  min-width: 0;
-  white-space: nowrap;
-}
-
+/* Botó principal — Inscriu-te */
 .sticky-cta-register {
-  background: rgba(20, 4, 8, 0.9);
-  border: 1.5px solid #25d366;
-  color: #fff7ef;
-  backdrop-filter: blur(14px);
-  box-shadow: 0 4px 18px rgba(37, 211, 102, 0.25);
-}
-
-.sticky-cta-contact {
-  background: rgba(4, 18, 14, 0.9);
-  border: 1.5px solid #21c7a8;
-  color: #fff7ef;
-  backdrop-filter: blur(14px);
-  box-shadow: 0 4px 18px rgba(33, 199, 168, 0.2);
-}
-
-.sticky-cta-register:hover {
-  transform: translateX(3px);
-  box-shadow: 0 8px 28px rgba(37, 211, 102, 0.42);
-}
-
-.sticky-cta-contact:hover {
-  transform: translateX(3px);
-  box-shadow: 0 8px 28px rgba(33, 199, 168, 0.38);
-}
-
-.sticky-cta-share {
+  flex: 1;
   display: flex;
   align-items: center;
-  gap: 9px;
-  padding: 8px 13px;
-  border-radius: 10px;
-  border: 1.5px solid rgba(255, 255, 255, 0.18);
-  background: rgba(14, 14, 22, 0.86);
-  color: #fff7ef;
-  backdrop-filter: blur(14px);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
-  cursor: pointer;
-  font: inherit;
+  gap: 10px;
+  padding: 13px 16px;
   text-decoration: none;
-  transition: transform 0.18s ease, border-color 0.18s ease;
-  white-space: nowrap;
+  color: #fff;
+  background: linear-gradient(100deg, #ff1f3a 0%, #ff5b1f 100%);
+  transition: filter 0.15s ease;
+  min-width: 0;
 }
 
-.sticky-cta-share:hover {
-  transform: translateX(3px);
-  border-color: rgba(255, 255, 255, 0.38);
+.sticky-cta-register:hover,
+.sticky-cta-register:active {
+  filter: brightness(1.12);
 }
 
-.sticky-cta-share .sticky-cta-text strong {
-  color: rgba(255, 247, 239, 0.75);
-  font-size: 12px;
-}
-
-.sticky-cta-icon {
-  font-size: 18px;
+.sticky-cta-register svg {
   flex-shrink: 0;
-  line-height: 1;
+  opacity: 0.88;
 }
 
 .sticky-cta-text {
   display: flex;
   flex-direction: column;
   gap: 1px;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .sticky-cta-text strong {
-  font-size: 12px;
-  font-weight: 800;
+  display: block;
+  font-size: 13px;
+  font-weight: 900;
   line-height: 1.2;
+  color: #fff;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
-.sticky-cta-register .sticky-cta-text strong { color: #ff7a95; }
-.sticky-cta-contact  .sticky-cta-text strong { color: #5eecd8; }
-
 .sticky-cta-text em {
+  display: block;
   font-style: normal;
   font-size: 10px;
   font-weight: 500;
-  color: rgba(255, 247, 239, 0.5);
+  color: rgba(255, 255, 255, 0.72);
   line-height: 1.2;
+  white-space: nowrap;
 }
 
-/* Mobile: més compactes, puja una mica per no tapar la nav del browser */
-@media (max-width: 640px) {
+.sticky-cta-arrow {
+  flex-shrink: 0;
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.65);
+  margin-left: auto;
+  padding-left: 6px;
+}
+
+/* Zona lateral — WA + compartir */
+.sticky-cta-side {
+  display: flex;
+  align-items: stretch;
+  border-left: 1px solid rgba(255, 255, 255, 0.09);
+  flex-shrink: 0;
+}
+
+.sticky-cta-wa {
+  display: grid;
+  place-items: center;
+  width: 58px;
+  color: #25d366;
+  text-decoration: none;
+  border-right: 1px solid rgba(255, 255, 255, 0.09);
+  transition: background 0.15s ease;
+}
+
+.sticky-cta-wa:hover,
+.sticky-cta-wa:active {
+  background: rgba(37, 211, 102, 0.12);
+}
+
+.sticky-cta-share {
+  display: grid;
+  place-items: center;
+  width: 50px;
+  background: transparent;
+  border: none;
+  color: rgba(255, 247, 239, 0.45);
+  cursor: pointer;
+  font: inherit;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.sticky-cta-share:hover,
+.sticky-cta-share:active {
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff7ef;
+}
+
+/* Evitar que el contingut de la pàgina quedi tapat per la barra */
+@media (max-width: 768px) {
+  .page-content,
+  .wizard,
+  .site-footer {
+    padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
+
+/* Pantalles molt estretes */
+@media (max-width: 380px) {
+  .sticky-cta-text em { display: none; }
+  .sticky-cta-text strong { font-size: 12px; }
+  .sticky-cta-wa { width: 50px; }
+  .sticky-cta-share { width: 44px; }
+}
+
+/* Desktop: pill floating a la cantonada inferior dreta */
+@media (min-width: 769px) {
   .sticky-cta-bar {
-    left: 12px;
-    bottom: 14px;
-    gap: 5px;
+    left: auto;
+    right: 20px;
+    bottom: 20px;
+    width: auto;
+    min-width: 240px;
+    border-radius: 16px;
+    border: 1px solid rgba(37, 211, 102, 0.22);
+    flex-direction: column;
+    padding-bottom: 0;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(37, 211, 102, 0.06);
   }
-  .sticky-cta-register,
-  .sticky-cta-contact,
+
+  .sticky-cta-register {
+    border-radius: 16px 16px 0 0;
+    padding: 12px 16px;
+  }
+
+  .sticky-cta-side {
+    border-left: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 0 0 16px 16px;
+    overflow: hidden;
+  }
+
+  .sticky-cta-wa {
+    flex: 1;
+    height: 44px;
+    width: auto;
+  }
+
   .sticky-cta-share {
-    padding: 7px 10px;
-    gap: 7px;
+    flex: 1;
+    height: 44px;
+    width: auto;
+    border-left: 1px solid rgba(255, 255, 255, 0.09);
   }
-  .sticky-cta-icon { font-size: 16px; }
-  .sticky-cta-text strong { font-size: 11px; }
-  .sticky-cta-text em { font-size: 9px; }
+}
+
+/* Evita conflicte WA flotant amb la sticky bar */
+@media (max-width: 768px) {
+  .wa-floating-button { display: none !important; }
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -10384,4 +10472,210 @@ html {
   background: #2a9d2a;
   border-color: #2a9d2a;
   color: #fff;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   SCROLL REVEAL — animacions d'entrada en seccions
+   Progressiu: CSS animation-timeline (Chrome 115+, Safari 17.2+)
+   Fallback: l'element simplement és visible sense animació
+═══════════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .section-reveal {
+      animation: section-fade-up linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 45%;
+    }
+
+    .section-reveal-left {
+      animation: section-fade-left linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 45%;
+    }
+
+    .section-reveal-right {
+      animation: section-fade-right linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 45%;
+    }
+  }
+}
+
+@keyframes section-fade-up {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes section-fade-left {
+  from { opacity: 0; transform: translateX(-24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes section-fade-right {
+  from { opacity: 0; transform: translateX(24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BACK TO TOP — botó flotant per tornar al principi
+═══════════════════════════════════════════════════════════════ */
+
+.back-to-top {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 55;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(15, 16, 22, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 247, 239, 0.72);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  font: inherit;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease;
+  animation: sticky-bar-up 0.3s ease both;
+  text-decoration: none;
+}
+
+.back-to-top:hover,
+.back-to-top:active {
+  background: rgba(37, 211, 102, 0.15);
+  color: #25d366;
+  transform: translateY(-2px);
+}
+
+/* En mòbil, el back-to-top va a l'esquerra (la sticky bar ocupa la dreta) */
+@media (max-width: 768px) {
+  .back-to-top {
+    right: auto;
+    left: 16px;
+    bottom: calc(70px + env(safe-area-inset-bottom, 0px) + 12px);
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* Amb sticky bar activa al desktop, puja el back-to-top */
+@media (min-width: 769px) {
+  .back-to-top {
+    bottom: 84px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MOBILE POLISH — millores globals mòbil
+═══════════════════════════════════════════════════════════════ */
+
+/* Millora tap areas de les preguntes freqüents */
+@media (max-width: 768px) {
+  .faq-question {
+    padding: 18px 14px !important;
+    min-height: 56px;
+  }
+
+  .faq-search-q-btn {
+    padding: 20px 4px !important;
+    min-height: 56px;
+  }
+}
+
+/* Hero inner pages — chips millor wrapping en mòbil */
+@media (max-width: 480px) {
+  .insc-hero-chips span {
+    font-size: 11px;
+    padding: 5px 10px;
+  }
+
+  .insc-hero-title {
+    font-size: clamp(1.6rem, 8vw, 2.4rem);
+  }
+}
+
+/* CTA buttons en pàgines internes — full width en mòbil */
+@media (max-width: 600px) {
+  .page-content a[href="/inscripcion"],
+  .page-content a[href*="inscripcion"] {
+    display: block !important;
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+/* Slide-dos en mòbil — millorar espaciats */
+@media (max-width: 480px) {
+  .slide-dos {
+    padding: 48px 16px 40px;
+  }
+
+  .slide-dos-info-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .slide-dos-info-card {
+    padding: 12px;
+  }
+
+  .slide-dos-info-value {
+    font-size: 13px;
+  }
+}
+
+/* Premi total badge — millor en mòbil */
+@media (max-width: 480px) {
+  .prize-total-badge {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .prize-total-amount {
+    font-size: 18px;
+  }
+}
+
+/* Categories section — millor padding i tap area */
+@media (max-width: 480px) {
+  .cat-grid {
+    grid-template-columns: 1fr !important;
+    gap: 8px;
+  }
+
+  .prizes-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Assegura que el hero del festival no sobresurti per la sticky bar */
+@media (max-width: 768px) {
+  .hero-festival {
+    padding-bottom: 0;
+  }
+}
+
+/* ── Aplica scroll-reveal automàticament als blocs principals ── */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .slide-dos-inner,
+    .section-inner,
+    .premis-section .section-inner,
+    .categories-section .section-inner,
+    .ubic-inner,
+    .faq-inner,
+    .ig-reels-inner,
+    .catbars-section .catbars-inner,
+    .notify-bar,
+    .site-footer-top {
+      animation: section-fade-up linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 40%;
+    }
+  }
 }

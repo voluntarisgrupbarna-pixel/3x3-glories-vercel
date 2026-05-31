@@ -5,6 +5,8 @@ import "./globals.css";
 import SiteNav from "./components/SiteNav";
 // ExitIntentModal removed — Ana vol capturar leads via abandó del formulari, no via popup
 import WhatsAppLeadWidget from "./components/WhatsAppLeadWidget";
+import StickyCtaBar from "./components/StickyCtaBar";
+import BackToTop from "./components/BackToTop";
 
 const inter = Inter({ subsets: ["latin"], display: "swap" });
 
@@ -505,6 +507,8 @@ export default function RootLayout({
       <body>
         <SiteNav />
         <WhatsAppLeadWidget />
+        <StickyCtaBar />
+        <BackToTop />
         {/* ExitIntentModal removed */}
         {children}
         <Script
