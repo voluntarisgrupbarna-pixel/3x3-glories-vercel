@@ -2,17 +2,18 @@
 
 import SlideActionBar from "./SlideActionBar";
 
+// Actualitzat: 31 maig 2026 · font: mailing "Últimes places"
 const CATEGORIES = [
-  { id: "escola",      name: "Escola",      emoji: "🌱", color: "#22C55E", pct: 70  },
-  { id: "premini",     name: "Premini",     emoji: "✏️", color: "#06B6D4", pct: 72  },
-  { id: "mini",        name: "Mini",        emoji: "⭐", color: "#818CF8", pct: 85  },
-  { id: "preinfantil", name: "Preinfantil", emoji: "🚀", color: "#A855F7", pct: 75  },
-  { id: "infantil",    name: "Infantil",    emoji: "🔥", color: "#D946EF", pct: 73  },
-  { id: "cadet",       name: "Cadet",       emoji: "⚡", color: "#EC4899", pct: 70  },
-  { id: "junior",      name: "Junior",      emoji: "🏀", color: "#FB7185", pct: 80  },
-  { id: "seniors",     name: "Sèniors",     emoji: "🏆", color: "#EF4444", pct: 90  },
-  { id: "veterans",    name: "Veterans",    emoji: "💪", color: "#F97316", pct: 68  },
-  { id: "magics",      name: "Màgics",      emoji: "✨", color: "#FBBF24", pct: 67  },
+  { id: "escola",      name: "Escoleta",    emoji: "🌱", color: "#22C55E", remaining: 1,  closed: false },
+  { id: "premini",     name: "Premini",     emoji: "✏️", color: "#06B6D4", remaining: 6,  closed: false }, // 1 masc + 5 fem
+  { id: "mini",        name: "Mini",        emoji: "⭐", color: "#818CF8", remaining: 2,  closed: false },
+  { id: "preinfantil", name: "Preinfantil", emoji: "🚀", color: "#A855F7", remaining: 4,  closed: false },
+  { id: "infantil",    name: "Infantil",    emoji: "🔥", color: "#D946EF", remaining: 3,  closed: false },
+  { id: "cadet",       name: "Cadet",       emoji: "⚡", color: "#EC4899", remaining: 3,  closed: false }, // 1 masc + 2 fem
+  { id: "junior",      name: "Júnior",      emoji: "🏀", color: "#FB7185", remaining: 5,  closed: false },
+  { id: "seniors",     name: "Sèniors",     emoji: "🏆", color: "#EF4444", remaining: 4,  closed: false }, // 1 masc + 3 fem
+  { id: "veterans",    name: "Veterans",    emoji: "💪", color: "#F97316", remaining: 4,  closed: false },
+  { id: "magics",      name: "Màgics",      emoji: "✨", color: "#6B7280", remaining: 0,  closed: true  },
 ];
 
 const GRID_ROWS = [
@@ -29,10 +30,11 @@ export default function OccupancyGrid() {
       <div className="occupancy-inner">
         <div className="occupancy-header">
           <div>
-            <p className="occupancy-kicker">100 PLACES · 1 QUADRAT = 1 EQUIP</p>
-            <h2 className="occupancy-title">Mira com s&apos;omple el torneig en directe</h2>
+            <p className="occupancy-kicker">100 EQUIPS INSCRITS · DATA MÀX. 3 JUNY A LES 24H</p>
+            <h2 className="occupancy-title">Estat actual de places per categoria</h2>
+            <p className="occupancy-warning">⚠️ Quan s&apos;ompli, tanquem. No hi ha llista d&apos;espera.</p>
           </div>
-          <span className="occupancy-badge">🔄 UPDATE 30S</span>
+          <span className="occupancy-badge">🔴 ÚLTIMES PLACES</span>
         </div>
 
         <div className="occupancy-grid" role="img" aria-label="Graella d'ocupació per categories">
@@ -51,13 +53,17 @@ export default function OccupancyGrid() {
 
         <div className="occupancy-legend">
           {CATEGORIES.map((cat) => (
-            <span key={cat.id} className="occupancy-legend-item">
+            <span key={cat.id} className={`occupancy-legend-item${cat.closed ? " occupancy-legend-closed" : ""}`}>
               <span
                 className="occupancy-legend-dot"
                 style={{ backgroundColor: cat.color }}
                 aria-hidden="true"
               />
-              {cat.emoji} {cat.name} {cat.pct}%
+              {cat.emoji} {cat.name}{" "}
+              {cat.closed
+                ? <strong style={{ color: "#EF4444" }}>TANCADA</strong>
+                : <strong>{cat.remaining === 1 ? "1 plaça" : `${cat.remaining} places`}</strong>
+              }
             </span>
           ))}
         </div>

@@ -5308,6 +5308,14 @@ html {
   font-weight: 800;
 }
 
+.occupancy-warning {
+  margin: 8px 0 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #FCA5A5;
+  letter-spacing: 0.01em;
+}
+
 .occupancy-badge {
   flex-shrink: 0;
   display: inline-flex;
