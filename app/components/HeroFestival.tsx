@@ -168,6 +168,31 @@ export default function HeroFestival() {
           </span>
         </div>
 
+        {/* Countdown inline — visible only on mobile (≤768px) */}
+        {countdown && (
+          <div className="hero-festival-countdown hero-festival-countdown--inline" aria-label="Compte enrere">
+            <div className="hero-festival-countdown-box">
+              <span className="hero-festival-countdown-value">{String(countdown.days).padStart(2, "0")}</span>
+              <span className="hero-festival-countdown-label">DIES</span>
+            </div>
+            <span className="hero-festival-countdown-sep">:</span>
+            <div className="hero-festival-countdown-box">
+              <span className="hero-festival-countdown-value">{String(countdown.hours).padStart(2, "0")}</span>
+              <span className="hero-festival-countdown-label">H</span>
+            </div>
+            <span className="hero-festival-countdown-sep">:</span>
+            <div className="hero-festival-countdown-box">
+              <span className="hero-festival-countdown-value">{String(countdown.minutes).padStart(2, "0")}</span>
+              <span className="hero-festival-countdown-label">MIN</span>
+            </div>
+            <span className="hero-festival-countdown-sep">:</span>
+            <div className="hero-festival-countdown-box">
+              <span className="hero-festival-countdown-value">{String(countdown.seconds).padStart(2, "0")}</span>
+              <span className="hero-festival-countdown-label">SEG</span>
+            </div>
+          </div>
+        )}
+
         <div className="hero-festival-actions">
           <a href="/inscripcion" className="hero-festival-cta-primary">
             <span aria-hidden="true">🏀</span> Inscriu el teu equip — des de 75 €

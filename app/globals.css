@@ -10679,3 +10679,224 @@ html {
     }
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   OCCUPANCY GRID — 10 columnes en mòbil (caselles 35px vs 18px)
+═══════════════════════════════════════════════════════════════ */
+
+@media (max-width: 640px) {
+  .occupancy-grid {
+    grid-template-columns: repeat(10, 1fr);
+    gap: 4px;
+  }
+
+  .occupancy-square {
+    border-radius: 3px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   HERO FESTIVAL PANEL — reordenació mòbil per màxima conversió
+   Ordre: chip → títol → CTA → FOMO → info → stats
+═══════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  .hero-festival-panel {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Chip "3a edició" primer */
+  .hero-festival-chip        { order: 1; }
+  /* Títol gran */
+  .hero-festival-title       { order: 2; }
+  /* CTAs: visibles immediatament sense scroll */
+  .hero-festival-actions     { order: 3; margin-top: 4px; }
+  /* FOMO: "64% ocupat" just sota del CTA */
+  .hero-festival-progress    { order: 4; }
+  /* Info event: data + ubicació */
+  .hero-festival-meta        { order: 5; }
+  /* Subtítols addicionals */
+  .hero-festival-subtitle    { order: 6; }
+  .hero-festival-parity-line { order: 7; font-size: 11px; }
+  /* Stats al final (si l'usuari vol més info) */
+  .hero-festival-stats       { order: 8; }
+  /* CTA individual i share al final */
+  .hero-festival-solo-cta    { order: 9; font-size: 12px; }
+
+  /* Amagar SlideActionBar dins panel en mòbil (sticky bar cobreix la funció) */
+  .hero-festival-panel > [class*="slide-action"] {
+    display: none;
+  }
+
+  /* Countdown: mostra'l dins el panel en mòbil (era al footer del hero) */
+  .hero-festival-countdown {
+    display: flex;
+    order: 3;
+    position: static;
+    transform: none;
+    right: auto;
+    bottom: auto;
+    background: rgba(8, 12, 22, 0.5);
+    border: 1px solid rgba(234, 255, 0, 0.25);
+    align-self: flex-start;
+    margin-bottom: 4px;
+    padding: 6px 10px;
+    gap: 5px;
+  }
+
+  .hero-festival-countdown-box {
+    min-width: 36px;
+    padding: 4px 3px;
+  }
+
+  .hero-festival-countdown-value {
+    font-size: 15px;
+  }
+
+  .hero-festival-countdown-label {
+    font-size: 8px;
+  }
+
+  .hero-festival-countdown-sep {
+    font-size: 13px;
+    margin: 0 -1px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RULETA BANNER — millores mòbil
+═══════════════════════════════════════════════════════════════ */
+
+@media (max-width: 640px) {
+  /* El banner ja té flexWrap, però millorem el padding */
+  [aria-labelledby="ruleta-banner-title"] {
+    padding: 32px 16px !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SPONSORS — logos en mòbil: 2 files, grandària reduïda
+═══════════════════════════════════════════════════════════════ */
+
+@media (max-width: 480px) {
+  .sponsor-logo-wrap {
+    width: 130px;
+    height: 88px;
+    padding: 14px;
+  }
+
+  .sponsor-logo-img {
+    max-width: 100px;
+    max-height: 56px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FAQ SECTION — millora tap area items principals (home)
+═══════════════════════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  .faq-item {
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .faq-question {
+    min-height: 60px !important;
+    display: flex;
+    align-items: center;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   NOTIFY BAR (home) — millora mòbil: més visible i més tap-friendly
+═══════════════════════════════════════════════════════════════ */
+
+@media (max-width: 640px) {
+  .notify-bar-btn {
+    width: 100%;
+    padding: 13px;
+    font-size: 15px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   IDENTITY CHIPS — scroll horitzontal en pantalles molt estretes
+═══════════════════════════════════════════════════════════════ */
+
+@media (max-width: 360px) {
+  .identity-chips-strip {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding: 14px 16px;
+    scrollbar-width: none;
+  }
+
+  .identity-chips-strip::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CATBARS (home) — "Inscriu-te" CTA final more prominent on mobile
+═══════════════════════════════════════════════════════════════ */
+
+@media (max-width: 640px) {
+  .catbars-cta {
+    width: 100%;
+    display: block;
+    text-align: center;
+    padding: 16px 24px;
+    font-size: 15px;
+  }
+}
+
+/* ─── Countdown inline (dins el panel, mòbil) ─── */
+
+/* Desktop: el countdown inline NO ha d'aparèixer */
+.hero-festival-countdown--inline {
+  display: none;
+}
+
+/* Mòbil: el countdown inline s'integra dins el panel */
+@media (max-width: 768px) {
+  .hero-festival-countdown--inline {
+    display: flex;
+    position: static;
+    transform: none;
+    right: auto;
+    bottom: auto;
+    background: rgba(8, 12, 22, 0.55);
+    border: 1px solid rgba(234, 255, 0, 0.28);
+    box-shadow: 0 0 14px rgba(234, 255, 0, 0.1);
+    border-radius: 10px;
+    align-self: flex-start;
+    padding: 6px 10px;
+    gap: 4px;
+    margin-bottom: 2px;
+    order: 3;
+  }
+
+  .hero-festival-countdown--inline .hero-festival-countdown-box {
+    min-width: 34px;
+    padding: 4px 3px;
+    background: rgba(8, 12, 22, 0.8);
+    border: 1px solid rgba(234, 255, 0, 0.28);
+    border-radius: 7px;
+  }
+
+  .hero-festival-countdown--inline .hero-festival-countdown-value {
+    font-size: 16px;
+  }
+
+  .hero-festival-countdown--inline .hero-festival-countdown-label {
+    font-size: 7px;
+  }
+
+  .hero-festival-countdown--inline .hero-festival-countdown-sep {
+    font-size: 14px;
+    margin: 0;
+  }
+}
