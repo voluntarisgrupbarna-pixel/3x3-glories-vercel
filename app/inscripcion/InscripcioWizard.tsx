@@ -825,6 +825,15 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
       {/* Status places per categoria (29/05/2026) */}
       <CategoryStatusGrid />
 
+      {/* Urgency speed claim */}
+      <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", margin: "4px 0 10px", fontSize: 13, color: "#86efac", fontWeight: 700 }}>
+        <span>⚡ Inscripció en 3 min</span>
+        <span style={{ color: "#555" }}>·</span>
+        <span>💳 Paga quan vulguis (48h)</span>
+        <span style={{ color: "#555" }}>·</span>
+        <span>✅ Confirmació per WhatsApp</span>
+      </div>
+
       <Stepper currentStep={state.step} isIndividual={state.packageKey === "individual"} waFlow={waFlow} />
 
       {state.step === 1 && (
@@ -1567,9 +1576,22 @@ function Step3Payment({
         </p>
       </div>
 
+      {/* CTA principal: continua sense justificant (no bloqueja) */}
+      <div style={{ background: "rgba(34,197,94,0.1)", border: "1px solid rgba(34,197,94,0.3)", borderRadius: 10, padding: "14px 16px", marginBottom: 16 }}>
+        <p style={{ margin: "0 0 10px", fontWeight: 700, color: "#86efac", fontSize: 15 }}>
+          ⚡ No tens el justificant ara? Cap problema.
+        </p>
+        <p style={{ margin: "0 0 12px", fontSize: 13, color: "#d1fae5", lineHeight: 1.5 }}>
+          Reserva la plaça ara → fes la transferència en les properes <strong>48h</strong> → envia el comprovant per WhatsApp.
+        </p>
+        <button type="button" className="wizard-btn wizard-btn-primary" onClick={onNext} style={{ width: "100%", fontSize: 16, padding: "14px 0" }}>
+          Continuar sense justificant →
+        </button>
+      </div>
+
       <div className="wizard-field wizard-field-full">
-        <label htmlFor="proof">
-          Justificant de la transferència{" "}
+        <label htmlFor="proof" style={{ fontWeight: 600 }}>
+          O adjunta el justificant ara{" "}
           <span style={{ fontWeight: 400, color: "#888" }}>JPG, PNG o PDF · màx. 4 MB</span>
         </label>
         <input
@@ -1579,21 +1601,18 @@ function Step3Payment({
           onChange={(e) => onFile(e.target.files?.[0] || null)}
         />
         {proofFileName
-          ? <p className="wizard-help wizard-help-success">✓ Fitxer adjuntat: <strong>{proofFileName}</strong></p>
-          : <p className="wizard-help">📎 Adjunta el comprovant si ja has fet la transferència — o continua i envia&apos;ns-el per WhatsApp.</p>
+          ? <p className="wizard-help wizard-help-success">✓ Fitxer adjuntat: <strong>{proofFileName}</strong> — continua →</p>
+          : <p className="wizard-help">📎 Si ja has pagat, adjunta el comprovant aquí per validar avui.</p>
         }
       </div>
 
-      {!canAdvance && missing.length > 0 && (
-        <p role="alert" style={{ color: "#f08c00", fontSize: 13, margin: "16px 0 0", lineHeight: 1.5 }}>
-          ⚠️ Falta: {missing.join(" · ")}
-        </p>
-      )}
       <div className="wizard-nav" style={{ marginTop: 12 }}>
         <button type="button" className="wizard-btn wizard-btn-ghost" onClick={onPrev}>← Enrere</button>
-        <button type="button" className="wizard-btn wizard-btn-primary" onClick={onNext} disabled={!canAdvance}>
-          Continuar →
-        </button>
+        {proofFileName && (
+          <button type="button" className="wizard-btn wizard-btn-primary" onClick={onNext}>
+            Continuar amb justificant →
+          </button>
+        )}
       </div>
     </div>
   );
@@ -1750,19 +1769,11 @@ function Step4Players({
               )}
             </div>
             <div className="wizard-field">
-              <label htmlFor={`wp${idx}-phone`}>Telèfon</label>
-              <input id={`wp${idx}-phone`} type="tel" value={p.phone} onChange={(e) => handlePlayerUpdate(idx, { phone: e.target.value })} placeholder="+34 600 000 000" maxLength={20} />
-            </div>
-            <div className="wizard-field">
-              <label htmlFor={`wp${idx}-shirt`}>Talla samarreta <span style={{ fontWeight: 400, color: "#888" }}>(opcional)</span></label>
+              <label htmlFor={`wp${idx}-shirt`}>Talla samarreta <span style={{ fontWeight: 400, color: "#888" }}>(opcional · es pot dir al check-in)</span></label>
               <select id={`wp${idx}-shirt`} value={p.shirtSize} onChange={(e) => handlePlayerUpdate(idx, { shirtSize: e.target.value })}>
                 <option value="">Talla…</option>
                 {SHIRT_SIZES.map((s) => <option key={s} value={s}>{s}</option>)}
               </select>
-            </div>
-            <div className="wizard-field">
-              <label>Email <span style={{ fontWeight: 400, color: "#888" }}>(opcional)</span></label>
-              <input type="email" value={p.email} onChange={(e) => handlePlayerUpdate(idx, { email: e.target.value })} placeholder="jugador@email.com" maxLength={100} />
             </div>
           </div>
           )}
