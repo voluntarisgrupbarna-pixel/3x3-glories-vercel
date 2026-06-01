@@ -1852,10 +1852,42 @@ function Step5Confirm({
       </div>
 
       {!state.proofFileName && (
-        <p style={{ background: "rgba(240,140,0,.1)", border: "1px solid rgba(240,140,0,.3)", borderRadius: 10, padding: "10px 14px", fontSize: 13, color: "#f08c00", margin: "0 0 16px", lineHeight: 1.5 }}>
-          ⚠️ No has adjuntat el justificant de la transferència. Pots enviar la inscripció igualment — envia&apos;ns el comprovant per{" "}
-          <a href="https://wa.me/34698425153" target="_blank" rel="noreferrer" style={{ color: "#f08c00" }}>WhatsApp</a> en quan facis el pagament.
-        </p>
+        <div style={{ background: "rgba(37,211,102,0.07)", border: "1.5px solid rgba(37,211,102,0.3)", borderRadius: 12, padding: "14px 16px", margin: "0 0 16px" }}>
+          <p style={{ margin: "0 0 10px", fontWeight: 700, fontSize: 14, color: "#86efac" }}>
+            💳 Fes la transferència ara o en les properes 48h
+          </p>
+          <div style={{ display: "grid", gap: 6, fontSize: 14 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
+              <span style={{ color: "#8696a0" }}>Import</span>
+              <strong style={{ color: "#fff7ef" }}>{finalPrice.toFixed(2).replace(".00","")} €</strong>
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+              <span style={{ color: "#8696a0" }}>IBAN</span>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <strong style={{ color: "#fff7ef", fontFamily: "monospace", fontSize: 13 }}>{IBAN_INFO.iban}</strong>
+                <CopyBtn text={IBAN_INFO.iban.replace(/\s/g, "")} label="IBAN" />
+              </div>
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
+              <span style={{ color: "#8696a0" }}>Beneficiari</span>
+              <strong style={{ color: "#fff7ef" }}>{IBAN_INFO.beneficiary}</strong>
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+              <span style={{ color: "#8696a0" }}>Concepte</span>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <strong style={{ color: "#fff7ef", fontFamily: "monospace", fontSize: 13 }}>
+                  {(state.teamName || "EQUIP").toUpperCase().replace(/\s+/g, " ")} 3X3
+                </strong>
+                <CopyBtn text={`${(state.teamName || "EQUIP").toUpperCase().replace(/\s+/g, " ")} 3X3`} label="concepte" />
+              </div>
+            </div>
+          </div>
+          <p style={{ margin: "10px 0 0", fontSize: 12, color: "#8696a0", lineHeight: 1.5 }}>
+            Un cop pagat, envia el comprovant per{" "}
+            <a href="https://wa.me/34698425153" target="_blank" rel="noreferrer" style={{ color: "#25d366" }}>WhatsApp</a>
+            {" "}amb el concepte indicat.
+          </p>
+        </div>
       )}
 
       {/* Caselles obligatòries — destacades si no estan marcades */}
@@ -1969,10 +2001,20 @@ function SuccessPanel({
               }. Revisa la carpeta de spam si no arriba.
             </p>
             {!proofUploaded && (
-              <p style={{ marginTop: 4, color: "#f08c00", fontSize: 12 }}>
-                ⏳ Tens <strong>48h</strong> per enviar el justificant de pagament per{" "}
-                <a href={waProofHref} target="_blank" rel="noreferrer" style={{ color: "#f08c00" }}>WhatsApp</a>.
-              </p>
+              <>
+                <p style={{ marginTop: 4, color: "#f08c00", fontSize: 12 }}>
+                  ⏳ Tens <strong>48h</strong> per fer la transferència i enviar el justificant per WhatsApp.
+                </p>
+                {/* IBAN destacat per no perdre'l */}
+                <div style={{ marginTop: 10, background: "rgba(37,211,102,0.08)", border: "1px solid rgba(37,211,102,0.25)", borderRadius: 10, padding: "12px 14px" }}>
+                  <p style={{ margin: "0 0 8px", fontWeight: 700, fontSize: 13, color: "#86efac" }}>💳 Fes la transferència a:</p>
+                  <div style={{ fontSize: 13, lineHeight: 2, color: "#e5e7eb" }}>
+                    <div><span style={{ color: "#8696a0" }}>IBAN: </span><strong style={{ fontFamily: "monospace" }}>{IBAN_INFO.iban}</strong>{" "}<CopyBtn text={IBAN_INFO.iban.replace(/\s/g,"")} label="IBAN" /></div>
+                    <div><span style={{ color: "#8696a0" }}>Beneficiari: </span><strong>{IBAN_INFO.beneficiary}</strong></div>
+                    <div><span style={{ color: "#8696a0" }}>Concepte: </span><strong style={{ fontFamily: "monospace" }}>{`${(teamName || teamId).toUpperCase()} 3X3`}</strong>{" "}<CopyBtn text={`${(teamName || teamId).toUpperCase()} 3X3`} label="concepte" /></div>
+                  </div>
+                </div>
+              </>
             )}
           </div>
         </div>
