@@ -12,16 +12,16 @@ function semaforColor(remaining: number, closed: boolean): string {
   return "#22C55E";                                // verd
 }
 
-// Actualitzat: 1 juny 2026 · font: sheet inscripcions
+// Actualitzat: 1 juny 2026 · font: imatge estat places
 const CATEGORIES_RAW = [
-  { id: "escola",      name: "Escoleta",       emoji: "🌱", remaining: 1,  closed: false },
-  { id: "premini",     name: "Premini",        emoji: "✏️", remaining: 5,  closed: false },
-  { id: "mini",        name: "Mini",           emoji: "⭐", remaining: 2,  closed: false },
-  { id: "preinfantil", name: "Preinfantil",    emoji: "🚀", remaining: 3,  closed: false },
-  { id: "infantil",    name: "Infantil",       emoji: "🔥", remaining: 3,  closed: false },
-  { id: "cadet",       name: "Cadet",          emoji: "⚡", remaining: 2,  closed: false },
-  { id: "junior",      name: "Júnior",         emoji: "🏀", remaining: 5,  closed: false },
-  { id: "seniors",     name: "Sèniors Pro",    emoji: "🏆", remaining: 3,  closed: false },
+  { id: "escola",      name: "Escoleta",       emoji: "🌱", remaining: 1,  closed: false }, // 1 plaça
+  { id: "premini",     name: "Premini",        emoji: "✏️", remaining: 6,  closed: false }, // 1 masc + 5 fem
+  { id: "mini",        name: "Mini",           emoji: "⭐", remaining: 2,  closed: false }, // 2
+  { id: "preinfantil", name: "Preinfantil",    emoji: "🚀", remaining: 3,  closed: false }, // 3
+  { id: "infantil",    name: "Infantil",       emoji: "🔥", remaining: 3,  closed: false }, // 3
+  { id: "cadet",       name: "Cadet",          emoji: "⚡", remaining: 3,  closed: false }, // 1 masc + 2 fem
+  { id: "junior",      name: "Júnior",         emoji: "🏀", remaining: 5,  closed: false }, // 5
+  { id: "seniors",     name: "Sèniors Pro",    emoji: "🏆", remaining: 4,  closed: false }, // 1 masc + 3 fem
   { id: "veterans",    name: "Sènior Amateur", emoji: "💪", remaining: 3,  closed: false },
   { id: "magics",      name: "Màgics",         emoji: "✨", remaining: 0,  closed: true  },
 ];
