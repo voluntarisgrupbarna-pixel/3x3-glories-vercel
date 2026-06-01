@@ -154,7 +154,6 @@ function pinClear(){pinBuf='';updateDots();}
 </div>
 <div class="tabs">
   <div class="tab on" onclick="sv('cats')">Categories</div>
-  <div class="tab" onclick="sv('catdetail')">Resum categories</div>
   <div class="tab" onclick="sv('list')">Llista equips</div>
   <div class="tab" onclick="sv('contact')">Contactar</div>
 </div>
@@ -190,18 +189,6 @@ function pinClear(){pinBuf='';updateDots();}
 <div class="content">
 
 <div class="view on" id="view-cats">
-  <div class="det" id="det">
-    <div class="det-h">
-      <div><div class="det-t" id="dt"></div><div class="det-m" id="dm"></div></div>
-      <button onclick="closeDet()">X Tancar</button>
-    </div>
-    <div class="tl" id="dtl"></div>
-  </div>
-  <div class="sec-title">Clica una categoria per veure els equips inscrits</div>
-  <div class="cat-grid" id="catgrid"></div>
-</div>
-
-<div class="view" id="view-catdetail">
   <div id="catdetail-body"></div>
 </div>
 
@@ -385,7 +372,7 @@ function loadFromSheet() {
       LAST_UPDATE = new Date();
       document.getElementById('refresh-btn').textContent = '↻ Refresca';
       document.getElementById('refresh-btn').disabled = false;
-      kpis(); renderCats();
+      kpis(); renderCatDetail();
       if (document.getElementById('view-list').classList.contains('on')) renderList();
     })
     .catch(function(err) {
@@ -643,13 +630,12 @@ function esc(s) {
 
 // Tabs
 function sv(v) {
-  ['cats','catdetail','list','contact'].forEach(function(n,i){
+  ['cats','list','contact'].forEach(function(n,i){
     document.getElementById('view-'+n).className = 'view'+(v===n?' on':'');
     document.querySelectorAll('.tab')[i].className = 'tab'+(v===n?' on':'');
   });
   if(v==='list') renderList();
   if(v==='contact') updateCI();
-  if(v==='catdetail') renderCatDetail();
 }
 
 // Categories obj
@@ -1677,7 +1663,7 @@ function copyPers() {
 
 // Init
 kpis();
-renderCats();
+renderCatDetail();
 
 function saveApiUrl() {
   var url = document.getElementById('api-url-input').value.trim();
