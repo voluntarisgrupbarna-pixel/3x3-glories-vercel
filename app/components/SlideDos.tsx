@@ -13,6 +13,7 @@ const PROGRAM = [
       { nom: "Sènior Masculí Pro", fiba: true },
       { nom: "Sènior Femení Pro",  fiba: true },
       { nom: "Sènior Amateur",          fiba: false },
+      { nom: "Escoleta",                fiba: false },
     ],
   },
   {

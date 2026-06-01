@@ -36,6 +36,7 @@ const PROGRAMA = [
       { nom: "Sènior Femení Pro", hora: "09:00–18:00", seu: "Nau del Clot + Finals Westfield", fiba: true },
       { nom: "Sènior Amateur Masculí", hora: "10:00–14:00", seu: "Rambleta del Clot", fiba: false },
       { nom: "Sènior Amateur Femení", hora: "10:00–14:00", seu: "Rambleta del Clot", fiba: false },
+      { nom: "Escoleta", hora: "10:00–13:00", seu: "La Nau del Clot", fiba: false },
     ],
   },
   {
