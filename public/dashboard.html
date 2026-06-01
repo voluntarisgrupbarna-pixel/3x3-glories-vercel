@@ -1416,100 +1416,71 @@ var _acCat = null;
 function renderCatDetail() {
   var cats = getCats();
   var catOrder = Object.keys(CC);
-  var html = '';
+
+  var html = '<div style="overflow-x:auto;">';
+  html += '<table style="width:100%;border-collapse:collapse;background:var(--bg-card);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh);min-width:520px;">';
+  html += '<thead><tr style="background:var(--bg-sec);">';
+  ['Categoria','Total','✅ Conf','⏳ Pend','Límit','Estat','Dia'].forEach(function(h,i){
+    var align = i===0||i===5 ? 'left' : 'center';
+    html += '<th style="text-align:'+align+';padding:10px '+(i===0||i===5?'14':'8')+'px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text2);border-bottom:2px solid var(--border);">'+h+'</th>';
+  });
+  html += '</tr></thead><tbody>';
 
   catOrder.forEach(function(cat) {
-    var all = cats[cat] || [];
+    var all   = cats[cat] || [];
     if (all.length === 0) return;
     var teams = all.filter(function(d){ return !d.individual; });
     var inds  = all.filter(function(d){ return d.individual; });
     var cfg   = CC[cat] || {limit:8, dia:'?', gen:'M'};
     var lim   = cfg.limit;
-    var ll    = Math.max(0, lim - teams.length);
-    var pct   = Math.min(100, Math.round((teams.length / lim) * 100));
+    var conf  = all.filter(function(d){ return d.status==='confirmed'; }).length;
+    var pend  = all.length - conf;
     var over  = teams.length > lim;
-    var full  = !over && ll === 0;
-    var almost= !over && !full && ll <= 2;
-    var barColor = over ? '#b91c1c' : full ? '#b45309' : '#16a34a';
-    var statColor= over ? '#fee2e2' : full ? '#fef3c7' : '#dcfce7';
-    var statText = over ? '🔴 OVER +' + (teams.length - lim) : full ? '🟠 COMPLET' : almost ? '🟡 ' + ll + ' lliures' : '🟢 ' + ll + ' lliures';
-    var genColor = cfg.gen === 'F' ? 'var(--fem)' : 'var(--masc)';
-    var genBg    = cfg.gen === 'F' ? 'var(--fem-bg)' : 'var(--masc-bg)';
-    var genLabel = cfg.gen === 'F' ? 'FEM' : 'MASC';
+    var full  = !over && teams.length === lim;
+    var almost= !over && !full && (lim - teams.length) <= 2;
+    var ll    = Math.max(0, lim - teams.length);
+    var dot   = over ? '#b91c1c' : full ? '#b45309' : almost ? '#b45309' : '#16a34a';
+    var rowBg = over ? 'background:var(--err-bg);' : full ? 'background:var(--warn-bg);' : '';
+    var estatTxt = over ? 'OVER +' + (teams.length-lim) : full ? 'COMPLET' : almost ? 'quasi ple' : '+'+ll+' lliures';
+    var genColor = cfg.gen==='F' ? 'var(--fem)' : 'var(--masc)';
+    var catLabel = esc(cat) + (inds.length>0 ? ' <sup style="color:#1e40af;font-weight:800;">'+inds.length+'</sup>' : '');
 
-    // Capçalera categoria
-    html += '<div style="margin-bottom:14px;background:var(--bg-card);border:1.5px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:var(--sh);">';
+    // Fila categoria
+    html += '<tr style="border-bottom:1px solid var(--border);'+rowBg+'">';
+    html += '<td style="padding:10px 14px;font-weight:700;font-size:13px;color:'+genColor+';">'+catLabel+'</td>';
+    html += '<td style="text-align:center;padding:10px 8px;font-weight:700;font-size:14px;">'+all.length+'</td>';
+    html += '<td style="text-align:center;padding:10px 8px;font-weight:600;color:var(--ok);">'+conf+'</td>';
+    html += '<td style="text-align:center;padding:10px 8px;font-weight:600;color:'+(pend>0?'var(--warn)':'var(--text3)')+';">'+pend+'</td>';
+    html += '<td style="text-align:center;padding:10px 8px;color:var(--text2);">'+lim+'</td>';
+    html += '<td style="padding:10px 14px;"><span style="display:inline-flex;align-items:center;gap:5px;"><span style="width:9px;height:9px;border-radius:50%;background:'+dot+';flex-shrink:0;"></span><span style="font-weight:700;font-size:12px;">'+estatTxt+'</span></span></td>';
+    html += '<td style="text-align:center;padding:10px 8px;font-size:12px;color:var(--text2);">'+cfg.dia+'</td>';
+    html += '</tr>';
 
-    // Header
-    html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--bg-sec);border-bottom:1px solid var(--border);gap:10px;flex-wrap:wrap;">';
-    html += '<div style="display:flex;align-items:center;gap:8px;">';
-    html += '<span style="background:'+genBg+';color:'+genColor+';font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;">'+genLabel+'</span>';
-    html += '<span style="font-size:15px;font-weight:800;">'+esc(cat)+'</span>';
-    html += '<span style="font-size:12px;color:var(--text2);">Dia '+cfg.dia+'</span>';
-    if (inds.length > 0) html += '<span style="font-size:10px;font-weight:700;padding:2px 6px;border-radius:8px;background:#dbeafe;color:#1e40af;">+'+inds.length+' ind</span>';
-    html += '</div>';
-    // Barra + stats
-    html += '<div style="display:flex;align-items:center;gap:10px;">';
-    html += '<div style="width:90px;">';
-    html += '<div style="background:var(--border);border-radius:10px;height:6px;overflow:hidden;"><div style="width:'+pct+'%;height:100%;background:'+barColor+';border-radius:10px;"></div></div>';
-    html += '<div style="font-size:10px;color:var(--text2);text-align:center;margin-top:2px;">'+teams.length+'/'+lim+' equips</div>';
-    html += '</div>';
-    html += '<span style="font-size:11px;font-weight:700;padding:3px 9px;border-radius:10px;background:'+statColor+';">'+statText+'</span>';
-    html += '</div></div>';
-
-    // Llista equips
-    if (teams.length > 0) {
-      html += '<div style="padding:6px 0;">';
-      teams.forEach(function(d, i) {
-        var bg = i % 2 === 0 ? '' : 'background:var(--bg-sec);';
-        var jugadors = (d.jugadors || []).filter(function(j){return j;});
-        html += '<div onclick="showTeam(\''+esc(d.id)+'\')" style="display:flex;align-items:flex-start;gap:10px;padding:7px 14px;cursor:pointer;'+bg+'border-bottom:1px solid var(--border);" onmouseover="this.style.background=\'var(--bg-sec)\'" onmouseout="this.style.background=\''+(i%2===0?'':'var(--bg-sec)')+'\';">';
-        html += '<span style="min-width:20px;height:20px;border-radius:50%;background:#c8102e;color:white;font-size:10px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;margin-top:1px;">'+(i+1)+'</span>';
-        html += '<div style="flex:1;min-width:0;">';
-        html += '<div style="font-weight:700;font-size:13px;">'+esc(d.team)+'</div>';
-        html += '<div style="font-size:11px;color:var(--text2);margin-top:1px;display:flex;gap:8px;flex-wrap:wrap;">';
-        if (d.cap) html += '<span>'+esc(d.cap)+'</span>';
-        if (d.phone) html += '<span>'+esc(d.phone)+'</span>';
-        html += '<span style="font-family:monospace;font-size:10px;color:var(--text3);">'+esc(d.id)+'</span>';
-        html += '</div>';
-        if (jugadors.length > 0) {
-          html += '<div style="font-size:11px;color:var(--text2);margin-top:2px;">'+jugadors.map(function(j,ji){
-            var talla = (d.talles||[])[ji] ? ' <span style="background:#fde68a;color:#92400e;padding:0 4px;border-radius:4px;font-size:10px;">'+(d.talles[ji])+'</span>' : '';
-            return esc(j)+talla;
-          }).join(' · ')+'</div>';
-        }
-        html += '</div>';
-        html += '<span style="font-size:11px;font-weight:600;color:var(--ok);white-space:nowrap;">✓ Confirmat</span>';
-        html += '</div>';
-      });
-      html += '</div>';
-    }
-
-    // Individuals
-    if (inds.length > 0) {
-      html += '<div style="background:#eff6ff;border-top:1.5px solid #bfdbfe;padding:5px 14px 2px;">';
-      html += '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#1e40af;margin-bottom:5px;">Individuals</div>';
-      inds.forEach(function(d) {
-        html += '<div onclick="showTeam(\''+esc(d.id)+'\')" style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #dbeafe;cursor:pointer;" onmouseover="this.style.background=\'#dbeafe\'" onmouseout="this.style.background=\'\';">';
-        html += '<span style="width:18px;height:18px;border-radius:50%;background:#1e40af;color:white;font-size:9px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;">i</span>';
-        html += '<div style="flex:1;">';
-        html += '<span style="font-weight:600;font-size:13px;">'+esc(d.team.replace(' (Escoleta)','').replace(' (pendent)',''))+'</span>';
-        if (d.cap && d.cap !== d.team) html += '<span style="font-size:11px;color:var(--text2);margin-left:6px;">tutor: '+esc(d.cap)+'</span>';
-        if (d.phone) html += '<span style="font-size:11px;color:var(--text2);margin-left:6px;">'+esc(d.phone)+'</span>';
-        html += '<span style="font-family:monospace;font-size:10px;color:var(--text3);margin-left:6px;">'+esc(d.id)+'</span>';
-        html += '</div>';
-        html += '<span style="font-size:11px;font-weight:600;color:var(--ok);">✓</span>';
-        html += '</div>';
-      });
-      html += '</div>';
-    }
-
-    html += '</div>'; // tanca card
+    // Sub-files individuals
+    inds.forEach(function(d) {
+      var nom = (d.jugadors && d.jugadors[0]) ? d.jugadors[0] : d.team.replace(/ \(.*\)/g,'');
+      html += '<tr onclick="showTeam(\''+esc(d.id)+'\')" style="background:#eff6ff;border-bottom:1px solid #dbeafe;cursor:pointer;" onmouseover="this.style.background=\'#dbeafe\'" onmouseout="this.style.background=\'#eff6ff\'">';
+      html += '<td style="padding:6px 14px 6px 32px;font-size:12px;" colspan="2">';
+      html += '<span style="display:inline-flex;width:16px;height:16px;border-radius:50%;background:#1e40af;color:white;font-size:9px;font-weight:700;align-items:center;justify-content:center;margin-right:6px;">i</span>';
+      html += '<strong style="color:#1e40af;">'+esc(nom)+'</strong>';
+      if (d.cap && d.cap !== d.team) html += ' <span style="color:var(--text2);font-size:11px;">· '+esc(d.cap)+'</span>';
+      html += '</td>';
+      html += '<td style="text-align:center;padding:6px 8px;color:var(--ok);font-weight:700;">✓</td>';
+      html += '<td style="text-align:center;padding:6px 8px;color:var(--text3);">—</td>';
+      html += '<td style="text-align:center;padding:6px 8px;color:var(--text3);">—</td>';
+      html += '<td style="padding:6px 14px;font-size:11px;color:var(--text2);">';
+      if (d.phone) html += esc(d.phone);
+      html += ' <span style="font-family:monospace;font-size:10px;color:var(--text3);">'+esc(d.id)+'</span>';
+      html += '</td>';
+      html += '<td style="text-align:center;padding:6px 8px;font-size:11px;color:var(--text2);">'+cfg.dia+'</td>';
+      html += '</tr>';
+    });
   });
 
+  html += '</tbody></table></div>';
+  html += '<p style="font-size:11px;color:var(--text2);margin-top:8px;font-style:italic;"><sup>N</sup> = inclou N individuals</p>';
+
   document.getElementById('catdetail-body').innerHTML = html;
-  // Bind clicks
-  document.getElementById('catdetail-body').querySelectorAll('[onclick]');
 }
 
 function renderCats() {
