@@ -4,14 +4,14 @@ import Link from "next/link";
 import { WA_REGISTER_URL } from "../lib/whatsapp";
 
 export const metadata: Metadata = {
-  title: "3×3 Veterans Barcelona 2026 | +35 anys · Torna a la pista al Clot-Glòries",
+  title: "3×3 Sènior Amateur Barcelona 2026 | +35 anys · Torna a la pista al Clot-Glòries",
   description:
-    "Torneig 3×3 veterans a Barcelona. Categories Veterans Masculí i Femení (nascuts fins 1986, +38 anys el 2026). Dissabte 6 de juny a la Rambleta del Clot. Trofeus, medalles i festa esportiva.",
+    "Torneig 3×3 sènior amateur a Barcelona. Categories Sènior Amateur Masculí i Femení (nascuts fins 1986, +38 anys el 2026). Dissabte 6 de juny a la Rambleta del Clot. Trofeus, medalles i festa esportiva.",
   alternates: { canonical: "/torneo-3x3-veteranos-barcelona" },
   openGraph: {
-    title: "3×3 Veterans Barcelona 2026 — +35 anys · Clot-Glòries · 6 de juny",
+    title: "3×3 Sènior Amateur Barcelona 2026 — +35 anys · Clot-Glòries · 6 de juny",
     description:
-      "Torna a competir. Munta el teu equip de veterans i viu el 3×3 a l&apos;aire lliure. Categories Veterans M/F al 3×3 Westfield Glòries 2026 de Barcelona.",
+      "Torna a competir. Munta el teu equip de sènior amateur i viu el 3×3 a l&apos;aire lliure. Categories Sènior Amateur M/F al 3×3 Westfield Glòries 2026 de Barcelona.",
   },
 };
 
@@ -22,7 +22,7 @@ const jsonLdBreadcrumb = {
   "@type": "BreadcrumbList",
   itemListElement: [
     { "@type": "ListItem", position: 1, name: "Inici", item: SITE_URL },
-    { "@type": "ListItem", position: 2, name: "3×3 Veterans Barcelona 2026", item: `${SITE_URL}/torneo-3x3-veteranos-barcelona` },
+    { "@type": "ListItem", position: 2, name: "3×3 Sènior Amateur Barcelona 2026", item: `${SITE_URL}/torneo-3x3-veteranos-barcelona` },
   ],
 };
 
@@ -47,21 +47,21 @@ export default function VeteransPage() {
         <div className="insc-hero">
           <img
             src="/hero-bg-2.webp"
-            alt="Jugadors veterans competint a la pista exterior del 3×3 Barcelona a la Rambleta del Clot"
+            alt="Jugadors sènior amateur competint a la pista exterior del 3×3 Barcelona a la Rambleta del Clot"
             className="insc-hero-img"
           />
           <div className="insc-hero-overlay" />
           <div className="insc-hero-body">
             <span className="insc-hero-kicker">Dissabte 6 de Juny 2026 · Rambleta del Clot, Barcelona</span>
-            <h1 className="insc-hero-title">3×3 Veterans Barcelona</h1>
+            <h1 className="insc-hero-title">3×3 Sènior Amateur Barcelona</h1>
             <p className="insc-hero-sub">
-              Torna a la pista. La categoria Veterans del 3×3 Westfield Glòries és per a jugadors
+              Torna a la pista. La categoria Sènior Amateur del 3×3 Westfield Glòries és per a jugadors
               i jugadores nascuts fins al 1986 — perquè l&apos;esport no té edat de jubilació.
             </p>
             <div className="insc-hero-chips">
               <span>🎖️ +35 anys (nascuts fins 1986)</span>
               <span>🌳 Pista exterior</span>
-              <span>🏀 Veterans M i F</span>
+              <span>🏀 Sènior Amateur M i F</span>
             </div>
           </div>
         </div>
@@ -70,7 +70,7 @@ export default function VeteransPage() {
 
           <p style={{ fontSize: "1.05rem", lineHeight: 1.7 }}>
             El 3×3 Westfield Glòries és un dels pocs torneigs de la zona que manté una{" "}
-            <strong>categoria veterans activa i creixent</strong>. Si ets pare o mare d&apos;un
+            <strong>categoria sènior amateur activa i creixent</strong>. Si ets pare o mare d&apos;un
             jugador del club, exjugador, o simplement tens les ganes de competir de nou — és el teu
             moment. L&apos;ambient és de festa esportiva, la pista és a l&apos;aire lliure i el
             barri sencer et veu jugar.
@@ -82,14 +82,14 @@ export default function VeteransPage() {
           <div className="insc-cat-grid">
             <div className="insc-cat-card">
               <span className="insc-cat-emoji">🎖️</span>
-              <span className="insc-cat-name">Veterans Masculí</span>
+              <span className="insc-cat-name">Sènior Amateur Masculí</span>
               <span className="insc-cat-year">Nascuts fins 1986</span>
               <span className="insc-cat-price">75–90 €</span>
               <span className="insc-cat-note">4 jug.: 75€ · 5 jug.: 90€</span>
             </div>
             <div className="insc-cat-card">
               <span className="insc-cat-emoji">🎖️</span>
-              <span className="insc-cat-name">Veterans Femení</span>
+              <span className="insc-cat-name">Sènior Amateur Femení</span>
               <span className="insc-cat-year">Nascudes fins 1986</span>
               <span className="insc-cat-price">75–90 €</span>
               <span className="insc-cat-note">4 jug.: 75€ · 5 jug.: 90€</span>
@@ -120,7 +120,7 @@ export default function VeteransPage() {
 
           <h2>Premis</h2>
           <p>
-            Les categories Veterans reben <strong>trofeus i medalles</strong> per als 3 primers
+            Les categories Sènior Amateur reben <strong>trofeus i medalles</strong> per als 3 primers
             classificats. A més, tots els equips participants opten als{" "}
             <strong>premis dels comerços col·laboradors de l&apos;Eix Clot</strong> (sortejos,
             lots de productes i experiències del barri).
@@ -141,7 +141,7 @@ export default function VeteransPage() {
                 marginBottom: "1rem",
               }}
             >
-              🎖️ Inscriu el teu equip Veterans
+              🎖️ Inscriu el teu equip Sènior Amateur
             </a>
             <br />
             <a href={CONTACT_LINK} target="_blank" rel="noreferrer noopener" style={{ fontSize: "0.9rem", color: "rgba(255,247,239,0.6)", textDecoration: "underline" }}>

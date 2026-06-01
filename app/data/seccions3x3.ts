@@ -1,6 +1,6 @@
 export const CATEGORIES = [
   { name: "SÈNIORS",              gender: "♂ ♀", desc: "Premi en Metàl·lic 1.000€ · Punts Rànquing FIBA",        badge: "FIBA OFFICIAL", badgeColor: "#ef4444", price: "90€ (5 jug.)", day: 6, dayColor: "#f97316" },
-  { name: "VETERANS",             gender: "♂ ♀", desc: "Trofeus i medalles · Esport intergeneracional +35", badge: "+35 ANYS",     badgeColor: "#06b6d4", price: "85€ (4 jug.)", day: 6, dayColor: "#f97316" },
+  { name: "SÈNIOR AMATEUR",             gender: "♂ ♀", desc: "Trofeus i medalles · Esport intergeneracional +35", badge: "+35 ANYS",     badgeColor: "#06b6d4", price: "85€ (4 jug.)", day: 6, dayColor: "#f97316" },
   { name: "MÀGICS · INCLUSIVA",   gender: "♂ ♀", desc: "Categoria inclusiva Barna Màgics · Novetat 2026.", badge: "INCLUSIVA",    badgeColor: "#ec4899", price: "75€ (4 jug.)", day: 7, dayColor: "#60a5fa" },
   { name: "U18 JUNIOR",           gender: "♂ ♀", desc: "Categoria juvenil d'alt nivell",                   badge: "JUVENIL",      badgeColor: "#3b82f6", price: "75€ (4 jug.)", day: 7, dayColor: "#60a5fa" },
   { name: "U16 CADET",            gender: "♂",   desc: "Competició formativa d'elit",                      badge: "FORMACIÓ",     badgeColor: "#10b981", price: "75€ (4 jug.)", day: 7, dayColor: "#60a5fa" },
@@ -12,8 +12,8 @@ export const CATEGORIES = [
 export const PRIZES = [
   { cat: "Sèniors · Femení",   amount: "1.000€",            featured: true  },
   { cat: "Sèniors · Masculí",  amount: "1.000€",            featured: true  },
-  { cat: "Veterans · Femení",  amount: "Trofeu + medalles", featured: false },
-  { cat: "Veterans · Masculí", amount: "Trofeu + medalles", featured: false },
+  { cat: "Sènior Amateur · Femení",  amount: "Trofeu + medalles", featured: false },
+  { cat: "Sènior Amateur · Masculí", amount: "Trofeu + medalles", featured: false },
 ] as const;
 
 export const SECONDARY_PRIZES = [
@@ -80,7 +80,7 @@ export const VENUES = [
     photo: "/seus/rambleta-del-clot.jpg",
     slug: "rambleta-del-clot",
     desc: "Pista exterior amb l'ambient del bàsquet de carrer. Música, públic i competició a l'aire lliure.",
-    categories: ["Veterans Masculí", "Veterans Femení", "Màgics · Categoria Inclusiva", "Exhibicions streetball"],
+    categories: ["Sènior Amateur Masculí", "Sènior Amateur Femení", "Màgics · Categoria Inclusiva", "Exhibicions streetball"],
     transport: [
       { icon: "🚇", label: "Metro", value: "L1 Glòries · L1 Clot" },
       { icon: "🚋", label: "Tram", value: "T4 · T5 · T6 parada Pallars" },
@@ -99,7 +99,7 @@ export const PROGRAM = [
     categories: [
       { nom: "Sènior Masculí Pro", fiba: true, hora: "09:00–18:00" },
       { nom: "Sènior Femení Pro",  fiba: true, hora: "09:00–18:00" },
-      { nom: "Veterans M/F",       fiba: false, hora: "10:00–14:00" },
+      { nom: "Sènior Amateur M/F",       fiba: false, hora: "10:00–14:00" },
     ],
   },
   {

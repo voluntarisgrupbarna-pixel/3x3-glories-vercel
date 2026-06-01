@@ -36,7 +36,7 @@ const jsonLdFaq = {
       name: "Quant costa la inscripció per equip?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Entre 75 € i 90 €. 75 € per equip de 3-4 jugadors (categories formatives i Veterans), 85 € per equip de 3-4 jugadors Sèniors, 90 € per equip de 5 jugadors (qualsevol categoria). Les samarretes addicionals costen 25 €/u. Hi ha un descompte del 10% per compartir el torneig a xarxes socials (Early Bird).",
+        text: "Entre 75 € i 90 €. 75 € per equip de 3-4 jugadors (categories formatives i Sènior Amateur), 85 € per equip de 3-4 jugadors Sèniors, 90 € per equip de 5 jugadors (qualsevol categoria). Les samarretes addicionals costen 25 €/u. Hi ha un descompte del 10% per compartir el torneig a xarxes socials (Early Bird).",
       },
     },
     {
@@ -44,7 +44,7 @@ const jsonLdFaq = {
       name: "Quantes categories hi ha?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Hi ha 10 categories: Premini (2016-17), Mini (2014-15), Infantil (2012-13), Cadet (2010-11), Júnior (2008-09), Sub-23 (2003-07), Sènior Masculí, Sènior Femení, Veterans Masculí (fins 1986) i Veterans Femení (fins 1986).",
+        text: "Hi ha 10 categories: Premini (2016-17), Mini (2014-15), Infantil (2012-13), Cadet (2010-11), Júnior (2008-09), Sub-23 (2003-07), Sènior Masculí, Sènior Femení, Sènior Amateur Masculí (fins 1986) i Sènior Amateur Femení (fins 1986).",
       },
     },
     {

@@ -86,7 +86,7 @@ export default function NauDelClotPage() {
           <div className="page-card">
             <span className="page-card-label">Categories adultes</span>
             <strong>Semifinals Sènior</strong>
-            <p>Veterans Masculí · Veterans Femení</p>
+            <p>Sènior Amateur Masculí · Sènior Amateur Femení</p>
           </div>
         </div>
 

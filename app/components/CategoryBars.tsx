@@ -11,7 +11,7 @@ const CATEGORIES = [
   { id: "cadet",       name: "Cadet",       emoji: "⚡", color: "#EC4899", pct: 70,  age: "15-16 anys",  full: false },
   { id: "junior",      name: "Junior",      emoji: "🏀", color: "#FB7185", pct: 80,  age: "17-18 anys",  full: false },
   { id: "seniors",     name: "Sèniors",     emoji: "🏆", color: "#EF4444", pct: 90,  age: "18+ FIBA",    full: false },
-  { id: "veterans",    name: "Veterans",    emoji: "💪", color: "#F97316", pct: 68,  age: "+35 anys",    full: false },
+  { id: "veterans",    name: "Sènior Amateur",    emoji: "💪", color: "#F97316", pct: 68,  age: "+35 anys",    full: false },
   { id: "magics",      name: "Màgics",      emoji: "✨", color: "#FBBF24", pct: 67,  age: "Inclusiva",   full: false },
 ];
 

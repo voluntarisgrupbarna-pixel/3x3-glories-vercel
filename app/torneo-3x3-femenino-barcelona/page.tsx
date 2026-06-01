@@ -6,12 +6,12 @@ import { WA_REGISTER_URL } from "../lib/whatsapp";
 export const metadata: Metadata = {
   title: "3×3 Femení Barcelona 2026 | Sènior Femení FIBA · 1.000€ premi",
   description:
-    "Torneig 3×3 femení a Barcelona 2026. Sènior Femení FIBA: 1.000€ de premi en metàl·lic + punts rànquing mundial. Categories Mini, Infantil, Cadet, Júnior, Veterans i Sènior Femení. 6-7 juny.",
+    "Torneig 3×3 femení a Barcelona 2026. Sènior Femení FIBA: 1.000€ de premi en metàl·lic + punts rànquing mundial. Categories Mini, Infantil, Cadet, Júnior, Sènior Amateur i Sènior Femení. 6-7 juny.",
   alternates: { canonical: "/torneo-3x3-femenino-barcelona" },
   openGraph: {
     title: "3×3 Femení Barcelona 2026 — Sènior F FIBA + 1.000€ · Totes les categories",
     description:
-      "Bàsquet 3×3 femení a Barcelona: des de Mini fins a Veterans i Sènior Pro. Premi equiparat 1.000€ Sènior Femení. 6-7 juny 2026 al Clot-Glòries.",
+      "Bàsquet 3×3 femení a Barcelona: des de Mini fins a Sènior Amateur i Sènior Pro. Premi equiparat 1.000€ Sènior Femení. 6-7 juny 2026 al Clot-Glòries.",
   },
 };
 
@@ -30,7 +30,7 @@ const CONTACT_LINK = WA_REGISTER_URL;
 
 const CATS_FEMENINES = [
   { name: "Sènior Femení", any: "fins 2002", preu: "85–90€", fiba: true },
-  { name: "Veterans Femení", any: "fins 1986 (+38 anys)", preu: "75–90€", fiba: false },
+  { name: "Sènior Amateur Femení", any: "fins 1986 (+38 anys)", preu: "75–90€", fiba: false },
   { name: "Màgics · Inclusiva", any: "Mixta, tots els nivells", preu: "75€", fiba: false },
 ];
 
@@ -85,7 +85,7 @@ export default function FemeniPage() {
 
           <h2>Categories femenines</h2>
           <p>
-            Hi ha categories femenines a tots els nivells: des de les Sèniores Pro fins a Veterans
+            Hi ha categories femenines a tots els nivells: des de les Sèniores Pro fins a Sènior Amateur
             i la categoria inclusiva Màgics (mixta). Les categories formatives (Mini, Infantil,
             Cadet, Júnior, Sub-23) juguen de forma mixta o en funció de l&apos;equip inscrit.
           </p>
@@ -107,11 +107,11 @@ export default function FemeniPage() {
           <h2>Horari categories femenines</h2>
           <div style={{ background: "rgba(249,115,22,0.08)", border: "1px solid rgba(249,115,22,0.2)", borderRadius: "12px", padding: "1.25rem", margin: "1rem 0" }}>
             <p style={{ fontWeight: 700, color: "#f97316", marginBottom: "0.5rem" }}>
-              🟠 Dissabte 6 de juny — Sèniores i Veterans
+              🟠 Dissabte 6 de juny — Sèniores i Sènior Amateur
             </p>
             <ul style={{ margin: 0, padding: "0 0 0 1.1rem", listStyle: "disc" }}>
               <li>Sènior Femení Pro: 09:00–18:00 (Nau del Clot + Finals WG)</li>
-              <li>Veterans Femení: 10:00–14:00 (Rambleta del Clot)</li>
+              <li>Sènior Amateur Femení: 10:00–14:00 (Rambleta del Clot)</li>
               <li>Màgics Inclusiva: 11:00–13:00 (Rambleta del Clot)</li>
             </ul>
           </div>

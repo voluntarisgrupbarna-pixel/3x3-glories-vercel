@@ -212,7 +212,7 @@ export default function QueEsBasquet3x3Page() {
                       ["Júnior", "17-18 anys", "75 €"],
                       ["Sènior Masculí", "+18 anys", "85–90 €"],
                       ["Sènior Femení", "+18 anys", "85–90 €"],
-                      ["Veterans / Màgics", "+35 anys", "75–90 €"],
+                      ["Sènior Amateur / Màgics", "+35 anys", "75–90 €"],
                     ].map(([cat, edat, preu], i) => (
                       <tr key={cat} style={{ background: i % 2 === 0 ? "transparent" : "#141414" }}>
                         <td style={{ padding: "10px 14px", color: "#fff7ef", fontWeight: 600, borderBottom: "1px solid #1e1e1e" }}>{cat}</td>

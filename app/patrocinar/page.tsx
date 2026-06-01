@@ -378,7 +378,7 @@ export default function PatrocinarPage() {
               Rambleta del Clot.
             </li>
             <li>
-              <strong>Format familiar i inclusiu</strong>: des de Premini (8-9 anys) fins a Veterans
+              <strong>Format familiar i inclusiu</strong>: des de Premini (8-9 anys) fins a Sènior Amateur
               (+40) i categoria Màgics.
             </li>
             <li>

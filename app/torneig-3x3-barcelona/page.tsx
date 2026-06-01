@@ -7,7 +7,7 @@ import { WA_REGISTER_URL } from "../lib/whatsapp";
 export const metadata: Metadata = {
   title: "Torneig 3×3 Barcelona 2026 — Westfield Glòries · FIBA · 2.000€ premis",
   description:
-    "Torneig 3×3 Barcelona 2026: bàsquet 3×3 FIBA al Clot-Glòries. 10 categories (Premini a Veterans), 2.000€ premi en metàl·lic Sèniors, punts FIBA. 6-7 Juny 2026. Inscriu-te des de 75€!",
+    "Torneig 3×3 Barcelona 2026: bàsquet 3×3 FIBA al Clot-Glòries. 10 categories (Premini a Sènior Amateur), 2.000€ premi en metàl·lic Sèniors, punts FIBA. 6-7 Juny 2026. Inscriu-te des de 75€!",
   alternates: {
     canonical: "/torneig-3x3-barcelona",
     languages: {
@@ -31,7 +31,7 @@ const jsonLd = {
   name: "Torneig 3×3 Barcelona 2026",
   alternateName: ["Torneig 3×3 Barcelona", "Torneig 3x3 Barna 2026", "3×3 Barcelona 2026", "3x3 Barna"],
   description:
-    "Torneig de bàsquet 3×3 FIBA a Barcelona — 10 categories de Premini a Veterans, 3 seus al barri del Clot-Glòries, 2.000€ de premi Sèniors M/F, punts rànquing mundial FIBA. 3a edició, 6-7 juny 2026.",
+    "Torneig de bàsquet 3×3 FIBA a Barcelona — 10 categories de Premini a Sènior Amateur, 3 seus al barri del Clot-Glòries, 2.000€ de premi Sèniors M/F, punts rànquing mundial FIBA. 3a edició, 6-7 juny 2026.",
   startDate: "2026-06-06T09:00:00+02:00",
   endDate: "2026-06-07T20:00:00+02:00",
   eventStatus: "https://schema.org/EventScheduled",
@@ -117,7 +117,7 @@ export default function TorneigPage() {
           <hr className="page-divider" />
 
           <h2>Categories del Torneig 3×3 Barcelona</h2>
-          <p>10 categories per edat i gènere, del Premini (8 anys) al Veterans (+38 anys):</p>
+          <p>10 categories per edat i gènere, del Premini (8 anys) al Sènior Amateur (+38 anys):</p>
 
           <div className="insc-cat-grid">
             {[
@@ -129,8 +129,8 @@ export default function TorneigPage() {
               { emoji: "🏀", name: "Sub-23", any: "2003–2007", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€" },
               { emoji: "🏆", name: "Sènior Masculí", any: "fins 2002", preu: "85–90 €", nota: "4 jug.: 85€ · 5 jug.: 90€", special: true },
               { emoji: "🏆", name: "Sènior Femení", any: "fins 2002", preu: "85–90 €", nota: "4 jug.: 85€ · 5 jug.: 90€", special: true },
-              { emoji: "🎖️", name: "Veterans Masculí", any: "fins 1986", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€" },
-              { emoji: "🎖️", name: "Veterans Femení", any: "fins 1986", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€" },
+              { emoji: "🎖️", name: "Sènior Amateur Masculí", any: "fins 1986", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€" },
+              { emoji: "🎖️", name: "Sènior Amateur Femení", any: "fins 1986", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€" },
             ].map((cat) => (
               <div key={cat.name} className={`insc-cat-card${cat.special ? " insc-cat-card--pro" : ""}`}>
                 <span className="insc-cat-emoji">{cat.emoji}</span>
@@ -164,7 +164,7 @@ export default function TorneigPage() {
           <ul>
             <li><strong>Format FIBA 3×3</strong>: fases de grups + eliminatòria directa. 3 titulars + fins a 2 suplents per equip.</li>
             <li><strong>Durada dels partits</strong>: 10 minuts o primer equip que arriba a 21 punts.</li>
-            <li><strong>Dissabte 6 de juny</strong>: Sèniors M/F (Nau del Clot + Finals Westfield) i Veterans M/F (Rambleta del Clot).</li>
+            <li><strong>Dissabte 6 de juny</strong>: Sèniors M/F (Nau del Clot + Finals Westfield) i Sènior Amateur M/F (Rambleta del Clot).</li>
             <li><strong>Diumenge 7 de juny</strong>: Barna Màgics (Rambleta del Clot), Premini, Mini, Infantil, Cadet, Júnior, Sub-23 (Nau del Clot).</li>
             <li>Arbitratge oficial FIBA. No cal ser federat per participar.</li>
           </ul>
@@ -177,7 +177,7 @@ export default function TorneigPage() {
             <li><Link href="/inscripcion" className="insc-link">Inscripció d&apos;equip</Link> — formulari online en 5 passos</li>
             <li><Link href="/torneo-3x3-senior-fiba-barcelona" className="insc-link">3×3 Sènior FIBA Barcelona</Link></li>
             <li><Link href="/torneo-3x3-femenino-barcelona" className="insc-link">3×3 Femení Barcelona</Link></li>
-            <li><Link href="/torneo-3x3-veteranos-barcelona" className="insc-link">3×3 Veterans Barcelona</Link></li>
+            <li><Link href="/torneo-3x3-veteranos-barcelona" className="insc-link">3×3 Sènior Amateur Barcelona</Link></li>
             <li><Link href="/horarios-3x3-barcelona-2026" className="insc-link">Horaris Torneig 3×3 Barcelona 2026</Link></li>
             <li><Link href="/preguntes-frequents" className="insc-link">Preguntes freqüents</Link></li>
           </ul>

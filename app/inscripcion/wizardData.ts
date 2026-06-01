@@ -34,13 +34,13 @@ export const PACKAGES: Package[] = [
     key: "team-4",
     emoji: "🏀",
     title: "Equip 4 jugadors",
-    subtitle: "Categoria formativa / Veterans",
+    subtitle: "Categoria formativa / Sènior Amateur",
     price: 75,
     minPlayers: 3,
     maxPlayers: 4,
     isTeam: true,
     description:
-      "Equip de 3 a 4 jugadors. Premini, Mini, Infantil, Cadet, Júnior, Sub-23 i Veterans M/F.",
+      "Equip de 3 a 4 jugadors. Premini, Mini, Infantil, Cadet, Júnior, Sub-23 i Sènior Amateur M/F.",
   },
   {
     key: "team-5",
@@ -52,7 +52,7 @@ export const PACKAGES: Package[] = [
     maxPlayers: 5,
     isTeam: true,
     description:
-      "Equip de 4-5 jugadors (3 titulars + 2 suplents). Totes les categories formatives i Veterans.",
+      "Equip de 4-5 jugadors (3 titulars + 2 suplents). Totes les categories formatives i Sènior Amateur.",
   },
   {
     key: "senior",
@@ -87,8 +87,8 @@ export const CATEGORIES = [
   "Sub-23 Femení",
   "Sènior Masculí",
   "Sènior Femení",
-  "Veterans Masculí",
-  "Veterans Femení",
+  "Sènior Amateur Masculí",
+  "Sènior Amateur Femení",
 ];
 
 export const POSITIONS = ["Base", "Aler", "Pivot", "Indiferent"];

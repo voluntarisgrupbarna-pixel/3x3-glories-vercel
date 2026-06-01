@@ -12,7 +12,7 @@ const CATEGORIES = [
   { id: "cadet",       name: "Cadet",       emoji: "⚡", color: "#EC4899", remaining: 3,  closed: false }, // 1 masc + 2 fem
   { id: "junior",      name: "Júnior",      emoji: "🏀", color: "#FB7185", remaining: 5,  closed: false },
   { id: "seniors",     name: "Sèniors",     emoji: "🏆", color: "#EF4444", remaining: 4,  closed: false }, // 1 masc + 3 fem
-  { id: "veterans",    name: "Veterans",    emoji: "💪", color: "#F97316", remaining: 4,  closed: false },
+  { id: "veterans",    name: "Sènior Amateur",    emoji: "💪", color: "#F97316", remaining: 4,  closed: false },
   { id: "magics",      name: "Màgics",      emoji: "✨", color: "#6B7280", remaining: 0,  closed: true  },
 ];
 

@@ -233,8 +233,8 @@ export default function ComInscriureEquip3x3Page() {
                   <tbody>
                     {[
                       ["Formatives (3-5 jug.)", "Escola, Premini, Mini, Preinfantil, Infantil, Cadet, Júnior", "75 €"],
-                      ["Sènior Early Bird (3-5 jug.)", "Sènior Masculí, Sènior Femení, Veterans, Màgics", "85 €"],
-                      ["Sènior Regular (3-5 jug.)", "Sènior Masculí, Sènior Femení, Veterans, Màgics", "90 €"],
+                      ["Sènior Early Bird (3-5 jug.)", "Sènior Masculí, Sènior Femení, Sènior Amateur, Màgics", "85 €"],
+                      ["Sènior Regular (3-5 jug.)", "Sènior Masculí, Sènior Femení, Sènior Amateur, Màgics", "90 €"],
                     ].map(([paquet, cats, preu], i) => (
                       <tr key={paquet} style={{ background: i % 2 === 0 ? "transparent" : "#141414" }}>
                         <td style={{ padding: "10px 14px", color: "#fff7ef", fontWeight: 600, borderBottom: "1px solid #1e1e1e" }}>{paquet}</td>

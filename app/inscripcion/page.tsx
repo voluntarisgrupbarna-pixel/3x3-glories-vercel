@@ -45,7 +45,7 @@ const jsonLdHowTo = {
       "@type": "HowToStep",
       position: 1,
       name: "Escull la categoria",
-      text: "Selecciona la categoria del teu equip: Escoleta, Premini, Mini, Infantil, Cadet, Júnior, Sub-23, Sènior M/F (FIBA) o Veterans M/F. Comprova els anys de naixement requerits per a cada categoria.",
+      text: "Selecciona la categoria del teu equip: Escoleta, Premini, Mini, Infantil, Cadet, Júnior, Sub-23, Sènior M/F (FIBA) o Sènior Amateur M/F. Comprova els anys de naixement requerits per a cada categoria.",
       url: `${SITE_URL}/inscripcion`,
       image: `${SITE_URL}/hero-bg-1.webp`,
     },
@@ -90,8 +90,8 @@ const categories = [
   { name: "Sub-23", any: "2003–2007", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€", emoji: "🏀" },
   { name: "Sènior Masculí", any: "fins 2002", preu: "85–90 €", nota: "4 jug.: 85€ · 5 jug.: 90€", special: true, emoji: "🏆" },
   { name: "Sènior Femení", any: "fins 2002", preu: "85–90 €", nota: "4 jug.: 85€ · 5 jug.: 90€", special: true, emoji: "🏆" },
-  { name: "Veterans Masculí", any: "nascuts fins 1986", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€", emoji: "🎖️" },
-  { name: "Veterans Femení", any: "nascut fins 1986", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€", emoji: "🎖️" },
+  { name: "Sènior Amateur Masculí", any: "nascuts fins 1986", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€", emoji: "🎖️" },
+  { name: "Sènior Amateur Femení", any: "nascut fins 1986", preu: "75–90 €", nota: "4 jug.: 75€ · 5 jug.: 90€", emoji: "🎖️" },
 ];
 
 type InscripcionPageProps = {

@@ -23,7 +23,7 @@ export default function PremisSection() {
           </div>
           <p className="section-desc">
             Premi econòmic per als <strong>1ers classificats de Sèniors Masculí i Sèniors
-            Femení</strong> (1.000€ cadascun). Veterans M/F i la resta de categories: trofeus i medalles.
+            Femení</strong> (1.000€ cadascun). Sènior Amateur M/F i la resta de categories: trofeus i medalles.
           </p>
         </header>
 

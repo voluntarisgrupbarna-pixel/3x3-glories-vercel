@@ -36,8 +36,8 @@ const SEUS = [
     nom: "Rambleta del Clot",
     adreca: "Rambla del Poblenou / Clot, 08018 Barcelona",
     mapsUrl: "https://maps.google.com/?q=Rambleta+del+Clot+Barcelona",
-    desc: "Pista exterior a l'aire lliure. Ambient de carrer i categories Veterans.",
-    categories: "Veterans Masculí, Veterans Femení",
+    desc: "Pista exterior a l'aire lliure. Ambient de carrer i categories Sènior Amateur.",
+    categories: "Sènior Amateur Masculí, Sènior Amateur Femení",
   },
 ];
 

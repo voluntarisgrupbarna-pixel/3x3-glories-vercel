@@ -230,7 +230,7 @@ const jsonLdEvent = {
   ],
   performer: { "@type": "PerformingGroup", name: "Equips participants 3×3" },
   award:
-    "Prize money 2.000€: Sèniors Masculí 1.000€ · Sèniors Femení 1.000€. Veterans M/F i categories formatives reben trofeus i medalles. + Punts FIBA 3×3 + Premis dels comerços col·laboradors",
+    "Prize money 2.000€: Sèniors Masculí 1.000€ · Sèniors Femení 1.000€. Sènior Amateur M/F i categories formatives reben trofeus i medalles. + Punts FIBA 3×3 + Premis dels comerços col·laboradors",
   speakable: {
     "@type": "SpeakableSpecification",
     cssSelector: [".hero-festival-title", ".hero-festival-subtitle", ".hero-festival-meta-item"],
@@ -305,7 +305,7 @@ const jsonLdCategories = {
   "@context": "https://schema.org",
   "@type": "ItemList",
   name: "Categories del Torneig 3×3 Westfield Glòries 2026",
-  description: "10 categories de competició: de Premini a Sènior Pro FIBA, Veterans i categoria inclusiva Màgics.",
+  description: "10 categories de competició: de Premini a Sènior Pro FIBA, Sènior Amateur i categoria inclusiva Màgics.",
   numberOfItems: 10,
   itemListElement: [
     { "@type": "ListItem", position: 1, name: "Premini · nascuts 2016–2017 · 75–90€/equip", url: `${SITE_URL}/inscripcion` },
@@ -316,8 +316,8 @@ const jsonLdCategories = {
     { "@type": "ListItem", position: 6, name: "Sub-23 · nascuts 2003–2007 · 75–90€/equip", url: `${SITE_URL}/inscripcion` },
     { "@type": "ListItem", position: 7, name: "Sènior Masculí FIBA · 1.000€ premi en metàl·lic · 85–90€/equip", url: `${SITE_URL}/torneo-3x3-senior-fiba-barcelona` },
     { "@type": "ListItem", position: 8, name: "Sènior Femení FIBA · 1.000€ premi en metàl·lic · 85–90€/equip", url: `${SITE_URL}/torneo-3x3-femenino-barcelona` },
-    { "@type": "ListItem", position: 9, name: "Veterans Masculí · nascuts fins 1986 · 75–90€/equip", url: `${SITE_URL}/torneo-3x3-veteranos-barcelona` },
-    { "@type": "ListItem", position: 10, name: "Veterans Femení · nascuts fins 1986 · 75–90€/equip", url: `${SITE_URL}/torneo-3x3-veteranos-barcelona` },
+    { "@type": "ListItem", position: 9, name: "Sènior Amateur Masculí · nascuts fins 1986 · 75–90€/equip", url: `${SITE_URL}/torneo-3x3-veteranos-barcelona` },
+    { "@type": "ListItem", position: 10, name: "Sènior Amateur Femení · nascuts fins 1986 · 75–90€/equip", url: `${SITE_URL}/torneo-3x3-veteranos-barcelona` },
   ],
 };
 

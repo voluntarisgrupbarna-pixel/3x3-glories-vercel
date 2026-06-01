@@ -56,7 +56,7 @@ export default function InscripcioIndividualPage() {
           <div className="page-card">
             <span className="page-card-label">Categories</span>
             <strong>Totes les edats</strong>
-            <p>De Premini a Veterans Masculí/Femení</p>
+            <p>De Premini a Sènior Amateur Masculí/Femení</p>
           </div>
         </div>
 

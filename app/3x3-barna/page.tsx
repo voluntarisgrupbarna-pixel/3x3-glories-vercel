@@ -24,8 +24,8 @@ const CATEGORIES = [
   { name: "Sub-23", any: "2003-07", preu: "75€" },
   { name: "Sènior Masculí", any: "fins 2002", preu: "85€", special: true },
   { name: "Sènior Femení", any: "fins 2002", preu: "85€", special: true },
-  { name: "Veterans Masculí", any: "fins 1986", preu: "75€" },
-  { name: "Veterans Femení", any: "fins 1986", preu: "75€" },
+  { name: "Sènior Amateur Masculí", any: "fins 1986", preu: "75€" },
+  { name: "Sènior Amateur Femení", any: "fins 1986", preu: "75€" },
 ];
 
 // JSON-LD FAQ per a la pàgina 3x3-barna
@@ -191,7 +191,7 @@ export default function Page3x3Barna() {
           {/* Categories */}
           <h2 style={{ fontSize: 22, fontWeight: 800, color: "#fff7ef", marginBottom: 16 }}>Categories del 3×3 Barna 2026</h2>
           <p style={{ color: "rgba(255,247,239,0.65)", fontSize: 14, marginBottom: 20, lineHeight: 1.6 }}>
-            El 3×3 Barna 2026 té <strong style={{ color: "#fff7ef" }}>10 categories</strong> per edat i gènere, de Premini a Veterans. Tots els equips reben samarreta oficial i dorsal. El torneig és obert a equips de tot Catalunya i Espanya.
+            El 3×3 Barna 2026 té <strong style={{ color: "#fff7ef" }}>10 categories</strong> per edat i gènere, de Premini a Sènior Amateur. Tots els equips reben samarreta oficial i dorsal. El torneig és obert a equips de tot Catalunya i Espanya.
           </p>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 12, marginBottom: 40 }}>
             {CATEGORIES.map((c) => (
@@ -219,7 +219,7 @@ export default function Page3x3Barna() {
               El <strong style={{ color: "#fff7ef" }}>3×3 Barna</strong> és el nom amb el qual la comunitat bàsquetbolística de Barcelona coneix el torneig anual organitzat per <strong style={{ color: "#fff7ef" }}>CB Grup Barna</strong>, <strong style={{ color: "#fff7ef" }}>Time Chamber</strong> i <strong style={{ color: "#fff7ef" }}>Eix Clot</strong> al barri del Clot-Glòries. Des de la seva primera edició el 2023, el torneig ha crescut fins a convertir-se en la cita 3×3 FIBA més important de <strong style={{ color: "#fff7ef" }}>Barna</strong> per calendari, premis i participants.
             </p>
             <p style={{ color: "rgba(255,247,239,0.7)", fontSize: 15, lineHeight: 1.7, marginBottom: 16 }}>
-              La 3a edició del <strong style={{ color: "#fff7ef" }}>3×3 Barna 2026</strong> reunirà més de 100 equips en 10 categories, del Premini (8-9 anys) al Veterans (+35 anys), en tres seus emblemàtiques del Clot: Westfield Glòries com a seu principal, La Nau del Clot com a pavelló oficial i la Rambleta del Clot per als partits de carrer en ambient festiu.
+              La 3a edició del <strong style={{ color: "#fff7ef" }}>3×3 Barna 2026</strong> reunirà més de 100 equips en 10 categories, del Premini (8-9 anys) al Sènior Amateur (+35 anys), en tres seus emblemàtiques del Clot: Westfield Glòries com a seu principal, La Nau del Clot com a pavelló oficial i la Rambleta del Clot per als partits de carrer en ambient festiu.
             </p>
             <p style={{ color: "rgba(255,247,239,0.7)", fontSize: 15, lineHeight: 1.7 }}>
               Si busques el <strong style={{ color: "#fff7ef" }}>millor torneig 3×3 de Barna</strong>, has arribat al lloc correcte. Inscriu el teu equip ara i assegura la teva plaça abans que s'esgotin.

@@ -16,8 +16,8 @@ const CATEGORIES = [
   { label: "Sub-23 (nascuts 2003–2007)", price: 75 },
   { label: "Sènior Masculí (fins 2002)", price: 85 },
   { label: "Sènior Femení (fins 2002)", price: 85 },
-  { label: "Veterans Masculí (nascuts fins 1986)", price: 75 },
-  { label: "Veterans Femení (nascuts fins 1986)", price: 75 },
+  { label: "Sènior Amateur Masculí (nascuts fins 1986)", price: 75 },
+  { label: "Sènior Amateur Femení (nascuts fins 1986)", price: 75 },
   { label: "Màgics (esport inclusiu)", price: 75 },
 ];
 

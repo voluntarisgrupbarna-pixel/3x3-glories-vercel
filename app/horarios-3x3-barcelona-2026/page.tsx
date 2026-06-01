@@ -5,12 +5,12 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Horaris 3×3 Westfield Glòries 2026 | Dissabte 6 i Diumenge 7 de Juny · Barcelona",
   description:
-    "Horaris complets del Torneig 3×3 Barcelona 2026. Dissabte 6 de juny: Sèniors FIBA i Veterans. Diumenge 7 de juny: Màgics Inclusiva i categories formatives. 3 seus al Clot-Glòries.",
+    "Horaris complets del Torneig 3×3 Barcelona 2026. Dissabte 6 de juny: Sèniors FIBA i Sènior Amateur. Diumenge 7 de juny: Màgics Inclusiva i categories formatives. 3 seus al Clot-Glòries.",
   alternates: { canonical: "/horarios-3x3-barcelona-2026" },
   openGraph: {
     title: "Horaris 3×3 Westfield Glòries 2026 — 6 i 7 de Juny · Barcelona",
     description:
-      "Tots els horaris del torneig 3×3 FIBA de Barcelona 2026. Sèniors, Veterans, Màgics i categories formatives. 3 seus al barri del Clot-Glòries.",
+      "Tots els horaris del torneig 3×3 FIBA de Barcelona 2026. Sèniors, Sènior Amateur, Màgics i categories formatives. 3 seus al barri del Clot-Glòries.",
   },
 };
 
@@ -34,8 +34,8 @@ const PROGRAMA = [
     categories: [
       { nom: "Sènior Masculí Pro", hora: "09:00–18:00", seu: "Nau del Clot + Finals Westfield", fiba: true },
       { nom: "Sènior Femení Pro", hora: "09:00–18:00", seu: "Nau del Clot + Finals Westfield", fiba: true },
-      { nom: "Veterans Masculí", hora: "10:00–14:00", seu: "Rambleta del Clot", fiba: false },
-      { nom: "Veterans Femení", hora: "10:00–14:00", seu: "Rambleta del Clot", fiba: false },
+      { nom: "Sènior Amateur Masculí", hora: "10:00–14:00", seu: "Rambleta del Clot", fiba: false },
+      { nom: "Sènior Amateur Femení", hora: "10:00–14:00", seu: "Rambleta del Clot", fiba: false },
     ],
   },
   {
@@ -116,7 +116,7 @@ export default function HorarisPage() {
               seus i franges horàries.
             </p>
             <div className="insc-hero-chips">
-              <span>📅 Dis 6 Juny · Sèniors + Veterans + Màgics</span>
+              <span>📅 Dis 6 Juny · Sèniors + Sènior Amateur + Màgics</span>
               <span>📅 Diu 7 Juny · Formatives</span>
             </div>
           </div>

@@ -18,11 +18,11 @@ export const faqs: Faq[] = [
   },
   {
     q: "Quant costa la inscripció per equip?",
-    a: "De 75 € a 90 €. 75 € per equip de 4 jugadors (categories formatives i Sub-23), 85 € per equip de 4 jugadors Sèniors/Veterans, 90 € per equip de 5 jugadors en qualsevol categoria. Les samarretes addicionals (acompanyant o recanvi) costen 25 €/u. Hi ha descomptes acumulables: Early Bird −10 % (actiu fins el 21 de maig), Social −5 % (compartint a xarxes) i Pack Rival −5 € (codi de coneixents).",
+    a: "De 75 € a 90 €. 75 € per equip de 4 jugadors (categories formatives i Sub-23), 85 € per equip de 4 jugadors Sèniors/Sènior Amateur, 90 € per equip de 5 jugadors en qualsevol categoria. Les samarretes addicionals (acompanyant o recanvi) costen 25 €/u. Hi ha descomptes acumulables: Early Bird −10 % (actiu fins el 21 de maig), Social −5 % (compartint a xarxes) i Pack Rival −5 € (codi de coneixents).",
   },
   {
     q: "Quantes categories hi ha?",
-    a: "Hi ha 11 categories: Escoleta (2018-19), Premini (2016-17), Mini (2014-15), Infantil (2012-13), Cadet (2010-11), Júnior (2008-09), Sub-23 (2003-07), Sènior Masculí (fins 2002), Sènior Femení (fins 2002), Veterans Masculí (nascuts fins 1986) i Veterans Femení (nascuts fins 1986).",
+    a: "Hi ha 11 categories: Escoleta (2018-19), Premini (2016-17), Mini (2014-15), Infantil (2012-13), Cadet (2010-11), Júnior (2008-09), Sub-23 (2003-07), Sènior Masculí (fins 2002), Sènior Femení (fins 2002), Sènior Amateur Masculí (nascuts fins 1986) i Sènior Amateur Femení (nascuts fins 1986).",
   },
   {
     q: "El torneig dóna punts FIBA 3×3?",

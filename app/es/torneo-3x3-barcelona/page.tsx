@@ -44,8 +44,8 @@ const CATEGORIAS = [
   { name: "Sub-23", año: "2003–2007", precio: "75–90 €" },
   { name: "Sénior Masculino", año: "hasta 2002", precio: "85–105 €", pro: true },
   { name: "Sénior Femenino", año: "hasta 2002", precio: "85–105 €", pro: true },
-  { name: "Veterans Masculino", año: "hasta 1986", precio: "75–90 €" },
-  { name: "Veterans Femenino", año: "hasta 1986", precio: "75–90 €" },
+  { name: "Sènior Amateur Masculino", año: "hasta 1986", precio: "75–90 €" },
+  { name: "Sènior Amateur Femenino", año: "hasta 1986", precio: "75–90 €" },
 ];
 
 export default function TorneoESPage() {
@@ -140,7 +140,7 @@ export default function TorneoESPage() {
               <ul style={{ margin: 0, padding: "0 0 0 1.1rem", listStyle: "disc" }}>
                 <li style={{ marginBottom: "0.4rem" }}>Sénior Masculino Pro · 09:00–18:00 <span style={{ color: "#ef4444", fontSize: "0.75rem" }}>FIBA</span></li>
                 <li style={{ marginBottom: "0.4rem" }}>Sénior Femenino Pro · 09:00–18:00 <span style={{ color: "#ef4444", fontSize: "0.75rem" }}>FIBA</span></li>
-                <li style={{ marginBottom: "0.4rem" }}>Veterans M/F (+35) · 10:00–14:00</li>
+                <li style={{ marginBottom: "0.4rem" }}>Sènior Amateur M/F (+35) · 10:00–14:00</li>
                 <li>Màgics Inclusiva · 11:00–13:00</li>
               </ul>
             </div>
@@ -187,7 +187,7 @@ export default function TorneoESPage() {
               <strong>La Nau del Clot</strong> — Carrer de la Llacuna 172 · Pabellón cubierto oficial, categorías formativas
             </li>
             <li>
-              <strong>Rambleta del Clot</strong> — Pista exterior · Veterans, Màgics y ambiente de calle
+              <strong>Rambleta del Clot</strong> — Pista exterior · Sènior Amateur, Màgics y ambiente de calle
             </li>
           </ul>
           <p style={{ fontSize: "0.85rem", color: "rgba(255,247,239,0.5)" }}>
