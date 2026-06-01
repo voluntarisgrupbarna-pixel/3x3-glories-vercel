@@ -1552,7 +1552,7 @@ function Step3Payment({
       </div>
 
       <p className="wizard-help" style={{ marginTop: 6, marginBottom: 8 }}>
-        ⚠️ Posa exactament aquest concepte perquè puguem identificar el teu equip.
+        ⚠️ Al camp <strong>concepte</strong> de la transferència posa: <strong>NOM EQUIP + 3X3</strong> (ex: &quot;BADALONA HOOPS 3X3&quot;). Copia el botó de dalt per no equivocar-te.
       </p>
       <div style={{ background: "#f0f7ff", border: "1px solid #b8d8f8", borderRadius: 8, padding: "10px 14px", fontSize: 13, color: "#1a5080", marginBottom: 20, lineHeight: 1.6 }}>
         <p style={{ margin: "0 0 6px" }}>

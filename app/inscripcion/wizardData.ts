@@ -98,7 +98,7 @@ export const GENDERS = ["Masculí", "Femení", "Altre"];
 
 export const IBAN_INFO = {
   iban: "ES25 0182 1797 3002 0387 8558",
-  beneficiary: "CB Grup Barna",
+  beneficiary: "GRUP BARNA",
 };
 
 // ── Descomptes ────────────────────────────────────────────────────────────
