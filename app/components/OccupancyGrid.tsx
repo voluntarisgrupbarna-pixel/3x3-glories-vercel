@@ -2,18 +2,18 @@
 
 import SlideActionBar from "./SlideActionBar";
 
-// Actualitzat: 31 maig 2026 · font: mailing "Últimes places"
+// Actualitzat: 1 juny 2026 · font: sheet inscripcions
 const CATEGORIES = [
-  { id: "escola",      name: "Escoleta",    emoji: "🌱", color: "#22C55E", remaining: 1,  closed: false },
-  { id: "premini",     name: "Premini",     emoji: "✏️", color: "#06B6D4", remaining: 6,  closed: false }, // 1 masc + 5 fem
-  { id: "mini",        name: "Mini",        emoji: "⭐", color: "#818CF8", remaining: 2,  closed: false },
-  { id: "preinfantil", name: "Preinfantil", emoji: "🚀", color: "#A855F7", remaining: 4,  closed: false },
-  { id: "infantil",    name: "Infantil",    emoji: "🔥", color: "#D946EF", remaining: 3,  closed: false },
-  { id: "cadet",       name: "Cadet",       emoji: "⚡", color: "#EC4899", remaining: 3,  closed: false }, // 1 masc + 2 fem
-  { id: "junior",      name: "Júnior",      emoji: "🏀", color: "#FB7185", remaining: 5,  closed: false },
-  { id: "seniors",     name: "Sèniors",     emoji: "🏆", color: "#EF4444", remaining: 4,  closed: false }, // 1 masc + 3 fem
-  { id: "veterans",    name: "Sènior Amateur",    emoji: "💪", color: "#F97316", remaining: 4,  closed: false },
-  { id: "magics",      name: "Màgics",      emoji: "✨", color: "#6B7280", remaining: 0,  closed: true  },
+  { id: "escola",      name: "Escoleta",       emoji: "🌱", color: "#22C55E", remaining: 1,  closed: false },
+  { id: "premini",     name: "Premini",        emoji: "✏️", color: "#06B6D4", remaining: 5,  closed: false },
+  { id: "mini",        name: "Mini",           emoji: "⭐", color: "#818CF8", remaining: 2,  closed: false },
+  { id: "preinfantil", name: "Preinfantil",    emoji: "🚀", color: "#A855F7", remaining: 3,  closed: false },
+  { id: "infantil",    name: "Infantil",       emoji: "🔥", color: "#D946EF", remaining: 3,  closed: false },
+  { id: "cadet",       name: "Cadet",          emoji: "⚡", color: "#EC4899", remaining: 2,  closed: false },
+  { id: "junior",      name: "Júnior",         emoji: "🏀", color: "#FB7185", remaining: 5,  closed: false },
+  { id: "seniors",     name: "Sèniors Pro",    emoji: "🏆", color: "#EF4444", remaining: 4,  closed: false },
+  { id: "veterans",    name: "Sènior Amateur", emoji: "💪", color: "#F97316", remaining: 3,  closed: false },
+  { id: "magics",      name: "Màgics",         emoji: "✨", color: "#6B7280", remaining: 0,  closed: true  },
 ];
 
 const GRID_ROWS = [

@@ -218,7 +218,7 @@ export default function HeroFestival() {
         </div>
 
         <div className="hero-festival-progress">
-          <span className="hero-festival-progress-icon">🔥</span> <strong>64%</strong> ocupat · <strong>64</strong> places lliures
+          <span className="hero-festival-progress-icon">🔥</span> <strong>72%</strong> ocupat · <strong>28</strong> places lliures
         </div>
       </div>
 
