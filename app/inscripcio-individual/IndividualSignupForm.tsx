@@ -50,6 +50,21 @@ function isValid(s: FormState): boolean {
   );
 }
 
+function getMissing(s: FormState): string[] {
+  const m: string[] = [];
+  if (!s.fullName.trim()) m.push("Nom i cognoms");
+  if (!s.birthDate) m.push("Data de naixement");
+  if (!s.gender) m.push("Categoria");
+  if (!s.position) m.push("Posició preferida");
+  if (!s.level) m.push("Nivell");
+  if (!s.shirtSize) m.push("Talla samarreta");
+  if (!s.club.trim()) m.push("Club d'origen (escriu 'Sense club' si no en tens)");
+  if (!s.phone.trim()) m.push("Telèfon");
+  if (!s.email.trim()) m.push("Email");
+  if (!s.consent) m.push("Casella de consentiment (✓ al final)");
+  return m;
+}
+
 export default function IndividualSignupForm() {
   const [state, setState] = useState<FormState>(INITIAL);
   const [submitted, setSubmitted] = useState(false);
@@ -191,13 +206,13 @@ export default function IndividualSignupForm() {
         </div>
 
         <div className="solo-field">
-          <label htmlFor="club">Club d&apos;origen *</label>
+          <label htmlFor="club">Club d&apos;origen * <span style={{ fontSize: 11, fontWeight: 500, color: "rgba(255,247,239,0.5)" }}>(escriu "Sense club" si no en tens)</span></label>
           <input
             id="club"
             type="text"
             value={state.club}
             onChange={(e) => update("club", e.target.value)}
-            placeholder="CB Grup Barna, Sense club…"
+            placeholder="CB Grup Barna · Sense club · Escola…"
             required
             maxLength={60}
           />
@@ -245,7 +260,12 @@ export default function IndividualSignupForm() {
           />
         </div>
 
-        <label className="solo-consent solo-field-full">
+        <label className="solo-consent solo-field-full" style={{
+          background: !state.consent ? "rgba(240,140,0,0.07)" : "rgba(37,211,102,0.07)",
+          border: `1.5px solid ${!state.consent ? "rgba(240,140,0,0.35)" : "rgba(37,211,102,0.3)"}`,
+          borderRadius: 10,
+          padding: "12px 14px",
+        }}>
           <input
             type="checkbox"
             checked={state.consent}
@@ -254,13 +274,36 @@ export default function IndividualSignupForm() {
           />
           <span>
             Accepto rebre comunicacions del club via WhatsApp i email sobre la meva inscripció, i la política
-            de tractament de dades (RGPD).
+            de tractament de dades (RGPD). *
           </span>
         </label>
       </div>
 
+      {/* Missatge d'ajuda: mostra quins camps falten */}
+      {!isValid(state) && (() => {
+        const missing = getMissing(state);
+        return missing.length > 0 ? (
+          <div style={{
+            background: "rgba(240,140,0,0.08)",
+            border: "1px solid rgba(240,140,0,0.3)",
+            borderRadius: 10,
+            padding: "12px 16px",
+            marginBottom: 12,
+            fontSize: 13,
+            color: "#f08c00",
+            lineHeight: 1.6,
+          }}>
+            <strong>⚠️ Completa aquests camps per continuar:</strong>
+            <ul style={{ margin: "6px 0 0", paddingLeft: 18 }}>
+              {missing.map((f) => <li key={f}>{f}</li>)}
+            </ul>
+          </div>
+        ) : null;
+      })()}
+
       {!submitted ? (
-        <button type="submit" className="solo-submit" disabled={!isValid(state)}>
+        <button type="submit" className="solo-submit" disabled={!isValid(state)}
+          title={!isValid(state) ? "Completa tots els camps obligatoris (*)" : undefined}>
           Generar inscripció per WhatsApp →
         </button>
       ) : (
