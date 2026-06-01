@@ -646,58 +646,80 @@ function sv(v) {
 }
 
 function renderHoraris() {
-  var NAU14 = '#1565c0'; var NAU56 = '#7b1fa2'; var RAMB = '#e65100';
-  var NAU14bg = '#e3f2fd'; var NAU56bg = '#f3e5f5'; var RAMBbg = '#fff3e0';
+  var NAU14 = '#1565c0'; var NAU56 = '#7b1fa2'; var RAMB = '#e65100'; var GLOR = '#c8102e';
+  var NAU14bg = '#e3f2fd'; var NAU56bg = '#f3e5f5'; var RAMBbg = '#fff3e0'; var GLORbg = '#fde8ec';
 
   function badge(txt,color,bg){
-    return '<span style="display:inline-block;background:'+bg+';color:'+color+';font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;border:1px solid '+color+';white-space:nowrap;">'+txt+'</span>';
+    return '<span style="display:inline-block;background:'+bg+';color:'+color+';font-size:10px;font-weight:700;padding:3px 9px;border-radius:10px;border:1px solid '+color+';white-space:nowrap;">'+txt+'</span>';
   }
-  function gameInfo(n){ return '<span style="font-size:11px;color:var(--text2);">'+n+' partits</span>'; }
 
   var BLOCS = [
     {
-      venue:'LA NAU — PISTES 1 a 4', vcolor:NAU14, vbg:NAU14bg,
-      nota:'4 pistes · categories fins a Mini · inici 09:00',
+      venue:'🏟 WESTFIELD GLÒRIES — FINALS', vcolor:GLOR, vbg:GLORbg, star:true,
+      nota:'1 pista 3x3 · FINALS d\'Infantil a Junior · partit únic seqüencial',
       rows:[
-        {hora:'09:00–09:45', cat:'Escoleta',  eq:3,  pistes:'P1–P2', format:'Round Robin',           partits:3,  notes:'Mixt M+F'},
-        {hora:'09:00–09:45', cat:'Premini F', eq:3,  pistes:'P3–P4', format:'Round Robin',           partits:3,  notes:'Simultani amb Escoleta'},
-        {hora:'09:45–11:00', cat:'Premini M', eq:8,  pistes:'P1–P4', format:'2 Grups + Semis + Final',partits:15, notes:'Grups 4+4 → Semis → Final'},
-        {hora:'11:00–12:00', cat:'Mini F',    eq:3,  pistes:'P1–P2', format:'Round Robin',           partits:3,  notes:''},
-        {hora:'11:00–13:15', cat:'Mini M',    eq:9,  pistes:'P1–P4', format:'3 Grups + QF + SF + Final',partits:18,notes:'Grups 3+3+3 → Top 2 cada grup'},
-        {hora:'13:15',       cat:'✅ Fi activitat La Nau P1–4', eq:null, pistes:'', format:'', partits:null, notes:'', fi:true}
+        {hora:'11:30–12:00', cat:'Infantil F', eq:'FINAL', pistes:'Glòries', format:'3r lloc + FINAL', partits:2, notes:'Arriba de Rambleta (grups fets)'},
+        {hora:'12:00–12:30', cat:'Infantil M', eq:'FINAL', pistes:'Glòries', format:'3r lloc + FINAL', partits:2, notes:'Arriba de La Nau P5-6'},
+        {hora:'12:30–13:00', cat:'Junior M',   eq:'FINAL', pistes:'Glòries', format:'FINAL',           partits:1, notes:'Top 2 del Round Robin'},
+        {hora:'13:00–14:00', cat:'🍴 PAUSA DINAR', eq:null, lunch:true},
+        {hora:'14:30–15:00', cat:'Cadet F',     eq:'FINAL', pistes:'Glòries', format:'3r lloc + FINAL', partits:2, notes:'Arriba de La Nau P5-6'},
+        {hora:'16:00–16:30', cat:'Cadet M',     eq:'FINAL', pistes:'Glòries', format:'3r lloc + FINAL ⭐', partits:2, notes:'Partit estrella del dia'},
+        {hora:'16:30–17:00', cat:'🏆 CLOENDA i lliurament de premis', eq:null, fi:true}
+      ]
+    },
+    {
+      venue:'LA NAU — PISTES 1 a 4', vcolor:NAU14, vbg:NAU14bg,
+      nota:'4 pistes · fins a Mini · grups + finals AQUÍ mateix (no van a Glòries)',
+      rows:[
+        {hora:'09:00–09:45', cat:'Escoleta',  eq:3,  pistes:'P1–P2', format:'Round Robin + Final', partits:3,  notes:'Mixt M+F'},
+        {hora:'09:00–09:45', cat:'Premini F', eq:3,  pistes:'P3–P4', format:'Round Robin + Final', partits:3,  notes:'Simultani amb Escoleta'},
+        {hora:'09:45–11:00', cat:'Premini M', eq:8,  pistes:'P1–P4', format:'2 Grups + Semis + Final', partits:15, notes:'Grups 4+4'},
+        {hora:'11:00–11:45', cat:'Mini F',    eq:3,  pistes:'P1–P2', format:'Round Robin + Final', partits:3,  notes:''},
+        {hora:'11:00–13:00', cat:'Mini M',    eq:9,  pistes:'P1–P4', format:'3 Grups + QF + SF + Final', partits:18, notes:'Grups 3+3+3'},
+        {hora:'13:00–14:00', cat:'🍴 PAUSA DINAR', eq:null, lunch:true},
+        {hora:'14:00',       cat:'✅ Fi activitat La Nau P1–4', eq:null, fi:true}
       ]
     },
     {
       venue:'LA NAU — PISTES 5 i 6', vcolor:NAU56, vbg:NAU56bg,
-      nota:'2 pistes · Infantil en amunt · inici 09:00',
+      nota:'2 pistes · Infantil a Junior · GRUPS + SEMIS (les FINALS es juguen a Glòries)',
       rows:[
-        {hora:'09:00–11:15', cat:'Infantil M', eq:11, pistes:'P5–P6', format:'3 Grups + QF + SF + Final',partits:23,notes:'Grups 4+4+3 · 5 rondes grups + 4 rondes finals'},
-        {hora:'11:15–12:30', cat:'Cadet F',    eq:6,  pistes:'P5–P6', format:'2 Grups + Semis + Final',  partits:9, notes:'Grups 3+3'},
-        {hora:'12:30–15:00', cat:'Cadet M',    eq:12, pistes:'P5–P6', format:'4 Grups + QF + SF + Final',partits:25,notes:'Grups 3+3+3+3 · 6 rondes grups + 4 rondes finals'},
-        {hora:'15:00–15:45', cat:'Junior M',   eq:3,  pistes:'P5–P6', format:'Round Robin + Final',       partits:4, notes:''},
-        {hora:'15:45–16:30', cat:'Senior Magics',eq:2,pistes:'P5–P6', format:'Best of 3',                partits:3, notes:'Diumenge — Sese x2'},
-        {hora:'16:30',       cat:'✅ Fi activitat La Nau P5–6', eq:null, pistes:'', format:'', partits:null, notes:'', fi:true}
+        {hora:'09:00–11:00', cat:'Infantil M',  eq:11, pistes:'P5–P6', format:'3 Grups + Semis', partits:19, notes:'→ Final a Glòries 12:00'},
+        {hora:'11:00–11:45', cat:'Junior M',    eq:3,  pistes:'P5–P6', format:'Round Robin',     partits:3,  notes:'→ Final a Glòries 12:30'},
+        {hora:'11:45–13:00', cat:'Cadet F',     eq:6,  pistes:'P5–P6', format:'2 Grups + Semis', partits:8,  notes:'→ Final a Glòries 14:30'},
+        {hora:'13:00–14:00', cat:'🍴 PAUSA DINAR', eq:null, lunch:true},
+        {hora:'14:00–15:30', cat:'Cadet M',     eq:12, pistes:'P5–P6', format:'4 Grups + QF + Semis', partits:22, notes:'→ Final a Glòries 16:00'},
+        {hora:'15:30–16:00', cat:'Senior Magics',eq:2, pistes:'P5–P6', format:'Best of 3',        partits:3,  notes:'Final AQUÍ (Sese x2)'},
+        {hora:'16:00',       cat:'✅ Fi activitat La Nau P5–6', eq:null, fi:true}
       ]
     },
     {
       venue:'RAMBLETA DEL CLOT', vcolor:RAMB, vbg:RAMBbg,
-      nota:'2 pistes · ús mínim · tancat abans de migdia',
+      nota:'2 cistelles · ÚS MÍNIM · només fase de grups d\'Infantil F · tancat al migdia',
       rows:[
-        {hora:'09:00–10:30', cat:'Infantil F', eq:5, pistes:'R1–R2', format:'Round Robin + Final', partits:11, notes:'5 equips · simultani 2 pistes'},
-        {hora:'10:30',       cat:'✅ Fi Rambleta', eq:null, pistes:'', format:'', partits:null, notes:'', fi:true}
+        {hora:'09:00–10:30', cat:'Infantil F', eq:5, pistes:'R1–R2', format:'Round Robin (grups)', partits:10, notes:'→ Final a Glòries 11:30'},
+        {hora:'10:30',       cat:'✅ Fi Rambleta — desplaçament a Glòries', eq:null, fi:true}
       ]
     }
   ];
 
-  var html = '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center;">';
-  html += '<span style="font-size:14px;font-weight:800;">🗓 Proposta Horaris — Diumenge 7 de juny 2026</span>';
-  html += '<span style="font-size:11px;color:var(--text2);">Inici 09:00 · 3x3 Westfield Glòries</span></div>';
+  var html = '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center;">';
+  html += '<span style="font-size:15px;font-weight:800;">🗓 Proposta Horaris — Diumenge 7 de juny 2026</span>';
+  html += '<span style="font-size:11px;color:var(--text2);">Inici 09:00 · només categories del diumenge (sèniors juguen dissabte 6)</span></div>';
+
+  // Flux explicatiu
+  html += '<div style="background:'+GLORbg+';border:1.5px solid '+GLOR+';border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:12px;">';
+  html += '<strong style="color:'+GLOR+';">🔑 Com funciona:</strong> Les categories petites (fins a Mini) juguen TOT a La Nau. ';
+  html += 'D\'<strong>Infantil a Junior</strong>: fase de grups i semifinals a La Nau / Rambleta, i les <strong>FINALS es disputen a Westfield Glòries</strong> (pista única, escenari principal). ';
+  html += '<span style="color:var(--text2);">El Clot ↔ Glòries: ~10 min a peu. Preveure marge de desplaçament.</span>';
+  html += '</div>';
 
   // Llegenda venues
   html += '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">';
-  html += badge('La Nau P1-4 · Escoleta→Mini',NAU14,NAU14bg);
-  html += badge('La Nau P5-6 · Infantil→Senior',NAU56,NAU56bg);
-  html += badge('Rambleta · Infantil F (overflow)',RAMB,RAMBbg);
+  html += badge('🏟 Glòries · FINALS Infantil→Junior',GLOR,GLORbg);
+  html += badge('La Nau P1-4 · Escoleta→Mini (tot)',NAU14,NAU14bg);
+  html += badge('La Nau P5-6 · Infantil→Magics (grups+semis)',NAU56,NAU56bg);
+  html += badge('Rambleta · Infantil F grups (mínim)',RAMB,RAMBbg);
   html += '</div>';
 
   // Regles 3x3
@@ -709,12 +731,13 @@ function renderHoraris() {
   html += '</div>';
 
   BLOCS.forEach(function(bloc){
-    html += '<div style="margin-bottom:20px;border-radius:10px;overflow:hidden;box-shadow:var(--sh);border:2px solid '+bloc.vcolor+';">';
+    var bw = bloc.star ? '3px' : '2px';
+    html += '<div style="margin-bottom:20px;border-radius:10px;overflow:hidden;box-shadow:'+(bloc.star?'0 4px 16px rgba(200,16,46,.2)':'var(--sh)')+';border:'+bw+' solid '+bloc.vcolor+';">';
 
     // Capçalera venue
-    html += '<div style="background:'+bloc.vcolor+';color:white;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;">';
-    html += '<div style="font-weight:800;font-size:14px;">'+bloc.venue+'</div>';
-    html += '<div style="font-size:11px;opacity:.85;">'+bloc.nota+'</div>';
+    html += '<div style="background:'+bloc.vcolor+';color:white;padding:'+(bloc.star?'13px':'10px')+' 16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;">';
+    html += '<div style="font-weight:800;font-size:'+(bloc.star?'16px':'14px')+';">'+bloc.venue+'</div>';
+    html += '<div style="font-size:11px;opacity:.9;">'+bloc.nota+'</div>';
     html += '</div>';
 
     // Taula
@@ -726,6 +749,10 @@ function renderHoraris() {
     html += '</tr></thead><tbody>';
 
     bloc.rows.forEach(function(r,i){
+      if (r.lunch) {
+        html += '<tr><td colspan="7" style="padding:10px 14px;font-size:12px;font-weight:800;background:#dcfce7;color:#15803d;text-align:center;letter-spacing:.5px;">'+r.hora+' · '+r.cat+'</td></tr>';
+        return;
+      }
       if (r.fi) {
         html += '<tr><td colspan="7" style="padding:8px 14px;font-size:11px;font-weight:700;background:'+bloc.vbg+';color:'+bloc.vcolor+';">'+r.hora+' — '+r.cat+'</td></tr>';
         return;
@@ -734,11 +761,11 @@ function renderHoraris() {
       html += '<tr style="'+bg+'border-bottom:1px solid var(--border);">';
       html += '<td style="padding:9px 12px;font-weight:800;font-size:13px;color:'+bloc.vcolor+';white-space:nowrap;">'+r.hora+'</td>';
       html += '<td style="padding:9px 12px;font-weight:700;font-size:13px;">'+r.cat+'</td>';
-      html += '<td style="padding:9px 12px;text-align:center;font-weight:700;font-size:15px;color:'+bloc.vcolor+';">'+r.eq+'</td>';
-      html += '<td style="padding:9px 12px;font-family:monospace;font-size:12px;color:var(--text2);">'+r.pistes+'</td>';
-      html += '<td style="padding:9px 12px;font-size:12px;">'+r.format+'</td>';
-      html += '<td style="padding:9px 12px;text-align:center;"><span style="background:'+bloc.vcolor+'22;color:'+bloc.vcolor+';font-weight:700;font-size:12px;padding:2px 8px;border-radius:10px;">'+r.partits+'</span></td>';
-      html += '<td style="padding:9px 12px;font-size:11px;color:var(--text2);">'+r.notes+'</td>';
+      html += '<td style="padding:9px 12px;text-align:center;font-weight:700;font-size:'+(r.eq==='FINAL'?'11':'15')+'px;color:'+bloc.vcolor+';">'+(r.eq===null?'':r.eq)+'</td>';
+      html += '<td style="padding:9px 12px;font-family:monospace;font-size:12px;color:var(--text2);">'+(r.pistes||'')+'</td>';
+      html += '<td style="padding:9px 12px;font-size:12px;">'+(r.format||'')+'</td>';
+      html += '<td style="padding:9px 12px;text-align:center;">'+(r.partits!=null?'<span style="background:'+bloc.vcolor+'22;color:'+bloc.vcolor+';font-weight:700;font-size:12px;padding:2px 8px;border-radius:10px;">'+r.partits+'</span>':'')+'</td>';
+      html += '<td style="padding:9px 12px;font-size:11px;color:var(--text2);">'+(r.notes||'')+'</td>';
       html += '</tr>';
     });
 
@@ -748,24 +775,24 @@ function renderHoraris() {
   // Resum del dia
   html += '<div style="background:var(--bg-card);border:1.5px solid var(--border);border-radius:10px;padding:14px;margin-top:4px;">';
   html += '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text2);margin-bottom:10px;">Resum dia 7/6</div>';
-  html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;">';
+  html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(105px,1fr));gap:10px;">';
   var stats = [
     {v:'11',l:'Categories'},
-    {v:'71',l:'Equips'},
-    {v:'~115',l:'Partits totals'},
+    {v:'65',l:'Equips dia 7'},
+    {v:'~120',l:'Partits totals'},
     {v:'09:00',l:'Inici'},
-    {v:'~16:30',l:'Final estimat'},
-    {v:'6',l:'Pistes La Nau'},
-    {v:'2',l:'Pistes Rambleta'},
+    {v:'13:00-14:00',l:'🍴 Dinar'},
+    {v:'~17:00',l:'Cloenda'},
+    {v:'4',l:'Seus'},
   ];
   stats.forEach(function(s){
     html += '<div style="text-align:center;background:var(--bg-sec);border-radius:8px;padding:10px 6px;">';
-    html += '<div style="font-size:20px;font-weight:800;color:var(--red);">'+s.v+'</div>';
-    html += '<div style="font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.3px;">'+s.l+'</div>';
+    html += '<div style="font-size:'+(String(s.v).length>6?'13':'20')+'px;font-weight:800;color:var(--red);">'+s.v+'</div>';
+    html += '<div style="font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.3px;margin-top:3px;">'+s.l+'</div>';
     html += '</div>';
   });
   html += '</div>';
-  html += '<div style="margin-top:10px;font-size:11px;color:var(--text2);">⚠️ Proposta basada en regles 3x3 FIBA. Franges de 15 min per partit. Ajustar si cal segons número final d\'equips inscrits.</div>';
+  html += '<div style="margin-top:10px;font-size:11px;color:var(--text2);">⚠️ Proposta basada en regles 3x3 FIBA · franges de 15 min/partit · finals a Glòries amb pista única (seqüencials). Ajustar segons nº final d\'equips i marges de desplaçament Clot↔Glòries.</div>';
   html += '</div>';
 
   document.getElementById('horaris-body').innerHTML = html;
