@@ -1860,20 +1860,42 @@ function Step5Confirm({
         </p>
       )}
 
-      <label className="wizard-toggle">
-        <input type="checkbox" checked={state.rgpdConsent} onChange={(e) => setRgpd(e.target.checked)} />
-        <span>Accepto la política de privadesa i el tractament de les dades (RGPD). *</span>
-      </label>
-      <label className="wizard-toggle">
-        <input type="checkbox" checked={state.imageRightsConsent} onChange={(e) => setImageRights(e.target.checked)} />
-        <span>Autoritzo l&apos;organització a fer fotos/vídeos durant el torneig per a difusió del club. *</span>
-      </label>
+      {/* Caselles obligatòries — destacades si no estan marcades */}
+      <div style={{
+        background: (!state.rgpdConsent || !state.imageRightsConsent) ? "rgba(240,140,0,0.07)" : "rgba(37,211,102,0.07)",
+        border: `1.5px solid ${(!state.rgpdConsent || !state.imageRightsConsent) ? "rgba(240,140,0,0.35)" : "rgba(37,211,102,0.3)"}`,
+        borderRadius: 12,
+        padding: "14px 16px",
+        display: "flex",
+        flexDirection: "column",
+        gap: 10,
+      }}>
+        {(!state.rgpdConsent || !state.imageRightsConsent) && (
+          <p style={{ margin: 0, fontSize: 12, fontWeight: 700, color: "#f08c00", display: "flex", alignItems: "center", gap: 6 }}>
+            ☝️ Marca les dues caselles per activar el botó d&apos;enviament:
+          </p>
+        )}
+        <label className="wizard-toggle" style={{ background: !state.rgpdConsent ? "rgba(240,140,0,0.06)" : "transparent", borderRadius: 8, padding: "4px 0" }}>
+          <input type="checkbox" checked={state.rgpdConsent} onChange={(e) => setRgpd(e.target.checked)} />
+          <span>Accepto la política de privadesa i el tractament de les dades (RGPD). *</span>
+        </label>
+        <label className="wizard-toggle" style={{ background: !state.imageRightsConsent ? "rgba(240,140,0,0.06)" : "transparent", borderRadius: 8, padding: "4px 0" }}>
+          <input type="checkbox" checked={state.imageRightsConsent} onChange={(e) => setImageRights(e.target.checked)} />
+          <span>Autoritzo l&apos;organització a fer fotos/vídeos durant el torneig per a difusió del club. *</span>
+        </label>
+      </div>
 
       {error && <p role="alert" className="wizard-error">⚠️ Error: {error}. Torna-ho a provar o deixa les dades a Contacte.</p>}
 
       <div className="wizard-nav">
         <button type="button" className="wizard-btn wizard-btn-ghost" onClick={onPrev} disabled={submitting}>← Enrere</button>
-        <button type="button" className={`wizard-btn wizard-btn-primary${submitting ? " wizard-btn--loading" : ""}`} onClick={onSubmit} disabled={!canSubmit || submitting}>
+        <button
+          type="button"
+          className={`wizard-btn wizard-btn-primary${submitting ? " wizard-btn--loading" : ""}`}
+          onClick={onSubmit}
+          disabled={!canSubmit || submitting}
+          title={!canSubmit ? "Marca les dues caselles obligatòries (*) per enviar" : undefined}
+        >
           {submitting ? (
             <><span className="wizard-spinner" aria-hidden="true" /> Enviant…</>
           ) : "Enviar inscripció ✓"}
@@ -2035,7 +2057,7 @@ const CATEGORY_STATUS: Array<{ name: string; left: number; closed?: boolean }> =
   { name: "Júnior",         left: 5 },
   { name: "Sènior Masc.",   left: 1 },
   { name: "Sènior Fem.",    left: 3 },
-  { name: "Veterans",       left: 4 },
+  { name: "Sènior Amateur",       left: 4 },
 ];
 
 function CategoryStatusGrid() {
