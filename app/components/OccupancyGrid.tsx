@@ -11,7 +11,7 @@ const CATEGORIES = [
   { id: "infantil",    name: "Infantil",       emoji: "🔥", color: "#D946EF", remaining: 3,  closed: false },
   { id: "cadet",       name: "Cadet",          emoji: "⚡", color: "#EC4899", remaining: 2,  closed: false },
   { id: "junior",      name: "Júnior",         emoji: "🏀", color: "#FB7185", remaining: 5,  closed: false },
-  { id: "seniors",     name: "Sèniors Pro",    emoji: "🏆", color: "#EF4444", remaining: 4,  closed: false },
+  { id: "seniors",     name: "Sèniors Pro",    emoji: "🏆", color: "#EF4444", remaining: 3,  closed: false },
   { id: "veterans",    name: "Sènior Amateur", emoji: "💪", color: "#F97316", remaining: 3,  closed: false },
   { id: "magics",      name: "Màgics",         emoji: "✨", color: "#6B7280", remaining: 0,  closed: true  },
 ];
