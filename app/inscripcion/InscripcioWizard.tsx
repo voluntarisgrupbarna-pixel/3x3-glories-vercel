@@ -785,22 +785,11 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
 
   return (
     <div className="wizard" ref={wizardRef}>
-      {/* Banner de places — visible quan hi ha dades i queden ≤16 places */}
-      {stats && stats.spotsLeft <= 16 && (
-        <div className="wizard-spots-banner">
-          <span className="wizard-spots-count">{stats.teamsCount}</span> equips inscrits
-          {stats.spotsLeft > 0
-            ? <> · <strong>{stats.spotsLeft} places restants</strong> 🔥</>
-            : <> · <strong>Places esgotades</strong> — llista d&apos;espera</>
-          }
-        </div>
-      )}
-      {/* Banner neutre quan hi ha marge */}
-      {stats && stats.spotsLeft > 16 && (
-        <div className="wizard-spots-banner wizard-spots-banner--neutral">
-          🏀 {stats.teamsCount} equips ja inscrits
-        </div>
-      )}
+      {/* Banner de places — 100 equips, places ampliades */}
+      <div className="wizard-spots-banner">
+        <span className="wizard-spots-count">100</span> equips inscrits
+        {" "}· hem ampliat places · <strong>últimes places disponibles 🔥</strong>
+      </div>
 
       {/* Avís de deadline (29/05/2026) */}
       <div style={{
@@ -815,10 +804,10 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
         fontWeight: 600,
         lineHeight: 1.5,
       }}>
-        ⏰ <strong>Tanquem inscripcions dimecres 4 de juny a les 23:59 h.</strong>
+        ⏰ <strong>Tanquem quan s&apos;omplin les places. Data límit: 3 de juny a les 24h.</strong>
         <br />
         <span style={{ fontWeight: 500, fontSize: 13 }}>
-          Després, no entra ningú més. Queden 8 dies pel torneig (6-7 juny).
+          Torneig: 6-7 juny 2026 · Clot-Glòries, Barcelona. Quan una categoria s&apos;ompli, queda tancada.
         </span>
       </div>
 
@@ -2054,19 +2043,21 @@ function SuccessPanel({
 // Estratègia de captació: NO mostrar mai "0 places" — sempre 1 mínim per
 // generar urgència i atraure més inscripcions. Si volem tancar una categoria
 // definitivament, posar `closed: true`.
+// Actualitzat: 1 juny 2026 — 100 equips inscrits, places ampliades
 const CATEGORY_STATUS: Array<{ name: string; left: number; closed?: boolean }> = [
+  { name: "Màgics",         left: 0,  closed: true  },  // TANCADA
   { name: "Escoleta",       left: 1 },
-  { name: "Premini Masc.",  left: 1 },  // Anabela acaba d'omplir, però deixem 1 per atraure
+  { name: "Premini Masc.",  left: 1 },
   { name: "Premini Fem.",   left: 5 },
   { name: "Mini",           left: 2 },
-  { name: "Preinfantil",    left: 4 },
+  { name: "Preinfantil",    left: 3 },
   { name: "Infantil",       left: 3 },
   { name: "Cadet Masc.",    left: 1 },
   { name: "Cadet Fem.",     left: 2 },
   { name: "Júnior",         left: 5 },
   { name: "Sènior Masc.",   left: 1 },
   { name: "Sènior Fem.",    left: 3 },
-  { name: "Sènior Amateur",       left: 4 },
+  { name: "Sènior Amateur", left: 3 },
 ];
 
 function CategoryStatusGrid() {
