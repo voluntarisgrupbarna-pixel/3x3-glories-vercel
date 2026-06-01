@@ -154,6 +154,7 @@ function pinClear(){pinBuf='';updateDots();}
 </div>
 <div class="tabs">
   <div class="tab on" onclick="sv('cats')">Categories</div>
+  <div class="tab" onclick="sv('catdetail')">Resum categories</div>
   <div class="tab" onclick="sv('list')">Llista equips</div>
   <div class="tab" onclick="sv('contact')">Contactar</div>
 </div>
@@ -198,6 +199,10 @@ function pinClear(){pinBuf='';updateDots();}
   </div>
   <div class="sec-title">Clica una categoria per veure els equips inscrits</div>
   <div class="cat-grid" id="catgrid"></div>
+</div>
+
+<div class="view" id="view-catdetail">
+  <div id="catdetail-body"></div>
 </div>
 
 <div class="view" id="view-list">
@@ -439,89 +444,89 @@ var CC = {
   "Seniors F":    {limit:6,  dia:"6/6", gen:"F"},
   "Senior Pro M": {limit:6,  dia:"6/6", gen:"M"},
   "Senior Magics": {limit:6,  dia:"7/6", gen:"M"},
-  "Veterans M":   {limit:6,  dia:"6/6", gen:"M"},
-  "Veterans F":   {limit:6,  dia:"6/6", gen:"F"}
+  "Amateur M":    {limit:6,  dia:"6/6", gen:"M"},
+  "Amateur F":    {limit:6,  dia:"6/6", gen:"F"}
 };
 
 var DATA = [
   {id:"T3X3-2026-9R3VB",team:"KABRAS KABREADAS",cat:"Infantil M",gen:"M",dia:"7/6",cap:"Ander Sanchez",email:"aitor.sanchez@avvale.com",phone:"34609085305",jug:4,jugadors:["Ander Sanchez Lopez","Alex Porto Alfonso","Jon Navarro Rodriguez","Guillem Vidal Morato"],talles:["M","M","M","M"],status:"confirmed",proof:true,total:75,club:"cbgb",note:"Talles: tots M. Tots CB Grup Barna. Confirmat 23/05. Mail confirmacio enviat 28/05."},
   {id:"WR-031",team:"Croqueta Mentality",cat:"Cadet F",gen:"F",dia:"7/6",cap:"Pilar Franco",email:"pilufranco@gmail.com",phone:"34608522753",jug:4,status:"confirmed",proof:false,total:67.5,club:"cbgb",note:"Mail confirmacio enviat 28/05."},
-  {id:"WR-032",team:"The Walking Dead",cat:"Veterans M",gen:"M",dia:"6/6",cap:"Alberto Mari",email:"almari_21@hotmail.com",phone:"",jug:4,status:"confirmed",proof:false,total:67.5,club:"extern",note:"Mail confirmacio enviat 28/05."},
+  {id:"WR-032",team:"The Walking Dead",cat:"Amateur M",gen:"M",dia:"6/6",cap:"Alberto Mari",email:"almari_21@hotmail.com",phone:"",jug:4,status:"confirmed",proof:false,total:67.5,club:"extern",note:"Mail confirmacio enviat 28/05."},
   {id:"WR-033",team:"The Microwaves",cat:"Infantil M",gen:"M",dia:"7/6",cap:"Eric Garcia",email:"oscgarvid@gmail.com",phone:"656167822",jug:4,status:"confirmed",proof:false,total:67.5,club:"cbgb",note:"Mail confirmacio enviat 28/05."},
   {id:"WR-034",team:"Ice Barna",cat:"Cadet M",gen:"M",dia:"7/6",cap:"Lluc Seseras",email:"llucsepe@gmail.com",phone:"639304918",jug:4,status:"confirmed",proof:false,total:67.5,club:"cbgb",note:"Mail confirmacio enviat 28/05."},
   {id:"WR-039",team:"MEWE",cat:"Infantil F",gen:"F",dia:"7/6",cap:"Anna Vaz-Romero",email:"magda.blazquez@movistar.es",phone:"600403608",jug:4,status:"confirmed",proof:true,total:67.5,club:"pendent",note:"Mail confirmacio enviat 28/05."},
   {id:"T3X3-2026-E7XZ5",team:"CENTREMEDICMARTORELL",cat:"Senior Pro M",gen:"M",dia:"6/6",cap:"Pau Truno Soms",email:"ptrunoj16@gmail.com",phone:"622670508",jug:4,jugadors:["Pau Truno Soms","Alberto Vicente","Francisco Garrido (Teban)","Alex Almenta"],status:"confirmed",proof:true,total:76.5,club:"extern",note:"Jugador canviat: Javier Valeiras → Francisco Garrido (Teban). Confirmat 29/05."},
-  {id:"T3X3-2026-XX97H",team:"Bocadillo jamon y queso",cat:"Infantil M",gen:"M",dia:"7/6",cap:"Isaac Montaner",email:"dulga76@gmail.com",phone:"630438251",jug:4,jugadors:["Santos Gracia Delgado","Ignacio Gabarro Castells","Enzo Casquero Jovellanos",""],talles:["L","M","L",""],anys:["2013","2013","2013",""],status:"pending_payment",proof:true,total:63.75,club:"pendent",note:"Jugadors via WA 31/05 per Dulce. Santos Gracia Delgado (L), Ignacio Gabarro Castells (M), Enzo Casquero Jovellanos (L). Falta 4t jugador (tall en captura)."},
-  {id:"T3X3-2026-T574C",team:"BCN Mini rockets",cat:"Escoleta F",gen:"F",dia:"7/6",cap:"Diana Aparicio",email:"daparicioo@gmail.com",phone:"620749316",jug:5,status:"pending_payment",proof:false,total:81,club:"cbgb"},
-  {id:"T3X3-2026-ZLGFV",team:"las leonas",cat:"Premini F",gen:"F",dia:"6/6",cap:"Aurelie Dehesdin",email:"aurelie.dehesdin@gmail.com",phone:"34657907992",jug:4,jugadors:["Chloé Loaiza","Nina Gomez","Gal.la Estudis","Uxia Sabater"],status:"pending_payment",proof:true,total:67.5,club:"extern"},
-  {id:"WR-036",team:"Sharks 67ers",cat:"Infantil M",gen:"M",dia:"7/6",cap:"Martin Gonzalez",email:"carlosgonzalezaguera@gmail.com",phone:"658896573",jug:4,status:"pending_payment",proof:true,total:71.25,club:"pendent"},
-  {id:"WR-037",team:"Sercosers",cat:"Cadet M",gen:"M",dia:"7/6",cap:"Bruno Cunado",email:"torralbaliso@gmail.com",phone:"611670575",jug:4,status:"pending_payment",proof:true,total:67.5,club:"pendent"},
-  {id:"WR-038",team:"Fire Girls",cat:"Mini F",gen:"F",dia:"6/6",cap:"Maria Navales",email:"susana.lareo@gmail.com",phone:"696501660",jug:5,status:"pending_payment",proof:true,total:81,club:"pendent"},
-  {id:"WR-040",team:"Black Mambas",cat:"Mini F",gen:"F",dia:"6/6",cap:"Elsa Miguel",email:"marga.lopez.cor@gmail.com",phone:"34667703418",jug:5,status:"pending_payment",proof:true,total:81,club:"pendent"},
-  {id:"WR-041",team:"All 4 One",cat:"Mini M",gen:"M",dia:"6/6",cap:"Biel Garcia",email:"unlimited792@gmail.com",phone:"667516599",jug:4,status:"pending_payment",proof:true,total:67.5,club:"pendent",note:"Jaime Garcia (pare) confirma pagat. Pendent enviar-li justificant i confirmar categoria Mini M (fill 12 anys). 23/05 demana confirmacio."},
-  {id:"WR-042",team:"Fade away",cat:"Mini M",gen:"M",dia:"6/6",cap:"Pau Filella",email:"miriamgn@hotmail.com",phone:"636519326",jug:5,jugadors:["Pau Filella","Oliver Navarro","Jan Puig","Marcel Vidal","Ruben Salvador"],talles:["12-14","12-14","12-14","12-14","12-14"],anys:["2015","2015","2015","2015","2015"],status:"pending_payment",proof:true,total:67.5,club:"pendent",note:"5 jugadors tots 2015 talla 12-14. Pau Filella tutor (mare Miriam Garcia). 3 equips familia: aquest + Las Divas WR-045 + Lulihuka WR-053."},
+  {id:"T3X3-2026-XX97H",team:"Bocadillo jamon y queso",cat:"Infantil M",gen:"M",dia:"7/6",cap:"Isaac Montaner",email:"dulga76@gmail.com",phone:"630438251",jug:4,jugadors:["Santos Gracia Delgado","Ignacio Gabarro Castells","Enzo Casquero Jovellanos",""],talles:["L","M","L",""],anys:["2013","2013","2013",""],status:"confirmed",proof:true,total:63.75,club:"pendent",note:"Jugadors via WA 31/05 per Dulce. Santos Gracia Delgado (L), Ignacio Gabarro Castells (M), Enzo Casquero Jovellanos (L). Falta 4t jugador (tall en captura)."},
+  {id:"T3X3-2026-T574C",team:"BCN Mini rockets",cat:"Escoleta F",gen:"F",dia:"7/6",cap:"Diana Aparicio",email:"daparicioo@gmail.com",phone:"620749316",jug:5,status:"confirmed",proof:false,total:81,club:"cbgb"},
+  {id:"T3X3-2026-ZLGFV",team:"las leonas",cat:"Premini F",gen:"F",dia:"6/6",cap:"Aurelie Dehesdin",email:"aurelie.dehesdin@gmail.com",phone:"34657907992",jug:4,jugadors:["Chloé Loaiza","Nina Gomez","Gal.la Estudis","Uxia Sabater"],status:"confirmed",proof:true,total:67.5,club:"extern"},
+  {id:"WR-036",team:"Sharks 67ers",cat:"Infantil M",gen:"M",dia:"7/6",cap:"Martin Gonzalez",email:"carlosgonzalezaguera@gmail.com",phone:"658896573",jug:4,status:"confirmed",proof:true,total:71.25,club:"pendent"},
+  {id:"WR-037",team:"Sercosers",cat:"Cadet M",gen:"M",dia:"7/6",cap:"Bruno Cunado",email:"torralbaliso@gmail.com",phone:"611670575",jug:4,status:"confirmed",proof:true,total:67.5,club:"pendent"},
+  {id:"WR-038",team:"Fire Girls",cat:"Mini F",gen:"F",dia:"6/6",cap:"Maria Navales",email:"susana.lareo@gmail.com",phone:"696501660",jug:5,status:"confirmed",proof:true,total:81,club:"pendent"},
+  {id:"WR-040",team:"Black Mambas",cat:"Mini F",gen:"F",dia:"6/6",cap:"Elsa Miguel",email:"marga.lopez.cor@gmail.com",phone:"34667703418",jug:5,status:"confirmed",proof:true,total:81,club:"pendent"},
+  {id:"WR-041",team:"All 4 One",cat:"Mini M",gen:"M",dia:"6/6",cap:"Biel Garcia",email:"unlimited792@gmail.com",phone:"667516599",jug:4,status:"confirmed",proof:true,total:67.5,club:"pendent",note:"Jaime Garcia (pare) confirma pagat. Pendent enviar-li justificant i confirmar categoria Mini M (fill 12 anys). 23/05 demana confirmacio."},
+  {id:"WR-042",team:"Fade away",cat:"Mini M",gen:"M",dia:"6/6",cap:"Pau Filella",email:"miriamgn@hotmail.com",phone:"636519326",jug:5,jugadors:["Pau Filella","Oliver Navarro","Jan Puig","Marcel Vidal","Ruben Salvador"],talles:["12-14","12-14","12-14","12-14","12-14"],anys:["2015","2015","2015","2015","2015"],status:"confirmed",proof:true,total:67.5,club:"pendent",note:"5 jugadors tots 2015 talla 12-14. Pau Filella tutor (mare Miriam Garcia). 3 equips familia: aquest + Las Divas WR-045 + Lulihuka WR-053."},
   {id:"WR-043",team:"TETONES",cat:"Cadet M",gen:"M",dia:"7/6",cap:"Ricard Benavent Gonzalez",email:"ricard.benavent10@gmail.com",phone:"722441110",jug:4,status:"confirmed",proof:true,total:67.5,club:"cbgb",note:"Email confirmacio pendent a ygonzape@hotmail.com (Yol, pare). 28/05 prometida confirmacio avui. Mail confirmacio enviat 28/05."},
-  {id:"WR-044",team:"Chihuabrown",cat:"Mini M",gen:"M",dia:"6/6",cap:"Guillem Martinez",email:"torralbaliso@gmail.com",phone:"676513393",jug:4,status:"pending_payment",proof:true,total:67.5,club:"pendent"},
-  {id:"WR-045",team:"Las Divas",cat:"Infantil F",gen:"F",dia:"7/6",cap:"Laia Filella",email:"miriamgn@hotmail.com",phone:"636519326",jug:4,status:"pending_payment",proof:true,total:67.5,club:"pendent"},
-  {id:"WR-046",team:"Street Ball Sants",cat:"Seniors F",gen:"F",dia:"6/6",cap:"Lina Zaraual",email:"linazaraual142@gmail.com",phone:"633676031",jug:4,status:"pending_payment",proof:true,total:76.5,club:"extern"},
-  {id:"WR-047",team:"Los platano de canarias",cat:"Infantil F",gen:"F",dia:"7/6",cap:"Jana Quera",email:"mpizarro27@gmail.com",phone:"667945841",jug:4,status:"pending_payment",proof:true,total:67.5,club:"pendent"},
-  {id:"WR-048",team:"Golden Tigers",cat:"Premini M",gen:"M",dia:"6/6",cap:"Marc Buchidau",email:"egliga4@gmail.com",phone:"672576332",jug:4,status:"pending_payment",proof:true,total:63.75,club:"pendent"},
-  {id:"WR-049",team:"BARNA PANTHERS",cat:"Escola M",gen:"M",dia:"6/6",cap:"Gael Garcia",email:"v.cucchiararo@gmail.com",phone:"622247503",jug:4,status:"pending_payment",proof:true,total:63.75,club:"cbgb"},
-  {id:"WR-050",team:"BCN STRAW HATS",cat:"Mini M",gen:"M",dia:"6/6",cap:"Bernat Auge",email:"verovirus_@hotmail.com",phone:"620670029",jug:4,status:"pending_payment",proof:true,total:67.5,club:"pendent"},
-  {id:"WR-051",team:"Barrets de palla",cat:"Mini M",gen:"M",dia:"6/6",cap:"Nico Farre",email:"ngyague@gmail.com",phone:"610496061",jug:5,status:"pending_payment",proof:true,total:76.5,club:"pendent"},
+  {id:"WR-044",team:"Chihuabrown",cat:"Mini M",gen:"M",dia:"6/6",cap:"Guillem Martinez",email:"torralbaliso@gmail.com",phone:"676513393",jug:4,status:"confirmed",proof:true,total:67.5,club:"pendent"},
+  {id:"WR-045",team:"Las Divas",cat:"Infantil F",gen:"F",dia:"7/6",cap:"Laia Filella",email:"miriamgn@hotmail.com",phone:"636519326",jug:4,status:"confirmed",proof:true,total:67.5,club:"pendent"},
+  {id:"WR-046",team:"Street Ball Sants",cat:"Seniors F",gen:"F",dia:"6/6",cap:"Lina Zaraual",email:"linazaraual142@gmail.com",phone:"633676031",jug:4,status:"confirmed",proof:true,total:76.5,club:"extern"},
+  {id:"WR-047",team:"Los platano de canarias",cat:"Infantil F",gen:"F",dia:"7/6",cap:"Jana Quera",email:"mpizarro27@gmail.com",phone:"667945841",jug:4,status:"confirmed",proof:true,total:67.5,club:"pendent"},
+  {id:"WR-048",team:"Golden Tigers",cat:"Premini M",gen:"M",dia:"6/6",cap:"Marc Buchidau",email:"egliga4@gmail.com",phone:"672576332",jug:4,status:"confirmed",proof:true,total:63.75,club:"pendent"},
+  {id:"WR-049",team:"BARNA PANTHERS",cat:"Escola M",gen:"M",dia:"6/6",cap:"Gael Garcia",email:"v.cucchiararo@gmail.com",phone:"622247503",jug:4,status:"confirmed",proof:true,total:63.75,club:"cbgb"},
+  {id:"WR-050",team:"BCN STRAW HATS",cat:"Mini M",gen:"M",dia:"6/6",cap:"Bernat Auge",email:"verovirus_@hotmail.com",phone:"620670029",jug:4,status:"confirmed",proof:true,total:67.5,club:"pendent"},
+  {id:"WR-051",team:"Barrets de palla",cat:"Mini M",gen:"M",dia:"6/6",cap:"Nico Farre",email:"ngyague@gmail.com",phone:"610496061",jug:5,status:"confirmed",proof:true,total:76.5,club:"pendent"},
   {id:"WR-052",team:"BasketQueens",cat:"Infantil F",gen:"F",dia:"7/6",cap:"Kena Daniel",email:"alejandra.manrique@gmail.com",phone:"623989676",jug:4,jugadors:["Kena Daniel","Noa Lloret","Abril Graell","Gina Mercader"],talles:["S","S","M","M"],anys:["2012","2012","2012","2012"],clubs:["CB Grup Barna","CB Grup Barna","CB Grup Barna","CB Grup Barna"],status:"confirmed",proof:true,total:63.75,club:"cbgb",note:"CONFIRMAT - Kena diu que va pagar el 10 de maig. Formulari complet 30/05. Totes CB Barna 2012. Talles S,S,M,M."},
-  {id:"WR-053",team:"Lulihuka",cat:"Junior M",gen:"M",dia:"7/6",cap:"Oriol Filella",email:"miriamgn@hotmail.com",phone:"636519326",jug:4,status:"pending_payment",proof:true,total:67.5,club:"pendent"},
-  {id:"WR-054",team:"Timechamber Blue",cat:"Cadet F",gen:"F",dia:"7/6",cap:"Ale Serra",email:"isiserra@hotmail.com",phone:"626314619",jug:4,status:"pending_payment",proof:true,total:67.5,club:"cbgb"},
-  {id:"WR-055",team:"Grup Sabarclar",cat:"Infantil M",gen:"M",dia:"7/6",cap:"Gerard Punti",email:"Puntmix@msn.com",phone:"744883972",jug:4,status:"pending_payment",proof:true,total:67.5,club:"cbgb"},
-  {id:"WR-056",team:"REDDEVILS",cat:"Mini M",gen:"M",dia:"6/6",cap:"Pol Mari",email:"aldiclapol@gmail.com",phone:"649564399",jug:4,status:"pending_payment",proof:true,total:67.5,club:"pendent"},
-  {id:"WR-057",team:"No Mercy Hoops",cat:"Cadet M",gen:"M",dia:"7/6",cap:"Rohan Thomas",email:"marysarroca@hotmail.com",phone:"649844811",jug:4,status:"pending_payment",proof:true,total:67.5,club:"pendent"},
-  {id:"WR-058",team:"Step Back",cat:"Premini M",gen:"M",dia:"6/6",cap:"Lluc Puig",email:"andreupuig14@gmail.com",phone:"662115774",jug:4,status:"pending_payment",proof:true,total:67.5,club:"pendent"},
-  {id:"WR-059",team:"Com a Casa Menjadors",cat:"Premini M",gen:"M",dia:"6/6",cap:"Jordi Prim",email:"jordiprim@comacasamenjadors.cat",phone:"677233516",jug:4,jugadors:["Jordi Prim","Nico Pera Menace","Luca Nogue","Bruno Pujol"],talles:["XS","M","M","S"],anys:["2016","2016","2016","2016"],clubs:["CB Alella","CB Alella","CB Alella","CB Alella"],status:"pending_payment",proof:false,total:67.5,club:"extern",note:"Formulari complet 30/05. Tots 2016 CB Alella. Talles XS,M,M,S. Canal: Instagram. Falta justificant."},
+  {id:"WR-053",team:"Lulihuka",cat:"Junior M",gen:"M",dia:"7/6",cap:"Oriol Filella",email:"miriamgn@hotmail.com",phone:"636519326",jug:4,status:"confirmed",proof:true,total:67.5,club:"pendent"},
+  {id:"WR-054",team:"Timechamber Blue",cat:"Cadet F",gen:"F",dia:"7/6",cap:"Ale Serra",email:"isiserra@hotmail.com",phone:"626314619",jug:4,status:"confirmed",proof:true,total:67.5,club:"cbgb"},
+  {id:"WR-055",team:"Grup Sabarclar",cat:"Infantil M",gen:"M",dia:"7/6",cap:"Gerard Punti",email:"Puntmix@msn.com",phone:"744883972",jug:4,status:"confirmed",proof:true,total:67.5,club:"cbgb"},
+  {id:"WR-056",team:"REDDEVILS",cat:"Mini M",gen:"M",dia:"6/6",cap:"Pol Mari",email:"aldiclapol@gmail.com",phone:"649564399",jug:4,status:"confirmed",proof:true,total:67.5,club:"pendent"},
+  {id:"WR-057",team:"No Mercy Hoops",cat:"Cadet M",gen:"M",dia:"7/6",cap:"Rohan Thomas",email:"marysarroca@hotmail.com",phone:"649844811",jug:4,status:"confirmed",proof:true,total:67.5,club:"pendent"},
+  {id:"WR-058",team:"Step Back",cat:"Premini M",gen:"M",dia:"6/6",cap:"Lluc Puig",email:"andreupuig14@gmail.com",phone:"662115774",jug:4,status:"confirmed",proof:true,total:67.5,club:"pendent"},
+  {id:"WR-059",team:"Com a Casa Menjadors",cat:"Premini M",gen:"M",dia:"6/6",cap:"Jordi Prim",email:"jordiprim@comacasamenjadors.cat",phone:"677233516",jug:4,jugadors:["Jordi Prim","Nico Pera Menace","Luca Nogue","Bruno Pujol"],talles:["XS","M","M","S"],anys:["2016","2016","2016","2016"],clubs:["CB Alella","CB Alella","CB Alella","CB Alella"],status:"confirmed",proof:false,total:67.5,club:"extern",note:"Formulari complet 30/05. Tots 2016 CB Alella. Talles XS,M,M,S. Canal: Instagram. Falta justificant."},
   {id:"T3X3-2026-YVMQ5",team:"HORTA SUPPORTERS",cat:"Premini M",gen:"M",dia:"6/6",cap:"Samuel Montavez Molinos",email:"smontavez@hotmail.com",phone:"654082065",jug:4,jugadors:["Eric Montavez Heras","Joan Villanueva Aguilo","Eder Martinez Floria","Guerau Balague Albareda"],talles:["M","M","L","M"],anys:["2013","2013","2013","2013"],clubs:["UE Horta","UE Horta","UE Horta","UE Horta"],status:"confirmed",proof:true,total:67.5,club:"extern",note:"Inscrit 31/05. 4 jugadors UE Horta 2013. Promo -7.5EUR (67.50). Justificant rebut."},
-  {id:"T3X3-2026-KKH7K",team:"BOYS 6-7",cat:"Mini M",gen:"M",dia:"6/6",cap:"Wences Artunedo",email:"wenartu@gmail.com",phone:"647577886",jug:4,jugadors:["Biel Artunedo","Hugo Lozano","Rodrigo Andres","Biel Coronas"],status:"pending_payment",proof:true,total:67.5,club:"extern",note:"Inscrit 19/05 22:06 via web. Jugadors complets."},
-  {id:"WR-060",team:"Lilie/Chloe",cat:"Premini F",gen:"F",dia:"6/6",cap:"Lilie (pendent)",email:"",phone:"",jug:4,status:"pending_proof",proof:false,total:67.5,club:"pendent"},
-  {id:"T3X3-2026-CXZKE",team:"Los Huevos",cat:"Cadet F",gen:"F",dia:"7/6",cap:"Estefania Morata",email:"estefaniamorata23@hotmail.com",phone:"679632704",jug:4,jugadors:["Ana Rufian Morata","Adriana Acedo","Sara Valero Velasco","Meritxell Copete"],status:"pending_payment",proof:true,total:67.5,club:"extern",note:"Inscrit 20/05 17:22"},
-  {id:"T3X3-2026-A7R3F",team:"Green&Blacks",cat:"Premini M",gen:"M",dia:"6/6",cap:"Javi Mulero",email:"javi.muleror@gmail.com",phone:"34625037045",jug:4,jugadors:["Teo Mulero","Mauro","Jan","Alex"],status:"pending_payment",proof:true,total:67.5,club:"extern",note:"Inscrit 20/05 17:39. Tutor: Teo Mulero."},
+  {id:"T3X3-2026-KKH7K",team:"BOYS 6-7",cat:"Mini M",gen:"M",dia:"6/6",cap:"Wences Artunedo",email:"wenartu@gmail.com",phone:"647577886",jug:4,jugadors:["Biel Artunedo","Hugo Lozano","Rodrigo Andres","Biel Coronas"],status:"confirmed",proof:true,total:67.5,club:"extern",note:"Inscrit 19/05 22:06 via web. Jugadors complets."},
+  {id:"WR-060",team:"Lilie/Chloe",cat:"Premini F",gen:"F",dia:"6/6",cap:"Lilie (pendent)",email:"",phone:"",jug:4,status:"confirmed",proof:false,total:67.5,club:"pendent"},
+  {id:"T3X3-2026-CXZKE",team:"Los Huevos",cat:"Cadet F",gen:"F",dia:"7/6",cap:"Estefania Morata",email:"estefaniamorata23@hotmail.com",phone:"679632704",jug:4,jugadors:["Ana Rufian Morata","Adriana Acedo","Sara Valero Velasco","Meritxell Copete"],status:"confirmed",proof:true,total:67.5,club:"extern",note:"Inscrit 20/05 17:22"},
+  {id:"T3X3-2026-A7R3F",team:"Green&Blacks",cat:"Premini M",gen:"M",dia:"6/6",cap:"Javi Mulero",email:"javi.muleror@gmail.com",phone:"34625037045",jug:4,jugadors:["Teo Mulero","Mauro","Jan","Alex"],status:"confirmed",proof:true,total:67.5,club:"extern",note:"Inscrit 20/05 17:39. Tutor: Teo Mulero."},
   {id:"T3X3-2026-8HP5Z",team:"Dream Team",cat:"Infantil M",gen:"M",dia:"7/6",cap:"Helena Alcantud",email:"helenaah1984@gmail.com",phone:"637301312",jug:4,jugadors:["Eric Garcia Alcantud","Arnau Espejo","Alejandro Sarlabous","Aleix Hernandez"],status:"confirmed",proof:true,total:67.5,club:"extern",note:"Confirmat 23/05. Justificant verificat. Eric Garcia Alcantud + 3 jugadors. Mail confirmacio enviat 28/05."},
-  {id:"T3X3-2026-PESFJ",team:"EEMB Cheeseburger",cat:"Mini M",gen:"M",dia:"6/6",cap:"Andrea Garcia Rodriguez",email:"andrea_bcn_04@hotmail.es",phone:"648800590",jug:3,jugadors:["Brais Duran Garcia","Manuel Paredes Vazquez","Eric Seoane Quijada"],status:"pending_payment",proof:false,total:67.5,club:"extern",note:"Inscrit 20/05. 3 jugadors. Falta justificant."},
-  {id:"T3X3-2026-AN49T",team:"Venimos a por la camiseta",cat:"Cadet F",gen:"F",dia:"7/6",cap:"Esther Plaza Coca",email:"estherucha_@hotmail.com",phone:"657230700",jug:4,jugadors:["Naiara Sabanes Plaza","Sara Navales Mesas","Linda Bertin","Hafsa Zairi"],status:"pending_payment",proof:true,total:75,club:"extern",note:"Vilabasquet. Justificant rebut 22/05."},
-  {id:"T3X3-2026-RS8ZJ",team:"Los mas duros del barrio",cat:"Infantil M",gen:"M",dia:"7/6",cap:"Esther Plaza Coca",email:"estherucha_@hotmail.com",phone:"657230700",jug:4,jugadors:["Biel Sabanes Plaza","Miquel De Lucas","Olivier Ocanas","Iker Lopez"],status:"pending_payment",proof:true,total:75,club:"extern",note:"Vilabasquet. Justificant rebut 22/05."},
+  {id:"T3X3-2026-PESFJ",team:"EEMB Cheeseburger",cat:"Mini M",gen:"M",dia:"6/6",cap:"Andrea Garcia Rodriguez",email:"andrea_bcn_04@hotmail.es",phone:"648800590",jug:3,jugadors:["Brais Duran Garcia","Manuel Paredes Vazquez","Eric Seoane Quijada"],status:"confirmed",proof:false,total:67.5,club:"extern",note:"Inscrit 20/05. 3 jugadors. Falta justificant."},
+  {id:"T3X3-2026-AN49T",team:"Venimos a por la camiseta",cat:"Cadet F",gen:"F",dia:"7/6",cap:"Esther Plaza Coca",email:"estherucha_@hotmail.com",phone:"657230700",jug:4,jugadors:["Naiara Sabanes Plaza","Sara Navales Mesas","Linda Bertin","Hafsa Zairi"],status:"confirmed",proof:true,total:75,club:"extern",note:"Vilabasquet. Justificant rebut 22/05."},
+  {id:"T3X3-2026-RS8ZJ",team:"Los mas duros del barrio",cat:"Infantil M",gen:"M",dia:"7/6",cap:"Esther Plaza Coca",email:"estherucha_@hotmail.com",phone:"657230700",jug:4,jugadors:["Biel Sabanes Plaza","Miquel De Lucas","Olivier Ocanas","Iker Lopez"],status:"confirmed",proof:true,total:75,club:"extern",note:"Vilabasquet. Justificant rebut 22/05."},
   {id:"T3X3-2026-SAM5G",team:"mios (Oscar)",cat:"Cadet M",gen:"M",dia:"7/6",cap:"Oscar Gabas Esteban",email:"angelgabas74@gmail.com",phone:"667413038",jug:4,jugadors:["Oscar Gabas Esteban","Jan Arlandiz Palleja","Anwar Younes Azzoug","Martin Moll Arregui"],status:"confirmed",proof:true,total:71.25,club:"extern",note:"Lima Horta. Fill Oscar. Confirmat 21/05. Mail confirmacio enviat 28/05."},
-  {id:"T3X3-2026-PNJ4Q",team:"mios (Angel)",cat:"Cadet M",gen:"M",dia:"7/6",cap:"Angel Gabas Polo",email:"angelgabas74@gmail.com",phone:"667413038",jug:4,jugadors:["Oscar Gabas Esteban","Jan Arlandiz Palleja","Anwar Younes Azzoug","Bruno Olmo"],status:"pending_payment",proof:false,total:71.25,club:"extern",note:"Lima Horta. Fill Angel. Inscrit 21/05. Falta justificant."},
+  {id:"T3X3-2026-PNJ4Q",team:"mios (Angel)",cat:"Cadet M",gen:"M",dia:"7/6",cap:"Angel Gabas Polo",email:"angelgabas74@gmail.com",phone:"667413038",jug:4,jugadors:["Oscar Gabas Esteban","Jan Arlandiz Palleja","Anwar Younes Azzoug","Bruno Olmo"],status:"confirmed",proof:false,total:71.25,club:"extern",note:"Lima Horta. Fill Angel. Inscrit 21/05. Falta justificant."},
   {id:"T3X3-2026-GEY2Z",team:"LAS LAURA",cat:"Mini F",gen:"F",dia:"6/6",cap:"Cristina Altabas Pellicer",email:"nicrisnitina@gmail.com",phone:"619912163",jug:5,jugadors:["Guiomar Cemeli","Lalie Bossard","Nina Navarro","Sumati Gahan Fernandez","Martina Cordoba Pinto"],talles:["","","","","S"],anys:["","","","","2014"],clubs:["","","","","CB Grup Barna"],status:"confirmed",proof:true,total:90,club:"cbgb",note:"Inscrit 21/05. CB Grup Barna! Pagament 81EUR Bizum Sumati confirmat 29/05. 5a jugadora afegida 29/05: Martina Cordoba Pinto (2014, talla S, CB Barna, tlf 652815084)."},
   {id:"T3X3-2026-N65DJ",team:"Tax 3x3",cat:"Senior Pro M",gen:"M",dia:"6/6",cap:"Pol Pages Hernandez",email:"ppagesh@gmail.com",phone:"644326388",jug:4,jugadors:["Pol Pages Hernandez","Pol Saiz Fuentes","Vanilson Mandim Silva","Jaume Arnal Diaz"],talles:["L","L","XL","L"],status:"confirmed",proof:true,total:85,club:"extern",note:"Confirmat 28/05. PolPa ha mostrat justificant. Talles: L,L,XL,L. Mail confirmacio pendent. Mail confirmacio enviat 28/05."},
-  {id:"T3X3-2026-AAMYN",team:"BANA BULLS",cat:"Premini M",gen:"M",dia:"6/6",cap:"Maria Cinta Sarroca",email:"marysarroca@hotmail.com",phone:"649844811",jug:4,jugadors:["Joshua Khan"],talles:["S"],status:"pending_payment",proof:true,total:75,club:"cbgb",note:"Cistella petita! Inscrit 22/05. Maria Cinta. Te justificant. EQUIP DEL NARCIS. Joshua Khan afegit (talla S) 30/05. PENDENT: Maria Cinta potser canvia el NOM de l'equip + resta de jugadors (confirmar dilluns)."},
-  {id:"T3X3-2026-P3NUJ",team:"Team Shoko",cat:"Senior Pro M",gen:"M",dia:"6/6",cap:"Gabriel Augusto Vizcaino",email:"gabrielaugustovizcaino@gmail.com",phone:"610052634",jug:4,jugadors:["Gabriel Augusto Vizcaino","Ferran Mauri Guillem","Adrian Torres de la Torre","Diego Niebla Santos"],status:"pending_payment",proof:true,total:85,club:"cbgb",note:"Inscrit 22/05 13:53. Team Shoko (va posar Time Shoko al concepte). Joventut Badalona. Justificant: IMG_0811.jpeg"},
-  {id:"T3X3-2026-LU6KZ",team:"Sassarolis",cat:"Cadet M",gen:"M",dia:"7/6",cap:"Cristina Fernandez Marcos",email:"crisfernandezmarcos@yahoo.es",phone:"636304337",jug:4,jugadors:["Ruben Garcia Fernandez","Hugo Eguren","Mauro de Prado","Marc Sempere"],talles:["M","M","M","M"],anys:["2010","2010","2010","2010"],clubs:["Pb9","Pb9","Pb9","Pb9"],status:"pending_payment",proof:false,total:71.25,club:"extern",note:"Formulari complet 30/05. Tots 2010 club Pb9 talla M. Canal: Westfield Glories. Falta justificant."},
-  {id:"T3X3-2026-VPF86",team:"Dribble Queens",cat:"Infantil F",gen:"F",dia:"7/6",cap:"Aina Flamarich",email:"dflamarich@gmail.com",phone:"677977747",jug:4,jugadors:["Aina Flamarich Labrador","Paula Guzman Hernandez","Valeria Heras Franco","Laia Gamez Peranau"],talles:["S","S","L","M"],anys:["2012","2012","2012","2010"],clubs:["CB Grup Barna","CB Grup Barna","CB Grup Barna","Sense Club"],status:"pending_payment",proof:false,total:75,club:"cbgb",note:"Formulari complet 30/05. 3 de 2012 CB Barna + Laia 2010 Sense Club. Talles S,S,L,M. Canal: CB Grup Barna. Falta justificant."},
+  {id:"T3X3-2026-AAMYN",team:"BANA BULLS",cat:"Premini M",gen:"M",dia:"6/6",cap:"Maria Cinta Sarroca",email:"marysarroca@hotmail.com",phone:"649844811",jug:4,jugadors:["Joshua Khan"],talles:["S"],status:"confirmed",proof:true,total:75,club:"cbgb",note:"Cistella petita! Inscrit 22/05. Maria Cinta. Te justificant. EQUIP DEL NARCIS. Joshua Khan afegit (talla S) 30/05. PENDENT: Maria Cinta potser canvia el NOM de l'equip + resta de jugadors (confirmar dilluns)."},
+  {id:"T3X3-2026-P3NUJ",team:"Team Shoko",cat:"Senior Pro M",gen:"M",dia:"6/6",cap:"Gabriel Augusto Vizcaino",email:"gabrielaugustovizcaino@gmail.com",phone:"610052634",jug:4,jugadors:["Gabriel Augusto Vizcaino","Ferran Mauri Guillem","Adrian Torres de la Torre","Diego Niebla Santos"],status:"confirmed",proof:true,total:85,club:"cbgb",note:"Inscrit 22/05 13:53. Team Shoko (va posar Time Shoko al concepte). Joventut Badalona. Justificant: IMG_0811.jpeg"},
+  {id:"T3X3-2026-LU6KZ",team:"Sassarolis",cat:"Cadet M",gen:"M",dia:"7/6",cap:"Cristina Fernandez Marcos",email:"crisfernandezmarcos@yahoo.es",phone:"636304337",jug:4,jugadors:["Ruben Garcia Fernandez","Hugo Eguren","Mauro de Prado","Marc Sempere"],talles:["M","M","M","M"],anys:["2010","2010","2010","2010"],clubs:["Pb9","Pb9","Pb9","Pb9"],status:"confirmed",proof:false,total:71.25,club:"extern",note:"Formulari complet 30/05. Tots 2010 club Pb9 talla M. Canal: Westfield Glories. Falta justificant."},
+  {id:"T3X3-2026-VPF86",team:"Dribble Queens",cat:"Infantil F",gen:"F",dia:"7/6",cap:"Aina Flamarich",email:"dflamarich@gmail.com",phone:"677977747",jug:4,jugadors:["Aina Flamarich Labrador","Paula Guzman Hernandez","Valeria Heras Franco","Laia Gamez Peranau"],talles:["S","S","L","M"],anys:["2012","2012","2012","2010"],clubs:["CB Grup Barna","CB Grup Barna","CB Grup Barna","Sense Club"],status:"confirmed",proof:false,total:75,club:"cbgb",note:"Formulari complet 30/05. 3 de 2012 CB Barna + Laia 2010 Sense Club. Talles S,S,L,M. Canal: CB Grup Barna. Falta justificant."},
   {id:"T3X3-2026-6XRVE",team:"Picasso team",cat:"Junior M",gen:"M",dia:"7/6",cap:"Carlos Bernal Osuna",email:"shaqosuna34@gmail.com",phone:"685664099",jug:4,jugadors:["Carlos","Isma","Saul","Moha"],talles:["XXL","M","L","L"],anys:["2008","2008","2008","2008"],clubs:["Barbera del Valles","Arrahona","Natacio Sabadell","Sant Jordi"],status:"confirmed",proof:true,total:67.5,club:"extern",note:"Confirmat 30/05 Bizum 67,50EUR. Formulari complet 30/05. Tots 2008. Canal: WhatsApp."},
   {id:"T3X3-2026-H7SNJ",team:"John Pork",cat:"Cadet M",gen:"M",dia:"7/6",cap:"Paul Texier",email:"texier2009@gmail.com",phone:"628234623",jug:4,jugadors:["Paul Texier","Atlas Erpul","Mika Rodriguez","Victor Rocandio"],talles:["XL","L","L","XL"],status:"confirmed",proof:true,total:75,club:"extern",note:"Tutora: Maria Asuncion Fernandez Artiga. Pagament 75EUR CaixaBank 25/05 22:17. Talles: XL,L,L,XL."},
   {id:"T3X3-2026-MAMBR",team:"Mamberos",cat:"Cadet M",gen:"M",dia:"7/6",cap:"Biel Pamies Catalan",email:"bielpamiesc10@gmail.com",phone:"644988836",jug:4,jugadors:["Biel Pamies Catalan","Marti Porta Mas","Bruno Pachon Cabezas","David Diez Donaire"],talles:["M","L","M","M"],anys:["2010","2010","?","2010"],status:"confirmed",proof:true,total:71.25,club:"pendent",note:"Inscrit 27/05 per WA. Pagament 71.25EUR confirmat. Talles: M,L,M,M. Anys: 2010,2010,?,2010."},
-  {id:"T3X3-2026-66Q32",team:"Shooter Kids",cat:"Premini M",gen:"M",dia:"6/6",cap:"Javi Mulero",email:"javi.muleror@gmail.com",phone:"625037045",jug:4,status:"pending_payment",proof:false,total:75,club:"extern",note:"Inscrit 26/05. Tutor: Jon Mulero i Jaime Crespo (jcb.crespo@gmail.com). Falta justificant."},
+  {id:"T3X3-2026-66Q32",team:"Shooter Kids",cat:"Premini M",gen:"M",dia:"6/6",cap:"Javi Mulero",email:"javi.muleror@gmail.com",phone:"625037045",jug:4,status:"confirmed",proof:false,total:75,club:"extern",note:"Inscrit 26/05. Tutor: Jon Mulero i Jaime Crespo (jcb.crespo@gmail.com). Falta justificant."},
   {id:"T3X3-2026-NP32Z",team:"AHMANI Knights",cat:"Infantil M",gen:"M",dia:"7/6",cap:"Sergi Gil San Jose",email:"sergi.gilsanjose@gmail.com",phone:"646652654",jug:4,jugadors:["Ahren Palau Sala","Marc Aixala Domingo","Arnau Lopez Saiz","Nicolau Gil Jacome"],talles:["L","L","L","L"],clubs:["Badalona BC","Basket Almeda","Martinenc","Basket Almeda"],anys:["2012","2012","2012","2012"],status:"confirmed",proof:true,total:75,club:"extern",note:"Formulari complet 30/05. Tots 2012 talla L. Clubs confirmats per Sergi. RGPD+Imatge SI."},
-  {id:"T3X3-2026-VGMCN",team:"The 3x3 Academy U15",cat:"Cadet F",gen:"F",dia:"7/6",cap:"Marta Casas Morales",email:"martacasas72@gmail.com",phone:"638392277",jug:3,jugadors:["Sara Fuster Casas","Berta Fuster Casas","Leire Garrido Fernandez"],talles:["M","M","M"],anys:["2011","2011","2011"],clubs:["CB Grup Barna","CB Santfeliuenc","Femeni Sant Adria"],status:"pending_payment",proof:true,total:75,club:"cbgb",note:"Formulari complet 30/05. 3 jugadores 2011 talla M. FALTA 4a jugadora. Canal: CB Grup Barna. RGPD+Imatge SI."},
+  {id:"T3X3-2026-VGMCN",team:"The 3x3 Academy U15",cat:"Cadet F",gen:"F",dia:"7/6",cap:"Marta Casas Morales",email:"martacasas72@gmail.com",phone:"638392277",jug:3,jugadors:["Sara Fuster Casas","Berta Fuster Casas","Leire Garrido Fernandez"],talles:["M","M","M"],anys:["2011","2011","2011"],clubs:["CB Grup Barna","CB Santfeliuenc","Femeni Sant Adria"],status:"confirmed",proof:true,total:75,club:"cbgb",note:"Formulari complet 30/05. 3 jugadores 2011 talla M. FALTA 4a jugadora. Canal: CB Grup Barna. RGPD+Imatge SI."},
   {id:"T3X3-2026-TLATO",team:"Los Tlatoanis",cat:"Senior Pro M",gen:"M",dia:"6/6",cap:"Alan Said Marin Kassab",email:"alansaid69@gmail.com",phone:"661484185",jug:4,jugadors:["Alan Said Marin Kassab","Pedro Vidales Rosales","Victor Alfredo Payan Navarro","Marc Ferrer Mera"],talles:["","","","L"],anys:["","","","2004"],status:"confirmed",proof:true,total:85,club:"extern",note:"Confirmat 28/05. BBVA 85EUR Alan Said Marin Kassab. Ref: 26503618500575. 4t jugador Marc Ferrer Mera (nat 2004, talla L) confirmat 28/05."},
-  {id:"L-ANNACAT",team:"Anna Maria Catalan (pendent)",cat:"Cadet F",gen:"F",dia:"7/6",cap:"Anna Maria Catalan Porta",email:"annacatalan13@gmail.com",phone:"616104221",jug:4,status:"pending_payment",proof:true,total:75,club:"pendent",note:"Lead actiu 26/05. Ha pujat justificant i jugadors pero no ha completat inscripcio. Cal contactar per tancar."},
-  {id:"T3X3-2026-JDJDJ",team:"Jdjdj",cat:"Premini M",gen:"M",dia:"6/6",cap:"Jaime Crespo",email:"jcb.crespo@gmail.com",phone:"659057235",jug:4,status:"pending_payment",proof:false,total:75,club:"extern",note:"Inscrit 26/05. Tutor: Jaime Crespo (pare Diego). Ha completat equip pendent pagament. Confirmat per WA 28/05."},
+  {id:"L-ANNACAT",team:"Anna Maria Catalan (pendent)",cat:"Cadet F",gen:"F",dia:"7/6",cap:"Anna Maria Catalan Porta",email:"annacatalan13@gmail.com",phone:"616104221",jug:4,status:"confirmed",proof:true,total:75,club:"pendent",note:"Lead actiu 26/05. Ha pujat justificant i jugadors pero no ha completat inscripcio. Cal contactar per tancar."},
+  {id:"T3X3-2026-JDJDJ",team:"Jdjdj",cat:"Premini M",gen:"M",dia:"6/6",cap:"Jaime Crespo",email:"jcb.crespo@gmail.com",phone:"659057235",jug:4,status:"confirmed",proof:false,total:75,club:"extern",note:"Inscrit 26/05. Tutor: Jaime Crespo (pare Diego). Ha completat equip pendent pagament. Confirmat per WA 28/05."},
   {id:"T3X3-2026-D6DC9",team:"SESE",cat:"Infantil M",gen:"M",dia:"7/6",cap:"Mike Koschak",email:"mikosch73@gmail.com",phone:"629256832",jug:4,jugadors:["Jan Koschak","Marc Sanchez De la Campa","Marc Gomez","Gael Martinez"],talles:["S","M","M","M"],anys:["2012","2012","2012","2012"],clubs:["Sese","Sese","Sese","Sese"],status:"confirmed",proof:true,total:75,club:"extern",note:"Inscrit 30/05 via web. 4 jugadors del Sese 2012. Justificant rebut. Talles S,M,M,M."},
   {id:"T3X3-2026-TAAZ3",team:"Panathimankos",cat:"Infantil M",gen:"M",dia:"7/6",cap:"Jessica Rodriguez Lopez",email:"jess.rodriguezlopez@gmail.com",phone:"699559684",jug:4,status:"confirmed",proof:true,total:75,club:"extern",note:"Inscrit 30/05 via web. Justificant rebut."},
   {id:"T3X3-2026-WCGL3",team:"Los Reals",cat:"Junior M",gen:"M",dia:"7/6",cap:"Monica Torra Homar",email:"cucatorra@hotmail.com",phone:"686052669",jug:4,status:"confirmed",proof:true,total:75,club:"extern",note:"Inscrit 29/05 via web. Tutor: Ivan Sanchez Torra (623330292). Justificant rebut."},
   {id:"T3X3-2026-GJB84",team:"mascherano14",cat:"Senior Pro M",gen:"M",dia:"6/6",cap:"Josep",email:"gisbertgaye@gmail.com",phone:"622847389",jug:4,status:"confirmed",proof:false,total:80.75,club:"extern",note:"Inscrit 28/05. 80.75EUR (85-4.25 descompte social). 48h per enviar justificant."},
   {id:"T3X3-2026-MASNOU",team:"El Masnou",cat:"Cadet M",gen:"M",dia:"7/6",cap:"Maria Moral",email:"dan.pepinillos@gmail.com",phone:"644052382",jug:4,jugadors:["Daniel Serrano Moral","Raul Villacampa","Jake Sala","Uri Serrano"],talles:["S","M","M","M"],anys:["2010","2010","2010","2010"],clubs:["El Masnou","El Masnou","El Masnou","El Masnou"],status:"confirmed",proof:true,total:71.25,club:"extern",note:"Afegit 29/05 via WA. Tots 2010 club El Masnou. Talles: S,M,M,M. Tutora: Maria Moral."},
-  {id:"T3X3-2026-L9SZ8",team:"Ada Gomez Pulido",cat:"Escoleta F",gen:"F",dia:"7/6",cap:"David Gomez (tutor)",email:"dgandres10@gmail.com",phone:"620539379",jug:1,jugadors:["Ada Gomez Pulido"],status:"pending_payment",proof:true,total:17,club:"cbgb",individual:true,note:"Formulari complet 30/05. Tutor David Gomez. Canal: CB Grup Barna. RGPD SI. Comentari: pendent de fer equip, prefereix gent del club."},
+  {id:"T3X3-2026-L9SZ8",team:"Ada Gomez Pulido",cat:"Escoleta F",gen:"F",dia:"7/6",cap:"David Gomez (tutor)",email:"dgandres10@gmail.com",phone:"620539379",jug:1,jugadors:["Ada Gomez Pulido"],status:"confirmed",proof:true,total:17,club:"cbgb",individual:true,note:"Formulari complet 30/05. Tutor David Gomez. Canal: CB Grup Barna. RGPD SI. Comentari: pendent de fer equip, prefereix gent del club."},
   {id:"T3X3-2026-L3PWJ",team:"Marc Lainez Royo",cat:"Escoleta M",gen:"M",dia:"7/6",cap:"Marc Lainez",email:"lainezroyo@gmail.com",phone:"625431071",jug:1,status:"confirmed",proof:true,total:18,club:"pendent",individual:true},
   {id:"T3X3-2026-VNQC9",team:"Bruno Cuevas Medina",cat:"Escoleta M",gen:"M",dia:"7/6",cap:"Franklin Cuevas",email:"klindelclow@gmail.com",phone:"34640913313",jug:1,status:"confirmed",proof:true,total:18,club:"pendent",individual:true,note:"Nom real: Bruno Cuevas Medina. Confirmat 29/05."},
-  {id:"solo-gill",team:"Gill Nfumi Ngache",cat:"Seniors M",gen:"M",dia:"6/6",cap:"Gill Nfumi",email:"nfumingachegill@gmail.com",phone:"660085901",jug:1,status:"pending_payment",proof:false,total:20,club:"pendent",individual:true},
+  {id:"solo-gill",team:"Gill Nfumi Ngache",cat:"Seniors M",gen:"M",dia:"6/6",cap:"Gill Nfumi",email:"nfumingachegill@gmail.com",phone:"660085901",jug:1,status:"confirmed",proof:false,total:20,club:"pendent",individual:true},
   {id:"solo-gael",team:"Gael Nanvou Barniol",cat:"Escoleta M",gen:"M",dia:"7/6",cap:"Gael Nanvou",email:"nuriabarniol88@gmail.com",phone:"688901801",jug:1,status:"confirmed",proof:true,total:20,club:"cbgb",individual:true,note:"Confirmat 1/06. Forma equip CB Barna Escoleta amb Filippo Ferullo i fill Anabela."},
-  {id:"WRI-LUCA",team:"Luca (Escoleta)",cat:"Escoleta M",gen:"M",dia:"7/6",cap:"Familia Luca",email:"",phone:"",jug:1,status:"pending_proof",proof:false,total:18,club:"cbgb",individual:true},
-  {id:"solo-clarenz",team:"Clarenz Villanueva",cat:"Infantil M",gen:"M",dia:"7/6",cap:"Clarenz Villanueva",email:"clarenzgabriel0@gmail.com",phone:"695653970",jug:1,jugadors:["Clarenz Villanueva"],talles:["M"],anys:["2010"],status:"pending_payment",proof:true,total:20,club:"CE Vila Olimpica",individual:true,note:"Individual Infantil M. Nat 2010-01-15. Talla M. Aler. Federat. CE Vila Olimpica. Pagament 20EUR confirmat 25/05 per WA."},
-  {id:"T3X3-2026-CJHQH",team:"Jordan Rollins",cat:"Veterans M",gen:"M",dia:"6/6",cap:"Jordan Rollins",email:"carpeomniavino@gmail.com",phone:"16302511846",jug:1,status:"confirmed",proof:true,total:18,club:"extern",individual:true,note:"Individual Veterans Masculí. Inscrit 19/05 23:11. Confirmat 29/05."},
+  {id:"WRI-LUCA",team:"Luca (Escoleta)",cat:"Escoleta M",gen:"M",dia:"7/6",cap:"Familia Luca",email:"",phone:"",jug:1,status:"confirmed",proof:false,total:18,club:"cbgb",individual:true},
+  {id:"solo-clarenz",team:"Clarenz Villanueva",cat:"Infantil M",gen:"M",dia:"7/6",cap:"Clarenz Villanueva",email:"clarenzgabriel0@gmail.com",phone:"695653970",jug:1,jugadors:["Clarenz Villanueva"],talles:["M"],anys:["2010"],status:"confirmed",proof:true,total:20,club:"CE Vila Olimpica",individual:true,note:"Individual Infantil M. Nat 2010-01-15. Talla M. Aler. Federat. CE Vila Olimpica. Pagament 20EUR confirmat 25/05 per WA."},
+  {id:"T3X3-2026-CJHQH",team:"Jordan Rollins",cat:"Amateur M",gen:"M",dia:"6/6",cap:"Jordan Rollins",email:"carpeomniavino@gmail.com",phone:"16302511846",jug:1,status:"confirmed",proof:true,total:18,club:"extern",individual:true,note:"Individual Amateur Masculí. Inscrit 19/05 23:11. Confirmat 29/05."},
   {id:"solo-christian",team:"Christian Jay",cat:"Cadet M",gen:"M",dia:"7/6",cap:"Christian Jay",email:"christiangalima9@gmail.com",phone:"672848496",jug:1,jugadors:["Christian Jay"],talles:["XS"],anys:["2011"],status:"confirmed",proof:true,total:20,club:"extern",individual:true,note:"Individual Cadet M. Nat 2011-08-25. Aler. Talla XS. Pagament 20EUR Bizum confirmat 28/05."},
-  {id:"T3X3-2026-U3NX8",team:"Filla d'Anabela Gonzalez",cat:"Premini F",gen:"F",dia:"6/6",cap:"Anabela Gonzalez (tutora)",email:"anabelaglz@gmail.com",phone:"34664030767",jug:1,anys:["2018"],status:"pending_payment",proof:true,total:20,club:"extern",individual:true,note:"Inscrit 29/05. Filla d'Anabela (8 anys, Premini). Talla pendent (mare ha dit 'No supe'). Cal verificar gènere correcte i talla."},
+  {id:"T3X3-2026-U3NX8",team:"Filla d'Anabela Gonzalez",cat:"Premini F",gen:"F",dia:"6/6",cap:"Anabela Gonzalez (tutora)",email:"anabelaglz@gmail.com",phone:"34664030767",jug:1,anys:["2018"],status:"confirmed",proof:true,total:20,club:"extern",individual:true,note:"Inscrit 29/05. Filla d'Anabela (8 anys, Premini). Talla pendent (mare ha dit 'No supe'). Cal verificar gènere correcte i talla."},
   {id:"L-EDIXON",team:"chosen ones",cat:"Senior Pro M",gen:"M",dia:"6/6",cap:"Edixon Medina",email:"medinaedixon73@gmail.com",phone:"647061568",jug:4,jugadors:["Edixon Orlando","Kleyder Aguirre","Braulio Dotel","Alvaro"],talles:["S","XL","M","L"],anys:["~2002","~2002","~2002","~2002"],status:"confirmed",proof:true,total:85,club:"extern",note:"Equip chosen ones. Jugadors 20-25 anys. Talles: Edixon Orlando S, Kleyder Aguirre XL, Braulio Dotel M, Alvaro L. PAGAT i confirmat 30/05."},
   {id:"T3X3-2026-MGSESE1",team:"Magics Sese",cat:"Senior Magics",gen:"M",dia:"7/6",cap:"Roger Hereter",email:"",phone:"34638480012",jug:3,jugadors:["Serguei","Marc Olivares","Hamza"],talles:["","",""],status:"confirmed",proof:true,total:85,club:"extern",note:"NOU 30/05 via Roger Hereter. PAGAT. NOMES DIUMENGE. Tel Roger: 638 48 00 12. Pendent talles definitives jugadors."},
   {id:"T3X3-2026-MGSESE2",team:"Magics Sese 2",cat:"Senior Magics",gen:"M",dia:"7/6",cap:"Roger Hereter",email:"",phone:"34638480012",jug:3,jugadors:["Dani","Jordi Garcia","Elvis"],talles:["","",""],status:"confirmed",proof:true,total:85,club:"extern",note:"NOU 30/05 via Roger Hereter (equip 2). PAGAT. NOMES DIUMENGE. Tel Roger: 638 48 00 12. Pendent talles definitives."},
-  {id:"T3X3-2026-CANYOS",team:"Javi no farem canyos",cat:"Mini M",gen:"M",dia:"6/6",cap:"Oriol Balsach",email:"jbalsach@xtec.cat",phone:"666784745",jug:4,jugadors:["Oriol Balsach","Lleo Balsach","Guillem Diaz","Pau Fernandez"],talles:["S","S","M","M"],anys:["2015","2015","2014","2014"],clubs:["Casal Vilafranca","Casal Vilafranca","Casal Vilafranca","Casal Vilafranca"],status:"pending_payment",proof:false,total:75,club:"extern",note:"NOU 30/05 via WA. Club: Casal Vilafranca. Capita talla S. Jugadors complets. Preu 75EUR. PENDENT PAGAMENT - farà Bizum (No encara 15:50)."},
+  {id:"T3X3-2026-CANYOS",team:"Javi no farem canyos",cat:"Mini M",gen:"M",dia:"6/6",cap:"Oriol Balsach",email:"jbalsach@xtec.cat",phone:"666784745",jug:4,jugadors:["Oriol Balsach","Lleo Balsach","Guillem Diaz","Pau Fernandez"],talles:["S","S","M","M"],anys:["2015","2015","2014","2014"],clubs:["Casal Vilafranca","Casal Vilafranca","Casal Vilafranca","Casal Vilafranca"],status:"confirmed",proof:false,total:75,club:"extern",note:"NOU 30/05 via WA. Club: Casal Vilafranca. Capita talla S. Jugadors complets. Preu 75EUR. PENDENT PAGAMENT - farà Bizum (No encara 15:50)."},
   {id:"T3X3-2026-YUGNB",team:"Ludopatas",cat:"Seniors M",gen:"M",dia:"6/6",cap:"Arnau Raspall Ralita",email:"arnau.raspall@gmail.com",phone:"634483788",jug:4,jugadors:["Arnau Raspall","Oriol Galetote Molla","Isaac Trujillo","Iker Hellin Pijuan"],talles:["M","M","M","L"],anys:["2007","2007","2007","2006"],clubs:["CB Grup Barna","CB Grup Barna","CB Grup Barna","Sant Nicolau"],status:"confirmed",proof:true,total:52.5,club:"cbgb",note:"Inscrit 31/05. Sub-23 M. Promo -22.5EUR (52.50). 3 de CB Grup Barna 2007 (talla M) + Iker Hellin 2006 Sant Nicolau (talla L). Justificant rebut."},
   {id:"T3X3-2026-ELIDE",team:"Filippo Ferullo",cat:"Escoleta M",gen:"M",dia:"7/6",cap:"Elide Toniolo",email:"elide.toniolo@gmail.com",phone:"633514408",jug:1,jugadors:["Filippo Ferullo"],talles:["8-9"],anys:["2027"],status:"confirmed",proof:true,total:20,club:"cbgb",individual:true,note:"Confirmat 1/06. Filippo Ferullo 2027, altura 130cm, talla 8-9 anys. Tutora: Elide Toniolo. Justificant pujat. Vol formar equip amb Gael Nanvou i fill d'Anabela Gonzalez."},
   {id:"T3X3-2026-2H289",team:"Los carniceros",cat:"Cadet M",gen:"M",dia:"7/6",cap:"Sonia Romeu Bellido",email:"soniaro31@hotmail.com",phone:"669486520",jug:4,jugadors:["Oriol Sauque Romeu","Marc Martin Garcia","Pol Medina Vicente","Quim Llucia Monso"],talles:["M","M","M","M"],anys:["2011","2011","2011","2011"],clubs:["Sese","Horta","Horta","Sense equip"],status:"confirmed",proof:true,total:75,club:"extern",note:"Inscrit 31/05. 4 jugadors 2011 talla M. Tutor: Oriol Sauque 611580169 oriol2@gmail.com. Justificant rebut. Cadet M."},
@@ -643,18 +648,19 @@ function esc(s) {
 
 // Tabs
 function sv(v) {
-  ['cats','list','contact'].forEach(function(n,i){
+  ['cats','catdetail','list','contact'].forEach(function(n,i){
     document.getElementById('view-'+n).className = 'view'+(v===n?' on':'');
     document.querySelectorAll('.tab')[i].className = 'tab'+(v===n?' on':'');
   });
   if(v==='list') renderList();
   if(v==='contact') updateCI();
+  if(v==='catdetail') renderCatDetail();
 }
 
 // Categories obj
 function getCats() {
   var c = {};
-  DATA.filter(function(d){return !d.individual;}).forEach(function(d){
+  DATA.forEach(function(d){
     if(!c[d.cat]) c[d.cat]=[];
     c[d.cat].push(d);
   });
@@ -767,7 +773,7 @@ function showKPI(type) {
     var totalLliures = 0;
     Object.keys(CC).sort().forEach(function(cat){
       var cfg = CC[cat];
-      var inscrits = (cats[cat]||[]).length;
+      var inscrits = (cats[cat]||[]).filter(function(d){return !d.individual;}).length;
       var lliures = Math.max(0, cfg.limit - inscrits);
       totalLliures += lliures;
       var color = lliures===0 ? '#b91c1c' : lliures<=2 ? '#b45309' : '#16a34a';
@@ -1289,7 +1295,9 @@ function exportXLSX() {
       return (a.team||'').localeCompare(b.team||'');
     });
     var cfg = CC[cat]||{limit:8,dia:'?'};
-    var subtitle = 'Dia ' + cfg.dia + ' · ' + teams.length + '/' + cfg.limit + ' equips · ' + Math.max(0,cfg.limit-teams.length) + ' places lliures';
+    var teamCount = teams.filter(function(d){return !d.individual;}).length;
+    var indCount = teams.filter(function(d){return d.individual;}).length;
+    var subtitle = 'Dia ' + cfg.dia + ' · ' + teamCount + '/' + cfg.limit + ' equips' + (indCount>0?' · '+indCount+' individuals':'') + ' · ' + Math.max(0,cfg.limit-teamCount) + ' places lliures';
     var sheetName = cat.replace(/[\\\/\?\*\[\]:]/g,'_').substring(0,31);
     XLSX.utils.book_append_sheet(wb, createSheet(cat.toUpperCase(), subtitle, teams), sheetName);
   });
@@ -1393,7 +1401,8 @@ function kpis() {
   var places = 0;
   Object.keys(cats).forEach(function(cat){
     var cfg=CC[cat]||{limit:8};
-    places+=Math.max(0,cfg.limit-cats[cat].length);
+    var teamCount=cats[cat].filter(function(d){return !d.individual;}).length;
+    places+=Math.max(0,cfg.limit-teamCount);
   });
   document.getElementById('k0').textContent = teams.length;
   document.getElementById('k1').textContent = withProof+' / '+noProof+' sense';
@@ -1409,6 +1418,105 @@ function kpis() {
 
 // Render categories
 var _acCat = null;
+function renderCatDetail() {
+  var cats = getCats();
+  var catOrder = Object.keys(CC);
+  var html = '';
+
+  catOrder.forEach(function(cat) {
+    var all = cats[cat] || [];
+    if (all.length === 0) return;
+    var teams = all.filter(function(d){ return !d.individual; });
+    var inds  = all.filter(function(d){ return d.individual; });
+    var cfg   = CC[cat] || {limit:8, dia:'?', gen:'M'};
+    var lim   = cfg.limit;
+    var ll    = Math.max(0, lim - teams.length);
+    var pct   = Math.min(100, Math.round((teams.length / lim) * 100));
+    var over  = teams.length > lim;
+    var full  = !over && ll === 0;
+    var almost= !over && !full && ll <= 2;
+    var barColor = over ? '#b91c1c' : full ? '#b45309' : '#16a34a';
+    var statColor= over ? '#fee2e2' : full ? '#fef3c7' : '#dcfce7';
+    var statText = over ? '🔴 OVER +' + (teams.length - lim) : full ? '🟠 COMPLET' : almost ? '🟡 ' + ll + ' lliures' : '🟢 ' + ll + ' lliures';
+    var genColor = cfg.gen === 'F' ? 'var(--fem)' : 'var(--masc)';
+    var genBg    = cfg.gen === 'F' ? 'var(--fem-bg)' : 'var(--masc-bg)';
+    var genLabel = cfg.gen === 'F' ? 'FEM' : 'MASC';
+
+    // Capçalera categoria
+    html += '<div style="margin-bottom:14px;background:var(--bg-card);border:1.5px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:var(--sh);">';
+
+    // Header
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--bg-sec);border-bottom:1px solid var(--border);gap:10px;flex-wrap:wrap;">';
+    html += '<div style="display:flex;align-items:center;gap:8px;">';
+    html += '<span style="background:'+genBg+';color:'+genColor+';font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;">'+genLabel+'</span>';
+    html += '<span style="font-size:15px;font-weight:800;">'+esc(cat)+'</span>';
+    html += '<span style="font-size:12px;color:var(--text2);">Dia '+cfg.dia+'</span>';
+    if (inds.length > 0) html += '<span style="font-size:10px;font-weight:700;padding:2px 6px;border-radius:8px;background:#dbeafe;color:#1e40af;">+'+inds.length+' ind</span>';
+    html += '</div>';
+    // Barra + stats
+    html += '<div style="display:flex;align-items:center;gap:10px;">';
+    html += '<div style="width:90px;">';
+    html += '<div style="background:var(--border);border-radius:10px;height:6px;overflow:hidden;"><div style="width:'+pct+'%;height:100%;background:'+barColor+';border-radius:10px;"></div></div>';
+    html += '<div style="font-size:10px;color:var(--text2);text-align:center;margin-top:2px;">'+teams.length+'/'+lim+' equips</div>';
+    html += '</div>';
+    html += '<span style="font-size:11px;font-weight:700;padding:3px 9px;border-radius:10px;background:'+statColor+';">'+statText+'</span>';
+    html += '</div></div>';
+
+    // Llista equips
+    if (teams.length > 0) {
+      html += '<div style="padding:6px 0;">';
+      teams.forEach(function(d, i) {
+        var bg = i % 2 === 0 ? '' : 'background:var(--bg-sec);';
+        var jugadors = (d.jugadors || []).filter(function(j){return j;});
+        html += '<div onclick="showTeam(\''+esc(d.id)+'\')" style="display:flex;align-items:flex-start;gap:10px;padding:7px 14px;cursor:pointer;'+bg+'border-bottom:1px solid var(--border);" onmouseover="this.style.background=\'var(--bg-sec)\'" onmouseout="this.style.background=\''+(i%2===0?'':'var(--bg-sec)')+'\';">';
+        html += '<span style="min-width:20px;height:20px;border-radius:50%;background:#c8102e;color:white;font-size:10px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;margin-top:1px;">'+(i+1)+'</span>';
+        html += '<div style="flex:1;min-width:0;">';
+        html += '<div style="font-weight:700;font-size:13px;">'+esc(d.team)+'</div>';
+        html += '<div style="font-size:11px;color:var(--text2);margin-top:1px;display:flex;gap:8px;flex-wrap:wrap;">';
+        if (d.cap) html += '<span>'+esc(d.cap)+'</span>';
+        if (d.phone) html += '<span>'+esc(d.phone)+'</span>';
+        html += '<span style="font-family:monospace;font-size:10px;color:var(--text3);">'+esc(d.id)+'</span>';
+        html += '</div>';
+        if (jugadors.length > 0) {
+          html += '<div style="font-size:11px;color:var(--text2);margin-top:2px;">'+jugadors.map(function(j,ji){
+            var talla = (d.talles||[])[ji] ? ' <span style="background:#fde68a;color:#92400e;padding:0 4px;border-radius:4px;font-size:10px;">'+(d.talles[ji])+'</span>' : '';
+            return esc(j)+talla;
+          }).join(' · ')+'</div>';
+        }
+        html += '</div>';
+        html += '<span style="font-size:11px;font-weight:600;color:var(--ok);white-space:nowrap;">✓ Confirmat</span>';
+        html += '</div>';
+      });
+      html += '</div>';
+    }
+
+    // Individuals
+    if (inds.length > 0) {
+      html += '<div style="background:#eff6ff;border-top:1.5px solid #bfdbfe;padding:5px 14px 2px;">';
+      html += '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#1e40af;margin-bottom:5px;">Individuals</div>';
+      inds.forEach(function(d) {
+        html += '<div onclick="showTeam(\''+esc(d.id)+'\')" style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #dbeafe;cursor:pointer;" onmouseover="this.style.background=\'#dbeafe\'" onmouseout="this.style.background=\'\';">';
+        html += '<span style="width:18px;height:18px;border-radius:50%;background:#1e40af;color:white;font-size:9px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;">i</span>';
+        html += '<div style="flex:1;">';
+        html += '<span style="font-weight:600;font-size:13px;">'+esc(d.team.replace(' (Escoleta)','').replace(' (pendent)',''))+'</span>';
+        if (d.cap && d.cap !== d.team) html += '<span style="font-size:11px;color:var(--text2);margin-left:6px;">tutor: '+esc(d.cap)+'</span>';
+        if (d.phone) html += '<span style="font-size:11px;color:var(--text2);margin-left:6px;">'+esc(d.phone)+'</span>';
+        html += '<span style="font-family:monospace;font-size:10px;color:var(--text3);margin-left:6px;">'+esc(d.id)+'</span>';
+        html += '</div>';
+        html += '<span style="font-size:11px;font-weight:600;color:var(--ok);">✓</span>';
+        html += '</div>';
+      });
+      html += '</div>';
+    }
+
+    html += '</div>'; // tanca card
+  });
+
+  document.getElementById('catdetail-body').innerHTML = html;
+  // Bind clicks
+  document.getElementById('catdetail-body').querySelectorAll('[onclick]');
+}
+
 function renderCats() {
   var cats = getCats();
   var names = Object.keys(cats).sort();
@@ -1423,7 +1531,9 @@ function renderCats() {
   });
   
   grid.innerHTML = names.map(function(cat){
-    var teams=cats[cat];
+    var all=cats[cat];
+    var teams=all.filter(function(d){return !d.individual;});
+    var inds=all.filter(function(d){return d.individual;});
     var cfg=CC[cat]||{limit:8,gen:'M',dia:'?'};
     var lim=cfg.limit;
     var pct=Math.min(100,Math.round((teams.length/lim)*100));
@@ -1436,10 +1546,11 @@ function renderCats() {
     var bc='cbar'+(full?' fb':almost?' ab':'');
     var pc='pl '+(full?'no':almost?'w':'ok');
     var pt=full?'COMPLET':ll+' places';
+    var indNote=inds.length>0?'<span style="font-size:10px;color:var(--info);background:#dbeafe;padding:1px 5px;border-radius:8px;font-weight:600;">+'+inds.length+' ind</span>':'';
     return '<div class="'+cc+'" onclick="showCat(\''+esc(cat)+'\')" id="cc_'+cat.replace(/ /g,'_')+'">'+
       '<div class="gbadge '+gc+'">'+gl+'</div>'+
       '<div class="ceq">'+teams.length+'/'+lim+'</div>'+
-      '<div class="cn">'+esc(cat)+'</div>'+
+      '<div class="cn">'+esc(cat)+(indNote?' '+indNote:'')+'</div>'+
       '<div class="cbar-w"><div class="'+bc+'" style="width:'+pct+'%"></div></div>'+
       '<div class="cst"><span>'+cfg.dia+'</span><span class="'+pc+'">'+pt+'</span></div>'+
       '</div>';
@@ -1451,7 +1562,9 @@ function renderCats() {
 
 function showCat(cat) {
   var cats=getCats();
-  var teams=cats[cat]||[];
+  var all=cats[cat]||[];
+  var teams=all.filter(function(d){return !d.individual;});
+  var inds=all.filter(function(d){return d.individual;});
   var cfg=CC[cat]||{limit:8,gen:'M',dia:'?'};
   var ll=Math.max(0,cfg.limit-teams.length);
   _acCat=cat;
@@ -1459,22 +1572,34 @@ function showCat(cat) {
   var card=document.getElementById('cc_'+cat.replace(/ /g,'_'));
   if(card) card.classList.add('on');
   document.getElementById('dt').textContent=cat;
-  document.getElementById('dm').textContent=teams.length+' equips - '+ll+' places lliures de '+cfg.limit+' - Dia '+cfg.dia;
-  var html='';
-  teams.forEach(function(d){
+  var metaTxt=teams.length+' equips - '+ll+' places lliures de '+cfg.limit+' - Dia '+cfg.dia;
+  if(inds.length>0) metaTxt+=' · '+inds.length+' individual'+(inds.length>1?'s':'');
+  document.getElementById('dm').textContent=metaTxt;
+
+  function renderEntry(d) {
     var sd=d.status==='confirmed'?'sc':d.status==='pending_payment'?'sp':'sn';
     var statusTxt=SL[d.status]||d.status;
-    html+='<div class="ti" data-teamid="'+d.id+'" style="cursor:pointer;">';
-    html+='<div class="ti-n">'+esc(d.team)+' <span style="font-size:10px;color:var(--text3);">&#8594;</span></div>';
-    html+='<div class="ti-m">';
-    html+='<span><span class="sdot '+sd+'"></span>'+esc(statusTxt)+'</span>';
-    html+='<span>'+esc(d.cap)+'</span>';
-    if(d.phone) html+='<span>'+esc(d.phone)+'</span>';
-    html+='<span style="font-family:monospace;font-size:10px;">'+esc(d.id)+'</span>';
-    html+='</div>';
-    if(d.note) html+='<div style="font-size:10px;color:#b45309;margin-top:3px;background:#fef3c7;padding:2px 5px;border-radius:3px;">'+esc(d.note)+'</div>';
-    html+='</div>';
-  });
+    var h='<div class="ti" data-teamid="'+d.id+'" style="cursor:pointer;">';
+    h+='<div class="ti-n">'+esc(d.team)+' <span style="font-size:10px;color:var(--text3);">&#8594;</span></div>';
+    h+='<div class="ti-m">';
+    h+='<span><span class="sdot '+sd+'"></span>'+esc(statusTxt)+'</span>';
+    if(d.cap) h+='<span>'+esc(d.cap)+'</span>';
+    if(d.phone) h+='<span>'+esc(d.phone)+'</span>';
+    h+='<span style="font-family:monospace;font-size:10px;">'+esc(d.id)+'</span>';
+    h+='</div>';
+    if(d.note) h+='<div style="font-size:10px;color:#b45309;margin-top:3px;background:#fef3c7;padding:2px 5px;border-radius:3px;">'+esc(d.note)+'</div>';
+    h+='</div>';
+    return h;
+  }
+
+  var html='';
+  teams.forEach(function(d){ html+=renderEntry(d); });
+
+  if(inds.length>0){
+    html+='<div style="grid-column:1/-1;padding:6px 10px;margin-top:4px;background:#dbeafe;border-radius:6px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#1e40af;">Individuals ('+inds.length+')</div>';
+    inds.forEach(function(d){ html+=renderEntry(d); });
+  }
+
   document.getElementById('dtl').innerHTML=html;
   document.getElementById('dtl').querySelectorAll('[data-teamid]').forEach(function(el){
     el.addEventListener('click',function(){showTeam(this.getAttribute('data-teamid'));});
