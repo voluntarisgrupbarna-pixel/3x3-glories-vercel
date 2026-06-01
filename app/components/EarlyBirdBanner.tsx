@@ -47,6 +47,7 @@ export default function EarlyBirdBanner() {
         background: "#ccff00",
         borderBottom: "2px solid #aadd00",
         padding: "5px 12px",
+        height: "auto",
         minHeight: 0,
         flexWrap: "nowrap",
         gap: 8,

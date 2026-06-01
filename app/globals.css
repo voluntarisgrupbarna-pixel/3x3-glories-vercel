@@ -1733,13 +1733,13 @@ html {
   line-height: 1;
 }
 
-/* Adjust hero panel when banner is visible */
+/* Adjust hero panel when banner is visible (banner auto-height ~36px) */
 .has-eb-banner .hero-festival-panel {
-  top: calc(50% + 45px); /* desplaça el centre cap avall: meitat dels 90px del banner */
+  top: calc(50% + 18px); /* meitat dels ~36px del banner */
 }
 
 .has-eb-banner .hero-festival-nav {
-  top: 90px;
+  top: 36px;
 }
 
 @media (max-width: 760px) {
@@ -1776,11 +1776,11 @@ html {
   }
 
   .has-eb-banner .hero-festival-panel {
-    top: calc(50% + 26px); /* meitat dels 52px del banner en mòbil */
+    top: calc(50% + 18px); /* meitat dels ~36px del banner */
   }
 
   .has-eb-banner .hero-festival-nav {
-    top: 52px;
+    top: 36px;
   }
 }
 

@@ -1352,7 +1352,8 @@ function handleLead(payload) {
  * Envia notificació per email a l'admin cada cop que arriba un lead del formulari de contacte.
  */
 function sendLeadNotificationToAdmin(payload) {
-  var adminEmail = "voluntarisgrupbarna@gmail.com";
+  var props = PropertiesService.getScriptProperties();
+  var adminEmail = props.getProperty("ADMIN_EMAIL") || "voluntarisgrupbarna@gmail.com,anafernandezduran78@gmail.com";
   var nom      = payload.name     || "(sense nom)";
   var mobil    = payload.phone    || "(sense mòbil)";
   var email    = payload.email    || "(no facilitat)";
@@ -1383,7 +1384,7 @@ function sendLeadNotificationToAdmin(payload) {
 
   var plain = "Nou contacte 3x3:\nNom: " + nom + "\nMobil: " + mobil + "\nEmail: " + email + "\nInteres: " + interes + "\nPregunta: " + pregunta + "\nMissatge: " + missatge;
 
-  GmailApp.sendEmail(adminEmail, subject, plain, { htmlBody: html });
+  sendToAdmins(adminEmail, subject, html);
   Logger.log("sendLeadNotificationToAdmin: email enviat a " + adminEmail + " per lead de " + nom);
 }
 
@@ -3397,4 +3398,78 @@ function confirmLosHuevosManual() {
   }
 
   Logger.log("✅ confirmLosHuevosManual completat");
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// DIAGNÒSTIC + FIX — notificacions de leads no arriben a Ana
+// Run > diagnoseAndFixAdminEmail
+// ═══════════════════════════════════════════════════════════════════════════
+function diagnoseAndFixAdminEmail() {
+  var props = PropertiesService.getScriptProperties();
+  var currentAdminEmail = props.getProperty("ADMIN_EMAIL");
+  var sheetId = props.getProperty("SHEET_ID");
+  var secret  = props.getProperty("APPSCRIPT_SECRET");
+
+  Logger.log("─── ESTAT ACTUAL ───");
+  Logger.log("ADMIN_EMAIL actual: " + (currentAdminEmail || "(NO CONFIGURAT — usa default)"));
+  Logger.log("SHEET_ID: " + (sheetId || "(NO CONFIGURAT)"));
+  Logger.log("APPSCRIPT_SECRET: " + (secret ? "(configurat, " + secret.length + " caràcters)" : "(NO CONFIGURAT)"));
+
+  // 1. Forço l'ADMIN_EMAIL correcte
+  var CORRECT_ADMIN = "voluntarisgrupbarna@gmail.com,anafernandezduran78@gmail.com";
+  props.setProperty("ADMIN_EMAIL", CORRECT_ADMIN);
+  Logger.log("✅ ADMIN_EMAIL FIXAT a: " + CORRECT_ADMIN);
+
+  // 2. Buido la cache de dedup (per si la cache estava bloquejant emails antics)
+  try {
+    var cache = CacheService.getScriptCache();
+    cache.removeAll(["ab_email_test1", "ab_email_test2"]); // No podem buidar tot
+    Logger.log("ℹ️ Cache de dedup no es pot buidar tota globalment (TTL natural 15 min)");
+  } catch(e) {}
+
+  // 3. Envio un email de prova als 2 destinataris
+  var testSubject = "[TEST 3x3] Verificació notificacions leads — " + Utilities.formatDate(new Date(), "Europe/Madrid", "dd/MM HH:mm");
+  var testHtml = "<div style='font-family:sans-serif;padding:20px;background:#f0fdf4;border-left:4px solid #16a34a'>" +
+    "<h2 style='color:#16a34a;margin:0 0 12px'>✅ Test de notificacions 3×3</h2>" +
+    "<p>Si reps aquest email, les notificacions de leads del formulari funcionen correctament.</p>" +
+    "<p><strong>Configuració actual:</strong></p>" +
+    "<ul>" +
+    "<li>ADMIN_EMAIL: " + CORRECT_ADMIN + "</li>" +
+    "<li>SHEET_ID: " + (sheetId || "—") + "</li>" +
+    "<li>Hora del test: " + new Date().toLocaleString("ca-ES", {timeZone:"Europe/Madrid"}) + "</li>" +
+    "</ul>" +
+    "<p style='font-size:12px;color:#666;margin-top:20px'>Cada cop que algú ompli el formulari fins al pas 2+ rebràs un email com aquest amb les seves dades. Es deduplica 15 min per evitar spam.</p>" +
+    "</div>";
+  try {
+    sendToAdmins(CORRECT_ADMIN, testSubject, testHtml);
+    Logger.log("📧 Email de prova ENVIAT a: " + CORRECT_ADMIN);
+  } catch(err) {
+    Logger.log("❌ ERROR enviant email de prova: " + err);
+  }
+
+  // 4. Comprovo quants leads han arribat a Abandonaments avui
+  if (sheetId) {
+    try {
+      var ss = SpreadsheetApp.openById(sheetId);
+      var sheet = ss.getSheetByName("Abandonaments");
+      if (sheet) {
+        var data = sheet.getDataRange().getValues();
+        var today = new Date(); today.setHours(0,0,0,0);
+        var leadsToday = 0;
+        for (var i = 1; i < data.length; i++) {
+          var ts = new Date(data[i][0]);
+          if (ts >= today) leadsToday++;
+        }
+        Logger.log("📊 Leads a Abandonaments AVUI: " + leadsToday);
+        Logger.log("📊 Total leads a Abandonaments: " + (data.length - 1));
+      } else {
+        Logger.log("⚠️ Pestanya 'Abandonaments' NO EXISTEIX al SHEET — leads no es graven");
+      }
+    } catch(err) {
+      Logger.log("❌ ERROR llegint Abandonaments: " + err);
+    }
+  }
+
+  Logger.log("─── DIAGNÒSTIC COMPLETAT ───");
+  return "OK — revisa logs i la safata d'entrada";
 }

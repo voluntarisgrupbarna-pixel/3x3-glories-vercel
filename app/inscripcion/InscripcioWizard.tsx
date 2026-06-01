@@ -10,11 +10,13 @@ import {
   POSITIONS,
   LEVELS,
   IBAN_INFO,
+  FLASH_CODES,
   type Package,
   type PackageKey,
   type DiscountResult,
   isEarlyBirdActive,
   calcDiscount,
+  getPromoPct,
   EARLY_BIRD_DEADLINE,
   PROMO_2025_CODE,
   getCategoryBirthRange,
@@ -104,7 +106,23 @@ function isRivalCodeValid(code: string): boolean {
 }
 
 function isPromoCodeValid(code: string): boolean {
-  return code.trim().toUpperCase() === PROMO_2025_CODE;
+  return getPromoPct(code) > 0;
+}
+
+/** Etiqueta llegible pel badge/header del codi promo actiu. */
+function getPromoLabel(code: string): string {
+  const upper = code.trim().toUpperCase();
+  if (upper === PROMO_2025_CODE) return "Fidelitat 2025 −10 %";
+  const pct = FLASH_CODES[upper];
+  if (pct !== undefined) return `Flash ⚡ −${Math.round(pct * 100)} %`;
+  return "Descompte";
+}
+
+/** Percentatge llegible per mostrar al selector del bloc promo (sense codi entrat). */
+function getPromoPctDisplay(code: string): string {
+  const pct = getPromoPct(code);
+  if (pct <= 0) return "−?? %";
+  return `−${Math.round(pct * 100)} %`;
 }
 
 /** Validació bàsica de telèfon: mínim 9 dígits (ignorant espais, guions, parèntesis) */
@@ -317,7 +335,7 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
           earlyBird: isEarlyBirdActive(),
           social: s.socialShareDone,
           rivalValid: /^RIVAL-[A-Z0-9]{3,}$/i.test(s.rivalCode.trim()),
-          promoValid: isPromoCodeValid(s.promoCode),
+          promoPct: getPromoPct(s.promoCode),
         })
       : null;
     const body = JSON.stringify({
@@ -437,7 +455,7 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
       earlyBird: isEarlyBirdActive(),
       social: state.socialShareDone,
       rivalValid: isRivalCodeValid(state.rivalCode),
-      promoValid: isPromoCodeValid(state.promoCode),
+      promoPct: getPromoPct(state.promoCode),
     });
   }, [pkg, state.socialShareDone, state.rivalCode, state.promoCode]);
 
@@ -1043,6 +1061,7 @@ function Step1Discounts({
   const daysLeft = Math.max(0, Math.ceil((EARLY_BIRD_DEADLINE.getTime() - Date.now()) / 86_400_000));
   const rivalValid = isRivalCodeValid(rivalCode);
   const promoValid = isPromoCodeValid(promoCode);
+  const promoPctLocal = getPromoPct(promoCode);
   // Pre-obrir si hi ha codi des de la URL (?ref=...)
   const [rivalOpen, setRivalOpen] = useState(rivalCode.length > 0);
   const [promoOpen, setPromoOpen] = useState(promoCode.length > 0);
@@ -1108,21 +1127,23 @@ function Step1Discounts({
         </div>
       )}
 
-      {/* EQUIPS2025 — fidelitat 2025 */}
+      {/* Codis promo — EQUIPS2025 i FLASH */}
       {!promoOpen ? (
         <button
           type="button"
           className="wizard-rival-toggle"
           onClick={() => setPromoOpen(true)}
         >
-          🏆 Vas participar al 3×3 el 2025? (−10 %)
+          🎟️ Tens un codi de descompte especial?
         </button>
       ) : (
         <div className={`wizard-discount-block${promoValid ? " wizard-discount-block--active" : ""}`}>
           <div className="wizard-discount-head">
-            <span className="wizard-discount-pct" style={{ background: "rgba(250,204,21,.18)", color: "#facc15" }}>🏆 −10 %</span>
+            <span className="wizard-discount-pct" style={{ background: "rgba(250,204,21,.18)", color: "#facc15" }}>
+              🎟️ {promoValid ? getPromoPctDisplay(promoCode) : "−?? %"}
+            </span>
             <div>
-              <strong>Fidelitat 2025</strong>
+              <strong>{promoValid ? getPromoLabel(promoCode) : "Codi especial"}</strong>
               {promoValid
                 ? <span className="wizard-discount-status wizard-discount-status--on">Activat ✓</span>
                 : <span className="wizard-discount-status wizard-discount-status--off">Introdueix el codi</span>
@@ -1130,12 +1151,12 @@ function Step1Discounts({
             </div>
           </div>
           <p className="wizard-discount-desc">
-            Per a equips que van participar al 3×3 Westfield Glòries 2025. No acumulable amb Early Bird (s&apos;aplica el més gran dels dos).
+            Codi de fidelitat (EQUIPS2025) o codi Flash distribuït per WhatsApp. No acumulable amb Early Bird (s&apos;aplica el més gran dels dos).
           </p>
           <input
             type="text"
             className="wizard-rival-input"
-            placeholder="EQUIPS2025"
+            placeholder="FLASH50, EQUIPS2025…"
             value={promoCode}
             onChange={(e) => onPromoCode(e.target.value)}
             maxLength={20}
@@ -1170,7 +1191,7 @@ function Step1Discounts({
         <p className="wizard-price-preview-title">Preus{(rivalValid || promoValid || socialShareDone) ? " amb descomptes aplicats" : ""}:</p>
         <div className="wizard-price-preview-grid">
           {PACKAGES.map((p) => {
-            const d = calcDiscount(p.price, { earlyBird: earlyBirdActive, social: socialShareDone, rivalValid, promoValid });
+            const d = calcDiscount(p.price, { earlyBird: earlyBirdActive, social: socialShareDone, rivalValid, promoPct: promoPctLocal });
             const discounted = d.totalDiscount > 0;
             return (
               <div key={p.key} className="wizard-price-preview-item">
@@ -1241,7 +1262,7 @@ function Step2Team({
       {(disc.totalDiscount > 0) && (
         <div className="wizard-active-discounts">
           {disc.earlyBirdAmt > 0 && <span className="wizard-active-badge wizard-active-badge--eb">🔥 Early Bird −10 %</span>}
-          {disc.promoAmt > 0 && <span className="wizard-active-badge wizard-active-badge--promo">🏆 Fidelitat 2025 −10 %</span>}
+          {disc.promoAmt > 0 && <span className="wizard-active-badge wizard-active-badge--promo">🎟️ {getPromoLabel(state.promoCode)}</span>}
           {disc.socialAmt > 0 && <span className="wizard-active-badge wizard-active-badge--social">📲 Social −5 %</span>}
           {disc.rivalAmt > 0 && <span className="wizard-active-badge wizard-active-badge--rival">🏀 Rival −5 €</span>}
           <span className="wizard-active-badge-note">ja aplicat als preus</span>
@@ -1253,7 +1274,7 @@ function Step2Team({
       <div className="wizard-pkg-grid">
         {PACKAGES.map((p) => {
           const isSelected = state.packageKey === p.key;
-          const preview = calcDiscount(p.price, { earlyBird: earlyBirdActive, social: state.socialShareDone, rivalValid: isRivalCodeValid(state.rivalCode), promoValid: isPromoCodeValid(state.promoCode) });
+          const preview = calcDiscount(p.price, { earlyBird: earlyBirdActive, social: state.socialShareDone, rivalValid: isRivalCodeValid(state.rivalCode), promoPct: getPromoPct(state.promoCode) });
           const hasDiscount = preview.totalDiscount > 0;
           return (
             <button

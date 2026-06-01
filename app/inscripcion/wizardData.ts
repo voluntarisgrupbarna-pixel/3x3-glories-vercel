@@ -111,6 +111,21 @@ export const RIVAL_FLAT          = 5;    // −5 € fixos
 export const PROMO_2025_CODE = "EQUIPS2025";
 export const PROMO_2025_PCT  = 0.10; // 10 % — NO acumulable amb Early Bird (s'aplica el més gran)
 
+// Codis FLASH — distribuïts manualment per Ana per WhatsApp (avui 31/05/2026)
+export const FLASH_CODES: Record<string, number> = {
+  FLASH50:  0.50,  // 1r equip a escriure
+  FLASH30A: 0.30,  // 2n equip
+  FLASH30B: 0.30,  // 3r equip
+  FLASH10:  0.10,  // 4t–10è equips
+};
+
+/** Percentatge de descompte per a qualsevol codi promo vàlid (EQUIPS2025 o FLASH*). Retorna 0 si invàlid. */
+export function getPromoPct(code: string): number {
+  const upper = code.trim().toUpperCase();
+  if (upper === PROMO_2025_CODE) return PROMO_2025_PCT;
+  return FLASH_CODES[upper] ?? 0;
+}
+
 export function isEarlyBirdActive(): boolean {
   return new Date() < EARLY_BIRD_DEADLINE;
 }
@@ -166,21 +181,23 @@ export const PACKAGE_ALLOWED_CATEGORIES: Record<PackageKey, string[]> = {
 
 /**
  * Calcula tots els descomptes actius sobre `basePrice`.
- * Els tres descomptes s'apliquen sobre el preu base (no en cascada)
- * per simplicitat i transparència.
+ * Els descomptes s'apliquen sobre el preu base (no en cascada).
+ * `promoPct` accepta qualsevol codi promo (EQUIPS2025, FLASH*, etc.) — s'acumula el màxim vs Early Bird.
  */
 export function calcDiscount(
   basePrice: number,
-  opts: { earlyBird?: boolean; social?: boolean; rivalValid?: boolean; promoValid?: boolean },
+  opts: { earlyBird?: boolean; social?: boolean; rivalValid?: boolean; promoValid?: boolean; promoPct?: number },
 ): DiscountResult {
   const earlyBirdFull = opts.earlyBird
     ? Math.round(basePrice * EARLY_BIRD_PCT * 100) / 100
     : 0;
-  const promoFull = opts.promoValid
-    ? Math.round(basePrice * PROMO_2025_PCT * 100) / 100
+  // promoPct té prioritat sobre promoValid (que usava PROMO_2025_PCT fix)
+  const effectivePct = opts.promoPct !== undefined ? opts.promoPct : (opts.promoValid ? PROMO_2025_PCT : 0);
+  const promoFull = effectivePct > 0
+    ? Math.round(basePrice * effectivePct * 100) / 100
     : 0;
 
-  // EQUIP2025 i Early Bird NO s'acumulen — s'aplica el més gran dels dos
+  // Promo i Early Bird NO s'acumulen — s'aplica el més gran dels dos
   const earlyBirdAmt = earlyBirdFull >= promoFull ? earlyBirdFull : 0;
   const promoAmt     = promoFull > earlyBirdFull   ? promoFull     : 0;
 
