@@ -2,19 +2,34 @@
 
 import SlideActionBar from "./SlideActionBar";
 
+// Color semàfor per places restants
+// 🔴 1-2 places → vermell   🟠 3-4 → taronja   🟡 5-6 → groc   🟢 7+ → verd   ⚫ TANCADA → gris
+function semaforColor(remaining: number, closed: boolean): string {
+  if (closed || remaining === 0) return "#6B7280"; // gris — TANCADA
+  if (remaining <= 2) return "#EF4444";            // vermell
+  if (remaining <= 4) return "#F97316";            // taronja
+  if (remaining <= 6) return "#EAB308";            // groc
+  return "#22C55E";                                // verd
+}
+
 // Actualitzat: 1 juny 2026 · font: sheet inscripcions
-const CATEGORIES = [
-  { id: "escola",      name: "Escoleta",       emoji: "🌱", color: "#22C55E", remaining: 1,  closed: false },
-  { id: "premini",     name: "Premini",        emoji: "✏️", color: "#06B6D4", remaining: 5,  closed: false },
-  { id: "mini",        name: "Mini",           emoji: "⭐", color: "#818CF8", remaining: 2,  closed: false },
-  { id: "preinfantil", name: "Preinfantil",    emoji: "🚀", color: "#A855F7", remaining: 3,  closed: false },
-  { id: "infantil",    name: "Infantil",       emoji: "🔥", color: "#D946EF", remaining: 3,  closed: false },
-  { id: "cadet",       name: "Cadet",          emoji: "⚡", color: "#EC4899", remaining: 2,  closed: false },
-  { id: "junior",      name: "Júnior",         emoji: "🏀", color: "#FB7185", remaining: 5,  closed: false },
-  { id: "seniors",     name: "Sèniors Pro",    emoji: "🏆", color: "#EF4444", remaining: 3,  closed: false },
-  { id: "veterans",    name: "Sènior Amateur", emoji: "💪", color: "#F97316", remaining: 3,  closed: false },
-  { id: "magics",      name: "Màgics",         emoji: "✨", color: "#6B7280", remaining: 0,  closed: true  },
+const CATEGORIES_RAW = [
+  { id: "escola",      name: "Escoleta",       emoji: "🌱", remaining: 1,  closed: false },
+  { id: "premini",     name: "Premini",        emoji: "✏️", remaining: 5,  closed: false },
+  { id: "mini",        name: "Mini",           emoji: "⭐", remaining: 2,  closed: false },
+  { id: "preinfantil", name: "Preinfantil",    emoji: "🚀", remaining: 3,  closed: false },
+  { id: "infantil",    name: "Infantil",       emoji: "🔥", remaining: 3,  closed: false },
+  { id: "cadet",       name: "Cadet",          emoji: "⚡", remaining: 2,  closed: false },
+  { id: "junior",      name: "Júnior",         emoji: "🏀", remaining: 5,  closed: false },
+  { id: "seniors",     name: "Sèniors Pro",    emoji: "🏆", remaining: 3,  closed: false },
+  { id: "veterans",    name: "Sènior Amateur", emoji: "💪", remaining: 3,  closed: false },
+  { id: "magics",      name: "Màgics",         emoji: "✨", remaining: 0,  closed: true  },
 ];
+
+const CATEGORIES = CATEGORIES_RAW.map((c) => ({
+  ...c,
+  color: semaforColor(c.remaining, c.closed),
+}));
 
 const GRID_ROWS = [
   [CATEGORIES[0], CATEGORIES[1]],
