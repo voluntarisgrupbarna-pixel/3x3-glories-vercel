@@ -200,20 +200,12 @@ export default async function InscripcionPage({ searchParams }: InscripcionPageP
             </div>
           </div>
 
-          {/* Trust bar */}
-          <div style={{
-            display: "flex", gap: "12px", flexWrap: "wrap", justifyContent: "center",
-            padding: "10px 16px", background: "rgba(34,197,94,0.08)",
-            borderBottom: "1px solid rgba(34,197,94,0.2)", fontSize: "12px",
-            color: "#86efac", fontWeight: 600, letterSpacing: "0.02em"
-          }}>
-            <span>🔒 Connexió segura HTTPS</span>
-            <span>·</span>
-            <span>🛡️ Dades protegides · RGPD</span>
-            <span>·</span>
-            <span>✅ Pagament per transferència verificada</span>
-            <span>·</span>
-            <span>⚡ Confirmació en &lt;24h per WhatsApp</span>
+          {/* Trust bar — responsive, sense separadors orfes */}
+          <div className="insc-trust-bar">
+            <span>🔒 HTTPS segura</span>
+            <span>🛡️ Dades protegides</span>
+            <span>✅ Transferència verificada</span>
+            <span>⚡ Confirmació &lt;24h WA</span>
           </div>
 
           <InscripcioWizard initialRefCode={rivalCode} />

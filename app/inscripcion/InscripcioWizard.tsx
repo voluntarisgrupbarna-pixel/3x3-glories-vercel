@@ -825,13 +825,11 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
       {/* Status places per categoria (29/05/2026) */}
       <CategoryStatusGrid />
 
-      {/* Urgency speed claim */}
-      <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", margin: "4px 0 10px", fontSize: 13, color: "#86efac", fontWeight: 700 }}>
-        <span>⚡ Inscripció en 3 min</span>
-        <span style={{ color: "#555" }}>·</span>
-        <span>💳 Paga quan vulguis (48h)</span>
-        <span style={{ color: "#555" }}>·</span>
-        <span>✅ Confirmació per WhatsApp</span>
+      {/* Urgency speed claim — responsive, sense separadors orfes */}
+      <div className="wizard-speed-claim">
+        <span>⚡ 3 min</span>
+        <span>💳 Paga en 48h</span>
+        <span>✅ Confirma per WA</span>
       </div>
 
       <Stepper currentStep={state.step} isIndividual={state.packageKey === "individual"} waFlow={waFlow} />
