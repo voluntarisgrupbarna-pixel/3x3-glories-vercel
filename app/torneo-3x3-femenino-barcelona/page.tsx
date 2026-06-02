@@ -112,14 +112,14 @@ export default function FemeniPage() {
             <ul style={{ margin: 0, padding: "0 0 0 1.1rem", listStyle: "disc" }}>
               <li>Sènior Femení Pro: 09:00–18:00 (Nau del Clot + Finals WG)</li>
               <li>Sènior Amateur Femení: 10:00–14:00 (Rambleta del Clot)</li>
-              <li>Màgics Inclusiva: 11:00–13:00 (Rambleta del Clot)</li>
             </ul>
           </div>
           <div style={{ background: "rgba(96,165,250,0.08)", border: "1px solid rgba(96,165,250,0.2)", borderRadius: "12px", padding: "1.25rem", margin: "1rem 0" }}>
             <p style={{ fontWeight: 700, color: "#60a5fa", marginBottom: "0.5rem" }}>
-              🔵 Diumenge 7 de juny — Categories formatives mixtes
+              🔵 Diumenge 7 de juny — Màgics i categories formatives mixtes
             </p>
             <ul style={{ margin: 0, padding: "0 0 0 1.1rem", listStyle: "disc" }}>
+              <li>Màgics Inclusiva: 11:00–13:00 (Rambleta del Clot)</li>
               <li>Premini · Mini · Infantil · Cadet · Júnior · Sub-23</li>
               <li>09:00–18:00 (La Nau del Clot)</li>
             </ul>

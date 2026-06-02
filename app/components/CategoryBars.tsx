@@ -3,13 +3,13 @@
 import SlideActionBar from "./SlideActionBar";
 
 const CATEGORIES = [
-  { id: "escola",      name: "Escola",      emoji: "🌱", color: "#22C55E", pct: 70,  age: "fins 7 anys", full: false },
+  { id: "escola",      name: "Escoleta",    emoji: "🌱", color: "#22C55E", pct: 70,  age: "nascuts 2018–2019", full: false },
   { id: "premini",     name: "Premini",     emoji: "✏️", color: "#06B6D4", pct: 72,  age: "8-9 anys",    full: false },
   { id: "mini",        name: "Mini",        emoji: "⭐", color: "#818CF8", pct: 85,  age: "10-11 anys",  full: false },
   { id: "preinfantil", name: "Preinfantil", emoji: "🚀", color: "#A855F7", pct: 75,  age: "12 anys",     full: false },
   { id: "infantil",    name: "Infantil",    emoji: "🔥", color: "#D946EF", pct: 73,  age: "13-14 anys",  full: false },
   { id: "cadet",       name: "Cadet",       emoji: "⚡", color: "#EC4899", pct: 70,  age: "15-16 anys",  full: false },
-  { id: "junior",      name: "Junior",      emoji: "🏀", color: "#FB7185", pct: 80,  age: "17-18 anys",  full: false },
+  { id: "junior",      name: "Júnior",      emoji: "🏀", color: "#FB7185", pct: 80,  age: "17-18 anys",  full: false },
   { id: "seniors",     name: "Sèniors",     emoji: "🏆", color: "#EF4444", pct: 90,  age: "18+ FIBA",    full: false },
   { id: "veterans",    name: "Sènior Amateur",    emoji: "💪", color: "#F97316", pct: 68,  age: "+35 anys",    full: false },
   { id: "magics",      name: "Màgics",      emoji: "✨", color: "#FBBF24", pct: 67,  age: "Inclusiva",   full: false },

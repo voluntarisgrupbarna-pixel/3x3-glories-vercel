@@ -13,7 +13,7 @@ export const WA_PHONE = "34698425153";
 const REGISTER_TEMPLATE = `Hola Ana! 👋 Vull inscriure el meu equip al 3×3 Westfield Glòries 2026 (6-7 juny).
 
 🏀 NOM EQUIP:
-📂 CATEGORIA: (Veteranos / Sènior Masc / Sènior Fem / Cadet Masc / Cadet Fem / Mini / Magics)
+📂 CATEGORIA: (Sènior Amateur / Sènior Masc / Sènior Fem / Cadet Masc / Cadet Fem / Mini / Màgics)
 👤 CAPITÀ/ANA:
    Nom i cognoms:
    Telèfon:
@@ -29,7 +29,7 @@ const REGISTER_TEMPLATE = `Hola Ana! 👋 Vull inscriure el meu equip al 3×3 We
 💳 PAGAMENT:
 He fet transferència de ___ € a:
 IBAN: ES25 0182 1797 3002 0387 8558
-Titular: CB GRUP BARNA
+Titular: GRUP BARNA
 Concepte: [NOM EQUIP] 3X3`;
 
 /** URL wa.me per obrir WhatsApp amb la plantilla d'inscripció pre-omplerta */

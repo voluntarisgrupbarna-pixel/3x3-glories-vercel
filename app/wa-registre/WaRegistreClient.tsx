@@ -7,7 +7,7 @@ import { isEarlyBirdActive, EARLY_BIRD_PCT } from "../inscripcion/wizardData";
 
 /* ── Dades de les categories ──────────────────────────────────────────── */
 const CATEGORIES = [
-  { label: "Escoleta (nascuts 2018–2019)", price: 75 },
+  { label: "Escoleta (nascuts 2018–2020)", price: 75 },
   { label: "Premini (nascuts 2016–2017)", price: 75 },
   { label: "Mini (nascuts 2014–2015)", price: 75 },
   { label: "Infantil (nascuts 2012–2013)", price: 75 },
@@ -84,7 +84,7 @@ function buildWaMessage(f: Form): string {
       : `💳 PAGAMENT (${catPrice} €):`,
     `He fet la transferència a:`,
     "IBAN: ES25 0182 1797 3002 0387 8558",
-    "Titular: CB GRUP BARNA",
+    "Titular: GRUP BARNA",
     `Concepte: ${f.teamName.toUpperCase().replace(/\s+/g, "-")} 3X3`,
   ]
     .filter((l) => l !== null)

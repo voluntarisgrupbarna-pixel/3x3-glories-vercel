@@ -81,7 +81,7 @@ export default function RambletaDelClotPage() {
           viure el 3×3 en el seu format més autèntic.
         </p>
         <p>
-          La pista exterior acull partits de les categories formatives i és punt de pas de la ruta que
+          La pista exterior acull els partits de <strong>Sènior Amateur</strong> i <strong>Màgics</strong>, i és punt de pas de la ruta que
           connecta les tres seus del torneig.
         </p>
 

@@ -65,8 +65,8 @@ export default function NauDelClotPage() {
         <p>
           <strong>La Nau del Clot</strong> és el pavelló cobert oficial del torneig{" "}
           <strong>3×3 Westfield Glòries 2026</strong>. Ubicat al Carrer de la Llacuna 172 de Barcelona, és
-          la seu on s'hi juguen les categories formatives (Premini, Mini, Infantil, Cadet, Júnior) i les
-          semifinals de les categories Sènior.
+          la seu on s'hi juguen les categories formatives (Premini, Mini, Infantil, Cadet, Júnior, Sub-23) i les
+          semifinals de les categories Sènior Pro (Masculí i Femení).
         </p>
 
         <div className="page-address-block" style={{ marginBottom: 32 }}>
@@ -85,8 +85,8 @@ export default function NauDelClotPage() {
           </div>
           <div className="page-card">
             <span className="page-card-label">Categories adultes</span>
-            <strong>Semifinals Sènior</strong>
-            <p>Sènior Amateur Masculí · Sènior Amateur Femení</p>
+            <strong>Semifinals Sènior Pro</strong>
+            <p>Sènior Masculí · Sènior Femení (semifinals)</p>
           </div>
         </div>
 

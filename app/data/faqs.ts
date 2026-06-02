@@ -6,7 +6,7 @@ export type Faq = {
 export const faqs: Faq[] = [
   {
     q: "Què és el 3×3 Westfield Glòries?",
-    a: "És el torneig oficial de bàsquet 3×3 amb punts FIBA del barri del Clot-Glòries de Barcelona, organitzat per CB Grup Barna, Time Chamber i Eix Clot. La 3a edició es disputa el 6 i 7 de juny de 2026 amb 2.000 € de premi en metàl·lic per a les categories Sènior Masculí i Sènior Femení (1.000 € cadascuna), i trofeus i medalles per a la resta de categories.",
+    a: "És el torneig oficial de bàsquet 3×3 amb punts FIBA del barri del Clot-Glòries de Barcelona, organitzat per CB Grup Barna, Time Chamber i Eix Clot. La 4a edició es disputa el 6 i 7 de juny de 2026 amb 2.000 € de premi en metàl·lic per a les categories Sènior Masculí i Sènior Femení (1.000 € cadascuna), i trofeus i medalles per a la resta de categories.",
   },
   {
     q: "Quan i on es juga el torneig 2026?",
@@ -18,7 +18,7 @@ export const faqs: Faq[] = [
   },
   {
     q: "Quant costa la inscripció per equip?",
-    a: "De 75 € a 90 €. 75 € per equip de 4 jugadors (categories formatives i Sub-23), 85 € per equip de 4 jugadors Sèniors/Sènior Amateur, 90 € per equip de 5 jugadors en qualsevol categoria. Les samarretes addicionals (acompanyant o recanvi) costen 25 €/u. Hi ha descomptes acumulables: Early Bird −10 % (actiu fins el 21 de maig), Social −5 % (compartint a xarxes) i Pack Rival −5 € (codi de coneixents).",
+    a: "De 75 € a 90 €. 75 € per equip de 4 jugadors (categories formatives i Sub-23), 85 € per equip de 4 jugadors Sèniors, 75 € per Sènior Amateur, 90 € per equip de 5 jugadors en qualsevol categoria. Les samarretes addicionals (acompanyant o recanvi) costen 25 €/u. Hi ha descomptes acumulables: Social −5 % (compartint a xarxes) i Pack Rival −5 € (codi de coneixents).",
   },
   {
     q: "Quantes categories hi ha?",

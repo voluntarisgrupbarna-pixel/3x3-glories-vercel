@@ -72,7 +72,7 @@ export default function TorneoESPage() {
           />
           <div className="insc-hero-overlay" />
           <div className="insc-hero-body">
-            <span className="insc-hero-kicker">3ª edición · 6-7 Junio 2026 · Clot-Glòries, Barcelona</span>
+            <span className="insc-hero-kicker">4ª edición · 6-7 Junio 2026 · Clot-Glòries, Barcelona</span>
             <h1 className="insc-hero-title">Torneo 3x3 Barcelona 2026</h1>
             <p className="insc-hero-sub">
               El torneo de baloncesto 3x3 FIBA de referencia en Barcelona — 10 categorías, 3 sedes,
@@ -109,7 +109,7 @@ export default function TorneoESPage() {
               { v: "180+", l: "Equipos en ediciones anteriores" },
               { v: "800+", l: "Jugadores y jugadoras" },
               { v: "10", l: "Categorías" },
-              { v: "3ª", l: "Edición consecutiva" },
+              { v: "4ª", l: "Edición consecutiva" },
             ].map((s) => (
               <div
                 key={s.l}
@@ -140,8 +140,7 @@ export default function TorneoESPage() {
               <ul style={{ margin: 0, padding: "0 0 0 1.1rem", listStyle: "disc" }}>
                 <li style={{ marginBottom: "0.4rem" }}>Sénior Masculino Pro · 09:00–18:00 <span style={{ color: "#ef4444", fontSize: "0.75rem" }}>FIBA</span></li>
                 <li style={{ marginBottom: "0.4rem" }}>Sénior Femenino Pro · 09:00–18:00 <span style={{ color: "#ef4444", fontSize: "0.75rem" }}>FIBA</span></li>
-                <li style={{ marginBottom: "0.4rem" }}>Sènior Amateur M/F (+35) · 10:00–14:00</li>
-                <li>Màgics Inclusiva · 11:00–13:00</li>
+                <li>Sènior Amateur M/F (+35) · 10:00–14:00</li>
               </ul>
             </div>
             <div style={{ background: "rgba(96,165,250,0.08)", border: "1px solid rgba(96,165,250,0.25)", borderRadius: "12px", padding: "1.5rem" }}>
@@ -149,6 +148,7 @@ export default function TorneoESPage() {
                 🔵 Domingo 7 de junio
               </div>
               <ul style={{ margin: 0, padding: "0 0 0 1.1rem", listStyle: "disc" }}>
+                <li style={{ marginBottom: "0.4rem" }}>Màgics Inclusiva · 11:00–13:00</li>
                 <li style={{ marginBottom: "0.4rem" }}>Premini · Benjamín · Alevín · 09:00–12:00</li>
                 <li style={{ marginBottom: "0.4rem" }}>U12 Preinfantil · 09:00–12:00</li>
                 <li style={{ marginBottom: "0.4rem" }}>U14 Infantil · 10:00–14:00</li>

@@ -203,7 +203,7 @@ export default function QueEsBasquet3x3Page() {
                   </thead>
                   <tbody>
                     {[
-                      ["Escola", "8-10 anys", "75 €"],
+                      ["Escoleta", "nascuts 2018–2019", "75 €"],
                       ["Premini", "10-12 anys", "75 €"],
                       ["Mini", "11-12 anys", "75 €"],
                       ["Preinfantil", "12-14 anys", "75 €"],
@@ -224,7 +224,7 @@ export default function QueEsBasquet3x3Page() {
                 </table>
               </div>
               <p style={{ color: "#888", fontSize: 13, marginTop: 12 }}>
-                * Les categories formatives (Escola, Premini, Mini, Preinfantil, Infantil, Cadet, Júnior) inscriuen a 75€.
+                * Les categories formatives (Escoleta, Premini, Mini, Preinfantil, Infantil, Cadet, Júnior) inscriuen a 75€.
                 La categoria Sènior té early bird a 85€ i preu regular a 90€.
               </p>
             </section>
@@ -235,7 +235,7 @@ export default function QueEsBasquet3x3Page() {
               <p>
                 El <strong>Torneig 3×3 Westfield Glòries</strong> és la cita de bàsquet urbà
                 de referència a Barcelona. Organitzat per CB Grup Barna, Time Chamber i l&apos;Eix
-                Clot, arriba a la seva 3a edició el <strong>6 i 7 de juny de 2026</strong> amb
+                Clot, arriba a la seva 4a edició el <strong>6 i 7 de juny de 2026</strong> amb
                 més de 10 categories i premi en metàl·lic per a la categoria Sènior.
               </p>
               <p>

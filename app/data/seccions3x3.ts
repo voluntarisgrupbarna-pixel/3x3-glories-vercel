@@ -1,9 +1,9 @@
 export const CATEGORIES = [
   { name: "SÈNIORS",              gender: "♂ ♀", desc: "Premi en Metàl·lic 1.000€ · Punts Rànquing FIBA",        badge: "FIBA OFFICIAL", badgeColor: "#ef4444", price: "90€ (5 jug.)", day: 6, dayColor: "#f97316" },
-  { name: "SÈNIOR AMATEUR",             gender: "♂ ♀", desc: "Trofeus i medalles · Esport intergeneracional +35", badge: "+35 ANYS",     badgeColor: "#06b6d4", price: "85€ (4 jug.)", day: 6, dayColor: "#f97316" },
+  { name: "SÈNIOR AMATEUR",             gender: "♂ ♀", desc: "Trofeus i medalles · Esport intergeneracional +35", badge: "+35 ANYS",     badgeColor: "#06b6d4", price: "75€ (4 jug.)", day: 6, dayColor: "#f97316" },
   { name: "ESCOLETA",                   gender: "♂ ♀", desc: "Els més petits · Iniciació al bàsquet 3×3",          badge: "U8",           badgeColor: "#22c55e", price: "75€ (4 jug.)", day: 6, dayColor: "#f97316" },
   { name: "MÀGICS · INCLUSIVA",   gender: "♂ ♀", desc: "Categoria inclusiva Barna Màgics · Novetat 2026.", badge: "INCLUSIVA",    badgeColor: "#ec4899", price: "75€ (4 jug.)", day: 7, dayColor: "#60a5fa" },
-  { name: "U18 JUNIOR",           gender: "♂ ♀", desc: "Categoria juvenil d'alt nivell",                   badge: "JUVENIL",      badgeColor: "#3b82f6", price: "75€ (4 jug.)", day: 7, dayColor: "#60a5fa" },
+  { name: "U18 JÚNIOR",           gender: "♂ ♀", desc: "Categoria juvenil d'alt nivell",                   badge: "JUVENIL",      badgeColor: "#3b82f6", price: "75€ (4 jug.)", day: 7, dayColor: "#60a5fa" },
   { name: "U16 CADET",            gender: "♂",   desc: "Competició formativa d'elit",                      badge: "FORMACIÓ",     badgeColor: "#10b981", price: "75€ (4 jug.)", day: 7, dayColor: "#60a5fa" },
   { name: "U14 INFANTIL",         gender: "♂",   desc: "Primer pas cap a la competició",                   badge: "FORMACIÓ",     badgeColor: "#8b5cf6", price: "75€ (4 jug.)", day: 7, dayColor: "#60a5fa" },
   { name: "U12 PREINFANTIL",      gender: "♂",   desc: "Iniciació a la competició organitzada",            badge: "FORMACIÓ",     badgeColor: "#f59e0b", price: "75€ (4 jug.)", day: 7, dayColor: "#60a5fa" },
@@ -39,7 +39,7 @@ export const VENUES = [
     photo: "/seus/nau-del-clot.jpg",
     slug: "nau-del-clot",
     desc: "Pavelló cobert amb pista de parquet oficial. Seu de les categories formatives i semifinals Sènior.",
-    categories: ["Premini · Benjamí · Aleví", "U12 Preinfantil", "U14 Infantil", "U16 Cadet", "U18 Júnior", "Semifinals Sènior M/F"],
+    categories: ["Escoleta", "Premini · Benjamí · Aleví", "U12 Preinfantil", "U14 Infantil", "U16 Cadet", "U18 Júnior", "Semifinals Sènior M/F"],
     transport: [
       { icon: "🚇", label: "Metro", value: "L1 Clot · L2 Bac de Roda" },
       { icon: "🚌", label: "Bus", value: "Línia 7 · 192" },
@@ -101,6 +101,7 @@ export const PROGRAM = [
       { nom: "Sènior Masculí Pro", fiba: true, hora: "09:00–18:00" },
       { nom: "Sènior Femení Pro",  fiba: true, hora: "09:00–18:00" },
       { nom: "Sènior Amateur M/F",       fiba: false, hora: "10:00–14:00" },
+      { nom: "Escoleta",                 fiba: false, hora: "10:00–13:00" },
     ],
   },
   {
