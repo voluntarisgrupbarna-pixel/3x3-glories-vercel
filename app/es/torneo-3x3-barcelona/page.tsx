@@ -72,7 +72,7 @@ export default function TorneoESPage() {
           />
           <div className="insc-hero-overlay" />
           <div className="insc-hero-body">
-            <span className="insc-hero-kicker">4ª edición · 6-7 Junio 2026 · Clot-Glòries, Barcelona</span>
+            <span className="insc-hero-kicker">3a edición · 6-7 Junio 2026 · Clot-Glòries, Barcelona</span>
             <h1 className="insc-hero-title">Torneo 3x3 Barcelona 2026</h1>
             <p className="insc-hero-sub">
               El torneo de baloncesto 3x3 FIBA de referencia en Barcelona — 10 categorías, 3 sedes,

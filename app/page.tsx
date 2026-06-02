@@ -9,6 +9,7 @@ import UbicacionsSection from "./components/UbicacionsSection";
 import PremisSection from "./components/PremisSection";
 import CategoriesSection from "./components/CategoriesSection";
 import ObertATothomSection from "./components/ObertATothomSection";
+import PrideBanner from "./components/PrideBanner";
 import InstagramReels from "./components/InstagramReels";
 import NotifyMeBar from "./components/NotifyMeBar";
 import FaqSection from "./components/FaqSection";
@@ -47,6 +48,9 @@ export default function Home() {
 
       {/* === Categories — dia 6 + dia 7 === */}
       <CategoriesSection />
+
+      {/* === Mes de l'Orgull LGTBI+ — banner prominent juny === */}
+      <PrideBanner />
 
       {/* === Un 3x3 obert a tothom — Màgics + LGTBI+ === */}
       <ObertATothomSection />
