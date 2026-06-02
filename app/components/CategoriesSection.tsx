@@ -14,12 +14,12 @@ export default function CategoriesSection() {
         <div className="day-grid">
           <div className="day-card day-card--saturday">
             <p className="day-label">Dissabte 6 de Juny</p>
-            <p className="day-cats">Sèniors · Sènior Amateur · Màgics · Escoleta</p>
+            <p className="day-cats">Sèniors · Sènior Amateur · Escoleta</p>
             <p className="day-note">Masculí i Femení · Premi en Metàl·lic + Punts FIBA</p>
           </div>
           <div className="day-card day-card--sunday">
             <p className="day-label">Diumenge 7 de Juny</p>
-            <p className="day-cats">Júnior · Cadet · Infantil · Preinfantil · Mini · Premini</p>
+            <p className="day-cats">Màgics · Júnior · Cadet · Infantil · Preinfantil · Mini · Premini</p>
             <p className="day-note">Categories formatives · Trofeus i medalles</p>
           </div>
         </div>

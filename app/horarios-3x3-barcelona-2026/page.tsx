@@ -117,8 +117,8 @@ export default function HorarisPage() {
               seus i franges horàries.
             </p>
             <div className="insc-hero-chips">
-              <span>📅 Dis 6 Juny · Sèniors + Sènior Amateur + Màgics</span>
-              <span>📅 Diu 7 Juny · Formatives</span>
+              <span>📅 Dis 6 Juny · Sèniors + Sènior Amateur + Escoleta</span>
+              <span>📅 Diu 7 Juny · Màgics + Formatives</span>
             </div>
           </div>
         </div>
