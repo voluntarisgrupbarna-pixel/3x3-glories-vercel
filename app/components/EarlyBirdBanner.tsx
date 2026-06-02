@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
-// Banner d'urgència: tancament d'inscripcions 3 juny 2026 a les 24h
-const CLOSE_DATE = new Date("2026-06-03T23:59:59+02:00");
+// Banner d'urgència: tancament d'inscripcions ampliat fins 5 juny 2026 a les 24h
+const CLOSE_DATE = new Date("2026-06-05T23:59:59+02:00");
 
 function getCountdown(target: Date) {
   const diff = Math.max(0, target.getTime() - Date.now());
@@ -55,7 +55,7 @@ export default function EarlyBirdBanner() {
     >
       {/* Emoji + text compacte */}
       <span style={{ fontSize: "0.8rem", fontWeight: 800, color: "#111", whiteSpace: "nowrap", flexShrink: 0 }}>
-        🔥 TANQUEM 3 JUNY
+        🔥 INSCRIPCIONS AMPLIADES · FINS 5 JUNY
       </span>
 
       <span style={{ fontSize: "0.72rem", color: "#222", fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>

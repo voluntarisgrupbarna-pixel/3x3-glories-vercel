@@ -804,7 +804,7 @@ export default function InscripcioWizard({ initialRefCode = "", waFlow = false }
         fontWeight: 600,
         lineHeight: 1.5,
       }}>
-        ⏰ <strong>Tanquem quan s&apos;omplin les places. Data límit: 3 de juny a les 24h.</strong>
+        🎉 <strong>Inscripcions ampliades fins al divendres 5 de juny a les 24h.</strong>
         <br />
         <span style={{ fontWeight: 500, fontSize: 13 }}>
           Torneig: 6-7 juny 2026 · Clot-Glòries, Barcelona. Quan una categoria s&apos;ompli, queda tancada.

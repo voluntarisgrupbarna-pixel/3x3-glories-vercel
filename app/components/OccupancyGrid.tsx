@@ -45,7 +45,7 @@ export default function OccupancyGrid() {
       <div className="occupancy-inner">
         <div className="occupancy-header">
           <div>
-            <p className="occupancy-kicker">100 EQUIPS INSCRITS · DATA MÀX. 3 JUNY A LES 24H</p>
+            <p className="occupancy-kicker">100 EQUIPS INSCRITS · INSCRIPCIONS AMPLIADES · FINS 5 JUNY</p>
             <h2 className="occupancy-title">Estat actual de places per categoria</h2>
             <p className="occupancy-warning">⚠️ Quan s&apos;ompli, tanquem. No hi ha llista d&apos;espera.</p>
           </div>
