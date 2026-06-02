@@ -1837,6 +1837,52 @@ function kpis() {
   document.getElementById('k6').textContent = Math.round(rev)+'EUR';
   document.getElementById('k7').textContent = jugIndiv;
   document.getElementById('k8').textContent = '~'+(jugTeams+jugIndiv);
+
+  // Gràfic Barna vs Resta
+  var barna = teams.filter(function(d){ return d.club==='cbgb'; }).length;
+  var extern = teams.filter(function(d){ return d.club==='extern'; }).length;
+  var pendent = teams.filter(function(d){ return d.club!=='cbgb'&&d.club!=='extern'; }).length;
+  var total = teams.length || 1;
+  var pBarna = Math.round(barna/total*100);
+  var pExtern = Math.round(extern/total*100);
+  var pPend = 100-pBarna-pExtern;
+
+  // SVG donut
+  var r=54, cx=70, cy=70, stroke=22;
+  var circ=2*Math.PI*r;
+  function arc(pct,offset,color){
+    var dash=circ*pct/100; var gap=circ-dash;
+    return '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="'+color+'" stroke-width="'+stroke+'" stroke-dasharray="'+dash+' '+gap+'" stroke-dashoffset="-'+offset+'" style="transition:all .4s;"/>';
+  }
+  var off1=0; var off2=circ*pBarna/100; var off3=off2+circ*pExtern/100;
+  var svgEl='<svg width="140" height="140" viewBox="0 0 140 140" style="transform:rotate(-90deg);">'+
+    '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="var(--bg-sec)" stroke-width="'+stroke+'"/>'+
+    arc(pBarna,off1,'#c8102e')+arc(pExtern,off2,'#1e40af')+arc(pPend,off3,'#d97706')+'</svg>';
+
+  var chartHtml='<div id="barna-chart" style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;box-shadow:var(--sh);margin:8px 20px 0;">';
+  chartHtml+='<div style="position:relative;flex-shrink:0;">'+svgEl;
+  chartHtml+='<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;"><div style="font-size:18px;font-weight:800;">'+total+'</div><div style="font-size:9px;color:var(--text2);text-transform:uppercase;">equips</div></div></div>';
+  chartHtml+='<div style="flex:1;min-width:120px;">';
+  chartHtml+='<div style="font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Procedència</div>';
+  [
+    {label:'CB Grup Barna',v:barna,p:pBarna,c:'#c8102e',bg:'#fee2e2'},
+    {label:'Clubs externs',v:extern,p:pExtern,c:'#1e40af',bg:'#dbeafe'},
+    {label:'Pendent confirmar',v:pendent,p:pPend,c:'#d97706',bg:'#fef3c7'}
+  ].forEach(function(item){
+    chartHtml+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">';
+    chartHtml+='<span style="width:10px;height:10px;border-radius:50%;background:'+item.c+';flex-shrink:0;"></span>';
+    chartHtml+='<span style="font-size:12px;flex:1;">'+item.label+'</span>';
+    chartHtml+='<span style="font-size:12px;font-weight:700;color:'+item.c+';">'+item.v+'</span>';
+    chartHtml+='<span style="font-size:11px;color:var(--text2);background:'+item.bg+';padding:1px 6px;border-radius:8px;">'+item.p+'%</span>';
+    chartHtml+='</div>';
+  });
+  chartHtml+='</div></div>';
+  var existing=document.getElementById('barna-chart');
+  if(existing) existing.outerHTML=chartHtml;
+  else {
+    var kpiBar=document.querySelector('.kpis');
+    if(kpiBar) kpiBar.insertAdjacentHTML('afterend',chartHtml);
+  }
 }
 
 
