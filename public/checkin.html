@@ -98,14 +98,42 @@ function render() {
   const webhook = localStorage.getItem(WEBHOOK_KEY) || '';
   const fields = [
     {lbl:'🏆 Categoria', val: cat},
+    {lbl:'📅 Dia',       val: dia || data},
     {lbl:'👤 Capità',    val: cap},
     {lbl:'👥 Jugadors',  val: jug ? jug + ' jugadors' : ''},
     {lbl:'👕 Samarreta', val: mida},
     {lbl:'📍 Població',  val: pob},
-    {lbl:'📅 Inscrit',   val: data},
   ].filter(f => f.val);
 
   const isStaff = location.search.includes('staff=1');
+
+  // Llista de jugadors amb talles
+  const jugList = jugadors ? jugadors.split(',').map(s=>s.trim()).filter(Boolean) : [];
+  const tallesList = talles ? talles.split(',').map(s=>s.trim()) : [];
+  const jugHtml = jugList.length > 0 ? `
+    <div style="margin-top:14px;">
+      <div style="font-size:10px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">👥 Jugadors</div>
+      ${jugList.map((j,i) => `
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:13px;">
+          <span style="color:rgba(255,255,255,.85)">${i+1}. ${esc(j)}</span>
+          ${tallesList[i] ? `<span style="font-size:11px;font-weight:700;background:rgba(200,16,46,.25);color:#fca5a5;padding:2px 8px;border-radius:6px;">${esc(tallesList[i])}</span>` : ''}
+        </div>`).join('')}
+    </div>` : '';
+
+  // Estat de pagament
+  const pagatHtml = pagat === '1'
+    ? `<div style="background:rgba(34,197,94,.1);border:1.5px solid rgba(34,197,94,.4);border-radius:10px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
+         <span style="font-size:20px;">✅</span>
+         <div><div style="font-weight:800;color:#4ade80;font-size:12px;text-transform:uppercase;letter-spacing:.5px;">Pagament verificat</div>
+         <div style="color:rgba(255,255,255,.5);font-size:11px;">Import confirmat per CB Grup Barna</div></div>
+       </div>`
+    : pagat === '0'
+    ? `<div style="background:rgba(239,68,68,.08);border:1.5px solid rgba(239,68,68,.3);border-radius:10px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
+         <span style="font-size:20px;">❌</span>
+         <div><div style="font-weight:800;color:#f87171;font-size:12px;text-transform:uppercase;letter-spacing:.5px;">Pendent de pagament</div>
+         <div style="color:rgba(255,255,255,.5);font-size:11px;">Contacta amb Ana si creus que és un error</div></div>
+       </div>`
+    : '';
 
   el.innerHTML = `
     ${arrived
@@ -119,6 +147,7 @@ function render() {
            <p>Equip pendent de check-in. Verifica les dades i prem el botó verd.</p>
          </div>`
     }
+    ${pagatHtml}
     <div class="card">
       <div class="team-label">Equip</div>
       <div class="team-name">${esc(nom)}</div>
@@ -128,6 +157,7 @@ function render() {
         ${tel ? `<div class="field"><div class="field-lbl">📞 Telèfon</div><div class="field-val"><a href="tel:${esc(tel)}" style="color:#93c5fd">${esc(tel)}</a></div></div>` : ''}
         ${email ? `<div class="field"><div class="field-lbl">✉️ Email</div><div class="field-val" style="font-size:12px;word-break:break-all">${esc(email)}</div></div>` : ''}
       </div>
+      ${jugHtml}
     </div>
     ${!arrived
       ? `<button class="btn-arrived pendent" id="btn-checkin" onclick="marcarArribada()">
