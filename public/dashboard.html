@@ -2970,133 +2970,202 @@ function buildFitxaHtml_(d, qrSrc) {
   var jugadors = d.jugadors || [];
   var talles   = d.talles   || [];
   var isPagat  = d.status === 'confirmed';
-  var diaLbl   = d.dia === '6/6' ? 'Dissabte 6/6' : d.dia === '7/6' ? 'Diumenge 7/6' : (d.dia || '');
-  var genLbl   = d.gen === 'F' ? 'F' : 'M';
+  var diaLbl   = d.dia === '6/6' ? 'Dissabte 6 juny' : d.dia === '7/6' ? 'Diumenge 7 juny' : (d.dia || '');
+  var genLbl   = d.gen === 'F' ? '♀ Femeni' : '♂ Masculi';
+  var horari   = CAT_HORARI[d.cat] || {};
+  var catColor = horari.color || '#c8102e';
 
-  var jugsHtml = '';
+  // Llista jugadors
+  var jugsHtml = '<div class="jug-list"><div class="jug-hdr">Jugadors</div>';
   if (jugadors.length > 0) {
-    jugsHtml = '<div class="jug-list"><div class="jug-title">JUGADORS (' + jugadors.length + ')</div>';
     for (var i = 0; i < jugadors.length; i++) {
-      var nom = jugadors[i] || '---';
-      var talla = talles[i] || '';
-      jugsHtml += '<div class="jug-item"><span class="jug-name">' + escH_(nom) + '</span>' +
-        (talla ? '<span class="jug-talla">' + escH_(talla) + '</span>' : '<span class="jug-talla" style="color:#ccc">—</span>') +
+      var nom   = jugadors[i] || '—';
+      var talla = talles[i]   || '';
+      jugsHtml += '<div class="jug-item">' +
+        '<span class="jug-num">' + (i+1) + '</span>' +
+        '<span class="jug-name">' + escH_(nom) + '</span>' +
+        (talla ? '<span class="jug-talla">' + escH_(talla) + '</span>' : '<span class="jug-talla-no">—</span>') +
         '</div>';
     }
-    jugsHtml += '</div>';
   } else {
-    jugsHtml = '<div class="jug-list"><div class="jug-title">JUGADORS</div><div style="font-size:7pt;color:#aaa;padding:2mm 0;">Noms pendents de confirmar</div></div>';
+    jugsHtml += '<div class="jug-pend">Noms pendents de confirmar</div>';
   }
+  jugsHtml += '</div>';
 
   var qrHtml = qrSrc
-    ? '<div class="card-qr"><img src="' + qrSrc + '" alt="QR"/><div class="escaneja">Escanejar</div></div>'
-    : '<div class="card-qr" style="background:#f5f5f5;border-radius:2mm;width:28mm;height:28mm;display:flex;align-items:center;justify-content:center;font-size:7pt;color:#aaa;">No QR</div>';
+    ? '<div class="qr-wrap"><img src="' + qrSrc + '" class="qr-img" alt="QR Check-in"/><div class="qr-lbl">Escanejar</div></div>'
+    : '<div class="qr-wrap qr-empty">QR</div>';
+
+  var horariHtml = (horari.hora || horari.lloc)
+    ? '<div class="sched-row">' +
+        (horari.hora ? '<span class="sched-hora">' + escH_(horari.hora) + '</span>' : '') +
+        (horari.lloc ? '<span class="sched-dot">·</span><span class="sched-lloc">' + escH_(horari.lloc) + '</span>' : '') +
+      '</div>'
+    : '';
 
   return '<div class="card">' +
-    '<div class="card-top">' +
-      '<div class="card-info">' +
-        '<div><span class="cat-badge">' + escH_(d.cat) + ' ' + genLbl + '</span>' +
-        '<span class="dia-badge">' + escH_(diaLbl) + '</span></div>' +
+
+    // ─── HEADER: logos ───────────────────────────────────────────
+    '<div class="card-hdr">' +
+      '<img src="https://cbgrupbarna-3x3timechamber.com/cb-grup-barna-logo-192.png" class="logo-cb" alt="CB Grup Barna"/>' +
+      '<div class="hdr-txt"><div class="hdr-main">3×3 WESTFIELD GLÒRIES</div><div class="hdr-sub">2026 · CB Grup Barna · Eix del Clot</div></div>' +
+      '<div class="hdr-logos">' +
+        '<img src="https://cbgrupbarna-3x3timechamber.com/logos/westfield.svg" class="logo-wf" alt="Westfield"/>' +
+        '<img src="https://cbgrupbarna-3x3timechamber.com/logos/eix-clot-oficial.svg" class="logo-eix" alt="Eix del Clot"/>' +
+      '</div>' +
+    '</div>' +
+
+    // ─── MAIN: categoria + nom + QR ─────────────────────────────
+    '<div class="card-main">' +
+      '<div class="card-left">' +
+        '<div class="badge-row">' +
+          '<span class="badge-cat" style="background:' + catColor + '">' + escH_(d.cat) + '</span>' +
+          '<span class="badge-gen">' + genLbl + '</span>' +
+          '<span class="badge-dia">' + escH_(diaLbl) + '</span>' +
+        '</div>' +
         '<div class="team-name">' + escH_(d.team) + '</div>' +
       '</div>' +
       qrHtml +
     '</div>' +
-    '<div class="' + (isPagat ? 'pagat-ok' : 'pagat-no') + '">' +
-      (isPagat ? '&#10003; PAGAMENT VERIFICAT' : '&#9888; PENDENT DE PAGAMENT') +
+
+    // ─── HORARI ──────────────────────────────────────────────────
+    horariHtml +
+
+    // ─── PAGAMENT ────────────────────────────────────────────────
+    '<div class="' + (isPagat ? 'pag-ok' : 'pag-no') + '">' +
+      (isPagat ? '✓ PAGAMENT VERIFICAT' : '⚠ PENDENT DE PAGAMENT') +
     '</div>' +
-    '<hr class="sep"/>' +
-    '<div class="cap-row"><strong>Capit&agrave;:</strong> ' + escH_(d.cap || '—') +
-      (d.phone ? ' &nbsp;|&nbsp; <strong>Tel:</strong> ' + escH_(d.phone) : '') + '</div>' +
-    '<hr class="sep"/>' +
+
+    // ─── CAPITA ──────────────────────────────────────────────────
+    '<div class="cap-row">' +
+      '<span class="cap-lbl">Capità</span>' +
+      '<span class="cap-val">' + escH_(d.cap || '—') + '</span>' +
+      (d.phone ? '<span class="cap-sep">·</span><span class="cap-tel">' + escH_(d.phone) + '</span>' : '') +
+    '</div>' +
+
+    // ─── JUGADORS ────────────────────────────────────────────────
     jugsHtml +
-    '<div class="card-footer"><div class="team-id">ID: ' + escH_(d.id) + '</div></div>' +
+
+    // ─── FOOTER ──────────────────────────────────────────────────
+    '<div class="card-ftr"><span class="team-id">ID: ' + escH_(d.id) + '</span></div>' +
+
   '</div>';
 }
 
 function printFitxes() {
   var teams = DATA.filter(function(d) { return !d.individual; });
   teams.sort(function(a, b) {
-    if (a.dia !== b.dia) return (a.dia || '').localeCompare(b.dia || '');
+    if (a.dia !== b.dia) return (a.dia||'').localeCompare(b.dia||'');
     if (a.cat !== b.cat) return a.cat.localeCompare(b.cat);
     return a.team.localeCompare(b.team);
   });
 
-  showStatus('Generant fitxes (' + teams.length + ' equips)...', 'info');
+  showStatus('Generant fitxes PRO (' + teams.length + ' equips)...', 'info');
 
-  var useQR = (typeof QRCode !== 'undefined') && QRCode.toDataURL;
+  var useQR = typeof QRCode !== 'undefined' && QRCode.toDataURL;
   var promises = teams.map(function(d) {
     if (!useQR) return Promise.resolve('');
     return new Promise(function(resolve) {
-      QRCode.toDataURL(buildCheckinUrl_(d), {width:120, margin:1, errorCorrectionLevel:'M'}, function(err, url) {
+      QRCode.toDataURL(buildCheckinUrl_(d), {width:130, margin:1, errorCorrectionLevel:'M'}, function(err, url) {
         resolve(err ? '' : url);
       });
     });
   });
 
   Promise.all(promises).then(function(qrUrls) {
-    var cardsHtml = '';
-    var pageCards = '';
+    var cardsHtml = '', pageCards = '';
     teams.forEach(function(d, i) {
       pageCards += buildFitxaHtml_(d, qrUrls[i]);
       if ((i + 1) % 4 === 0 || i === teams.length - 1) {
-        // Omplir fins a 4 si és l'última pàgina
         var n = (i + 1) % 4;
-        if (n > 0) { for (var k = n; k < 4; k++) pageCards += '<div class="card card-empty"></div>'; }
+        if (n > 0 && i === teams.length - 1) {
+          for (var k = n; k < 4; k++) pageCards += '<div class="card card-empty"></div>';
+        }
         cardsHtml += '<div class="page">' + pageCards + '</div>';
         pageCards = '';
       }
     });
 
-    var printCSS = `
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#fff;color:#000}
-@page{size:A4 portrait;margin:6mm}
-@media print{.no-print{display:none!important}}
-.page{width:100%;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:4mm;height:277mm;page-break-after:always}
-.page:last-child{page-break-after:avoid}
-.card{border:1.5px solid #333;border-radius:2.5mm;padding:3.5mm;display:flex;flex-direction:column;gap:1.5mm;overflow:hidden}
-.card-empty{border:1px dashed #ddd;background:#fafafa}
-.card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:2mm}
-.card-info{flex:1;min-width:0}
-.card-qr{flex-shrink:0;width:30mm;text-align:center}
-.card-qr img{width:28mm;height:28mm;display:block}
-.team-name{font-size:13pt;font-weight:900;line-height:1.15;margin:1.5mm 0;word-break:break-word}
-.cat-badge{font-size:7pt;font-weight:700;text-transform:uppercase;letter-spacing:.5px;background:#c8102e;color:#fff;padding:.8mm 2mm;border-radius:1mm;display:inline-block}
-.dia-badge{font-size:7pt;font-weight:600;background:#1a1a1a;color:#fff;padding:.8mm 2mm;border-radius:1mm;display:inline-block;margin-left:1mm}
-.pagat-ok{background:#e8f5e9;border:1px solid #2d7d3a;border-radius:1.5mm;padding:1.5mm 3mm;font-size:8pt;font-weight:700;color:#2d7d3a}
-.pagat-no{background:#fee2e2;border:1px solid #b91c1c;border-radius:1.5mm;padding:1.5mm 3mm;font-size:8pt;font-weight:700;color:#b91c1c}
-.sep{border:none;border-top:1px solid #eee;margin:.5mm 0}
-.cap-row{font-size:7.5pt;color:#333}
-.cap-row strong{font-weight:700}
-.jug-list{flex:1;overflow:hidden}
-.jug-title{font-size:6.5pt;font-weight:700;text-transform:uppercase;color:#888;letter-spacing:.5px;margin-bottom:.8mm}
-.jug-item{display:flex;justify-content:space-between;align-items:center;font-size:7.5pt;padding:.5mm 0;border-bottom:1px dotted #eee}
-.jug-item:last-child{border-bottom:none}
-.jug-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.jug-talla{font-weight:700;color:#c8102e;flex-shrink:0;margin-left:1mm;background:#fff0f0;padding:0 1.5mm;border-radius:.5mm;font-size:7pt}
-.card-footer{display:flex;justify-content:flex-end;margin-top:auto;padding-top:1mm}
-.team-id{font-size:6pt;font-family:monospace;color:#bbb;background:#f8f8f8;padding:.5mm 1.5mm;border-radius:.5mm}
-.escaneja{font-size:5.5pt;color:#aaa;text-align:center;margin-top:.5mm}
-.top-bar{background:#c8102e;color:white;padding:10px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:4mm}
-.top-bar button{padding:6px 16px;background:white;color:#c8102e;border:none;border-radius:6px;font-weight:700;font-size:13px;cursor:pointer}
-.top-bar span{font-size:12px}
-`;
+    var css = [
+      '*{box-sizing:border-box;margin:0;padding:0}',
+      'body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#fff;color:#111;font-size:7pt}',
+      '@page{size:A4 portrait;margin:5mm}',
+      '@media print{.no-print{display:none!important}}',
+      // Grid
+      '.page{width:100%;height:277mm;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:3.5mm;page-break-after:always}',
+      '.page:last-child{page-break-after:avoid}',
+      '.card{border:1.5px solid #bbb;border-radius:2mm;display:flex;flex-direction:column;overflow:hidden}',
+      '.card-empty{border:1px dashed #e0e0e0;background:#fafafa}',
+      // Header
+      '.card-hdr{background:#c8102e;color:#fff;padding:2mm 2.5mm;display:flex;align-items:center;gap:1.5mm;min-height:11mm;flex-shrink:0}',
+      '.logo-cb{height:7mm;width:auto;flex-shrink:0;filter:brightness(0)invert(1)}',
+      '.hdr-txt{flex:1;text-align:center;line-height:1.3}',
+      '.hdr-main{font-size:7.5pt;font-weight:900;letter-spacing:.3px}',
+      '.hdr-sub{font-size:5pt;opacity:.85}',
+      '.hdr-logos{display:flex;align-items:center;gap:1.5mm;flex-shrink:0}',
+      '.logo-wf{height:4.5mm;width:auto;filter:brightness(0)invert(1)}',
+      '.logo-eix{height:4.5mm;width:auto;filter:brightness(0)invert(1)}',
+      // Main
+      '.card-main{display:flex;align-items:flex-start;gap:1.5mm;padding:2mm 2.5mm 1.5mm;flex-shrink:0}',
+      '.card-left{flex:1;min-width:0}',
+      '.badge-row{display:flex;flex-wrap:wrap;gap:.8mm;margin-bottom:1.5mm}',
+      '.badge-cat{color:#fff;font-size:6pt;font-weight:800;padding:.6mm 1.8mm;border-radius:.8mm;text-transform:uppercase;letter-spacing:.2px;white-space:nowrap}',
+      '.badge-gen{background:#333;color:#fff;font-size:6pt;font-weight:700;padding:.6mm 1.5mm;border-radius:.8mm;white-space:nowrap}',
+      '.badge-dia{background:#444;color:#fff;font-size:6pt;font-weight:700;padding:.6mm 1.5mm;border-radius:.8mm;white-space:nowrap}',
+      '.team-name{font-size:11.5pt;font-weight:900;line-height:1.1;word-break:break-word;color:#111}',
+      // QR
+      '.qr-wrap{flex-shrink:0;width:27mm;text-align:center}',
+      '.qr-img{width:25mm;height:25mm;display:block;border:1px solid #ddd;border-radius:1mm}',
+      '.qr-lbl{font-size:4.5pt;color:#999;margin-top:.5mm;text-align:center;letter-spacing:.3px}',
+      '.qr-empty{width:25mm;height:25mm;background:#f4f4f4;border-radius:1mm;display:flex;align-items:center;justify-content:center;font-size:7pt;color:#ccc;border:1px solid #ddd}',
+      // Schedule
+      '.sched-row{background:#f8f8f8;border-top:1px solid #eee;border-bottom:1px solid #eee;padding:1.5mm 2.5mm;display:flex;align-items:center;gap:1.5mm;flex-shrink:0}',
+      '.sched-hora{font-weight:800;color:#111;font-size:8pt}',
+      '.sched-dot{color:#bbb}',
+      '.sched-lloc{color:#444;font-weight:600;font-size:7.5pt}',
+      // Payment
+      '.pag-ok{background:#e8f5e9;border-top:1px solid #c8e6c9;border-bottom:1px solid #c8e6c9;padding:1.5mm 2.5mm;font-size:8pt;font-weight:900;color:#2d7d3a;flex-shrink:0}',
+      '.pag-no{background:#fff8e1;border-top:1px solid #ffe082;border-bottom:1px solid #ffe082;padding:1.5mm 2.5mm;font-size:8pt;font-weight:900;color:#b45309;flex-shrink:0}',
+      // Captain
+      '.cap-row{padding:1.5mm 2.5mm;border-bottom:1px solid #f0f0f0;display:flex;flex-wrap:wrap;gap:.8mm;align-items:center;flex-shrink:0}',
+      '.cap-lbl{font-weight:800;color:#777;font-size:6pt;text-transform:uppercase;letter-spacing:.3px}',
+      '.cap-val{font-weight:700;color:#111}',
+      '.cap-sep{color:#ccc}',
+      '.cap-tel{color:#c8102e;font-weight:700}',
+      // Players
+      '.jug-list{flex:1;overflow:hidden;padding:1.5mm 2.5mm}',
+      '.jug-hdr{font-size:5.5pt;font-weight:800;text-transform:uppercase;color:#999;letter-spacing:.5px;margin-bottom:1mm}',
+      '.jug-item{display:flex;align-items:center;font-size:7.5pt;padding:.4mm 0;border-bottom:1px solid #f4f4f4}',
+      '.jug-item:last-child{border-bottom:none}',
+      '.jug-num{width:3mm;color:#ccc;font-size:6pt;flex-shrink:0;font-weight:700}',
+      '.jug-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#111;font-weight:600}',
+      '.jug-talla{background:#c8102e;color:#fff;font-size:6.5pt;font-weight:900;padding:.3mm 1.5mm;border-radius:.8mm;flex-shrink:0;margin-left:1.5mm;min-width:4mm;text-align:center}',
+      '.jug-talla-no{color:#e0e0e0;font-size:6.5pt;flex-shrink:0;margin-left:1.5mm}',
+      '.jug-pend{font-size:6.5pt;color:#bbb;padding:1mm 0}',
+      // Footer
+      '.card-ftr{border-top:1px solid #eee;padding:1mm 2.5mm;display:flex;justify-content:flex-end;flex-shrink:0}',
+      '.team-id{font-size:5pt;font-family:monospace;color:#ccc}',
+      // Top bar (screen only)
+      '.top-bar{background:#c8102e;color:#fff;padding:10px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}',
+      '.top-bar button{padding:8px 20px;background:#fff;color:#c8102e;border:none;border-radius:8px;font-weight:900;font-size:14px;cursor:pointer;letter-spacing:.3px}',
+      '.top-info{font-size:12px;opacity:.9}'
+    ].join('\n');
 
+    var nPag = Math.ceil(teams.length / 4);
     var html = '<!DOCTYPE html><html lang="ca"><head><meta charset="UTF-8"/>' +
-      '<title>Fitxes 3×3 Westfield Glòries 2026</title>' +
-      '<style>' + printCSS + '</style></head><body>' +
+      '<title>Fitxes 3\xd73 Westfield Gl\xf2ries 2026</title>' +
+      '<style>' + css + '</style></head><body>' +
       '<div class="top-bar no-print">' +
-        '<button onclick="window.print()">&#128424; Imprimir</button>' +
-        '<span>3×3 Westfield Glòries 2026 &nbsp;&middot;&nbsp; ' + teams.length + ' equips &nbsp;&middot;&nbsp; Imprimir, retallar i posar a les bosses</span>' +
+        '<button onclick="window.print()">🖨 Imprimir PDF</button>' +
+        '<span class="top-info">3\xd73 Westfield Gl\xf2ries 2026 · ' + teams.length + ' equips · ' + nPag + ' p\xe0gines A4 · Imprimir → Retallar → Bossa samarreta</span>' +
       '</div>' +
-      cardsHtml +
-      '</body></html>';
+      cardsHtml + '</body></html>';
 
     var w = window.open('', '_blank');
     if (!w) { showStatus('Activa les finestres emergents al navegador', 'err'); return; }
     w.document.write(html);
     w.document.close();
-    showStatus('Fitxes generades · ' + teams.length + ' equips · ' + Math.ceil(teams.length / 4) + ' pàgines A4', 'ok');
+    showStatus('Fitxes PRO generades · ' + teams.length + ' equips · ' + nPag + ' p\xe0gines A4', 'ok');
   });
 }
 
