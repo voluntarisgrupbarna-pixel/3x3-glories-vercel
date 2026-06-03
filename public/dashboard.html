@@ -2669,7 +2669,60 @@ function saveApiUrl() {
   loadFromSheet();
 }
 
-// Recuperar URL guardada i autocarregar (o usar la URL hardcoded si ja n'hi ha)
+// ============================================================
+// FUNCIONS AUTO-REFRESH EN VIU
+// ============================================================
+function startAutoRefresh() {
+  if (_autoTimer) clearInterval(_autoTimer);
+  _autoTimer = setInterval(function() {
+    if (_autoEnabled && API_URL) loadFromSheet();
+  }, AUTO_MS);
+  if (_cdTimer) clearInterval(_cdTimer);
+  _cdTimer = setInterval(updateCountdown, 1000);
+}
+
+function updateCountdown() {
+  var el = document.getElementById('live-countdown');
+  if (!el || !_lastTs) return;
+  var s = Math.round((Date.now() - _lastTs) / 1000);
+  el.textContent = s < 60 ? 'fa ' + s + 's' : 'fa ' + Math.floor(s/60) + 'min';
+}
+
+function toggleAutoRefresh() {
+  _autoEnabled = !_autoEnabled;
+  var btn = document.getElementById('pause-btn');
+  var badge = document.getElementById('live-badge');
+  if (_autoEnabled) {
+    if (btn) { btn.innerHTML = '&#9646;&#9646;'; btn.title = 'Pausar auto-refresc'; }
+    if (badge) badge.style.opacity = '1';
+    loadFromSheet();
+  } else {
+    if (btn) { btn.innerHTML = '&#9654;'; btn.title = 'Reprendre auto-refresc'; }
+    if (badge) badge.style.opacity = '.35';
+  }
+}
+
+function showNewTeamsBanner(n) {
+  var old = document.getElementById('new-teams-banner');
+  if (old) old.remove();
+  var b = document.createElement('div');
+  b.id = 'new-teams-banner';
+  b.style.cssText = 'background:#15803d;color:white;padding:10px 20px;display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:700;border-bottom:2px solid #166534;z-index:50;position:relative;';
+  b.innerHTML = '🆕 ' + n + ' nou' + (n > 1 ? 's equips inscrits' : ' equip inscrit') + ' detectat' + (n > 1 ? 's' : '') + ' al Sheet!' +
+    '<button onclick="this.parentNode.remove()" style="background:rgba(255,255,255,.2);border:none;color:white;padding:3px 10px;border-radius:6px;cursor:pointer;font-size:12px;margin-left:12px;">✕</button>';
+  var tabs = document.querySelector('.tabs');
+  if (tabs) tabs.insertAdjacentElement('afterend', b);
+  setTimeout(function(){ if (b.parentNode) b.remove(); }, 9000);
+}
+
+// Refresh quan la pestanya torna a estar activa
+document.addEventListener('visibilitychange', function() {
+  if (!document.hidden && _autoEnabled && API_URL && (Date.now() - _lastTs) > 20000) {
+    loadFromSheet();
+  }
+});
+
+// Recuperar URL guardada i autocarregar
 (function() {
   try {
     var saved = localStorage.getItem('cbgb_api_url');
@@ -2678,9 +2731,8 @@ function saveApiUrl() {
       document.getElementById('api-url-input').value = saved;
       document.getElementById('api-url-saved').textContent = 'URL carregada des de memoria local.';
     }
-    // Si API_URL ja configurada (hardcoded o guardada), autocarregar
     if (API_URL) {
-      setTimeout(loadFromSheet, 600);
+      setTimeout(function() { loadFromSheet(); startAutoRefresh(); }, 600);
     } else {
       showStatus('Configura la URL del Apps Script a la pestanya Contactar', 'warn');
     }
