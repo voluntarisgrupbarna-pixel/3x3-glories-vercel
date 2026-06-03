@@ -3110,6 +3110,12 @@ function buildFitxaHtml_(d, qrSrc, teamIdx) {
       '<div class="banner-title">3×3 WESTFIELD GL\xd2RIES 2026 &nbsp;·&nbsp; <span style="opacity:.6;font-size:5pt">Barri del Clot · Barcelona</span></div>' +
     '</div>' +
 
+    // ══ MISSATGE BENVINGUDA PERSONALITZAT ═══════════════════════════
+    '<div class="frase-wrap">' +
+      '<span class="frase-equip">Gr&agrave;cies, ' + escH_(d.team) + '!</span>' +
+      '<span class="frase-txt">' + escH_(getFrase_(teamIdx)) + '</span>' +
+    '</div>' +
+
     // ══ FRANJA VERMELLA: badges + nom equip + QR ═══════════════════
     '<div class="red-section">' +
       '<div class="red-left">' +
@@ -3149,11 +3155,6 @@ function buildFitxaHtml_(d, qrSrc, teamIdx) {
 
     // ══ JUGADORS ════════════════════════════════════════════════════
     jugsHtml +
-
-    // ══ FRASE BENVINGUDA ════════════════════════════════════════════
-    '<div class="frase-wrap">' +
-      '<span class="frase-txt">' + escH_(getFrase_(teamIdx)) + '</span>' +
-    '</div>' +
 
     // ══ STRIP COL·LABORADORS ════════════════════════════════════════
     '<div class="collab-strip">' +
@@ -3288,9 +3289,10 @@ function printFitxes() {
       '.collab-lbl{font-size:5.5pt;color:#bbb;text-transform:uppercase;letter-spacing:.5px;font-weight:700;white-space:nowrap;margin-right:1mm}',
       '.collab-logo{height:4.5mm;width:auto;object-fit:contain;flex-shrink:0}',
       '.collab-wf{filter:brightness(0);opacity:.5}',
-      // Frase
-      '.frase-wrap{background:linear-gradient(90deg,#1a0a0e,#2d1218);border-top:1px solid #3d1822;padding:4px 10px;flex-shrink:0}',
-      '.frase-txt{font-size:6.5pt;color:rgba(255,255,255,.75);font-style:italic;line-height:1.35;display:block}',
+      // Frase benvinguda (just sota el banner, molt visible)
+      '.frase-wrap{background:linear-gradient(135deg,#2d1218,#1a0a0e);border-bottom:2px solid #c8932a;padding:5px 10px 6px;flex-shrink:0}',
+      '.frase-equip{display:block;font-size:8pt;font-weight:900;color:#c8932a;letter-spacing:.3px;margin-bottom:2px;text-transform:uppercase}',
+      '.frase-txt{font-size:6.5pt;color:rgba(255,255,255,.8);font-style:italic;line-height:1.4;display:block}',
 
       // ─ Barra pantalla ─
       '.top-bar{background:linear-gradient(90deg,#1a0a0e,#3d1822);color:#fff;padding:10px 20px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;position:sticky;top:0;z-index:99;border-bottom:3px solid #c8932a}',
