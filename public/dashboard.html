@@ -179,6 +179,7 @@ function pinClear(){pinBuf='';updateDots();}
   <div class="tab" onclick="sv('list')">Equips</div>
   <div class="tab" onclick="sv('talles')">🎽 Talles</div>
   <div class="tab" onclick="sv('clubs')">🏢 Clubs</div>
+  <div class="tab" onclick="sv('checkin')">📍 Check-in</div>
   <div class="tab" onclick="sv('contact')">Contactar</div>
   <div class="tab" onclick="sv('cobros')">💰 Cobros</div>
 </div>
@@ -264,6 +265,7 @@ function pinClear(){pinBuf='';updateDots();}
     <select id="fdia"><option value="">Tots els dies</option><option value="6/6">Dissabte 6/6</option><option value="7/6">Diumenge 7/6</option></select>
     <select id="fclub"><option value="">Tots els clubs</option><option value="cbgb">CB Grup Barna</option><option value="extern">Externs</option><option value="pendent">Pendent confirmar</option></select>
     <button id="sort-btn" onclick="toggleSort()" style="white-space:nowrap;">&#8645; Cat</button>
+    <button id="btn-problemes" onclick="toggleProblemes()" style="background:#fee2e2;color:#b91c1c;border:1.5px solid #fca5a5;font-weight:700;">&#9888; Problemes</button>
     <button class="pr" onclick="exportCSV()">CSV</button>
   </div>
   <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh);">
@@ -280,6 +282,9 @@ function pinClear(){pinBuf='';updateDots();}
   <div id="clubs-body"></div>
 </div>
 
+<div class="view" id="view-checkin">
+  <div id="checkin-body"></div>
+</div>
 
 <div class="view" id="view-cobros">
   <div id="cobros-body"></div>
@@ -686,7 +691,23 @@ function showTeam(id) {
     html += '<div style="background:var(--warn-bg);border-radius:5px;padding:8px 10px;margin-top:10px;font-size:12px;color:var(--warn);">'+esc(d.note)+'</div>';
   }
 
+  // QR check-in
+  var checkinUrl = 'https://cbgrupbarna-3x3timechamber.com/check-in/' + encodeURIComponent(d.id);
+  html += '<div style="margin-top:14px;display:flex;align-items:center;gap:12px;background:var(--bg-sec);border-radius:8px;padding:10px 12px;">';
+  html += '<canvas id="modal-qr" style="border-radius:4px;"></canvas>';
+  html += '<div><div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:3px;">CHECK-IN QR</div>';
+  html += '<div style="font-size:10px;color:var(--text3);word-break:break-all;">'+esc(checkinUrl)+'</div></div>';
+  html += '</div>';
+
   document.getElementById('m-body').innerHTML = html;
+
+  // Generar QR
+  if (typeof QRCode !== 'undefined') {
+    var qrCanvas = document.getElementById('modal-qr');
+    if (qrCanvas) {
+      QRCode.toCanvas(qrCanvas, checkinUrl, {width:72, margin:1, color:{dark:'#1a1a1a',light:'#ffffff'}}, function(err){});
+    }
+  }
 
   var waBtn = document.getElementById('m-wa');
   var mailBtn = document.getElementById('m-mail');
@@ -749,7 +770,7 @@ function esc(s) {
 
 // Tabs
 function sv(v) {
-  ['cats','horaris','jugadors','list','talles','clubs','contact','cobros'].forEach(function(n,i){
+  ['cats','horaris','jugadors','list','talles','clubs','checkin','contact','cobros'].forEach(function(n,i){
     document.getElementById('view-'+n).className = 'view'+(v===n?' on':'');
     document.querySelectorAll('.tab')[i].className = 'tab'+(v===n?' on':'');
   });
@@ -760,6 +781,7 @@ function sv(v) {
   if(v==='jugadors') renderJugadors();
   if(v==='talles') renderTalles();
   if(v==='clubs') renderClubs();
+  if(v==='checkin') renderCheckin();
 }
 
 var _horariDay = 7;
@@ -1983,7 +2005,9 @@ function kpis() {
 
   var chartHtml='<div id="barna-chart" style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;box-shadow:var(--sh);margin:8px 20px 0;">';
   chartHtml+='<div style="position:relative;flex-shrink:0;">'+svgEl;
-  chartHtml+='<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;"><div style="font-size:18px;font-weight:800;">'+total+'</div><div style="font-size:9px;color:var(--text2);text-transform:uppercase;">equips</div></div></div>';
+  var nInd = DATA.filter(function(d){return d.individual;}).length;
+  var nEq = DATA.filter(function(d){return !d.individual;}).length;
+  chartHtml+='<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;"><div style="font-size:18px;font-weight:800;">'+nEq+'</div><div style="font-size:9px;color:var(--text2);text-transform:uppercase;">equips</div>'+(nInd>0?'<div style="font-size:9px;color:#1e40af;font-weight:700;">+'+nInd+' ind</div>':'')+'</div></div>';
   chartHtml+='<div style="flex:1;min-width:120px;">';
   chartHtml+='<div style="font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Procedència</div>';
   [
@@ -2275,6 +2299,15 @@ function getLF() {
     var haystack = (d.team+' '+d.cap+' '+d.id+' '+(d.email||'')+' '+(d.phone||'')+' '+jugStr+' '+clubStr+' '+(d.club||'')).toLowerCase();
     return haystack.indexOf(q)>=0;
   });
+  if (_soloProblemes) {
+    result = result.filter(function(d) {
+      var jugsFilled = (d.jugadors||[]).filter(function(j){return j;}).length;
+      var hasJugsProblem = !d.individual && jugsFilled < (d.jug||4);
+      var hasProofProblem = !d.proof;
+      var hasTallesProblem = !d.individual && !(d.talles && d.talles.some(function(t){return t;}));
+      return hasJugsProblem || hasProofProblem || hasTallesProblem;
+    });
+  }
   result.sort(function(a,b){
     if(_listSort==='nom') return (a.team||'').localeCompare(b.team||'');
     if(_listSort==='eur') return (b.total||0)-(a.total||0);
@@ -2302,13 +2335,16 @@ function renderList() {
     if(!d.proof) {
       badges += '<span class="badge" style="background:var(--warn-bg);color:var(--warn);">○ Sense just.</span>';
     }
+    var waBtn = (d.phone && d.phone.length > 5) ?
+      '<button onclick="event.stopPropagation();openWADirect(\''+esc(d.phone)+'\',\''+esc((d.cap||'').split(' ')[0])+'\')" '+
+      'style="background:#25D366;color:white;border:none;border-radius:6px;padding:3px 7px;font-size:11px;cursor:pointer;flex-shrink:0;">💬</button>' : '';
     return '<div class="er" data-lid="'+esc(d.id)+'" style="cursor:pointer;">'+
       '<div style="min-width:150px;flex:1;"><div style="font-weight:600;">'+esc(d.team)+'</div>'+
       '<div style="font-size:11px;color:var(--text2);">'+esc(d.cap)+(d.phone?' - '+esc(d.phone):'')+'</div>'+
       (badges?'<div style="margin-top:3px;display:flex;gap:4px;flex-wrap:wrap;">'+badges+'</div>':'')+
       '</div>'+
       '<div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap;">'+
-      gb+'<span class="badge bn">'+esc(d.cat)+'</span>'+
+      waBtn+gb+'<span class="badge bn">'+esc(d.cat)+'</span>'+
       '<span class="badge '+SC[d.status]+'">'+SL[d.status]+'</span>'+
       jugLabel+
       '<span style="font-size:11px;color:var(--text3);">'+esc(d.id)+'</span>'+
@@ -2656,6 +2692,146 @@ function setTemplate(type) {
   document.getElementById('mbody').value = t.body;
 }
 
+// ============================================================
+// MILLORA 2 — Botó "⚠ Problemes" quick-filter
+// ============================================================
+var _soloProblemes = false;
+function toggleProblemes() {
+  _soloProblemes = !_soloProblemes;
+  var btn = document.getElementById('btn-problemes');
+  if (btn) {
+    btn.style.background = _soloProblemes ? '#b91c1c' : '#fee2e2';
+    btn.style.color = _soloProblemes ? 'white' : '#b91c1c';
+  }
+  sv('list');
+}
+
+// ============================================================
+// MILLORA 3 — WhatsApp one-click directe des de la llista
+// ============================================================
+function openWADirect(phone, nom) {
+  var p = String(phone).replace(/[^0-9]/g,'');
+  if (!p.startsWith('34')) p = '34' + p;
+  var msg = 'Hola ' + nom + '! Soc l\'Ana del CB Grup Barna respecte al 3x3 Westfield Glòries 2026.';
+  window.open('https://wa.me/' + p + '?text=' + encodeURIComponent(msg), '_blank');
+}
+
+// ============================================================
+// MILLORA 6 — Check-in (localStorage)
+// ============================================================
+var VENUE_MAP = {
+  'Escola M':'La Nau P1–4','Escola F':'La Nau P1–4','Escoleta':'La Nau P1–4',
+  'Premini M':'La Nau P1–4','Premini F':'La Nau P1–4',
+  'Mini M':'La Nau P1–4','Mini F':'La Nau P1–4',
+  'Preinfantil M':'La Nau P1–4','Preinfantil F':'La Nau P1–4',
+  'Infantil M':'La Nau P5–6','Infantil F':'Rambleta del Clot',
+  'Junior M':'La Nau P5–6','Cadet F':'La Nau P5–6','Cadet M':'La Nau P5–6',
+  'Senior Pro M':'Westfield Glòries','Senior Pro F':'Westfield Glòries',
+  'Amateur M':'Westfield Glòries','Senior Magics':'Westfield Glòries'
+};
+var VENUE_COLOR = {
+  'La Nau P1–4':'#1565c0','La Nau P5–6':'#7b1fa2',
+  'Rambleta del Clot':'#e65100','Westfield Glòries':'#c8102e'
+};
+var _checkinDay = 7;
+
+function getCheckinData() {
+  try { return JSON.parse(localStorage.getItem('checkin_3x3_2026')||'{}'); } catch(e){return{};}
+}
+function setCheckin(teamId, status) {
+  var d = getCheckinData();
+  if (d[teamId] === status) { delete d[teamId]; } else { d[teamId] = status; }
+  localStorage.setItem('checkin_3x3_2026', JSON.stringify(d));
+  renderCheckin();
+}
+var _checkinFilter = 'all';
+function setCheckinFilter(f) { _checkinFilter = f; renderCheckin(); }
+function setCheckinDay(d) { _checkinDay = d; renderCheckin(); }
+
+function renderCheckin() {
+  var ci = getCheckinData();
+  var diaStr = _checkinDay === 6 ? '6/6' : '7/6';
+  var teams = DATA.filter(function(d){ return !d.individual && d.dia === diaStr; });
+
+  // Aplicar filtre d'estat
+  var filtered = teams.filter(function(d){
+    if (_checkinFilter === 'present') return ci[d.id] === 'present';
+    if (_checkinFilter === 'absent') return ci[d.id] === 'absent';
+    if (_checkinFilter === 'pending') return !ci[d.id];
+    return true;
+  });
+
+  var nPresent = teams.filter(function(d){ return ci[d.id] === 'present'; }).length;
+  var nAbsent  = teams.filter(function(d){ return ci[d.id] === 'absent'; }).length;
+  var nPending = teams.filter(function(d){ return !ci[d.id]; }).length;
+
+  // Agrupar per venue
+  var byVenue = {};
+  filtered.forEach(function(d){
+    var v = VENUE_MAP[d.cat] || 'Altres';
+    if (!byVenue[v]) byVenue[v] = [];
+    byVenue[v].push(d);
+  });
+
+  var html = '';
+
+  // Selector dia
+  html += '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px;">';
+  html += '<span style="font-size:14px;font-weight:800;">📍 Check-in dia torneig</span>';
+  [6,7].forEach(function(d){
+    var on = (d === _checkinDay);
+    html += '<button onclick="setCheckinDay('+d+')" style="padding:6px 14px;border-radius:20px;border:1.5px solid '+(on?'#c8102e':'var(--border)')+';background:'+(on?'#c8102e':'var(--bg-card)')+';color:'+(on?'#fff':'var(--text2)')+';font-weight:700;font-size:12px;cursor:pointer;font-family:inherit;">'+(d===6?'Dissabte 6/6':'Diumenge 7/6')+'</button>';
+  });
+  html += '</div>';
+
+  // KPI resum
+  html += '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">';
+  html += '<div style="background:#dcfce7;border:1.5px solid #16a34a;border-radius:8px;padding:8px 14px;text-align:center;min-width:80px;"><div style="font-size:22px;font-weight:800;color:#15803d;">'+nPresent+'</div><div style="font-size:10px;color:#15803d;">Presents</div></div>';
+  html += '<div style="background:#fee2e2;border:1.5px solid #c8102e;border-radius:8px;padding:8px 14px;text-align:center;min-width:80px;"><div style="font-size:22px;font-weight:800;color:#c8102e;">'+nAbsent+'</div><div style="font-size:10px;color:#c8102e;">Absents</div></div>';
+  html += '<div style="background:var(--bg-sec);border:1.5px solid var(--border);border-radius:8px;padding:8px 14px;text-align:center;min-width:80px;"><div style="font-size:22px;font-weight:800;color:var(--text2);">'+nPending+'</div><div style="font-size:10px;color:var(--text2);">Pendents</div></div>';
+  html += '<div style="background:var(--bg-card);border:1.5px solid var(--border);border-radius:8px;padding:8px 14px;text-align:center;min-width:80px;"><div style="font-size:22px;font-weight:800;">'+teams.length+'</div><div style="font-size:10px;color:var(--text2);">Total dia</div></div>';
+  html += '</div>';
+
+  // Filtre estat
+  html += '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;">';
+  [['all','Tots'],['present','✓ Presents'],['absent','✗ Absents'],['pending','○ Pendents']].forEach(function(f){
+    var on = (_checkinFilter === f[0]);
+    html += '<button onclick="setCheckinFilter(\''+f[0]+'\')" style="padding:5px 12px;border-radius:20px;border:1.5px solid '+(on?'#c8102e':'var(--border)')+';background:'+(on?'#c8102e':'var(--bg-card)')+';color:'+(on?'#fff':'var(--text2)')+';font-weight:600;font-size:11px;cursor:pointer;font-family:inherit;">'+f[1]+'</button>';
+  });
+  html += '</div>';
+
+  // Grups per venue
+  var venueOrder = Object.values(VENUE_MAP).filter(function(v,i,a){ return a.indexOf(v)===i; });
+  venueOrder.forEach(function(venue){
+    var teamsV = byVenue[venue];
+    if (!teamsV || teamsV.length === 0) return;
+    var col = VENUE_COLOR[venue] || '#666';
+    var vPresent = teamsV.filter(function(d){ return ci[d.id] === 'present'; }).length;
+    html += '<div style="margin-bottom:16px;border-radius:10px;overflow:hidden;border:2px solid '+col+';box-shadow:var(--sh);">';
+    html += '<div style="background:'+col+';color:white;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;">';
+    html += '<div style="font-weight:800;font-size:14px;">'+esc(venue)+'</div>';
+    html += '<div style="font-size:12px;opacity:.9;">'+vPresent+'/'+teamsV.length+' presents</div>';
+    html += '</div>';
+    teamsV.forEach(function(d){
+      var st = ci[d.id];
+      var bgRow = st==='present'?'background:#f0fdf4;':st==='absent'?'background:#fff1f2;':'';
+      html += '<div style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid var(--border);flex-wrap:wrap;'+bgRow+'">';
+      html += '<div style="flex:1;min-width:120px;"><div style="font-weight:700;font-size:13px;">'+esc(d.team)+'</div>';
+      html += '<div style="font-size:11px;color:var(--text2);">'+esc(d.cat)+' · '+esc(d.cap||'')+'</div></div>';
+      html += '<button onclick="event.stopPropagation();setCheckin(\''+esc(d.id)+'\',\'present\')" style="padding:5px 10px;border-radius:6px;border:1.5px solid #16a34a;background:'+(st==='present'?'#16a34a':'var(--bg-card)')+';color:'+(st==='present'?'white':'#16a34a')+';font-weight:700;font-size:12px;cursor:pointer;font-family:inherit;">✓ Present</button>';
+      html += '<button onclick="event.stopPropagation();setCheckin(\''+esc(d.id)+'\',\'absent\')" style="padding:5px 10px;border-radius:6px;border:1.5px solid #c8102e;background:'+(st==='absent'?'#c8102e':'var(--bg-card)')+';color:'+(st==='absent'?'white':'#c8102e')+';font-weight:700;font-size:12px;cursor:pointer;font-family:inherit;">✗ Absent</button>';
+      html += '</div>';
+    });
+    html += '</div>';
+  });
+
+  if (filtered.length === 0) {
+    html += '<div style="text-align:center;padding:40px;color:var(--text3);font-size:14px;">Cap equip coincideix amb el filtre seleccionat</div>';
+  }
+
+  document.getElementById('checkin-body').innerHTML = html;
+}
+
 // Init
 kpis();
 renderCatDetail();
@@ -2742,8 +2918,31 @@ document.addEventListener('visibilitychange', function() {
 })();
 
 // ============================================================
-// FITXES PDF — 4 equips per A4, amb QR per check-in
+// FITXES PDF PRO — 4 equips per A4, logos, horaris, QR check-in
 // ============================================================
+var CAT_HORARI = {
+  'Senior Pro M':  {hora:'16:00–17:30', lloc:'Westfield Gl\xf2ries', color:'#c8102e'},
+  'Senior Pro F':  {hora:'18:30–18:45', lloc:'Westfield Gl\xf2ries', color:'#c8102e'},
+  'Amateur M':     {hora:'17:30–18:00', lloc:'Westfield Gl\xf2ries', color:'#c8102e'},
+  'Amateur F':     {hora:'17:30–18:00', lloc:'Westfield Gl\xf2ries', color:'#c8102e'},
+  'Escoleta':      {hora:'09:00–09:45', lloc:'La Nau P1–P2',    color:'#0d9488'},
+  'Escola M':      {hora:'09:00–09:45', lloc:'La Nau P1–P2',    color:'#0d9488'},
+  'Escola F':      {hora:'09:00–09:45', lloc:'La Nau P3–P4',    color:'#0d9488'},
+  'Premini F':     {hora:'09:00–09:45', lloc:'La Nau P3–P4',    color:'#2563eb'},
+  'Premini M':     {hora:'09:45–11:00', lloc:'La Nau P1–P4',    color:'#2563eb'},
+  'Mini F':        {hora:'11:00–11:45', lloc:'La Nau P1–P2',    color:'#0891b2'},
+  'Mini M':        {hora:'11:00–13:00', lloc:'La Nau P1–P4',    color:'#0891b2'},
+  'Infantil F':    {hora:'09:00–10:30', lloc:'Rambleta del Clot',     color:'#9333ea'},
+  'Infantil M':    {hora:'09:00–11:00', lloc:'La Nau P5–P6',    color:'#9333ea'},
+  'Junior M':      {hora:'11:00–11:45', lloc:'La Nau P5–P6',    color:'#ea580c'},
+  'Junior F':      {hora:'11:00–11:45', lloc:'La Nau P5–P6',    color:'#ea580c'},
+  'Cadet F':       {hora:'11:45–13:00', lloc:'La Nau P5–P6',    color:'#4f46e5'},
+  'Cadet M':       {hora:'14:00–15:30', lloc:'La Nau P5–P6',    color:'#4f46e5'},
+  'Senior Magics': {hora:'15:00–15:45', lloc:'Westfield Gl\xf2ries', color:'#ca8a04'},
+  'Preinfantil M': {hora:'09:00–',      lloc:'La Nau',               color:'#7c3aed'},
+  'Preinfantil F': {hora:'09:00–',      lloc:'La Nau',               color:'#7c3aed'},
+};
+
 function buildCheckinUrl_(d) {
   var base = 'https://cbgrupbarna-3x3timechamber.com/checkin.html';
   var parts = [
