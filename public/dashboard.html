@@ -148,9 +148,10 @@ function pinClear(){pinBuf='';updateDots();}
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
 <div class="topbar">
   <div><h1>3x3 Westfield Glories 2026</h1><div class="sub">CB Grup Barna - Dashboard inscripcions</div></div>
-  <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap;"><div class="cd" id="cd">...</div><button id="refresh-btn" onclick="loadFromSheet()" style="background:rgba(255,255,255,.15);color:white;border:1px solid rgba(255,255,255,.3);padding:5px 12px;border-radius:20px;cursor:pointer;font-size:12px;font-weight:600;">&#8635; Actualitzar</button><button onclick="exportXLSX()" style="background:#16a34a;color:white;border:1px solid #15803d;padding:5px 14px;border-radius:20px;cursor:pointer;font-size:12px;font-weight:700;">&#128202; Descarregar Excel</button><span id="api-status" style="font-size:11px;opacity:.8;"></span></div>
+  <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap;"><div class="cd" id="cd">...</div><button id="refresh-btn" onclick="loadFromSheet()" style="background:rgba(255,255,255,.15);color:white;border:1px solid rgba(255,255,255,.3);padding:5px 12px;border-radius:20px;cursor:pointer;font-size:12px;font-weight:600;">&#8635; Actualitzar</button><button onclick="exportXLSX()" style="background:#16a34a;color:white;border:1px solid #15803d;padding:5px 14px;border-radius:20px;cursor:pointer;font-size:12px;font-weight:700;">&#128202; Descarregar Excel</button><button onclick="printFitxes()" style="background:#7c3aed;color:white;border:1px solid #6d28d9;padding:5px 14px;border-radius:20px;cursor:pointer;font-size:12px;font-weight:700;">&#128424; Fitxes PDF</button><span id="api-status" style="font-size:11px;opacity:.8;"></span></div>
 </div>
 <div class="tabs">
   <div class="tab on" onclick="sv('cats')">Categories</div>
@@ -201,6 +202,25 @@ function pinClear(){pinBuf='';updateDots();}
 
 <div class="view on" id="view-cats">
   <div id="catdetail-body"></div>
+  <div style="margin-top:16px;">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center;" id="cats-title">
+      <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text2);">Filtre ràpid:</span>
+      <button id="qf-all" class="qf-btn qf-active" onclick="setQF('all')">Tots</button>
+      <button id="qf-confirmed" class="qf-btn" onclick="setQF('confirmed')">Confirmats</button>
+      <button id="qf-fem" class="qf-btn" onclick="setQF('fem')" style="border-color:var(--fem);color:var(--fem);">Femeni</button>
+      <button id="qf-masc" class="qf-btn" onclick="setQF('masc')" style="border-color:var(--masc);color:var(--masc);">Masculi</button>
+      <button id="qf-individual" class="qf-btn" onclick="setQF('individual')" style="border-color:#1e40af;color:#1e40af;">Individuals</button>
+    </div>
+    <div id="qf-list" style="display:none;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh);"></div>
+    <div id="catgrid" class="cat-grid"></div>
+    <div class="det" id="det">
+      <div class="det-h">
+        <div><div class="det-t" id="dt">---</div><div class="det-m" id="dm">---</div></div>
+        <button onclick="closeDet()">&#10005; Tancar</button>
+      </div>
+      <div class="tl" id="dtl"></div>
+    </div>
+  </div>
 </div>
 
 <div class="view" id="view-jugadors">
@@ -420,8 +440,11 @@ function loadFromSheet() {
       LAST_UPDATE = new Date();
       document.getElementById('refresh-btn').textContent = '↻ Refresca';
       document.getElementById('refresh-btn').disabled = false;
-      kpis(); renderCatDetail();
+      kpis(); renderCatDetail(); renderCats();
       if (document.getElementById('view-list').classList.contains('on')) renderList();
+      if (document.getElementById('view-jugadors').classList.contains('on')) renderJugadors();
+      if (document.getElementById('view-talles').classList.contains('on')) renderTalles();
+      if (document.getElementById('view-clubs').classList.contains('on')) renderClubs();
     })
     .catch(function(err) {
       showStatus('Error API: ' + err.message + ' · usant dades locals', 'err');
@@ -1084,6 +1107,14 @@ function showKPI(type) {
     panel.style.display = 'block';
     panel.scrollIntoView({behavior:'smooth',block:'nearest'});
     return;
+  }
+  else if (type === 'incomplete') {
+    list = teams.filter(function(d){ return !d.individual && (d.jugadors||[]).filter(function(j){return j;}).length < (d.jug||4); });
+    t = 'JUGADORS INCOMPLETS (' + list.length + ' equips)';
+  }
+  else if (type === 'stalles') {
+    list = teams.filter(function(d){ return !d.individual && !(d.talles && d.talles.some(function(t2){return t2;})); });
+    t = 'SENSE TALLES (' + list.length + ' equips)';
   }
 
   title.textContent = t;
@@ -1872,6 +1903,13 @@ function kpis() {
     var teamCount=cats[cat].filter(function(d){return !d.individual;}).length;
     places+=Math.max(0,cfg.limit-teamCount);
   });
+  var jugIncomplete = teams.filter(function(d){
+    return !d.individual && (d.jugadors||[]).filter(function(j){return j;}).length < (d.jug||4);
+  }).length;
+  var senseTalles = teams.filter(function(d){
+    return !d.individual && !(d.talles && d.talles.some(function(t){return t;}));
+  }).length;
+
   document.getElementById('k0').textContent = teams.length;
   document.getElementById('k1').textContent = withProof+' / '+noProof+' sense';
   document.getElementById('k2').textContent = conf;
@@ -1881,6 +1919,8 @@ function kpis() {
   document.getElementById('k6').textContent = Math.round(rev)+'EUR';
   document.getElementById('k7').textContent = jugIndiv;
   document.getElementById('k8').textContent = '~'+(jugTeams+jugIndiv);
+  document.getElementById('k9').textContent = jugIncomplete;
+  document.getElementById('k10').textContent = senseTalles;
 
   // Gràfic Barna vs Resta
   var barna = teams.filter(function(d){ return d.club==='cbgb'; }).length;
@@ -2260,9 +2300,11 @@ function exportCSV() {
 function getCT() {
   var fc=document.getElementById('cfcat').value;
   var fs=document.getElementById('cfst').value;
+  var fd=document.getElementById('cfdia') ? document.getElementById('cfdia').value : '';
   return DATA.filter(function(d){
     if(fc&&d.cat!==fc) return false;
     if(fs&&d.status!==fs) return false;
+    if(fd&&d.dia!==fd) return false;
     return true;
   });
 }
@@ -2304,9 +2346,282 @@ function copyPers() {
   navigator.clipboard.writeText(lines).then(function(){alert(f.length+' missatges copiats!');});
 }
 
+// ============================================================
+// TAB JUGADORS
+// ============================================================
+function renderJugadors() {
+  var q = (document.getElementById('jq').value||'').toLowerCase().trim();
+  var fc = document.getElementById('jfcat').value;
+  var fd = document.getElementById('jfdia').value;
+  var fg = document.getElementById('jfgen').value;
+
+  // Generar llista de files (una per jugador o una per equip sense jugadors)
+  var allSorted = DATA.slice().sort(function(a,b){
+    if(a.cat!==b.cat) return (a.cat||'').localeCompare(b.cat||'');
+    return (a.team||'').localeCompare(b.team||'');
+  });
+
+  var rows = [];
+  var totalJug = 0;
+  allSorted.forEach(function(d){
+    if(fc && d.cat!==fc) return;
+    if(fd && d.dia!==fd) return;
+    if(fg && d.gen!==fg) return;
+    var jugs = (d.jugadors||[]).filter(function(j){return j;});
+    if(jugs.length===0){
+      // Fila d'equip sense jugadors
+      if(q){
+        var hay = (d.team+' '+d.cap+' '+(d.email||'')+' '+(d.club||'')).toLowerCase();
+        if(hay.indexOf(q)<0) return;
+      }
+      rows.push({d:d, jIdx:-1, nom:'⚠ Pendent registrar', any:'', talla:'', clubO:'', missing:true});
+      totalJug++;
+    } else {
+      jugs.forEach(function(jName,ji){
+        var talla = (d.talles||[])[ji]||'';
+        var any = (d.anys||[])[ji]||'';
+        var clubO = (d.clubs||[])[ji]||(d.club==='cbgb'?'CB Grup Barna':d.club==='extern'?'Extern':'');
+        if(q){
+          var hay = (jName+' '+d.team+' '+d.cat+' '+talla+' '+clubO+' '+any).toLowerCase();
+          if(hay.indexOf(q)<0) return;
+        }
+        rows.push({d:d, jIdx:ji, nom:jName, any:any, talla:talla, clubO:clubO, missing:false});
+        totalJug++;
+      });
+    }
+  });
+
+  document.getElementById('jcount').textContent = 'Mostrant '+rows.length+' jugadors de '+totalJug+' (filtre actiu)';
+
+  var html = '<table style="width:100%;border-collapse:collapse;min-width:600px;">';
+  html += '<thead><tr style="background:var(--bg-sec);">';
+  ['#','Jugador','Any naix.','Talla','Club origen','Equip','Categoria','Dia','Estat'].forEach(function(h,i){
+    html += '<th style="padding:8px '+(i===0?'8':'10')+'px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text2);text-align:'+(i===0?'center':'left')+';">'+h+'</th>';
+  });
+  html += '</tr></thead><tbody>';
+
+  var rowN=0;
+  rows.forEach(function(r){
+    rowN++;
+    var d=r.d;
+    var sd = d.status==='confirmed'?'var(--ok)':d.status==='pending_payment'?'var(--warn)':'var(--err)';
+    var statusTxt = {confirmed:'Confirmat',pending_payment:'Pend. pag.',pending_proof:'Sense just.'}[d.status]||d.status;
+    var bg = r.missing ? 'background:var(--err-bg);' : rowN%2===0 ? 'background:var(--bg-sec);' : '';
+    html += '<tr style="'+bg+'border-bottom:1px solid var(--border);">';
+    html += '<td style="padding:6px 8px;text-align:center;font-size:11px;color:var(--text3);">'+rowN+'</td>';
+    if(r.missing){
+      html += '<td colspan="4" style="padding:6px 10px;font-size:12px;color:var(--err);font-style:italic;">'+esc(r.nom)+'</td>';
+    } else {
+      html += '<td style="padding:6px 10px;font-size:13px;font-weight:600;">'+esc(r.nom)+'</td>';
+      html += '<td style="padding:6px 10px;font-size:12px;color:var(--text2);">'+esc(r.any)+'</td>';
+      html += '<td style="padding:6px 10px;font-size:12px;'+(r.talla?'font-weight:700;color:#7c2d12;background:#fed7aa22;':'color:var(--text3);')+'">'+esc(r.talla||'—')+'</td>';
+      html += '<td style="padding:6px 10px;font-size:12px;color:var(--text2);">'+esc(r.clubO||'—')+'</td>';
+    }
+    html += '<td style="padding:6px 10px;font-size:12px;font-weight:600;cursor:pointer;color:var(--red);" onclick="showTeam(\''+esc(d.id)+'\')">'+esc(d.team)+'</td>';
+    html += '<td style="padding:6px 10px;font-size:12px;">'+esc(d.cat)+'</td>';
+    html += '<td style="padding:6px 10px;font-size:12px;color:var(--text2);">'+d.dia+'</td>';
+    html += '<td style="padding:6px 10px;"><span style="font-size:10px;display:inline-block;width:7px;height:7px;border-radius:50%;background:'+sd+';margin-right:4px;vertical-align:middle;"></span><span style="font-size:11px;">'+esc(statusTxt)+'</span></td>';
+    html += '</tr>';
+  });
+
+  html += '</tbody></table>';
+  document.getElementById('jugadors-body').innerHTML = html;
+  // Actualitzar comptador real
+  document.getElementById('jcount').textContent = 'Mostrant '+rows.length+' jugadors';
+}
+
+['jq','jfcat','jfdia','jfgen'].forEach(function(id){
+  var el=document.getElementById(id);
+  if(el) el.addEventListener('input', renderJugadors);
+});
+
+// ============================================================
+// TAB TALLES
+// ============================================================
+function renderTalles() {
+  var ORDER = ['XS','S','M','L','XL','XXL','3XL','8-10','12-14','Sense talla'];
+  var counts = {};
+  var byCat = {};
+
+  DATA.forEach(function(d){
+    if(d.individual) return;
+    var talles = d.talles || [];
+    var jugs = d.jugadors || [];
+    var maxLen = Math.max(jugs.length, talles.length, d.jug||4);
+    for(var i=0;i<maxLen;i++){
+      var t = (talles[i]||'').trim() || 'Sense talla';
+      counts[t] = (counts[t]||0) + 1;
+      if(!byCat[d.cat]) byCat[d.cat] = {};
+      byCat[d.cat][t] = (byCat[d.cat][t]||0) + 1;
+    }
+  });
+
+  // Cards resum global
+  var total = Object.values ? Object.values(counts).reduce(function(s,v){return s+v;},0) : (function(){var s=0;for(var k in counts)s+=counts[k];return s;})();
+  var html = '<div style="margin-bottom:18px;">';
+  html += '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text2);margin-bottom:10px;">Resum total — '+total+' samarretes</div>';
+  html += '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;">';
+  ORDER.forEach(function(t){
+    var c = counts[t]||0;
+    if(c===0) return;
+    var bg = t==='Sense talla'?'var(--err-bg)':'var(--bg-card)';
+    var col = t==='Sense talla'?'var(--err)':'var(--text)';
+    var bord = t==='Sense talla'?'var(--err)':'var(--border)';
+    html += '<div style="background:'+bg+';border:2px solid '+bord+';border-radius:10px;padding:10px 16px;text-align:center;min-width:60px;box-shadow:var(--sh);">';
+    html += '<div style="font-size:24px;font-weight:800;color:'+col+';">'+c+'</div>';
+    html += '<div style="font-size:11px;color:var(--text2);margin-top:2px;">'+esc(t)+'</div>';
+    html += '</div>';
+  });
+  // Talles no estàndard
+  for(var t2 in counts){
+    if(ORDER.indexOf(t2)<0 && counts[t2]>0){
+      html += '<div style="background:var(--warn-bg);border:2px solid var(--warn);border-radius:10px;padding:10px 16px;text-align:center;min-width:60px;box-shadow:var(--sh);">';
+      html += '<div style="font-size:24px;font-weight:800;color:var(--warn);">'+counts[t2]+'</div>';
+      html += '<div style="font-size:11px;color:var(--text2);margin-top:2px;">'+esc(t2)+'</div>';
+      html += '</div>';
+    }
+  }
+  html += '</div>';
+
+  // Botó copiar WhatsApp
+  html += '<button onclick="copyTallesWA()" style="margin-bottom:16px;">📋 Copiar per WhatsApp</button>';
+  html += '</div>';
+
+  // Desglòs per categoria
+  html += '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text2);margin-bottom:10px;">Desglòs per categoria</div>';
+  var catOrder = Object.keys(CC);
+  catOrder.forEach(function(cat){
+    if(!byCat[cat]) return;
+    html += '<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r);padding:10px 14px;margin-bottom:8px;box-shadow:var(--sh);">';
+    html += '<div style="font-weight:700;font-size:13px;margin-bottom:6px;">'+esc(cat)+'</div>';
+    html += '<div style="display:flex;gap:6px;flex-wrap:wrap;">';
+    ORDER.forEach(function(t){
+      var c=byCat[cat][t]||0;
+      if(c===0) return;
+      var col=t==='Sense talla'?'var(--err)':'var(--text2)';
+      html += '<span style="font-size:12px;font-weight:700;background:var(--bg-sec);padding:3px 9px;border-radius:8px;color:'+col+';">'+esc(t)+': '+c+'</span>';
+    });
+    // Talles no estàndard a la categoria
+    for(var tt in byCat[cat]){
+      if(ORDER.indexOf(tt)<0 && byCat[cat][tt]>0){
+        html += '<span style="font-size:12px;font-weight:700;background:var(--warn-bg);padding:3px 9px;border-radius:8px;color:var(--warn);">'+esc(tt)+': '+byCat[cat][tt]+'</span>';
+      }
+    }
+    html += '</div></div>';
+  });
+
+  document.getElementById('talles-body').innerHTML = html;
+}
+
+function copyTallesWA() {
+  var ORDER = ['XS','S','M','L','XL','XXL','3XL','8-10','12-14','Sense talla'];
+  var counts = {};
+  DATA.forEach(function(d){
+    if(d.individual) return;
+    var talles = d.talles||[];
+    var maxLen = Math.max((d.jugadors||[]).length, talles.length, d.jug||4);
+    for(var i=0;i<maxLen;i++){
+      var t = (talles[i]||'').trim()||'Sense talla';
+      counts[t]=(counts[t]||0)+1;
+    }
+  });
+  var lines = ['🎽 TALLES SAMARRETES 3x3 Westfield Glòries 2026\n'];
+  ORDER.forEach(function(t){ if(counts[t]) lines.push(t+': '+counts[t]); });
+  for(var t2 in counts){ if(ORDER.indexOf(t2)<0 && counts[t2]) lines.push(t2+': '+counts[t2]); }
+  navigator.clipboard.writeText(lines.join('\n')).then(function(){alert('Talles copiades!');});
+}
+
+// ============================================================
+// TAB CLUBS
+// ============================================================
+function renderClubs() {
+  var groups = {cbgb:{label:'CB Grup Barna',color:'var(--red)',bg:'var(--err-bg)',teams:[]},extern:{label:'Clubs Externs',color:'var(--info,#1e40af)',bg:'#dbeafe',teams:[]},pendent:{label:'Pendent confirmar',color:'var(--warn)',bg:'var(--warn-bg)',teams:[]}};
+
+  DATA.filter(function(d){return !d.individual;}).forEach(function(d){
+    var g = d.club==='cbgb'?'cbgb':d.club==='extern'?'extern':'pendent';
+    groups[g].teams.push(d);
+  });
+
+  var html = '';
+  ['cbgb','extern','pendent'].forEach(function(gk){
+    var g = groups[gk];
+    if(g.teams.length===0) return;
+    var totalJug = g.teams.reduce(function(s,d){return s+(d.jug||4);},0);
+    var totalEur = g.teams.reduce(function(s,d){return s+(d.total||0);},0);
+    var conf = g.teams.filter(function(d){return d.status==='confirmed';}).length;
+    var pctConf = g.teams.length>0 ? Math.round(conf/g.teams.length*100) : 0;
+
+    html += '<div style="background:var(--bg-card);border:2px solid '+g.color+';border-radius:var(--r);margin-bottom:14px;overflow:hidden;box-shadow:var(--sh);">';
+    html += '<div style="background:'+g.bg+';padding:12px 16px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display===\'none\'?\'block\':\'none\'">';
+    html += '<div><span style="font-weight:800;font-size:15px;color:'+g.color+';">'+esc(g.label)+'</span></div>';
+    html += '<div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">';
+    html += '<span style="font-size:12px;font-weight:600;">'+g.teams.length+' equips</span>';
+    html += '<span style="font-size:12px;color:var(--text2);">~'+totalJug+' jugadors</span>';
+    html += '<span style="font-size:12px;font-weight:700;">'+Math.round(totalEur)+'€</span>';
+    html += '<span style="font-size:12px;background:var(--ok-bg);color:var(--ok);padding:2px 8px;border-radius:8px;font-weight:600;">'+pctConf+'% conf.</span>';
+    html += '</div></div>';
+
+    // Llista equips (visible per defecte)
+    html += '<div>';
+    g.teams.forEach(function(d){
+      var jugFilled = (d.jugadors||[]).filter(function(j){return j;}).length;
+      var sd = d.status==='confirmed'?'var(--ok)':d.status==='pending_payment'?'var(--warn)':'var(--err)';
+      html += '<div style="padding:8px 16px;border-bottom:1px solid var(--border);cursor:pointer;" onclick="showTeam(\''+esc(d.id)+'\')" onmouseover="this.style.background=\'var(--bg-sec)\'" onmouseout="this.style.background=\'\'">';
+      html += '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;">';
+      html += '<div><span style="font-weight:700;font-size:13px;">'+esc(d.team)+'</span> <span style="font-size:10px;color:var(--text3);">'+esc(d.cat)+' · '+d.dia+'</span></div>';
+      html += '<div style="display:flex;gap:6px;align-items:center;">';
+      html += '<span style="font-size:10px;display:inline-block;width:7px;height:7px;border-radius:50%;background:'+sd+';"></span>';
+      html += '<span style="font-size:12px;font-weight:700;">'+Math.round(d.total||0)+'€</span>';
+      html += '<span style="font-size:11px;color:var(--text2);">'+jugFilled+'/'+(d.jug||4)+' jug.</span>';
+      html += '</div></div>';
+      if(d.jugadors && d.jugadors.filter(function(j){return j;}).length>0){
+        html += '<div style="font-size:11px;color:var(--text2);margin-top:3px;">'+d.jugadors.filter(function(j){return j;}).map(function(j){return esc(j);}).join(', ')+'</div>';
+      }
+      html += '</div>';
+    });
+    html += '</div>';
+    html += '</div>';
+  });
+
+  document.getElementById('clubs-body').innerHTML = html;
+}
+
+// ============================================================
+// TEMPLATES RÀPIDS CONTACTAR
+// ============================================================
+function setTemplate(type) {
+  var templates = {
+    justificant: {
+      subj: '3x3 Westfield Glòries 2026 - Justificant de pagament pendent',
+      body: 'Hola [NOM]! Hem detectat que l\'equip [EQUIP] (dia [DIA]) encara no té justificant de pagament. Pots fer-nos arribar el comprovant de transferència o Bizum?\n\nAna Fernandez - Coordinadora CB Grup Barna\nvoluntarisgrupbarna@gmail.com - 698 425 153\n\n---\n[ES] Hola [NOM]! El equipo [EQUIP] (día [DIA]) no tiene comprobante de pago. ¿Puedes enviarnos el justificante de transferencia o Bizum?'
+    },
+    jugador: {
+      subj: '3x3 Westfield Glòries 2026 - Jugadors pendents',
+      body: 'Hola [NOM]! L\'equip [EQUIP] (dia [DIA]) té el llistat de jugadors incomplet. Necessitem nom complet, any de naixement i talla de tots els jugadors.\n\nAna Fernandez - Coordinadora CB Grup Barna\nvoluntarisgrupbarna@gmail.com - 698 425 153\n\n---\n[ES] Hola [NOM]! El equipo [EQUIP] (día [DIA]) tiene jugadores pendientes. Necesitamos nombre completo, año de nacimiento y talla de todos los jugadores.'
+    },
+    talla: {
+      subj: '3x3 Westfield Glòries 2026 - Talla samarreta pendent',
+      body: 'Hola [NOM]! Falta la talla de samarreta d\'algun jugador de l\'equip [EQUIP]. Pots confirmar-nos les talles?\n\nTalles disponibles: XS, S, M, L, XL, XXL, 3XL, 8-10, 12-14\n\nAna Fernandez - Coordinadora CB Grup Barna\nvoluntarisgrupbarna@gmail.com - 698 425 153\n\n---\n[ES] Hola [NOM]! Falta la talla de camiseta de algún jugador del equipo [EQUIP]. ¿Puedes confirmarnos las tallas? (XS, S, M, L, XL, XXL, 3XL, 8-10, 12-14)'
+    },
+    info: {
+      subj: '3x3 Westfield Glòries 2026 - Informació dia torneig',
+      body: 'Hola [NOM]! Aquí teniu la informació pel dia del torneig (dia [DIA]):\n\nAdreça: Westfield Glòries / La Nau del Clot\nPorteu la targeta federativa o DNI de tots els jugadors.\nLa samarreta es recollirà el dia del torneig a l\'estand del club.\n\nSi teniu qualsevol dubte, em dieu!\nAna Fernandez - Coordinadora CB Grup Barna\nvoluntarisgrupbarna@gmail.com - 698 425 153\n\n---\n[ES] Hola [NOM]! Información para el día del torneo (día [DIA]): Dirección: Westfield Glòries / La Nau del Clot. Traed la tarjeta federativa o DNI de todos los jugadores. La camiseta se recoge el día del torneo en el stand del club.'
+    },
+    confirmacio: {
+      subj: '3x3 Westfield Glòries 2026 - Tot confirmat!',
+      body: 'Hola [NOM]! Tot confirmat per a l\'equip [EQUIP] al 3x3 Westfield Glòries 2026 (dia [DIA]). Ens veiem a la pista!\n\nAna Fernandez - Coordinadora CB Grup Barna\nvoluntarisgrupbarna@gmail.com - 698 425 153\n\n---\n[ES] Hola [NOM]! Todo confirmado para el equipo [EQUIP] en el 3x3 Westfield Glòries 2026 (día [DIA]). ¡Nos vemos en la pista!'
+    }
+  };
+  var t = templates[type];
+  if(!t) return;
+  document.getElementById('msubj').value = t.subj;
+  document.getElementById('mbody').value = t.body;
+}
+
 // Init
 kpis();
 renderCatDetail();
+renderCats();
 
 function saveApiUrl() {
   var url = document.getElementById('api-url-input').value.trim();
@@ -2335,6 +2650,166 @@ function saveApiUrl() {
     }
   } catch(e) {}
 })();
+
+// ============================================================
+// FITXES PDF — 4 equips per A4, amb QR per check-in
+// ============================================================
+function buildCheckinUrl_(d) {
+  var base = 'https://cbgrupbarna-3x3timechamber.com/checkin.html';
+  var parts = [
+    'id='      + encodeURIComponent(d.id),
+    'nom='     + encodeURIComponent(d.team),
+    'cat='     + encodeURIComponent(d.cat),
+    'cap='     + encodeURIComponent(d.cap || ''),
+    'dia='     + encodeURIComponent(d.dia || ''),
+    'pagat='   + (d.status === 'confirmed' ? '1' : '0'),
+    'jug='     + (d.jug || 4),
+    'tel='     + encodeURIComponent(d.phone || ''),
+  ];
+  var jns = (d.jugadors || []).filter(Boolean).join(',');
+  var tls = (d.talles   || []).map(function(t){return t||'';}).join(',');
+  if (jns) parts.push('jugadors=' + encodeURIComponent(jns));
+  if (tls.replace(/,/g,'')) parts.push('talles=' + encodeURIComponent(tls));
+  return base + '?' + parts.join('&');
+}
+
+function escH_(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function buildFitxaHtml_(d, qrSrc) {
+  var jugadors = d.jugadors || [];
+  var talles   = d.talles   || [];
+  var isPagat  = d.status === 'confirmed';
+  var diaLbl   = d.dia === '6/6' ? 'Dissabte 6/6' : d.dia === '7/6' ? 'Diumenge 7/6' : (d.dia || '');
+  var genLbl   = d.gen === 'F' ? 'F' : 'M';
+
+  var jugsHtml = '';
+  if (jugadors.length > 0) {
+    jugsHtml = '<div class="jug-list"><div class="jug-title">JUGADORS (' + jugadors.length + ')</div>';
+    for (var i = 0; i < jugadors.length; i++) {
+      var nom = jugadors[i] || '---';
+      var talla = talles[i] || '';
+      jugsHtml += '<div class="jug-item"><span class="jug-name">' + escH_(nom) + '</span>' +
+        (talla ? '<span class="jug-talla">' + escH_(talla) + '</span>' : '<span class="jug-talla" style="color:#ccc">—</span>') +
+        '</div>';
+    }
+    jugsHtml += '</div>';
+  } else {
+    jugsHtml = '<div class="jug-list"><div class="jug-title">JUGADORS</div><div style="font-size:7pt;color:#aaa;padding:2mm 0;">Noms pendents de confirmar</div></div>';
+  }
+
+  var qrHtml = qrSrc
+    ? '<div class="card-qr"><img src="' + qrSrc + '" alt="QR"/><div class="escaneja">Escanejar</div></div>'
+    : '<div class="card-qr" style="background:#f5f5f5;border-radius:2mm;width:28mm;height:28mm;display:flex;align-items:center;justify-content:center;font-size:7pt;color:#aaa;">No QR</div>';
+
+  return '<div class="card">' +
+    '<div class="card-top">' +
+      '<div class="card-info">' +
+        '<div><span class="cat-badge">' + escH_(d.cat) + ' ' + genLbl + '</span>' +
+        '<span class="dia-badge">' + escH_(diaLbl) + '</span></div>' +
+        '<div class="team-name">' + escH_(d.team) + '</div>' +
+      '</div>' +
+      qrHtml +
+    '</div>' +
+    '<div class="' + (isPagat ? 'pagat-ok' : 'pagat-no') + '">' +
+      (isPagat ? '&#10003; PAGAMENT VERIFICAT' : '&#9888; PENDENT DE PAGAMENT') +
+    '</div>' +
+    '<hr class="sep"/>' +
+    '<div class="cap-row"><strong>Capit&agrave;:</strong> ' + escH_(d.cap || '—') +
+      (d.phone ? ' &nbsp;|&nbsp; <strong>Tel:</strong> ' + escH_(d.phone) : '') + '</div>' +
+    '<hr class="sep"/>' +
+    jugsHtml +
+    '<div class="card-footer"><div class="team-id">ID: ' + escH_(d.id) + '</div></div>' +
+  '</div>';
+}
+
+function printFitxes() {
+  var teams = DATA.filter(function(d) { return !d.individual; });
+  teams.sort(function(a, b) {
+    if (a.dia !== b.dia) return (a.dia || '').localeCompare(b.dia || '');
+    if (a.cat !== b.cat) return a.cat.localeCompare(b.cat);
+    return a.team.localeCompare(b.team);
+  });
+
+  showStatus('Generant fitxes (' + teams.length + ' equips)...', 'info');
+
+  var useQR = (typeof QRCode !== 'undefined') && QRCode.toDataURL;
+  var promises = teams.map(function(d) {
+    if (!useQR) return Promise.resolve('');
+    return new Promise(function(resolve) {
+      QRCode.toDataURL(buildCheckinUrl_(d), {width:120, margin:1, errorCorrectionLevel:'M'}, function(err, url) {
+        resolve(err ? '' : url);
+      });
+    });
+  });
+
+  Promise.all(promises).then(function(qrUrls) {
+    var cardsHtml = '';
+    var pageCards = '';
+    teams.forEach(function(d, i) {
+      pageCards += buildFitxaHtml_(d, qrUrls[i]);
+      if ((i + 1) % 4 === 0 || i === teams.length - 1) {
+        // Omplir fins a 4 si és l'última pàgina
+        var n = (i + 1) % 4;
+        if (n > 0) { for (var k = n; k < 4; k++) pageCards += '<div class="card card-empty"></div>'; }
+        cardsHtml += '<div class="page">' + pageCards + '</div>';
+        pageCards = '';
+      }
+    });
+
+    var printCSS = `
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#fff;color:#000}
+@page{size:A4 portrait;margin:6mm}
+@media print{.no-print{display:none!important}}
+.page{width:100%;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:4mm;height:277mm;page-break-after:always}
+.page:last-child{page-break-after:avoid}
+.card{border:1.5px solid #333;border-radius:2.5mm;padding:3.5mm;display:flex;flex-direction:column;gap:1.5mm;overflow:hidden}
+.card-empty{border:1px dashed #ddd;background:#fafafa}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:2mm}
+.card-info{flex:1;min-width:0}
+.card-qr{flex-shrink:0;width:30mm;text-align:center}
+.card-qr img{width:28mm;height:28mm;display:block}
+.team-name{font-size:13pt;font-weight:900;line-height:1.15;margin:1.5mm 0;word-break:break-word}
+.cat-badge{font-size:7pt;font-weight:700;text-transform:uppercase;letter-spacing:.5px;background:#c8102e;color:#fff;padding:.8mm 2mm;border-radius:1mm;display:inline-block}
+.dia-badge{font-size:7pt;font-weight:600;background:#1a1a1a;color:#fff;padding:.8mm 2mm;border-radius:1mm;display:inline-block;margin-left:1mm}
+.pagat-ok{background:#e8f5e9;border:1px solid #2d7d3a;border-radius:1.5mm;padding:1.5mm 3mm;font-size:8pt;font-weight:700;color:#2d7d3a}
+.pagat-no{background:#fee2e2;border:1px solid #b91c1c;border-radius:1.5mm;padding:1.5mm 3mm;font-size:8pt;font-weight:700;color:#b91c1c}
+.sep{border:none;border-top:1px solid #eee;margin:.5mm 0}
+.cap-row{font-size:7.5pt;color:#333}
+.cap-row strong{font-weight:700}
+.jug-list{flex:1;overflow:hidden}
+.jug-title{font-size:6.5pt;font-weight:700;text-transform:uppercase;color:#888;letter-spacing:.5px;margin-bottom:.8mm}
+.jug-item{display:flex;justify-content:space-between;align-items:center;font-size:7.5pt;padding:.5mm 0;border-bottom:1px dotted #eee}
+.jug-item:last-child{border-bottom:none}
+.jug-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.jug-talla{font-weight:700;color:#c8102e;flex-shrink:0;margin-left:1mm;background:#fff0f0;padding:0 1.5mm;border-radius:.5mm;font-size:7pt}
+.card-footer{display:flex;justify-content:flex-end;margin-top:auto;padding-top:1mm}
+.team-id{font-size:6pt;font-family:monospace;color:#bbb;background:#f8f8f8;padding:.5mm 1.5mm;border-radius:.5mm}
+.escaneja{font-size:5.5pt;color:#aaa;text-align:center;margin-top:.5mm}
+.top-bar{background:#c8102e;color:white;padding:10px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:4mm}
+.top-bar button{padding:6px 16px;background:white;color:#c8102e;border:none;border-radius:6px;font-weight:700;font-size:13px;cursor:pointer}
+.top-bar span{font-size:12px}
+`;
+
+    var html = '<!DOCTYPE html><html lang="ca"><head><meta charset="UTF-8"/>' +
+      '<title>Fitxes 3×3 Westfield Glòries 2026</title>' +
+      '<style>' + printCSS + '</style></head><body>' +
+      '<div class="top-bar no-print">' +
+        '<button onclick="window.print()">&#128424; Imprimir</button>' +
+        '<span>3×3 Westfield Glòries 2026 &nbsp;&middot;&nbsp; ' + teams.length + ' equips &nbsp;&middot;&nbsp; Imprimir, retallar i posar a les bosses</span>' +
+      '</div>' +
+      cardsHtml +
+      '</body></html>';
+
+    var w = window.open('', '_blank');
+    if (!w) { showStatus('Activa les finestres emergents al navegador', 'err'); return; }
+    w.document.write(html);
+    w.document.close();
+    showStatus('Fitxes generades · ' + teams.length + ' equips · ' + Math.ceil(teams.length / 4) + ' pàgines A4', 'ok');
+  });
+}
 
 </script>
 

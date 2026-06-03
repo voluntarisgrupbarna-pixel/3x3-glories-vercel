@@ -66,16 +66,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;b
 <script>
 const WEBHOOK_KEY = 'checkin_webhook_url';
 const p = new URLSearchParams(location.search);
-const id    = p.get('id')    || '';
-const nom   = p.get('nom')   || '';
-const cat   = p.get('cat')   || '';
-const cap   = p.get('cap')   || '';
-const pob   = p.get('pob')   || '';
-const jug   = p.get('jug')   || '';
-const mida  = p.get('mida')  || '';
-const tel   = p.get('tel')   || '';
-const email = p.get('email') || '';
-const data  = p.get('data')  || '';
+const id       = p.get('id')       || '';
+const nom      = p.get('nom')      || '';
+const cat      = p.get('cat')      || '';
+const cap      = p.get('cap')      || '';
+const pob      = p.get('pob')      || '';
+const jug      = p.get('jug')      || '';
+const mida     = p.get('mida')     || '';
+const tel      = p.get('tel')      || '';
+const email    = p.get('email')    || '';
+const data     = p.get('data')     || '';
+const pagat    = p.get('pagat')    || '';
+const dia      = p.get('dia')      || '';
+const jugadors = p.get('jugadors') || '';
+const talles   = p.get('talles')   || '';
 
 const arrivedKey = id ? 'checkin_arrived_' + id : null;
 let arrived = arrivedKey ? localStorage.getItem(arrivedKey) === '1' : false;
