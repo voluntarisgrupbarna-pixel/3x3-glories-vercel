@@ -155,7 +155,10 @@ function pinClear(){pinBuf='';updateDots();}
 <div class="tabs">
   <div class="tab on" onclick="sv('cats')">Categories</div>
   <div class="tab" onclick="sv('horaris')">🗓 Horaris 6-7</div>
-  <div class="tab" onclick="sv('list')">Llista equips</div>
+  <div class="tab" onclick="sv('jugadors')">👤 Jugadors</div>
+  <div class="tab" onclick="sv('list')">Equips</div>
+  <div class="tab" onclick="sv('talles')">🎽 Talles</div>
+  <div class="tab" onclick="sv('clubs')">🏢 Clubs</div>
   <div class="tab" onclick="sv('contact')">Contactar</div>
   <div class="tab" onclick="sv('cobros')">💰 Cobros</div>
 </div>
@@ -169,6 +172,8 @@ function pinClear(){pinBuf='';updateDots();}
   <div class="kpi" style="cursor:pointer;" onclick="showKPI('revenue')"><div class="kv" id="k6">-</div><div class="kl">Recaptat EUR</div></div>
   <div class="kpi" style="cursor:pointer;" onclick="showKPI('individual')"><div class="kv" id="k7" style="color:var(--info,#1e40af)">-</div><div class="kl">Individuals</div></div>
   <div class="kpi" style="cursor:pointer;" onclick="showKPI('persons')"><div class="kv" id="k8">-</div><div class="kl">Total persones</div></div>
+  <div class="kpi" style="cursor:pointer;" onclick="showKPI('incomplete')"><div class="kv r" id="k9">-</div><div class="kl">Jug. incompl.</div></div>
+  <div class="kpi" style="cursor:pointer;" onclick="showKPI('stalles')"><div class="kv" id="k10" style="color:var(--warn)">-</div><div class="kl">Sense talles</div></div>
 </div>
 <div id="kpi-panel" style="display:none;background:#fff;border:2px solid #c8102e;border-radius:12px;margin:14px 20px;box-shadow:0 4px 12px rgba(0,0,0,.1);overflow:hidden;">
   <div style="background:#c8102e;color:white;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;">
@@ -198,18 +203,42 @@ function pinClear(){pinBuf='';updateDots();}
   <div id="catdetail-body"></div>
 </div>
 
+<div class="view" id="view-jugadors">
+  <div class="ctrls">
+    <div class="sw"><span class="si">&#128269;</span><input type="text" id="jq" placeholder="Cerca jugador, equip..."/></div>
+    <select id="jfcat"><option value="">Totes categories</option></select>
+    <select id="jfdia"><option value="">Tots els dies</option><option value="6/6">Dissabte 6/6</option><option value="7/6">Diumenge 7/6</option></select>
+    <select id="jfgen"><option value="">Tot</option><option value="F">Femeni</option><option value="M">Masculi</option></select>
+  </div>
+  <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh);">
+    <div style="padding:9px 13px;border-bottom:1px solid var(--border);font-size:12px;color:var(--text2);" id="jcount"></div>
+    <div id="jugadors-body"></div>
+  </div>
+</div>
+
 <div class="view" id="view-list">
   <div class="ctrls">
-    <div class="sw"><span class="si">&#128269;</span><input type="text" id="sq" placeholder="Cerca equip, capita, ID..."/></div>
+    <div class="sw"><span class="si">&#128269;</span><input type="text" id="sq" placeholder="Cerca equip, jugador, email, telèfon, club..."/></div>
     <select id="fcat"><option value="">Totes categories</option></select>
     <select id="fgen"><option value="">Tot</option><option value="F">Femeni</option><option value="M">Masculi</option></select>
     <select id="fst"><option value="">Tots estats</option><option value="confirmed">Confirmats</option><option value="pending_payment">Pendent pag.</option><option value="pending_proof">Sense just.</option></select>
+    <select id="fdia"><option value="">Tots els dies</option><option value="6/6">Dissabte 6/6</option><option value="7/6">Diumenge 7/6</option></select>
+    <select id="fclub"><option value="">Tots els clubs</option><option value="cbgb">CB Grup Barna</option><option value="extern">Externs</option><option value="pendent">Pendent confirmar</option></select>
+    <button id="sort-btn" onclick="toggleSort()" style="white-space:nowrap;">&#8645; Cat</button>
     <button class="pr" onclick="exportCSV()">CSV</button>
   </div>
   <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh);">
     <div style="padding:9px 13px;border-bottom:1px solid var(--border);font-size:12px;color:var(--text2);" id="lcount"></div>
     <div id="elist"></div>
   </div>
+</div>
+
+<div class="view" id="view-talles">
+  <div id="talles-body"></div>
+</div>
+
+<div class="view" id="view-clubs">
+  <div id="clubs-body"></div>
 </div>
 
 
@@ -232,6 +261,7 @@ function pinClear(){pinBuf='';updateDots();}
     <div style="margin-bottom:10px;">
       <select id="cfcat" onchange="updateCI()" style="margin-right:7px;margin-bottom:6px;"><option value="">Totes categories</option></select>
       <select id="cfst" onchange="updateCI()" style="margin-bottom:6px;"><option value="">Tots estats</option><option value="confirmed">Confirmats</option><option value="pending_payment">Pendent pag.</option><option value="pending_proof">Sense just.</option></select>
+      <select id="cfdia" onchange="updateCI()" style="margin-bottom:6px;margin-left:7px;"><option value="">Tots els dies</option><option value="6/6">Dissabte 6/6</option><option value="7/6">Diumenge 7/6</option></select>
     </div>
     <div style="font-size:12px;color:var(--text2);margin-bottom:10px;" id="ci">-</div>
     <div style="display:flex;gap:6px;flex-wrap:wrap;">
@@ -242,6 +272,14 @@ function pinClear(){pinBuf='';updateDots();}
     </div>
   </div>
   <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--r);padding:14px;box-shadow:var(--sh);">
+    <div class="sec-title" style="margin-bottom:6px;">Templates ràpids</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">
+      <button onclick="setTemplate('justificant')" style="font-size:11px;padding:5px 10px;">Falta justificant</button>
+      <button onclick="setTemplate('jugador')" style="font-size:11px;padding:5px 10px;">Falta jugador/a</button>
+      <button onclick="setTemplate('talla')" style="font-size:11px;padding:5px 10px;">Confirma talla</button>
+      <button onclick="setTemplate('info')" style="font-size:11px;padding:5px 10px;">Info dia torneig</button>
+      <button onclick="setTemplate('confirmacio')" style="font-size:11px;padding:5px 10px;">Confirmació definitiva</button>
+    </div>
     <div class="sec-title">Missatge (usa [NOM] [EQUIP] [ID] [DIA])</div>
     <div style="margin-bottom:8px;">
       <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:3px;">ASSUMPTE</label>
@@ -438,11 +476,11 @@ var CC = {
   "Cadet F":      {limit:8,  dia:"7/6", gen:"F"},
   "Junior M":     {limit:4,  dia:"7/6", gen:"M"},
   "Junior F":     {limit:4,  dia:"7/6", gen:"F"},
-  "Senior Pro M": {limit:6,  dia:"6/6", gen:"M"},
-  "Senior Pro F": {limit:6,  dia:"6/6", gen:"F"},
-  "Senior Magics": {limit:6,  dia:"7/6", gen:"M"},
-  "Amateur M":    {limit:6,  dia:"6/6", gen:"M"},
-  "Amateur F":    {limit:6,  dia:"6/6", gen:"F"}
+  "Senior Pro M": {limit:20,  dia:"6/6", gen:"M"},
+  "Senior Pro F": {limit:20,  dia:"6/6", gen:"F"},
+  "Senior Magics": {limit:20,  dia:"7/6", gen:"M"},
+  "Amateur M":    {limit:20,  dia:"6/6", gen:"M"},
+  "Amateur F":    {limit:20,  dia:"6/6", gen:"F"}
 };
 
 var DATA = [
@@ -650,15 +688,17 @@ function esc(s) {
 
 // Tabs
 function sv(v) {
-  ['cats','horaris','list','contact','cobros'].forEach(function(n,i){
+  ['cats','horaris','jugadors','list','talles','clubs','contact','cobros'].forEach(function(n,i){
     document.getElementById('view-'+n).className = 'view'+(v===n?' on':'');
     document.querySelectorAll('.tab')[i].className = 'tab'+(v===n?' on':'');
   });
   if(v==='list') renderList();
   if(v==='cobros') renderCobros();
   if(v==='contact') updateCI();
-  if(v==='cobros') renderCobros();
   if(v==='horaris') renderHoraris();
+  if(v==='jugadors') renderJugadors();
+  if(v==='talles') renderTalles();
+  if(v==='clubs') renderClubs();
 }
 
 var _horariDay = 7;
@@ -2033,9 +2073,9 @@ function renderCats() {
   var cats = getCats();
   var names = Object.keys(cats).sort();
   var grid = document.getElementById('catgrid');
-  
-  // Poblar selects
-  ['fcat','cfcat'].forEach(function(sid){
+
+  // Poblar selects de categories
+  ['fcat','cfcat','jfcat'].forEach(function(sid){
     var sel=document.getElementById(sid);
     if(!sel) return;
     sel.innerHTML='<option value="">Totes categories</option>';
@@ -2128,36 +2168,79 @@ function closeDet() {
 }
 
 // Llista equips
+var _listSort = 'cat';
+var _sortCycle = ['cat','nom','eur','stat'];
+var _sortLabels = {cat:'Cat',nom:'Nom',eur:'€',stat:'Estat'};
+function toggleSort() {
+  var idx = _sortCycle.indexOf(_listSort);
+  _listSort = _sortCycle[(idx+1) % _sortCycle.length];
+  var btn = document.getElementById('sort-btn');
+  if(btn) btn.textContent = '⇅ ' + _sortLabels[_listSort];
+  renderList();
+}
 function getLF() {
   var q=document.getElementById('sq').value.toLowerCase().trim();
   var fc=document.getElementById('fcat').value;
   var fg=document.getElementById('fgen').value;
   var fs=document.getElementById('fst').value;
-  return DATA.filter(function(d){
+  var fd=document.getElementById('fdia') ? document.getElementById('fdia').value : '';
+  var fcl=document.getElementById('fclub') ? document.getElementById('fclub').value : '';
+  var result = DATA.filter(function(d){
     if(fc&&d.cat!==fc) return false;
     if(fg&&d.gen!==fg) return false;
     if(fs&&d.status!==fs) return false;
+    if(fd&&d.dia!==fd) return false;
+    if(fcl&&d.club!==fcl) return false;
     if(!q) return true;
-    return (d.team+' '+d.cap+' '+d.id+' '+(d.email||'')).toLowerCase().indexOf(q)>=0;
+    var jugStr = (d.jugadors||[]).filter(function(j){return j;}).join(' ');
+    var clubStr = (d.clubs||[]).filter(function(c){return c;}).join(' ');
+    var haystack = (d.team+' '+d.cap+' '+d.id+' '+(d.email||'')+' '+(d.phone||'')+' '+jugStr+' '+clubStr+' '+(d.club||'')).toLowerCase();
+    return haystack.indexOf(q)>=0;
   });
+  result.sort(function(a,b){
+    if(_listSort==='nom') return (a.team||'').localeCompare(b.team||'');
+    if(_listSort==='eur') return (b.total||0)-(a.total||0);
+    if(_listSort==='stat') return (a.status||'').localeCompare(b.status||'');
+    // cat (default)
+    if(a.cat!==b.cat) return (a.cat||'').localeCompare(b.cat||'');
+    return (a.team||'').localeCompare(b.team||'');
+  });
+  return result;
 }
 function renderList() {
   var f=getLF();
-  document.getElementById('elist').querySelectorAll('[data-lid]').forEach(function(el){el.addEventListener('click',function(){showTeam(this.getAttribute('data-lid'));});});
   document.getElementById('lcount').textContent='Mostrant '+f.length+' de '+DATA.length;
   document.getElementById('elist').innerHTML=f.map(function(d){
     var gb=d.gen==='F'?'<span class="badge" style="background:var(--fem-bg);color:var(--fem);">F</span>':'<span class="badge" style="background:var(--masc-bg);color:var(--masc);">M</span>';
+    var jugFilled = (d.jugadors||[]).filter(function(j){return j;}).length;
+    var jugTotal = d.jug||4;
+    var jugPct = jugTotal>0 ? jugFilled/jugTotal : 1;
+    var jugColor = jugPct>=1 ? 'var(--ok)' : jugPct>=0.75 ? 'var(--warn)' : 'var(--err)';
+    var jugLabel = '<span style="font-size:10px;font-weight:700;color:'+jugColor+';">'+jugFilled+'/'+jugTotal+' jug.</span>';
+    var badges = '';
+    if(!d.individual && jugFilled < jugTotal) {
+      badges += '<span class="badge" style="background:var(--err-bg);color:var(--err);">⚠ Jug. incompl.</span>';
+    }
+    if(!d.proof) {
+      badges += '<span class="badge" style="background:var(--warn-bg);color:var(--warn);">○ Sense just.</span>';
+    }
     return '<div class="er" data-lid="'+esc(d.id)+'" style="cursor:pointer;">'+
-      '<div style="min-width:150px;"><div style="font-weight:600;">'+esc(d.team)+'</div>'+
-      '<div style="font-size:11px;color:var(--text2);">'+esc(d.cap)+(d.phone?' - '+esc(d.phone):'')+'</div></div>'+
+      '<div style="min-width:150px;flex:1;"><div style="font-weight:600;">'+esc(d.team)+'</div>'+
+      '<div style="font-size:11px;color:var(--text2);">'+esc(d.cap)+(d.phone?' - '+esc(d.phone):'')+'</div>'+
+      (badges?'<div style="margin-top:3px;display:flex;gap:4px;flex-wrap:wrap;">'+badges+'</div>':'')+
+      '</div>'+
       '<div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap;">'+
       gb+'<span class="badge bn">'+esc(d.cat)+'</span>'+
       '<span class="badge '+SC[d.status]+'">'+SL[d.status]+'</span>'+
+      jugLabel+
       '<span style="font-size:11px;color:var(--text3);">'+esc(d.id)+'</span>'+
       '</div></div>';
   }).join('');
+  document.getElementById('elist').querySelectorAll('[data-lid]').forEach(function(el){
+    el.addEventListener('click',function(){showTeam(this.getAttribute('data-lid'));});
+  });
 }
-['sq','fcat','fgen','fst'].forEach(function(id){
+['sq','fcat','fgen','fst','fdia','fclub'].forEach(function(id){
   var el=document.getElementById(id);
   if(el) el.addEventListener('input',renderList);
 });
