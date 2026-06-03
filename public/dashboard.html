@@ -2966,7 +2966,93 @@ function escH_(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-function buildFitxaHtml_(d, qrSrc) {
+var FRASES_BENVINGUDA = [
+  "Benvinguts al Westfield Glòries! Que el bàsquet us uneixi i la diversió sigui el vostre trofeu. Molta sort! 🏀",
+  "¡Bienvenidos! Habéis entrenado para este momento. Disfrutadlo al máximo y que gane el mejor equipo. ¡Suerte! 🌟",
+  "Avui el Clot és la vostra pista! Jugueu amb cor, somrieu i feu-ho per vosaltres. Molta sort, equip! 🔥",
+  "¡El esfuerzo de meses llega hoy! Disfrutad cada segundo en pista. ¡Mucha suerte y que lo disfrutéis! 💪",
+  "Benvinguts a la 4a edició! Sou part d'un torneig especial. Gaudiu, competiu i deixeu-ho tot a la pista. 🏆",
+  "¡Gracias por estar aquí! Barcelona os da la bienvenida. Jugad con alegría y que el balón ruede a vuestro favor. 🎉",
+  "Que cada cistella valgui un record! Benvinguts al 3x3 Westfield Glòries. Molta sort i gaudiu-ne! 🌈",
+  "¡Bienvenidos al mejor 3x3 de Barcelona! Hoy sois los protagonistas. ¡Suerte y a disfrutar! ✨",
+  "Avui escriviu la vostra pàgina al torneig. Joc net, passió i molt d'equip. Molta sort! 🤝",
+  "¡El Clot os espera con los brazos abiertos! Jugad sin miedo, con ganas y disfrutad cada canasta. ¡Suerte! 🏅",
+  "Benvinguts, campions! Tant si guanyeu com si no, avui sou herois per haver-hi estat. Molta sort! 💛",
+  "¡Hoy el Westfield Glòries es vuestro! Defended cada balón como si fuera el último. ¡Mucha suerte! 🔴",
+  "Que la pilota circuli, que el joc flueixi i que la diversió no s'aturi. Benvinguts i molta sort! 🏀",
+  "¡Bienvenidos a la fiesta del 3x3! Aquí todos somos uno. Jugad con alma y disfrutad el momento. ¡Suerte! 🎊",
+  "Avui el barri del Clot vibra per vosaltres. Doneu-ho tot i que el bàsquet us deixi un somriure. Molta sort! 😊",
+  "¡Cada partido es una oportunidad! Aprovechadla, jugad juntos y que la victoria os acompañe. ¡Ánimo! 💥",
+  "Benvinguts al cor de Barcelona! Jugueu per vosaltres, per l'equip i per l'amor al bàsquet. Molta sort! ❤️",
+  "¡Lo mejor del 3x3 es que sois cuatro, pero jugáis como uno! Mucha suerte y a disfrutarlo. 🙌",
+  "Que el vent del Clot us porti sort avui! Competiu, rieu i feu el millor 3x3 de la vostra vida. 🌬️",
+  "¡Bienvenidos! Cada punto que metáis hoy lo recordaréis siempre. ¡A por todas y mucha suerte! 🎯",
+  "Avui és el vostre dia! CB Grup Barna us dóna la benvinguda amb tot el cor. Gaudiu i molta sort! 🏠",
+  "¡El esfuerzo, el sacrificio y los entrenamientos llegan hoy a su recompensa! ¡Mucha suerte, equipo! 🥇",
+  "Benvinguts al 3x3 Westfield Glòries 2026! Que cada tir sigui un record i cada derrota una lliçó. Molta sort! 📚",
+  "¡Barcelona os ha visto llegar y hoy os verá brillar! Jugad con corazón. ¡Mucha suerte! ⭐",
+  "Que l'energia d'avui us carregui per a tota la temporada. Benvinguts i molta sort, equip! ⚡",
+  "¡Sois lo mejor del 3x3! Demostradlo hoy en pista. Cada canasta cuenta. ¡Mucha suerte y ánimo! 🔥",
+  "Gràcies per ser part d'aquesta festa! El bàsquet 3x3 és millor gràcies a equips com el vostre. Molta sort! 🎈",
+  "¡Gracias por elegirnos! Este torneig es vuestro tanto como nuestro. ¡Que lo disfrutéis al máximo! 🤜🤛",
+  "Avui les regles son simples: passió, equip i diversió. Tot el que necessiteu per guanyar. Molta sort! 🎮",
+  "¡El 3x3 es puro instinto! Confiad en vosotros, jugad rápido y disfrutad cada segundo. ¡Suerte! ⏱️",
+  "Benvinguts al Westfield! Sabem que heu treballat dur per arribar aquí. Avui és el vostre moment. Molta sort! 💪",
+  "¡Hoy Glòries es la cancha más bonita de Barcelona! Y vosotros la hacéis brillar. ¡Mucha suerte! 🌟",
+  "Que el bàsquet us connecti avui com mai. Equip, cor i passió. Això és el 3x3! Benvinguts i molta sort! 🔗",
+  "¡Cada tiro al aro es una historia! Escribid la vuestra hoy. ¡Mucha suerte, campeones! 📖",
+  "Gràcies per fer gran aquest torneig! El vostre equip fa que el 3x3 Westfield Glòries sigui especial. Molta sort! 🏅",
+  "¡Bienvenidos a la mejor pista de Barcelona por un día! Jugad sin límites. ¡Mucha suerte! 🚀",
+  "Avui no hi ha rivals, només jugadors apassionats. Gaudir és guanyar. Benvinguts i molta sort! 🕊️",
+  "¡El balón no entiende de nervios, solo de ganas! Tened muchas ganas hoy. ¡Mucha suerte! 🏀",
+  "Benvinguts, esportistes! El CB Grup Barna és orgullós de tenir-vos aquí. Molta sort i bon joc! 🏛️",
+  "¡Hoy el viento juega a vuestro favor! Aprovechadlo, disfrutadlo y ganad con estilo. ¡Suerte! 🌊",
+  "Que cada minut de joc valgui la pena. Gaudiu, competiu i torneu a casa amb un gran record. Molta sort! 📸",
+  "¡Bienvenidos al torneig más chulo de BCN! Demostrad por qué estáis aquí. ¡Mucha suerte, equipo! 😎",
+  "Avui el Districte de Sant Martí és el vostre camp de joc. Feu-ne el millor ús possible. Molta sort! 🗺️",
+  "¡El 3x3 es velocidad, intuición y equipo! Los tres los tenéis. ¡A demostrarlo! ¡Mucha suerte! ⚡",
+  "Benvinguts a la festa del bàsquet! Quatre jugadors, una pilota i moltes ganes. Perfecte. Molta sort! 🎪",
+  "¡Gracias por traer vuestra energía hoy! El torneig es mejor con equipos como el vuestro. ¡Suerte! 💫",
+  "Que la cistella se us faci gran avui! Benvinguts al 3x3 Westfield Glòries 2026. Molta sort! 🎯",
+  "¡Bienvenidos! Hoy no importa de dónde venís, sino adónde vais juntos. ¡Mucha suerte en pista! 🛤️",
+  "Avui la pista us espera. El vostre moment ha arribat. Jugueu sense por i amb el cor obert. Molta sort! 🦁",
+  "¡El mejor equipo no es el que más gana, es el que más disfruta! ¡A disfrutar hoy! ¡Mucha suerte! 🎊",
+  "Benvinguts al millor torneig 3x3 de Catalunya! Avui sou les estrelles. Gaudiu i molta sort! ⭐",
+  "¡Cuatro corazones, un objetivo! Jugad como uno y el resultado llegará. ¡Mucha suerte, equipo! 💓",
+  "Avui el bàsquet parla, i parla de vosaltres. Que la vostra historia sigui memorable. Molta sort! 📣",
+  "¡Bienvenidos al Westfield Glòries! Que cada canasta sea un grito de alegría. ¡Mucha suerte hoy! 🎺",
+  "Gràcies per ser aquí! Sense equips com el vostre no hi hauria torneig. Sou imprescindibles. Molta sort! 🙏",
+  "¡El 3x3 es pura magia cuando el equipo funciona! Haced esa magia hoy. ¡Mucha suerte! 🪄",
+  "Avui Barcelona viu el bàsquet gràcies a vosaltres. Que la pilota i la sort us acompanyin. Molta sort! 🌆",
+  "¡Bienvenidos! No hay excusas, solo canastas por meter. ¡A por ellas y mucha suerte, equipo! 🎯",
+  "Que el joc flueixi, que l'equip somrigui i que la victòria sapi on és casa seva avui. Molta sort! 🏡",
+  "¡Hoy sois cuatro, pero juntos sois invencibles! ¡Mucha suerte y a disfrutar del 3x3! 🦾",
+  "Benvinguts a la 4a edició del torneig! Cada any creix gràcies a equips com el vostre. Molta sort! 📈",
+  "¡El trabajo en equipo hace el sueño posible! Hoy demostradlo en la pista. ¡Mucha suerte! 🌙",
+  "Que avui la sort i el talent vagin de la mà. Benvinguts al 3x3 Westfield Glòries. Molta sort! 🤞",
+  "¡Bienvenidos, guerreros del 3x3! Hoy la pista es vuestro campo de batalla. ¡Mucha suerte! ⚔️",
+  "Avui el millor de vosaltres surtrà a la llum. Ho sabem perquè heu arribat fins aquí. Molta sort! 💡",
+  "¡Que el balón entre, que el equipo brille y que la diversión nunca pare! ¡Mucha suerte hoy! 🎉",
+  "Benvinguts al cor del barri del Clot! Aquí el bàsquet és religió. Celebreu-ho junts. Molta sort! ⛪",
+  "¡Gracias por vuestro esfuerzo y dedicación! Hoy es vuestro día. ¡A brillar y mucha suerte! ✨",
+  "Avui sou part d'un torneig que deixa petjada al barri. Gràcies per ser-hi. Molta sort i bon joc! 👣",
+  "¡Bienvenidos a la mejor cancha de BCN por un día! Cada segundo cuenta. ¡Mucha suerte, equipo! ⏰",
+  "Que el 3x3 Westfield Glòries 2026 sigui un gran record per a tot l'equip. Benvinguts i molta sort! 📷",
+  "¡El ritmo del 3x3 es vuestro! Rápido, intenso y divertido. ¡Disfrutadlo al máximo! ¡Suerte! 🎵",
+  "Benvinguts a Glòries! Aquí es fan campeones, però sobretot, aquí es passa una gran estona. Molta sort! 🏆",
+  "¡Hoy cada uno de vosotros tiene la oportunidad de ser memorable! ¡Aprovechadla! ¡Mucha suerte! 🌠",
+  "Avui el vostre nom ressona a les pistes del Westfield. Feu-lo ressonar amb força i orgull. Molta sort! 📢",
+  "¡El 3x3 premia la valentía! Atreveos, lanzad, disfrutad. ¡Mucha suerte y a por todas! 🦅",
+  "Gràcies per fer que el bàsquet 3x3 creixi any rere any. Sou els protagonistes d'aquesta historia. Molta sort! 📚",
+  "¡Que este torneig sea el comienzo de algo grande para vuestro equipo! ¡Mucha suerte y ánimo! 🚀",
+  "Avui el bàsquet i el barri es fusionen gràcies a vosaltres. Que la festa duri fins al xiulet final. Molta sort! 🎊"
+];
+
+function getFrase_(teamIndex) {
+  return FRASES_BENVINGUDA[teamIndex % FRASES_BENVINGUDA.length];
+}
+
+function buildFitxaHtml_(d, qrSrc, teamIdx) {
   var jugadors = d.jugadors || [];
   var talles   = d.talles   || [];
   var isPagat  = d.status === 'confirmed';
@@ -3046,6 +3132,11 @@ function buildFitxaHtml_(d, qrSrc) {
     // ══ JUGADORS ════════════════════════════════════════════════════
     jugsHtml +
 
+    // ══ FRASE BENVINGUDA ════════════════════════════════════════════
+    '<div class="frase-wrap">' +
+      '<span class="frase-txt">' + escH_(getFrase_(teamIdx)) + '</span>' +
+    '</div>' +
+
     // ══ FOOTER ══════════════════════════════════════════════════════
     '<div class="card-ftr">' +
       '<span class="ftr-id">ID: ' + escH_(d.id) + '</span>' +
@@ -3077,7 +3168,7 @@ function printFitxes() {
   Promise.all(promises).then(function(qrUrls) {
     var cardsHtml = '', pageCards = '';
     teams.forEach(function(d, i) {
-      pageCards += buildFitxaHtml_(d, qrUrls[i]);
+      pageCards += buildFitxaHtml_(d, qrUrls[i], i);
       if ((i + 1) % 4 === 0 || i === teams.length - 1) {
         var n = (i + 1) % 4;
         if (n > 0 && i === teams.length - 1) {
@@ -3156,6 +3247,8 @@ function printFitxes() {
       // ─ Footer ─
       '.card-ftr{border-top:1px solid #f0ece4;padding:.8mm 2.5mm;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;background:#fdfbf8}',
       '.ftr-id{font-size:5pt;font-family:monospace;color:#c8932a;letter-spacing:.5px}',
+      '.frase-wrap{background:linear-gradient(90deg,#1a0a0e,#2d1218);border-top:1px solid #3d1822;padding:5px 10px;flex-shrink:0}',
+      '.frase-txt{font-size:6.5pt;color:rgba(255,255,255,.75);font-style:italic;line-height:1.35;display:block}',
 
       // ─ Barra pantalla ─
       '.top-bar{background:linear-gradient(90deg,#1a0a0e,#3d1822);color:#fff;padding:10px 20px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;position:sticky;top:0;z-index:99;border-bottom:3px solid #c8932a}',
