@@ -104,6 +104,14 @@ textarea.tmpl{width:100%;height:130px;border:1px solid var(--border);border-radi
 .pin-btn:active{background:#c8102e}
 .pin-err{color:#ef4444;font-size:12px;margin-top:8px;min-height:18px}
 #pin-lock-btn{position:fixed;top:12px;right:14px;z-index:10000;background:rgba(200,16,46,.15);border:1px solid rgba(200,16,46,.3);color:#c8102e;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;display:none}
+@keyframes pulse-live{0%,100%{opacity:1}50%{opacity:.35}}
+.live-dot{width:7px;height:7px;border-radius:50%;background:#4ade80;display:inline-block;animation:pulse-live 1.4s ease-in-out infinite;flex-shrink:0}
+#live-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(74,222,128,.18);border:1px solid rgba(74,222,128,.45);color:#4ade80;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;transition:opacity .3s}
+#live-countdown{font-size:11px;color:rgba(255,255,255,.55);min-width:40px}
+#pause-btn{background:rgba(255,255,255,.12);color:white;border:1px solid rgba(255,255,255,.25);padding:4px 9px;border-radius:20px;cursor:pointer;font-size:13px;line-height:1;font-family:inherit}
+#pause-btn:hover{background:rgba(255,255,255,.22)}
+@keyframes slideDown{from{transform:translateY(-100%);opacity:0}to{transform:translateY(0);opacity:1}}
+#new-teams-banner{animation:slideDown .3s ease}
 </style>
 </head>
 <body>
@@ -151,7 +159,16 @@ function pinClear(){pinBuf='';updateDots();}
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
 <div class="topbar">
   <div><h1>3x3 Westfield Glories 2026</h1><div class="sub">CB Grup Barna - Dashboard inscripcions</div></div>
-  <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap;"><div class="cd" id="cd">...</div><button id="refresh-btn" onclick="loadFromSheet()" style="background:rgba(255,255,255,.15);color:white;border:1px solid rgba(255,255,255,.3);padding:5px 12px;border-radius:20px;cursor:pointer;font-size:12px;font-weight:600;">&#8635; Actualitzar</button><button onclick="exportXLSX()" style="background:#16a34a;color:white;border:1px solid #15803d;padding:5px 14px;border-radius:20px;cursor:pointer;font-size:12px;font-weight:700;">&#128202; Descarregar Excel</button><button onclick="printFitxes()" style="background:#7c3aed;color:white;border:1px solid #6d28d9;padding:5px 14px;border-radius:20px;cursor:pointer;font-size:12px;font-weight:700;">&#128424; Fitxes PDF</button><span id="api-status" style="font-size:11px;opacity:.8;"></span></div>
+  <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap;">
+    <div class="cd" id="cd">...</div>
+    <span id="live-badge"><span class="live-dot"></span>EN VIU</span>
+    <span id="live-countdown"></span>
+    <button id="pause-btn" onclick="toggleAutoRefresh()" title="Pausar auto-refresc">&#9646;&#9646;</button>
+    <button id="refresh-btn" onclick="loadFromSheet()" style="background:rgba(255,255,255,.15);color:white;border:1px solid rgba(255,255,255,.3);padding:5px 12px;border-radius:20px;cursor:pointer;font-size:12px;font-weight:600;">&#8635; Ara</button>
+    <button onclick="exportXLSX()" style="background:#16a34a;color:white;border:1px solid #15803d;padding:5px 14px;border-radius:20px;cursor:pointer;font-size:12px;font-weight:700;">&#128202; Excel</button>
+    <button onclick="printFitxes()" style="background:#7c3aed;color:white;border:1px solid #6d28d9;padding:5px 14px;border-radius:20px;cursor:pointer;font-size:12px;font-weight:700;">&#128424; Fitxes</button>
+    <span id="api-status" style="font-size:11px;opacity:.8;"></span>
+  </div>
 </div>
 <div class="tabs">
   <div class="tab on" onclick="sv('cats')">Categories</div>
@@ -348,6 +365,16 @@ var DATA_LOADED = false;
 var LAST_UPDATE = null;
 
 // ============================================================
+// AUTO-REFRESH EN VIU
+// ============================================================
+var _autoEnabled  = true;
+var _autoTimer    = null;
+var _cdTimer      = null;
+var _prevCount    = 0;
+var _lastTs       = 0;
+var AUTO_MS       = 30000; // 30 segons
+
+// ============================================================
 // CÀRREGA DE DADES EN VIU
 // ============================================================
 function normalTeam_(s) {
@@ -438,7 +465,13 @@ function loadFromSheet() {
 
       DATA_LOADED = true;
       LAST_UPDATE = new Date();
-      document.getElementById('refresh-btn').textContent = '↻ Refresca';
+      _lastTs = Date.now();
+      var curCount = DATA.filter(function(d){ return !d.individual; }).length;
+      if (_prevCount > 0 && curCount > _prevCount) {
+        showNewTeamsBanner(curCount - _prevCount);
+      }
+      _prevCount = curCount;
+      document.getElementById('refresh-btn').textContent = '↻ Ara';
       document.getElementById('refresh-btn').disabled = false;
       kpis(); renderCatDetail(); renderCats();
       if (document.getElementById('view-list').classList.contains('on')) renderList();
@@ -592,7 +625,11 @@ var DATA = [
   {id:"T3X3-2026-QGT88",team:"PANTHERS 3X3",cat:"Senior Pro M",gen:"M",dia:"6/6",cap:"Gerard Martinez",email:"ariigelii@gmail.com",phone:"34657477783",jug:4,jugadors:["Gerard Martinez","Ongu","Ferran Llorens","Rafa"],talles:["XL","","",""],anys:["2001","2002","2002","1999"],clubs:["","","",""],status:"confirmed",proof:false,total:85,club:"extern",note:"Inscrit 2/06 18:15. Senior Pro M. Gerard XL, Ongu/Ferran/Rafa sense talla. Sense justificant."},
   {id:"T3X3-2026-TLCTS",team:"LAS PANTERAS",cat:"Senior Pro M",gen:"M",dia:"6/6",cap:"Herson Miguel Lorenzo Cruz",email:"lorenzocruzhersonmiguel@gmail.com",phone:"34622424106",jug:4,jugadors:["Marti Corbera","Albert Garrido","Aly Keita","Herson Lorenzo"],talles:["L","M","XL","M"],anys:["2004","2004","2004","2004"],clubs:["","","",""],status:"confirmed",proof:false,total:85,club:"extern",note:"Inscrit 2/06 18:27. Senior Pro M. Tots 2004. Talles L,M,XL,M. Sense justificant."},
   {id:"T3X3-2026-EQTRN",team:"rober3x3",cat:"Senior Pro M",gen:"M",dia:"6/6",cap:"Gerard Grifol",email:"gerardgri51@gmail.com",phone:"685219333",jug:3,jugadors:["Gerard Grifol","Iker Montero","Adria Aragones"],talles:["S","L","XL"],anys:["2006","2003","2001"],clubs:["","",""],status:"confirmed",proof:false,total:85,club:"extern",note:"Inscrit 2/06 18:50. Senior Pro M. 3 jugadors. Talles S,L,XL. Sense justificant."},
-  {id:"T3X3-2026-3GJBY",team:"PANTHERS 3X3 F",cat:"Senior Pro F",gen:"F",dia:"6/6",cap:"Ariadna Geli Perez",email:"ariigelii@gmail.com",phone:"34637607074",jug:4,jugadors:["Ari Geli","Kendall Martin","Adama Badjie","Malak Mohamed"],talles:["","","",""],anys:["2002","2004","2005","2005"],clubs:["","","",""],status:"confirmed",proof:false,total:85,club:"extern",note:"Inscrit 2/06 18:17. Senior Pro F. Sense talles ni justificant."}
+  {id:"T3X3-2026-3GJBY",team:"PANTHERS 3X3 F",cat:"Senior Pro F",gen:"F",dia:"6/6",cap:"Ariadna Geli Perez",email:"ariigelii@gmail.com",phone:"34637607074",jug:4,jugadors:["Ari Geli","Kendall Martin","Adama Badjie","Malak Mohamed"],talles:["","","",""],anys:["2002","2004","2005","2005"],clubs:["","","",""],status:"confirmed",proof:false,total:85,club:"extern",note:"Inscrit 2/06 18:17. Senior Pro F. Sense talles ni justificant."},
+  {id:"T3X3-2026-QGT88",team:"PANTHERS 3X3",cat:"Senior Pro M",gen:"M",dia:"6/6",cap:"Gerard Martinez",email:"ariigelii@gmail.com",phone:"34657477783",jug:4,jugadors:["Gerard Martinez","Ongu","Ferran Llorens","Rafa"],talles:["XL","","",""],anys:["2001","2002","2002","1999"],clubs:["","","",""],status:"confirmed",proof:false,total:85,club:"extern",note:"Inscrit 2/06. Sense justificant."},
+  {id:"T3X3-2026-TLCTS",team:"LAS PANTERAS",cat:"Senior Pro M",gen:"M",dia:"6/6",cap:"Herson Miguel Lorenzo Cruz",email:"lorenzocruzhersonmiguel@gmail.com",phone:"34622424106",jug:4,jugadors:["Marti Corbera","Albert Garrido","Aly Keita","Herson Lorenzo"],talles:["L","M","XL","M"],anys:["2004","2004","2004","2004"],clubs:["","","",""],status:"confirmed",proof:false,total:85,club:"extern",note:"Inscrit 2/06. Tots 2004. Talles L,M,XL,M. Sense justificant."},
+  {id:"T3X3-2026-EQTRN",team:"rober3x3",cat:"Senior Pro M",gen:"M",dia:"6/6",cap:"Gerard Grifol",email:"gerardgri51@gmail.com",phone:"685219333",jug:3,jugadors:["Gerard Grifol","Iker Montero","Adria Aragones"],talles:["S","L","XL"],anys:["2006","2003","2001"],clubs:["","",""],status:"confirmed",proof:false,total:85,club:"extern",note:"Inscrit 2/06. 3 jugadors. Talles S,L,XL. Sense justificant."},
+  {id:"T3X3-2026-3GJBY",team:"PANTHERS 3X3 F",cat:"Senior Pro F",gen:"F",dia:"6/6",cap:"Ariadna Geli Perez",email:"ariigelii@gmail.com",phone:"34637607074",jug:4,jugadors:["Ari Geli","Kendall Martin","Adama Badjie","Malak Mohamed"],talles:["","","",""],anys:["2002","2004","2005","2005"],clubs:["","","",""],status:"confirmed",proof:false,total:85,club:"extern",note:"Inscrit 2/06. Senior Pro F. Sense talles ni justificant."}
 ];
 
 
