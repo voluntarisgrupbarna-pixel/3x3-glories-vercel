@@ -3081,18 +3081,33 @@ function buildFitxaHtml_(d, qrSrc, teamIdx) {
     ? '<div class="qr-wrap"><img src="' + qrSrc + '" class="qr-img" alt="QR"/><div class="qr-lbl">Escanejar</div></div>'
     : '<div class="qr-wrap qr-empty">–</div>';
 
+  // Venue especial: Rambleta del Clot = mostrar Eix del Clot
+  var isRambleta = (horari.lloc || '').indexOf('Rambleta') !== -1;
+
   return '<div class="card">' +
 
-    // ══ BANNER FOSC: 4 logos + títol (estètica web 3x3) ════════════
+    // ══ STRIPE DE COLORS EIX DEL CLOT (8 diamants) ═════════════════
+    '<div class="eix-stripe">' +
+      '<span style="background:#c9a0cc"></span>' +
+      '<span style="background:#5ec0d8"></span>' +
+      '<span style="background:#a8cc40"></span>' +
+      '<span style="background:#f0dc18"></span>' +
+      '<span style="background:#f0a020"></span>' +
+      '<span style="background:#cc3828"></span>' +
+      '<span style="background:#e88c88"></span>' +
+      '<span style="background:#b8a888"></span>' +
+    '</div>' +
+
+    // ══ BANNER FOSC: logos + títol ══════════════════════════════════
     '<div class="banner">' +
       '<div class="banner-logos">' +
         '<img src="https://cbgrupbarna-3x3timechamber.com/logo-barna-hd.png" class="b-logo b-logo-cb" alt="CB Grup Barna"/>' +
         '<div class="b-sep"></div>' +
         '<img src="https://cbgrupbarna-3x3timechamber.com/logos/westfield.svg" class="b-logo" alt="Westfield"/>' +
         '<img src="https://cbgrupbarna-3x3timechamber.com/logos/timechamber.webp" class="b-logo" alt="Time Chamber"/>' +
-        '<img src="https://cbgrupbarna-3x3timechamber.com/logos/eix-clot.png" class="b-logo" alt="Eix del Clot"/>' +
+        '<img src="https://cbgrupbarna-3x3timechamber.com/logos/eix-clot-negatiu.svg" class="b-logo b-logo-eix" alt="Eix del Clot"/>' +
       '</div>' +
-      '<div class="banner-title">3×3 WESTFIELD GLÒRIES 2026</div>' +
+      '<div class="banner-title">3×3 WESTFIELD GL\xd2RIES 2026 &nbsp;·&nbsp; <span style="opacity:.6;font-size:5pt">Barri del Clot · Barcelona</span></div>' +
     '</div>' +
 
     // ══ FRANJA VERMELLA: badges + nom equip + QR ═══════════════════
@@ -3108,23 +3123,26 @@ function buildFitxaHtml_(d, qrSrc, teamIdx) {
       qrHtml +
     '</div>' +
 
-    // ══ HORARI ═════════════════════════════════════════════════════
+    // ══ HORARI (Rambleta = badge Eix del Clot) ══════════════════════
     (horari.hora || horari.lloc
-      ? '<div class="sched">' +
+      ? '<div class="sched' + (isRambleta ? ' sched-rambleta' : '') + '">' +
           (horari.hora ? '<span class="s-hora">' + escH_(horari.hora) + '</span>' : '') +
           (horari.hora && horari.lloc ? '<span class="s-dot">·</span>' : '') +
           (horari.lloc ? '<span class="s-lloc">' + escH_(horari.lloc) + '</span>' : '') +
+          (isRambleta
+            ? '<span class="eix-badge"><img src="https://cbgrupbarna-3x3timechamber.com/logos/eix-clot-oficial.png" class="eix-badge-logo" alt="Eix del Clot"/>Gr&agrave;cies!</span>'
+            : '') +
         '</div>'
       : '') +
 
     // ══ PAGAMENT ═══════════════════════════════════════════════════
     '<div class="' + (isPagat ? 'pag-ok' : 'pag-no') + '">' +
-      (isPagat ? '✓ PAGAMENT VERIFICAT' : '⚠ PENDENT DE PAGAMENT') +
+      (isPagat ? '&#10003; PAGAMENT VERIFICAT' : '&#9888; PENDENT DE PAGAMENT') +
     '</div>' +
 
     // ══ CAPITÀ ═════════════════════════════════════════════════════
     '<div class="cap-row">' +
-      '<span class="cap-lbl">Capità</span>' +
+      '<span class="cap-lbl">Capit&agrave;</span>' +
       '<span class="cap-nom">' + escH_(d.cap || '—') + '</span>' +
       (d.phone ? '<span class="cap-dot">·</span><span class="cap-tel">' + escH_(d.phone) + '</span>' : '') +
     '</div>' +
@@ -3135,6 +3153,14 @@ function buildFitxaHtml_(d, qrSrc, teamIdx) {
     // ══ FRASE BENVINGUDA ════════════════════════════════════════════
     '<div class="frase-wrap">' +
       '<span class="frase-txt">' + escH_(getFrase_(teamIdx)) + '</span>' +
+    '</div>' +
+
+    // ══ STRIP COL·LABORADORS ════════════════════════════════════════
+    '<div class="collab-strip">' +
+      '<span class="collab-lbl">Amb el suport de</span>' +
+      '<img src="https://cbgrupbarna-3x3timechamber.com/logos/eix-clot-oficial.png" class="collab-logo" alt="Eix del Clot"/>' +
+      '<img src="https://cbgrupbarna-3x3timechamber.com/logos/westfield.svg" class="collab-logo collab-wf" alt="Westfield"/>' +
+      '<img src="https://cbgrupbarna-3x3timechamber.com/logos/timechamber.webp" class="collab-logo" alt="Time Chamber"/>' +
     '</div>' +
 
     // ══ FOOTER ══════════════════════════════════════════════════════
@@ -3247,7 +3273,23 @@ function printFitxes() {
       // ─ Footer ─
       '.card-ftr{border-top:1px solid #f0ece4;padding:.8mm 2.5mm;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;background:#fdfbf8}',
       '.ftr-id{font-size:5pt;font-family:monospace;color:#c8932a;letter-spacing:.5px}',
-      '.frase-wrap{background:linear-gradient(90deg,#1a0a0e,#2d1218);border-top:1px solid #3d1822;padding:5px 10px;flex-shrink:0}',
+      // Eix del Clot stripe
+      '.eix-stripe{display:flex;height:2.5mm;flex-shrink:0}',
+      '.eix-stripe span{flex:1}',
+      // Logo Eix del Clot al banner: sense filtre (negatiu ja és blanc)
+      '.b-logo-eix{filter:none!important;height:6mm}',
+      // Horari Rambleta
+      '.sched-rambleta{background:#fff8f0;border-top:1.5px solid #f0a020;border-bottom:1.5px solid #f0a020}',
+      '.eix-badge{display:flex;align-items:center;gap:1.5mm;margin-left:auto;background:#fff;border:1px solid #ddd;border-radius:2mm;padding:.5mm 2mm;flex-shrink:0}',
+      '.eix-badge-logo{height:4mm;width:auto;object-fit:contain}',
+      '.eix-badge{font-size:6pt;font-weight:700;color:#555}',
+      // Col·laboradors strip
+      '.collab-strip{border-top:1px solid #f0ece4;padding:2mm 2.5mm;display:flex;align-items:center;gap:2mm;flex-shrink:0;background:#fdfbf8}',
+      '.collab-lbl{font-size:5.5pt;color:#bbb;text-transform:uppercase;letter-spacing:.5px;font-weight:700;white-space:nowrap;margin-right:1mm}',
+      '.collab-logo{height:4.5mm;width:auto;object-fit:contain;flex-shrink:0}',
+      '.collab-wf{filter:brightness(0);opacity:.5}',
+      // Frase
+      '.frase-wrap{background:linear-gradient(90deg,#1a0a0e,#2d1218);border-top:1px solid #3d1822;padding:4px 10px;flex-shrink:0}',
       '.frase-txt{font-size:6.5pt;color:rgba(255,255,255,.75);font-style:italic;line-height:1.35;display:block}',
 
       // ─ Barra pantalla ─
