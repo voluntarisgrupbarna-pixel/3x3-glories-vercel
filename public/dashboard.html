@@ -2970,8 +2970,8 @@ function buildFitxaHtml_(d, qrSrc) {
   var jugadors = d.jugadors || [];
   var talles   = d.talles   || [];
   var isPagat  = d.status === 'confirmed';
-  var diaLbl   = d.dia === '6/6' ? 'Dissabte 6 juny' : d.dia === '7/6' ? 'Diumenge 7 juny' : (d.dia || '');
-  var genLbl   = d.gen === 'F' ? '♀ Femeni' : '♂ Masculi';
+  var diaFull  = d.dia === '6/6' ? 'Dissabte 6 juny' : d.dia === '7/6' ? 'Diumenge 7 juny' : (d.dia || '');
+  var genLbl   = d.gen === 'F' ? '♀ FEMENÍ' : '♂ MASCULÍ';
   var horari   = CAT_HORARI[d.cat] || {};
   var catColor = horari.color || '#c8102e';
 
@@ -2979,75 +2979,77 @@ function buildFitxaHtml_(d, qrSrc) {
   var jugsHtml = '<div class="jug-list"><div class="jug-hdr">Jugadors</div>';
   if (jugadors.length > 0) {
     for (var i = 0; i < jugadors.length; i++) {
-      var nom   = jugadors[i] || '—';
-      var talla = talles[i]   || '';
-      jugsHtml += '<div class="jug-item">' +
+      var talla = talles[i] || '';
+      jugsHtml += '<div class="jug-row">' +
         '<span class="jug-num">' + (i+1) + '</span>' +
-        '<span class="jug-name">' + escH_(nom) + '</span>' +
-        (talla ? '<span class="jug-talla">' + escH_(talla) + '</span>' : '<span class="jug-talla-no">—</span>') +
+        '<span class="jug-name">' + escH_(jugadors[i] || '—') + '</span>' +
+        (talla ? '<span class="jug-talla">' + escH_(talla) + '</span>' : '<span class="jug-tno">—</span>') +
         '</div>';
     }
   } else {
-    jugsHtml += '<div class="jug-pend">Noms pendents de confirmar</div>';
+    jugsHtml += '<span class="jug-pend">Noms pendents de confirmar</span>';
   }
   jugsHtml += '</div>';
 
   var qrHtml = qrSrc
-    ? '<div class="qr-wrap"><img src="' + qrSrc + '" class="qr-img" alt="QR Check-in"/><div class="qr-lbl">Escanejar</div></div>'
-    : '<div class="qr-wrap qr-empty">QR</div>';
-
-  var horariHtml = (horari.hora || horari.lloc)
-    ? '<div class="sched-row">' +
-        (horari.hora ? '<span class="sched-hora">' + escH_(horari.hora) + '</span>' : '') +
-        (horari.lloc ? '<span class="sched-dot">·</span><span class="sched-lloc">' + escH_(horari.lloc) + '</span>' : '') +
-      '</div>'
-    : '';
+    ? '<div class="qr-wrap"><img src="' + qrSrc + '" class="qr-img" alt="QR"/><div class="qr-lbl">Escanejar</div></div>'
+    : '<div class="qr-wrap qr-empty">–</div>';
 
   return '<div class="card">' +
 
-    // ─── HEADER: logos ───────────────────────────────────────────
-    '<div class="card-hdr">' +
-      '<img src="https://cbgrupbarna-3x3timechamber.com/cb-grup-barna-logo-192.png" class="logo-cb" alt="CB Grup Barna"/>' +
-      '<div class="hdr-txt"><div class="hdr-main">3×3 WESTFIELD GLÒRIES</div><div class="hdr-sub">2026 · CB Grup Barna · Eix del Clot</div></div>' +
-      '<div class="hdr-logos">' +
-        '<img src="https://cbgrupbarna-3x3timechamber.com/logos/westfield.svg" class="logo-wf" alt="Westfield"/>' +
-        '<img src="https://cbgrupbarna-3x3timechamber.com/logos/eix-clot-oficial.svg" class="logo-eix" alt="Eix del Clot"/>' +
+    // ══ BANNER FOSC: 4 logos + títol (estètica web 3x3) ════════════
+    '<div class="banner">' +
+      '<div class="banner-logos">' +
+        '<img src="https://cbgrupbarna-3x3timechamber.com/cb-grup-barna-logo-192.png" class="b-logo" alt="CB Grup Barna"/>' +
+        '<div class="b-sep"></div>' +
+        '<img src="https://cbgrupbarna-3x3timechamber.com/logos/westfield.svg" class="b-logo" alt="Westfield"/>' +
+        '<img src="https://cbgrupbarna-3x3timechamber.com/logos/timechamber.webp" class="b-logo" alt="Time Chamber"/>' +
+        '<img src="https://cbgrupbarna-3x3timechamber.com/logos/eix-clot.png" class="b-logo" alt="Eix del Clot"/>' +
       '</div>' +
+      '<div class="banner-title">3×3 WESTFIELD GLÒRIES 2026</div>' +
     '</div>' +
 
-    // ─── MAIN: categoria + nom + QR ─────────────────────────────
-    '<div class="card-main">' +
-      '<div class="card-left">' +
+    // ══ FRANJA VERMELLA: badges + nom equip + QR ═══════════════════
+    '<div class="red-section">' +
+      '<div class="red-left">' +
         '<div class="badge-row">' +
-          '<span class="badge-cat" style="background:' + catColor + '">' + escH_(d.cat) + '</span>' +
-          '<span class="badge-gen">' + genLbl + '</span>' +
-          '<span class="badge-dia">' + escH_(diaLbl) + '</span>' +
+          '<span class="b-cat" style="background:' + catColor + ';border-color:' + catColor + '">' + escH_(d.cat) + '</span>' +
+          '<span class="b-gen">' + genLbl + '</span>' +
+          '<span class="b-dia">' + escH_(diaFull).toUpperCase() + '</span>' +
         '</div>' +
         '<div class="team-name">' + escH_(d.team) + '</div>' +
       '</div>' +
       qrHtml +
     '</div>' +
 
-    // ─── HORARI ──────────────────────────────────────────────────
-    horariHtml +
+    // ══ HORARI ═════════════════════════════════════════════════════
+    (horari.hora || horari.lloc
+      ? '<div class="sched">' +
+          (horari.hora ? '<span class="s-hora">' + escH_(horari.hora) + '</span>' : '') +
+          (horari.hora && horari.lloc ? '<span class="s-dot">·</span>' : '') +
+          (horari.lloc ? '<span class="s-lloc">' + escH_(horari.lloc) + '</span>' : '') +
+        '</div>'
+      : '') +
 
-    // ─── PAGAMENT ────────────────────────────────────────────────
+    // ══ PAGAMENT ═══════════════════════════════════════════════════
     '<div class="' + (isPagat ? 'pag-ok' : 'pag-no') + '">' +
       (isPagat ? '✓ PAGAMENT VERIFICAT' : '⚠ PENDENT DE PAGAMENT') +
     '</div>' +
 
-    // ─── CAPITA ──────────────────────────────────────────────────
+    // ══ CAPITÀ ═════════════════════════════════════════════════════
     '<div class="cap-row">' +
       '<span class="cap-lbl">Capità</span>' +
-      '<span class="cap-val">' + escH_(d.cap || '—') + '</span>' +
-      (d.phone ? '<span class="cap-sep">·</span><span class="cap-tel">' + escH_(d.phone) + '</span>' : '') +
+      '<span class="cap-nom">' + escH_(d.cap || '—') + '</span>' +
+      (d.phone ? '<span class="cap-dot">·</span><span class="cap-tel">' + escH_(d.phone) + '</span>' : '') +
     '</div>' +
 
-    // ─── JUGADORS ────────────────────────────────────────────────
+    // ══ JUGADORS ════════════════════════════════════════════════════
     jugsHtml +
 
-    // ─── FOOTER ──────────────────────────────────────────────────
-    '<div class="card-ftr"><span class="team-id">ID: ' + escH_(d.id) + '</span></div>' +
+    // ══ FOOTER ══════════════════════════════════════════════════════
+    '<div class="card-ftr">' +
+      '<span class="ftr-id">ID: ' + escH_(d.id) + '</span>' +
+    '</div>' +
 
   '</div>';
 }
@@ -3086,69 +3088,79 @@ function printFitxes() {
       }
     });
 
+    // ─── CSS: estètica completar.html / web 3x3 ──────────────────
     var css = [
+      "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');",
       '*{box-sizing:border-box;margin:0;padding:0}',
-      'body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#fff;color:#111;font-size:7pt}',
+      "body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:#f5f0e8;color:#1a1a1a;font-size:7pt}",
       '@page{size:A4 portrait;margin:5mm}',
       '@media print{.no-print{display:none!important}}',
-      // Grid
-      '.page{width:100%;height:277mm;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:3.5mm;page-break-after:always}',
+
+      // ─ Grid A4 ─
+      '.page{width:100%;height:277mm;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:3mm;page-break-after:always}',
       '.page:last-child{page-break-after:avoid}',
-      '.card{border:1.5px solid #bbb;border-radius:2mm;display:flex;flex-direction:column;overflow:hidden}',
-      '.card-empty{border:1px dashed #e0e0e0;background:#fafafa}',
-      // Header
-      '.card-hdr{background:#c8102e;color:#fff;padding:2mm 2.5mm;display:flex;align-items:center;gap:1.5mm;min-height:11mm;flex-shrink:0}',
-      '.logo-cb{height:7mm;width:auto;flex-shrink:0;filter:brightness(0)invert(1)}',
-      '.hdr-txt{flex:1;text-align:center;line-height:1.3}',
-      '.hdr-main{font-size:7.5pt;font-weight:900;letter-spacing:.3px}',
-      '.hdr-sub{font-size:5pt;opacity:.85}',
-      '.hdr-logos{display:flex;align-items:center;gap:1.5mm;flex-shrink:0}',
-      '.logo-wf{height:4.5mm;width:auto;filter:brightness(0)invert(1)}',
-      '.logo-eix{height:4.5mm;width:auto;filter:brightness(0)invert(1)}',
-      // Main
-      '.card-main{display:flex;align-items:flex-start;gap:1.5mm;padding:2mm 2.5mm 1.5mm;flex-shrink:0}',
-      '.card-left{flex:1;min-width:0}',
-      '.badge-row{display:flex;flex-wrap:wrap;gap:.8mm;margin-bottom:1.5mm}',
-      '.badge-cat{color:#fff;font-size:6pt;font-weight:800;padding:.6mm 1.8mm;border-radius:.8mm;text-transform:uppercase;letter-spacing:.2px;white-space:nowrap}',
-      '.badge-gen{background:#333;color:#fff;font-size:6pt;font-weight:700;padding:.6mm 1.5mm;border-radius:.8mm;white-space:nowrap}',
-      '.badge-dia{background:#444;color:#fff;font-size:6pt;font-weight:700;padding:.6mm 1.5mm;border-radius:.8mm;white-space:nowrap}',
-      '.team-name{font-size:11.5pt;font-weight:900;line-height:1.1;word-break:break-word;color:#111}',
-      // QR
-      '.qr-wrap{flex-shrink:0;width:27mm;text-align:center}',
-      '.qr-img{width:25mm;height:25mm;display:block;border:1px solid #ddd;border-radius:1mm}',
-      '.qr-lbl{font-size:4.5pt;color:#999;margin-top:.5mm;text-align:center;letter-spacing:.3px}',
-      '.qr-empty{width:25mm;height:25mm;background:#f4f4f4;border-radius:1mm;display:flex;align-items:center;justify-content:center;font-size:7pt;color:#ccc;border:1px solid #ddd}',
-      // Schedule
-      '.sched-row{background:#f8f8f8;border-top:1px solid #eee;border-bottom:1px solid #eee;padding:1.5mm 2.5mm;display:flex;align-items:center;gap:1.5mm;flex-shrink:0}',
-      '.sched-hora{font-weight:800;color:#111;font-size:8pt}',
-      '.sched-dot{color:#bbb}',
-      '.sched-lloc{color:#444;font-weight:600;font-size:7.5pt}',
-      // Payment
-      '.pag-ok{background:#e8f5e9;border-top:1px solid #c8e6c9;border-bottom:1px solid #c8e6c9;padding:1.5mm 2.5mm;font-size:8pt;font-weight:900;color:#2d7d3a;flex-shrink:0}',
-      '.pag-no{background:#fff8e1;border-top:1px solid #ffe082;border-bottom:1px solid #ffe082;padding:1.5mm 2.5mm;font-size:8pt;font-weight:900;color:#b45309;flex-shrink:0}',
-      // Captain
-      '.cap-row{padding:1.5mm 2.5mm;border-bottom:1px solid #f0f0f0;display:flex;flex-wrap:wrap;gap:.8mm;align-items:center;flex-shrink:0}',
-      '.cap-lbl{font-weight:800;color:#777;font-size:6pt;text-transform:uppercase;letter-spacing:.3px}',
-      '.cap-val{font-weight:700;color:#111}',
-      '.cap-sep{color:#ccc}',
-      '.cap-tel{color:#c8102e;font-weight:700}',
-      // Players
+      '.card{border:1.5px solid #ddd6c8;border-radius:2.5mm;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,.08);background:#fff}',
+      '.card-empty{border:1px dashed #ddd;background:#fafaf8}',
+
+      // ─ Banner fosc (=team-banner del completar.html) ─
+      '.banner{background:linear-gradient(135deg,#1a0a0e,#3d1822);color:#fff;flex-shrink:0;padding:1.8mm 2.5mm 1.5mm}',
+      '.banner-logos{display:flex;align-items:center;gap:2mm;margin-bottom:1.5mm}',
+      '.b-logo{height:5.5mm;width:auto;filter:brightness(0)invert(1);flex-shrink:0;object-fit:contain}',
+      '.b-sep{width:.3mm;height:5mm;background:rgba(255,255,255,.25);flex-shrink:0;margin:0 .5mm}',
+      '.banner-title{font-size:6pt;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.75)}',
+
+      // ─ Franja gradient vermell (=card-hdr del completar.html) ─
+      '.red-section{background:linear-gradient(90deg,#c8102e,#9a0d23);padding:2mm 2.5mm 2mm;display:flex;align-items:flex-start;gap:2mm;flex-shrink:0}',
+      '.red-left{flex:1;min-width:0}',
+      '.badge-row{display:flex;flex-wrap:wrap;gap:1mm;margin-bottom:2mm}',
+      '.b-cat{color:#fff;font-size:5.5pt;font-weight:900;padding:.5mm 1.8mm;border-radius:.8mm;text-transform:uppercase;letter-spacing:.3px;border:1px solid transparent}',
+      '.b-gen{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);color:#fff;font-size:5.5pt;font-weight:700;padding:.5mm 1.5mm;border-radius:.8mm;text-transform:uppercase;letter-spacing:.3px}',
+      '.b-dia{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.85);font-size:5.5pt;font-weight:700;padding:.5mm 1.5mm;border-radius:.8mm;text-transform:uppercase;letter-spacing:.2px}',
+      '.team-name{font-size:13pt;font-weight:900;line-height:1.1;word-break:break-word;color:#fff;letter-spacing:-.3px}',
+
+      // ─ QR ─
+      '.qr-wrap{flex-shrink:0;text-align:center;width:26mm}',
+      '.qr-img{width:24mm;height:24mm;display:block;border:2px solid rgba(255,255,255,.2);border-radius:1.5mm;background:#fff;padding:.5mm}',
+      '.qr-lbl{font-size:4.5pt;color:rgba(255,255,255,.5);margin-top:.8mm;text-align:center;letter-spacing:.5px;text-transform:uppercase}',
+      '.qr-empty{width:24mm;height:24mm;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:1.5mm;display:flex;align-items:center;justify-content:center;font-size:7pt;color:rgba(255,255,255,.3)}',
+
+      // ─ Horari ─
+      '.sched{background:#fdfbf8;border-top:1px solid #e8e0d4;border-bottom:1px solid #e8e0d4;padding:1.8mm 2.5mm;display:flex;align-items:center;gap:1.5mm;flex-shrink:0}',
+      '.s-hora{font-weight:900;color:#1a1a1a;font-size:8.5pt;letter-spacing:-.2px}',
+      '.s-dot{color:#c8932a;font-weight:900;font-size:8pt}',
+      '.s-lloc{color:#555;font-weight:700;font-size:7.5pt}',
+
+      // ─ Pagament (gold accent igual que completar.html) ─
+      '.pag-ok{background:#e8f5ec;border-top:1px solid #8fd4a8;border-bottom:1px solid #8fd4a8;padding:1.5mm 2.5mm;font-size:7.5pt;font-weight:900;color:#1a7a3a;flex-shrink:0;letter-spacing:.2px}',
+      '.pag-no{background:#fff8e8;border-top:1px solid #e8c87a;border-bottom:1px solid #e8c87a;padding:1.5mm 2.5mm;font-size:7.5pt;font-weight:900;color:#7a5a00;flex-shrink:0;letter-spacing:.2px}',
+
+      // ─ Capità ─
+      '.cap-row{padding:1.5mm 2.5mm;border-bottom:1px solid #f0ece4;display:flex;flex-wrap:wrap;gap:1mm;align-items:center;flex-shrink:0}',
+      '.cap-lbl{font-weight:800;color:#999;font-size:5.5pt;text-transform:uppercase;letter-spacing:.5px}',
+      '.cap-nom{font-weight:700;color:#1a1a1a;font-size:7.5pt}',
+      '.cap-dot{color:#ddd6c8}',
+      '.cap-tel{color:#c8102e;font-weight:800;font-size:7.5pt}',
+
+      // ─ Jugadors ─
       '.jug-list{flex:1;overflow:hidden;padding:1.5mm 2.5mm}',
-      '.jug-hdr{font-size:5.5pt;font-weight:800;text-transform:uppercase;color:#999;letter-spacing:.5px;margin-bottom:1mm}',
-      '.jug-item{display:flex;align-items:center;font-size:7.5pt;padding:.4mm 0;border-bottom:1px solid #f4f4f4}',
-      '.jug-item:last-child{border-bottom:none}',
-      '.jug-num{width:3mm;color:#ccc;font-size:6pt;flex-shrink:0;font-weight:700}',
-      '.jug-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#111;font-weight:600}',
-      '.jug-talla{background:#c8102e;color:#fff;font-size:6.5pt;font-weight:900;padding:.3mm 1.5mm;border-radius:.8mm;flex-shrink:0;margin-left:1.5mm;min-width:4mm;text-align:center}',
-      '.jug-talla-no{color:#e0e0e0;font-size:6.5pt;flex-shrink:0;margin-left:1.5mm}',
-      '.jug-pend{font-size:6.5pt;color:#bbb;padding:1mm 0}',
-      // Footer
-      '.card-ftr{border-top:1px solid #eee;padding:1mm 2.5mm;display:flex;justify-content:flex-end;flex-shrink:0}',
-      '.team-id{font-size:5pt;font-family:monospace;color:#ccc}',
-      // Top bar (screen only)
-      '.top-bar{background:#c8102e;color:#fff;padding:10px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}',
-      '.top-bar button{padding:8px 20px;background:#fff;color:#c8102e;border:none;border-radius:8px;font-weight:900;font-size:14px;cursor:pointer;letter-spacing:.3px}',
-      '.top-info{font-size:12px;opacity:.9}'
+      '.jug-hdr{font-size:5pt;font-weight:900;text-transform:uppercase;color:#bbb6ae;letter-spacing:.8px;margin-bottom:1.2mm}',
+      '.jug-row{display:flex;align-items:center;font-size:7.5pt;padding:.5mm 0;border-bottom:1px solid #f5f0e8}',
+      '.jug-row:last-child{border-bottom:none}',
+      '.jug-num{width:3.5mm;color:#c8932a;font-size:6pt;flex-shrink:0;font-weight:900}',
+      '.jug-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#1a1a1a;font-weight:600;padding-right:1mm}',
+      '.jug-talla{background:linear-gradient(90deg,#c8102e,#9a0d23);color:#fff;font-size:6.5pt;font-weight:900;padding:.3mm 1.8mm;border-radius:.8mm;flex-shrink:0;min-width:4.5mm;text-align:center;letter-spacing:.2px}',
+      '.jug-tno{color:#ddd;font-size:6.5pt;flex-shrink:0;margin-left:1mm}',
+      '.jug-pend{font-size:6.5pt;color:#bbb;padding:.5mm 0}',
+
+      // ─ Footer ─
+      '.card-ftr{border-top:1px solid #f0ece4;padding:.8mm 2.5mm;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;background:#fdfbf8}',
+      '.ftr-id{font-size:5pt;font-family:monospace;color:#c8932a;letter-spacing:.5px}',
+
+      // ─ Barra pantalla ─
+      '.top-bar{background:linear-gradient(90deg,#1a0a0e,#3d1822);color:#fff;padding:10px 20px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;position:sticky;top:0;z-index:99;border-bottom:3px solid #c8932a}',
+      '.top-bar button{padding:8px 22px;background:#c8102e;color:#fff;border:none;border-radius:8px;font-weight:900;font-size:13px;cursor:pointer;letter-spacing:.3px}',
+      '.top-bar button:hover{background:#9a0d23}',
+      '.top-info{font-size:11px;color:rgba(255,255,255,.7)}'
     ].join('\n');
 
     var nPag = Math.ceil(teams.length / 4);
