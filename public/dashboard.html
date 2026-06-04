@@ -2429,20 +2429,22 @@ function renderCatDetail() {
       html += '</div>';
     });
 
-    // Individuals
-    if(inds.length>0){
-      html += '<div style="padding:4px 14px 4px 36px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#1e40af;background:#eff6ff;margin:4px 8px;border-radius:6px;">Individuals ('+inds.length+')</div>';
-      inds.forEach(function(d) {
-        var nom = (d.jugadors && d.jugadors[0]) ? d.jugadors[0] : d.team.replace(/ \(.*\)/g,'');
-        html += '<div class="team-mini-card" onclick="showTeam(\''+esc(d.id)+'\')" style="padding-left:36px;">';
-        html += '<div style="width:28px;height:28px;border-radius:50%;background:#1e40af;color:white;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">i</div>';
-        html += '<div style="flex:1;"><div class="team-mini-name" style="color:#1e40af;">'+esc(nom)+'</div>';
-        if(d.cap && d.cap!==d.team) html += '<div style="font-size:11px;color:var(--text2);">'+esc(d.cap)+'</div>';
-        html += '</div>';
-        if(d.phone) html += '<span style="font-size:11px;color:var(--text2);">'+esc(d.phone)+'</span>';
-        html += '</div>';
-      });
-    }
+    // Individuals — integrats a la llista (no secció separada)
+    inds.forEach(function(d) {
+      var nom = (d.jugadors && d.jugadors[0]) ? d.jugadors[0] : d.team.replace(/ \(.*\)/g,'');
+      var stBg='#dbeafe'; var stTx='#1e40af';
+      html += '<div class="team-mini-card" onclick="showTeam(\''+esc(d.id)+'\')">';
+      html += '<div style="width:32px;height:32px;border-radius:50%;background:#1e40af;color:white;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">i</div>';
+      html += '<div style="flex:1;min-width:0;">';
+      html += '<div class="team-mini-name" style="color:#1e40af;">'+esc(nom)+'</div>';
+      html += '<div class="team-mini-meta">';
+      if(d.cap && d.cap!==d.team) html += '<span>'+esc(d.cap)+'</span>';
+      if(d.phone) html += '<span>'+esc(d.phone)+'</span>';
+      html += '<span>Individual</span>';
+      html += '</div></div>';
+      html += '<span class="team-mini-status" style="background:'+stBg+';color:'+stTx+';">Ind</span>';
+      html += '</div>';
+    });
 
     if(!hasItems){
       html += '<div style="padding:10px 36px;font-size:12px;color:var(--text2);font-style:italic;">Cap equip inscrit</div>';
