@@ -3396,16 +3396,18 @@ function buildFitxaHtml_(d, qrSrc, teamIdx) {
 
     // ③ BLOC HEROI: color categoria + nom equip + QR
     '<div class="hero" style="background:' + catColor + '">' +
-      // Decoració: cercle gran semitransparent
       '<div class="hero-bg-circle"></div>' +
       '<div class="hero-content">' +
         '<div class="hero-left">' +
           '<div class="hero-badges">' +
             '<span class="hb-cat">' + escH_(d.cat) + '</span>' +
-            '<span class="hb-meta">' + genLbl + '</span>' +
+            (d.individual ? '<span class="hb-indiv">&#9733; INDIVIDUAL</span>' : '<span class="hb-meta">' + genLbl + '</span>') +
             '<span class="hb-meta">' + diaFull + '</span>' +
           '</div>' +
           '<div class="hero-nom">' + escH_(d.team) + '</div>' +
+          (d.individual
+            ? '<div class="hero-indiv-sub">Inscripci\xf3 individual &middot; ' + escH_(d.cat) + ' ' + (d.gen === 'F' ? 'Femeni' : 'Mascu\xed') + '</div>'
+            : '') +
         '</div>' +
         qrBlock +
       '</div>' +
@@ -3459,14 +3461,16 @@ function buildFitxaHtml_(d, qrSrc, teamIdx) {
 }
 
 function printFitxes() {
-  var teams = DATA.filter(function(d) { return !d.individual; });
-  teams.sort(function(a, b) {
+  // Incloure equips I individuals, tots junts ordenats per dia → categoria → nom
+  var teams = DATA.slice().sort(function(a, b) {
     if (a.dia !== b.dia) return (a.dia||'').localeCompare(b.dia||'');
     if (a.cat !== b.cat) return a.cat.localeCompare(b.cat);
-    return a.team.localeCompare(b.team);
+    // Individuals al final de cada categoria
+    if (a.individual !== b.individual) return a.individual ? 1 : -1;
+    return (a.team||'').localeCompare(b.team||'');
   });
 
-  showStatus('Generant fitxes PRO (' + teams.length + ' equips)...', 'info');
+  showStatus('Generant fitxes PRO (' + teams.length + ' entrades)...', 'info');
 
   var useQR = typeof QRCode !== 'undefined' && QRCode.toDataURL;
   var promises = teams.map(function(d) {
@@ -3527,7 +3531,9 @@ function printFitxes() {
       '.hero-badges{display:flex;flex-wrap:wrap;gap:1mm;margin-bottom:2mm}',
       '.hb-cat{background:rgba(255,255,255,.28);border:1px solid rgba(255,255,255,.45);color:#fff;font-size:5.5pt;font-weight:900;padding:.5mm 1.8mm;border-radius:.8mm;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}',
       '.hb-meta{background:rgba(0,0,0,.22);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.9);font-size:5pt;font-weight:700;padding:.5mm 1.5mm;border-radius:.8mm;text-transform:uppercase;letter-spacing:.2px;white-space:nowrap}',
+      '.hb-indiv{background:#c8932a;border:1px solid #a87820;color:#fff;font-size:5pt;font-weight:900;padding:.5mm 1.5mm;border-radius:.8mm;text-transform:uppercase;letter-spacing:.3px;white-space:nowrap}',
       '.hero-nom{font-size:13pt;font-weight:900;color:#fff;line-height:1.08;word-break:break-word;letter-spacing:-.4px;text-shadow:0 1px 3px rgba(0,0,0,.3)}',
+      '.hero-indiv-sub{font-size:5.5pt;color:rgba(255,255,255,.65);font-weight:600;margin-top:1.5mm;text-transform:uppercase;letter-spacing:.3px}',
 
       // ── QR ──
       '.qr-col{flex-shrink:0;text-align:center;display:flex;flex-direction:column;align-items:center;width:23mm}',
