@@ -3415,7 +3415,31 @@ function getFrase_(teamIndex) {
   return FRASES_BENVINGUDA[teamIndex % FRASES_BENVINGUDA.length];
 }
 
-function buildFitxaHtml_(d, qrSrc, teamIdx) {
+// ── SISTEMA DE SORTEIG ─────────────────────────────────────────────────
+// Genera números únics 1-500 per a cada equip.
+// Llavor FIXA (3326 = PIN del torneig) → sempre el mateix número per al mateix equip.
+var _sorteigMap = null;
+
+function getSorteigMap_(teams) {
+  if (_sorteigMap) return _sorteigMap;
+  // Barreja Fisher-Yates amb llavor fixa
+  var nums = [];
+  for (var i = 1; i <= 500; i++) nums.push(i);
+  var seed = 3326;
+  var rng = function() {
+    seed = ((seed * 1664525 + 1013904223) & 0x7fffffff);
+    return seed / 0x7fffffff;
+  };
+  for (var i = nums.length - 1; i > 0; i--) {
+    var j = Math.floor(rng() * (i + 1));
+    var tmp = nums[i]; nums[i] = nums[j]; nums[j] = tmp;
+  }
+  _sorteigMap = {};
+  teams.forEach(function(d, i) { _sorteigMap[d.id] = nums[i % 500]; });
+  return _sorteigMap;
+}
+
+function buildFitxaHtml_(d, qrSrc, teamIdx, numSorteig) {
   var jugadors = d.jugadors || [];
   var talles   = d.talles   || [];
   var isPagat  = d.status === 'confirmed';
@@ -3490,10 +3514,21 @@ function buildFitxaHtml_(d, qrSrc, teamIdx) {
       '</div>' +
     '</div>' +
 
-    // ④ BENVINGUDA (warm cream, nom en or)
+    // ④ BENVINGUDA + NÚMERO DE SORTEIG
     '<div class="bv">' +
-      '<div class="bv-nom">Gr&agrave;cies, ' + escH_(d.team) + '!</div>' +
-      '<div class="bv-txt">' + escH_(getFrase_(teamIdx)) + '</div>' +
+      '<div class="bv-row">' +
+        '<div class="bv-left">' +
+          '<div class="bv-nom">Gr&agrave;cies, ' + escH_(d.team) + '!</div>' +
+          '<div class="bv-txt">' + escH_(getFrase_(teamIdx)) + '</div>' +
+        '</div>' +
+        (numSorteig
+          ? '<div class="sorteig-box" style="border-color:' + catColor + '">' +
+              '<div class="sorteig-label">N\xba Sorteig</div>' +
+              '<div class="sorteig-num" style="color:' + catColor + '">' + numSorteig + '</div>' +
+              '<div class="sorteig-sub">5 premis</div>' +
+            '</div>'
+          : '') +
+      '</div>' +
     '</div>' +
 
     // ⑤ HORARI
@@ -3564,9 +3599,12 @@ function printFitxes() {
   });
 
   Promise.all(promises).then(function(qrUrls) {
+    // Calcular números de sorteig (únics 1-500, llavor fixa)
+    var sorteigMap = getSorteigMap_(teams);
+
     var cardsHtml = '', pageCards = '';
     teams.forEach(function(d, i) {
-      pageCards += buildFitxaHtml_(d, qrUrls[i], i);
+      pageCards += buildFitxaHtml_(d, qrUrls[i], i, sorteigMap[d.id]);
       if ((i + 1) % 4 === 0 || i === teams.length - 1) {
         var n = (i + 1) % 4;
         if (n > 0 && i === teams.length - 1) {
@@ -3625,8 +3663,15 @@ function printFitxes() {
 
       // ── ④ BENVINGUDA (warm cream) ──
       '.bv{background:#fdf6ec;border-top:2px solid #c8932a;border-bottom:1px solid #e8dcc8;padding:2mm 2.5mm;flex-shrink:0}',
+      '.bv-row{display:flex;align-items:center;gap:2mm}',
+      '.bv-left{flex:1;min-width:0}',
       '.bv-nom{font-size:7.5pt;font-weight:900;color:#9a6a00;text-transform:uppercase;letter-spacing:.5px;margin-bottom:1.5mm}',
       '.bv-txt{font-size:6.5pt;color:#6a5030;font-style:italic;line-height:1.45}',
+      // Caixa número sorteig
+      '.sorteig-box{flex-shrink:0;border:2px solid;border-radius:2mm;padding:1.5mm 2.5mm;text-align:center;min-width:14mm;background:#fff}',
+      '.sorteig-label{font-size:4.5pt;font-weight:900;text-transform:uppercase;letter-spacing:.8px;color:#888;margin-bottom:.5mm}',
+      '.sorteig-num{font-size:18pt;font-weight:900;line-height:1;letter-spacing:-1px}',
+      '.sorteig-sub{font-size:4.5pt;color:#aaa;text-transform:uppercase;letter-spacing:.5px;margin-top:.5mm}',
 
       // ── ⑤ HORARI ──
       '.sched{background:#fdfbf8;border-bottom:1px solid #e8e0d4;padding:2mm 2.5mm;display:flex;align-items:center;gap:1.5mm;flex-shrink:0}',
