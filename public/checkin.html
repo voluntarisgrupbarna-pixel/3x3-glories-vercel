@@ -120,18 +120,12 @@ function render() {
         </div>`).join('')}
     </div>` : '';
 
-  // Estat de pagament
+  // Estat de pagament — només mostrem si VERIFICAT, mai el pendent (el comprova l'organitzador)
   const pagatHtml = pagat === '1'
     ? `<div style="background:rgba(34,197,94,.1);border:1.5px solid rgba(34,197,94,.4);border-radius:10px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
          <span style="font-size:20px;">✅</span>
          <div><div style="font-weight:800;color:#4ade80;font-size:12px;text-transform:uppercase;letter-spacing:.5px;">Pagament verificat</div>
          <div style="color:rgba(255,255,255,.5);font-size:11px;">Import confirmat per CB Grup Barna</div></div>
-       </div>`
-    : pagat === '0'
-    ? `<div style="background:rgba(239,68,68,.08);border:1.5px solid rgba(239,68,68,.3);border-radius:10px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
-         <span style="font-size:20px;">❌</span>
-         <div><div style="font-weight:800;color:#f87171;font-size:12px;text-transform:uppercase;letter-spacing:.5px;">Pendent de pagament</div>
-         <div style="color:rgba(255,255,255,.5);font-size:11px;">Contacta amb Ana si creus que és un error</div></div>
        </div>`
     : '';
 

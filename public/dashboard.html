@@ -3140,9 +3140,7 @@ function buildFitxaHtml_(d, qrSrc, teamIdx) {
       : '') +
 
     // ══ PAGAMENT ═══════════════════════════════════════════════════
-    '<div class="' + (isPagat ? 'pag-ok' : 'pag-no') + '">' +
-      (isPagat ? '&#10003; PAGAMENT VERIFICAT' : '&#9888; PENDENT DE PAGAMENT') +
-    '</div>' +
+    (isPagat ? '<div class="pag-ok">&#10003; PAGAMENT VERIFICAT</div>' : '') +
 
     // ══ CAPITÀ ═════════════════════════════════════════════════════
     '<div class="cap-row">' +
