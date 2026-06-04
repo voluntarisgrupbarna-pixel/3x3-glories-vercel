@@ -64,9 +64,7 @@ button:hover{background:var(--bg-sec)}
 .bs{background:var(--ok-bg);color:var(--ok)}.bw{background:var(--warn-bg);color:var(--warn)}.bd{background:var(--err-bg);color:var(--err)}.bn{background:var(--bg-sec);color:var(--text2)}
 textarea.tmpl{width:100%;height:130px;border:1px solid var(--border);border-radius:6px;padding:10px;font-size:13px;font-family:inherit;resize:vertical;background:var(--bg-card);color:var(--text)}
 
-.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center;padding:20px}
-.modal-bg.on{display:flex}
-.modal{background:var(--bg-card);border-radius:var(--r);padding:20px;max-width:520px;width:100%;max-height:88vh;overflow-y:auto;box-shadow:0 20px 50px rgba(0,0,0,.3)}
+/* .modal-bg i .modal eliminats — substituïts per #team-drawer slide-over */
 .mh{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;gap:10px}
 .mt{font-size:18px;font-weight:700}
 .ms{font-size:12px;color:var(--text2);margin-top:3px}
@@ -114,6 +112,193 @@ textarea.tmpl{width:100%;height:130px;border:1px solid var(--border);border-radi
 #new-teams-banner{animation:slideDown .3s ease}
 .alert-badge{cursor:pointer;transition:filter .15s}
 .alert-badge:hover{filter:brightness(.88);transform:scale(1.02)}
+
+/* ============================================================
+   REDISSENY UX 2026 — Slide-over, Cards, Animacions
+   ============================================================ */
+
+/* Transicions globals suaus */
+*{transition-property:background-color,border-color,box-shadow,transform,opacity;transition-duration:.15s;transition-timing-function:cubic-bezier(.4,0,.2,1)}
+/* Excloure propietats que NO han de transicionar per defecte */
+input,textarea,select,button{transition:background-color .15s cubic-bezier(.4,0,.2,1),border-color .15s,box-shadow .15s,color .15s}
+
+/* KPI cards millorades */
+.kpi{cursor:pointer;border-radius:8px;padding:6px 4px;transition:all .2s cubic-bezier(.4,0,.2,1)}
+.kpi:hover{background:var(--bg-sec);transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.1)}
+.kpi:hover .kv{filter:brightness(.85)}
+.kv{transition:all .3s cubic-bezier(.4,0,.2,1)}
+
+/* Tab millorades */
+.tab{letter-spacing:.01em}
+
+/* ── SLIDE-OVER DRAWER ── */
+#team-drawer-bg{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:300;
+  backdrop-filter:blur(2px);
+}
+#team-drawer-bg.on{display:block}
+#team-drawer{
+  position:fixed;top:0;right:0;bottom:0;width:min(480px,100vw);
+  background:var(--bg-card);box-shadow:-8px 0 40px rgba(0,0,0,.2);
+  z-index:301;overflow-y:auto;
+  transform:translateX(100%);
+  transition:transform .28s cubic-bezier(.4,0,.2,1);
+  display:flex;flex-direction:column;
+}
+#team-drawer.on{transform:translateX(0)}
+.drawer-header{
+  padding:20px 20px 16px;
+  border-bottom:1px solid var(--border);
+  position:sticky;top:0;background:var(--bg-card);z-index:2;
+  display:flex;justify-content:space-between;align-items:flex-start;gap:12px;
+}
+.drawer-title{font-size:20px;font-weight:800;line-height:1.2;flex:1}
+.drawer-meta{font-size:12px;color:var(--text2);margin-top:4px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.drawer-close{
+  width:32px;height:32px;border-radius:8px;border:1px solid var(--border);
+  background:var(--bg-sec);color:var(--text2);font-size:16px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  transition:all .15s;
+}
+.drawer-close:hover{background:var(--err-bg);color:var(--err);border-color:var(--err)}
+.drawer-body{padding:20px;flex:1}
+.drawer-actions{
+  padding:16px 20px;border-top:1px solid var(--border);
+  position:sticky;bottom:0;background:var(--bg-card);
+  display:flex;gap:8px;flex-wrap:wrap;
+}
+
+/* Player cards amb avatar */
+.player-card{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:10px 12px;background:var(--bg-sec);border-radius:10px;
+  margin-bottom:8px;border:1px solid var(--border);
+  transition:all .15s;
+}
+.player-card:hover{background:var(--bg-card);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.player-avatar{
+  width:38px;height:38px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:800;color:white;flex-shrink:0;
+  line-height:1;
+}
+.player-name{font-weight:600;font-size:13px;line-height:1.3}
+.player-badges{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}
+.player-badge{
+  font-size:10px;padding:2px 7px;border-radius:8px;font-weight:600;
+  background:var(--bg-card);border:1px solid var(--border);color:var(--text2);
+}
+.player-badge.talla{background:#dbeafe;border-color:#93c5fd;color:#1e40af}
+.player-badge.any{background:#f0fdf4;border-color:#86efac;color:#15803d}
+.player-badge.club{background:#faf5ff;border-color:#d8b4fe;color:#7c3aed}
+.player-badge.missing{background:#fee2e2;border-color:#fca5a5;color:#b91c1c}
+
+/* Info rows al drawer */
+.drawer-row{
+  display:flex;justify-content:space-between;padding:9px 0;
+  border-bottom:1px solid var(--border);font-size:13px;gap:10px;align-items:center;
+}
+.drawer-row:last-child{border-bottom:none}
+.drawer-row-label{color:var(--text2);font-size:12px;min-width:110px;flex-shrink:0}
+.drawer-row-val{font-weight:500;text-align:right;word-break:break-word}
+
+/* Section label */
+.drawer-section-label{
+  font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;
+  color:var(--text2);margin:16px 0 10px;padding-bottom:5px;
+  border-bottom:1px solid var(--border);
+}
+
+/* Category expand — fila taula clicable */
+.cat-row-expandable{cursor:pointer}
+.cat-row-expandable:hover td{background:rgba(0,0,0,.025)!important}
+.cat-expand-teams{
+  display:none;background:var(--bg-sec);
+  border-left:5px solid var(--border);
+}
+.cat-expand-teams.on{display:table-row-group}
+.team-mini-card{
+  display:flex;align-items:center;gap:10px;padding:9px 14px 9px 36px;
+  border-bottom:1px solid var(--border);cursor:pointer;
+  transition:background .12s;
+}
+.team-mini-card:hover{background:var(--bg-card)}
+.team-mini-card:last-child{border-bottom:none}
+.team-mini-name{font-weight:700;font-size:13px;flex:1}
+.team-mini-meta{font-size:11px;color:var(--text2);display:flex;gap:6px;flex-wrap:wrap}
+.team-mini-status{font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px}
+
+/* Expand chevron */
+.expand-chevron{
+  display:inline-block;width:16px;height:16px;
+  border-radius:4px;background:rgba(0,0,0,.07);
+  text-align:center;line-height:16px;font-size:10px;
+  transition:transform .2s;flex-shrink:0;margin-right:4px;
+}
+.expanded .expand-chevron{transform:rotate(90deg)}
+
+/* Search bar global */
+#global-search-wrap{
+  margin-bottom:16px;position:relative;
+}
+#global-search{
+  width:100%;padding:12px 16px 12px 42px;
+  border:2px solid var(--border);border-radius:12px;
+  background:var(--bg-card);color:var(--text);
+  font-size:14px;font-family:inherit;
+  transition:border-color .15s,box-shadow .15s;
+  outline:none;
+}
+#global-search:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(200,16,46,.1)}
+#global-search-icon{
+  position:absolute;left:14px;top:50%;transform:translateY(-50%);
+  color:var(--text3);font-size:16px;pointer-events:none;
+}
+#global-search-shortcut{
+  position:absolute;right:12px;top:50%;transform:translateY(-50%);
+  font-size:11px;color:var(--text3);background:var(--bg-sec);
+  padding:2px 6px;border-radius:5px;border:1px solid var(--border);
+  pointer-events:none;
+}
+#global-search-results{
+  display:none;
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:10px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.12);
+  margin-top:4px;max-height:360px;overflow-y:auto;
+}
+#global-search-results.on{display:block}
+.search-result-item{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 14px;border-bottom:1px solid var(--border);
+  cursor:pointer;transition:background .1s;
+}
+.search-result-item:last-child{border-bottom:none}
+.search-result-item:hover{background:var(--bg-sec)}
+.search-result-name{font-weight:700;font-size:13px;flex:1}
+.search-result-meta{font-size:11px;color:var(--text2)}
+.search-result-badge{font-size:10px;padding:2px 7px;border-radius:8px;font-weight:600;white-space:nowrap}
+
+/* FAB botó cerca */
+#fab-search{
+  display:none;position:fixed;bottom:24px;right:24px;
+  width:52px;height:52px;border-radius:50%;
+  background:var(--red);color:white;
+  border:none;cursor:pointer;font-size:20px;
+  box-shadow:0 4px 16px rgba(200,16,46,.4);
+  z-index:100;align-items:center;justify-content:center;
+  transition:transform .15s,box-shadow .15s;
+}
+#fab-search:hover{transform:scale(1.08);box-shadow:0 6px 20px rgba(200,16,46,.5)}
+@media(max-width:640px){#fab-search{display:flex}}
+
+/* Count-up animation */
+@keyframes countUp{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.kv.anim{animation:countUp .4s cubic-bezier(.4,0,.2,1) forwards}
+
+/* Millora general dels category row cards */
+.cat-row-expandable td{
+  transition:background .12s,padding .12s;
+}
 </style>
 </head>
 <body>
@@ -173,14 +358,14 @@ function pinClear(){pinBuf='';updateDots();}
   </div>
 </div>
 <div class="tabs">
-  <div class="tab on" onclick="sv('cats')">Categories</div>
+  <div class="tab on" onclick="sv('cats')">🏀 Categories</div>
   <div class="tab" onclick="sv('horaris')">🗓 Horaris 6-7</div>
   <div class="tab" onclick="sv('jugadors')">👤 Jugadors</div>
-  <div class="tab" onclick="sv('list')">Equips</div>
+  <div class="tab" onclick="sv('list')">📋 Equips</div>
   <div class="tab" onclick="sv('talles')">🎽 Talles</div>
   <div class="tab" onclick="sv('clubs')">🏢 Clubs</div>
   <div class="tab" onclick="sv('checkin')">📍 Check-in</div>
-  <div class="tab" onclick="sv('contact')">Contactar</div>
+  <div class="tab" onclick="sv('contact')">📞 Contactar</div>
   <div class="tab" onclick="sv('cobros')">💰 Cobros</div>
 </div>
 <div class="kpis">
@@ -223,6 +408,13 @@ function pinClear(){pinBuf='';updateDots();}
 <div class="view on" id="view-cats">
   <div id="catdetail-body"></div>
   <div style="margin-top:16px;">
+    <!-- CERCA GLOBAL -->
+    <div id="global-search-wrap">
+      <span id="global-search-icon">🔍</span>
+      <input type="text" id="global-search" placeholder="Cerca equip, jugador, capità, email, telèfon… (prem / per activar)" autocomplete="off" />
+      <span id="global-search-shortcut">/</span>
+      <div id="global-search-results"></div>
+    </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center;" id="cats-title">
       <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text2);">Filtre ràpid:</span>
       <button id="qf-all" class="qf-btn qf-active" onclick="setQF('all')">Tots</button>
@@ -640,6 +832,22 @@ var DATA = [
 
 var _currentTeam = null;
 
+// Genera un color determinístic basat en el nom
+function avatarColor(name) {
+  var colors = ['#c8102e','#1565c0','#2e7d32','#6a1b9a','#e65100','#00695c','#ad1457','#1565c0','#4527a0','#558b2f'];
+  var s = String(name||'?');
+  var h = 0;
+  for(var k=0;k<s.length;k++) h = ((h<<5)-h) + s.charCodeAt(k) | 0;
+  return colors[Math.abs(h) % colors.length];
+}
+
+// Obté les inicials (màx 2 lletres)
+function getInitials(name) {
+  var parts = String(name||'?').trim().split(/\s+/);
+  if(parts.length>=2) return (parts[0][0]+(parts[parts.length-1][0])).toUpperCase();
+  return String(name||'?').charAt(0).toUpperCase();
+}
+
 function showTeam(id) {
   var d = null;
   for(var i=0;i<DATA.length;i++){if(DATA[i].id===id){d=DATA[i];break;}}
@@ -647,54 +855,81 @@ function showTeam(id) {
   _currentTeam = d;
 
   document.getElementById('m-team').textContent = d.team;
-  document.getElementById('m-meta').textContent = d.cat + ' - ' + d.dia + (d.individual?' - Individual':'');
 
-  var status = {confirmed:'Confirmat',pending_payment:'Pendent pagament',pending_payment:'Sense justificant'}[d.status]||d.status;
-  var sdot = d.status==='confirmed'?'#2d7d3a':d.status==='pending_payment'?'#b45309':'#b91c1c';
+  // Meta amb badge de categoria i estat
+  var statusColors = {confirmed:['#dcfce7','#16a34a'],pending_payment:['#fef3c7','#b45309'],pending_proof:['#fee2e2','#b91c1c']};
+  var statusLabels = {confirmed:'Confirmat',pending_payment:'Pend. pagament',pending_proof:'Sense justificant'};
+  var sc = statusColors[d.status] || ['#f3f4f6','#6b7280'];
+  var sl = statusLabels[d.status] || d.status;
+  var genColor = d.gen==='F' ? 'var(--fem)' : 'var(--masc)';
+  var genLabel = d.gen==='F' ? 'Femení' : 'Masculí';
+  document.getElementById('m-meta').innerHTML =
+    '<span style="background:'+sc[0]+';color:'+sc[1]+';padding:2px 8px;border-radius:8px;font-weight:700;font-size:11px;">'+esc(sl)+'</span>' +
+    '<span style="color:'+genColor+';font-weight:600;">'+genLabel+'</span>' +
+    '<span>' + esc(d.cat) + '</span>' +
+    '<span>' + esc(d.dia) + '</span>' +
+    (d.individual ? '<span style="background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:8px;font-size:11px;font-weight:700;">Individual</span>' : '');
 
-  var rows = [
-    ['ID',d.id],
-    ['Estat','<span style="display:inline-flex;align-items:center;gap:5px;"><span style="width:8px;height:8px;border-radius:50%;background:'+sdot+';display:inline-block;"></span>'+status+'</span>'],
-    ['Categoria',d.cat],
-    ['Dia',d.dia],
-    ['Genere',d.gen==='F'?'Femeni':'Masculi'],
-    ['Capita / Tutor',d.cap||'---'],
-    ['Email',d.email||'---'],
-    ['Telefon',d.phone||'---'],
-    ['Num jugadors',d.jug],
-    ['Justificant',d.proof?'Si':'No'],
-    ['Total',d.total+'EUR'],
-    ['Club',d.club==='cbgb'?'CB Grup Barna':d.club==='extern'?'Extern':'Pendent confirmar']
-  ];
+  var html = '';
 
-  var html = rows.map(function(r){
-    return '<div class="mrow"><span class="ml">'+r[0]+'</span><span class="mv">'+r[1]+'</span></div>';
-  }).join('');
-
-  // Llistat de jugadors detallat
+  // ── JUGADORS (primer, és el més important) ──
   if (d.jugadors && d.jugadors.length > 0) {
-    var jugList = d.jugadors.filter(function(j){return j;}).map(function(j,i){
-      return '<div style="padding:6px 10px;border-bottom:1px solid #f3f4f6;font-size:13px;"><span style="display:inline-block;width:22px;height:22px;border-radius:50%;background:#c8102e;color:white;text-align:center;line-height:22px;font-size:11px;font-weight:700;margin-right:8px;">' + (i+1) + '</span>' + esc(j) + '</div>';
-    }).join('');
-    var missing = (d.jug||4) - d.jugadors.filter(function(j){return j;}).length;
-    if (missing > 0) {
-      jugList += '<div style="padding:6px 10px;font-size:12px;color:#b45309;background:#fef3c7;">⚠ Falten ' + missing + ' jugador(s) per omplir</div>';
+    var jugFilled = d.jugadors.filter(function(j){return j;});
+    var missing = (d.jug||4) - jugFilled.length;
+    html += '<div class="drawer-section-label">Jugadors ('+jugFilled.length+'/'+(d.jug||4)+')</div>';
+    jugFilled.forEach(function(j, i) {
+      var color = avatarColor(j);
+      var initials = getInitials(j);
+      var talla = (d.talles && d.talles[i]) ? d.talles[i] : null;
+      var any = (d.anys && d.anys[i]) ? d.anys[i] : null;
+      var club = (d.clubs && d.clubs[i]) ? d.clubs[i] : null;
+      html += '<div class="player-card">';
+      html += '<div class="player-avatar" style="background:'+color+';">'+esc(initials)+'</div>';
+      html += '<div style="flex:1;min-width:0;">';
+      html += '<div class="player-name">'+esc(j)+'</div>';
+      html += '<div class="player-badges">';
+      if(talla) html += '<span class="player-badge talla">🎽 '+esc(talla)+'</span>';
+      if(any) html += '<span class="player-badge any">'+esc(any)+'</span>';
+      if(club && club!==d.team) html += '<span class="player-badge club">'+esc(club)+'</span>';
+      html += '</div></div></div>';
+    });
+    if(missing > 0) {
+      html += '<div style="padding:10px 12px;background:#fef3c7;border-radius:8px;font-size:12px;color:#b45309;font-weight:600;">⚠ Falten '+missing+' jugador'+(missing>1?'s':'')+' per omplir</div>';
     }
-    html += '<div style="margin-top:14px;background:#f9fafb;border-radius:6px;padding:8px;"><div style="font-weight:700;font-size:12px;color:#374151;margin-bottom:6px;padding:0 4px;">JUGADORS (' + d.jugadors.filter(function(j){return j;}).length + '/' + (d.jug||4) + ')</div>' + jugList + '</div>';
   } else if (!d.individual) {
-    html += '<div style="margin-top:14px;background:#fef3c7;color:#b45309;padding:10px;border-radius:6px;font-size:12px;">⚠ Encara no s\'han registrat els jugadors. Envia el formulari de completar dades.</div>';
+    html += '<div style="padding:12px;background:#fef3c7;color:#b45309;border-radius:8px;font-size:12px;font-weight:600;">⚠ Encara no s\'han registrat els jugadors.</div>';
   }
 
+  // ── INFO EQUIP ──
+  html += '<div class="drawer-section-label">Informació de l\'equip</div>';
+  var rows = [
+    ['ID', '<span style="font-family:monospace;font-size:12px;">'+esc(d.id)+'</span>'],
+    ['Capità / Tutor', esc(d.cap||'—')],
+    ['Email', d.email ? '<a href="mailto:'+esc(d.email)+'" style="color:var(--info,#1e40af);">'+esc(d.email)+'</a>' : '—'],
+    ['Telèfon', d.phone ? '<a href="tel:+'+esc(d.phone.replace(/[^0-9]/g,''))+'" style="color:var(--info,#1e40af);">'+esc(d.phone)+'</a>' : '—'],
+    ['Num. jugadors', String(d.jug)],
+    ['Justificant', d.proof ? '<span style="color:var(--ok);font-weight:700;">✓ Sí</span>' : '<span style="color:var(--err);font-weight:700;">✗ No</span>'],
+    ['Total', '<span style="font-weight:700;color:var(--ok);">'+d.total+'€</span>'],
+    ['Club', d.club==='cbgb'?'🏠 CB Grup Barna':d.club==='extern'?'🔵 Extern':'⏳ Pendent confirmar']
+  ];
+  html += '<div style="background:var(--bg-sec);border-radius:10px;padding:2px 12px;">';
+  rows.forEach(function(r){
+    html += '<div class="drawer-row"><span class="drawer-row-label">'+r[0]+'</span><span class="drawer-row-val">'+r[1]+'</span></div>';
+  });
+  html += '</div>';
+
+  // Nota
   if(d.note) {
-    html += '<div style="background:var(--warn-bg);border-radius:5px;padding:8px 10px;margin-top:10px;font-size:12px;color:var(--warn);">'+esc(d.note)+'</div>';
+    html += '<div style="background:var(--warn-bg);border-radius:8px;padding:10px 12px;margin-top:12px;font-size:12px;color:var(--warn);line-height:1.5;">'+esc(d.note)+'</div>';
   }
 
   // QR check-in
   var checkinUrl = 'https://cbgrupbarna-3x3timechamber.com/check-in/' + encodeURIComponent(d.id);
-  html += '<div style="margin-top:14px;display:flex;align-items:center;gap:12px;background:var(--bg-sec);border-radius:8px;padding:10px 12px;">';
-  html += '<canvas id="modal-qr" style="border-radius:4px;"></canvas>';
-  html += '<div><div style="font-size:11px;font-weight:700;color:var(--text2);margin-bottom:3px;">CHECK-IN QR</div>';
-  html += '<div style="font-size:10px;color:var(--text3);word-break:break-all;">'+esc(checkinUrl)+'</div></div>';
+  html += '<div class="drawer-section-label">Check-in QR</div>';
+  html += '<div style="display:flex;align-items:center;gap:14px;background:var(--bg-sec);border-radius:10px;padding:12px;">';
+  html += '<canvas id="modal-qr" style="border-radius:6px;"></canvas>';
+  html += '<div><div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:4px;">QR d\'entrada</div>';
+  html += '<div style="font-size:10px;color:var(--text3);word-break:break-all;line-height:1.4;">'+esc(checkinUrl)+'</div></div>';
   html += '</div>';
 
   document.getElementById('m-body').innerHTML = html;
@@ -703,7 +938,7 @@ function showTeam(id) {
   if (typeof QRCode !== 'undefined') {
     var qrCanvas = document.getElementById('modal-qr');
     if (qrCanvas) {
-      QRCode.toCanvas(qrCanvas, checkinUrl, {width:72, margin:1, color:{dark:'#1a1a1a',light:'#ffffff'}}, function(err){});
+      QRCode.toCanvas(qrCanvas, checkinUrl, {width:80, margin:1, color:{dark:'#1a1a1a',light:'#ffffff'}}, function(err){});
     }
   }
 
@@ -712,11 +947,17 @@ function showTeam(id) {
   waBtn.style.display = (d.phone && d.phone.length>5) ? 'inline-flex' : 'none';
   mailBtn.style.display = (d.email && d.email.indexOf('@')>0) ? 'inline-flex' : 'none';
 
-  document.getElementById('team-modal').classList.add('on');
+  // Obrir el drawer
+  document.getElementById('team-drawer-bg').classList.add('on');
+  // Delay petit per activar la transició CSS
+  setTimeout(function(){ document.getElementById('team-drawer').classList.add('on'); }, 10);
+  document.body.style.overflow = 'hidden';
 }
 
 function closeTeam() {
-  document.getElementById('team-modal').classList.remove('on');
+  document.getElementById('team-drawer').classList.remove('on');
+  document.getElementById('team-drawer-bg').classList.remove('on');
+  document.body.style.overflow = '';
   _currentTeam = null;
 }
 
@@ -2071,6 +2312,18 @@ function renderCobros() {
 }
 
 
+// Estat d'expansió de categories
+var _catExpanded = {};
+
+function toggleCatExpand(cat) {
+  var safeId = cat.replace(/[^a-zA-Z0-9]/g, '_');
+  _catExpanded[cat] = !_catExpanded[cat];
+  var rowEl = document.getElementById('catrow_'+safeId);
+  var expandEl = document.getElementById('catexpand_'+safeId);
+  if(rowEl) rowEl.classList.toggle('expanded', !!_catExpanded[cat]);
+  if(expandEl) expandEl.style.display = _catExpanded[cat] ? '' : 'none';
+}
+
 function renderCatDetail() {
   var cats = getCats();
   var catOrder = Object.keys(CC);
@@ -2082,6 +2335,8 @@ function renderCatDetail() {
     almost: {border:'#ca8a04', bg:'#fefce8', badge:'#fef9c3', text:'#713f12', dot:'#ca8a04'},
     free:   {border:'#16a34a', bg:'var(--bg-card)', badge:'#dcfce7', text:'#14532d', dot:'#16a34a'}
   };
+
+  var statusDot = {confirmed:'#16a34a',pending_payment:'#b45309',pending_proof:'#b91c1c'};
 
   var html = '<div style="overflow-x:auto;">';
   html += '<table style="width:100%;border-collapse:collapse;border-radius:var(--r);overflow:hidden;box-shadow:var(--sh);min-width:480px;">';
@@ -2097,7 +2352,6 @@ function renderCatDetail() {
 
   catOrder.forEach(function(cat) {
     var all   = cats[cat] || [];
-    // mostrar sempre, fins i tot categories buides
     var teams = all.filter(function(d){ return !d.individual; });
     var inds  = all.filter(function(d){ return d.individual; });
     var cfg   = CC[cat] || {limit:8, dia:'?', gen:'M'};
@@ -2109,16 +2363,19 @@ function renderCatDetail() {
     var c     = over ? COLORS.over : full ? COLORS.full : almost ? COLORS.almost : COLORS.free;
     var pct   = Math.min(100, Math.round(teams.length / lim * 100));
     var estatTxt = over ? 'OVER +' + (teams.length-lim) : full ? 'COMPLET' : almost ? ll+' lliu.' : '+'+ll+' lliures';
-    var genColor  = cfg.gen==='F' ? 'var(--fem)' : 'var(--masc)';
     var genDot    = cfg.gen==='F' ? '#9c27b0' : '#1565c0';
     var catLabel  = esc(cat) + (inds.length>0 ? ' <sup style="color:#1e40af;font-size:9px;font-weight:800;">+'+inds.length+'i</sup>' : '');
+    var safeId    = cat.replace(/[^a-zA-Z0-9]/g, '_');
+    var isExp     = !!_catExpanded[cat];
+    var hasItems  = teams.length > 0 || inds.length > 0;
 
-    // Fila categoria — vora esquerra de color semàfor
-    html += '<tr style="border-left:5px solid '+c.border+';background:'+c.bg+';border-bottom:1px solid rgba(0,0,0,.06);">';
+    // Fila categoria expandible
+    html += '<tr id="catrow_'+safeId+'" class="cat-row-expandable'+(isExp?' expanded':'')+'" onclick="toggleCatExpand(\''+cat.replace(/'/g,"\\'")+'\')" style="border-left:5px solid '+c.border+';background:'+c.bg+';border-bottom:1px solid rgba(0,0,0,.06);">';
 
     // Categoria
     html += '<td style="padding:11px 14px;min-width:130px;">';
     html += '<div style="display:flex;align-items:center;gap:7px;">';
+    if(hasItems) html += '<span class="expand-chevron" id="chevron_'+safeId+'">'+(isExp?'▾':'▸')+'</span>';
     html += '<span style="width:10px;height:10px;border-radius:50%;background:'+genDot+';flex-shrink:0;"></span>';
     html += '<span style="font-weight:800;font-size:13px;">'+catLabel+'</span>';
     html += '</div></td>';
@@ -2146,25 +2403,56 @@ function renderCatDetail() {
     html += '</td>';
     html += '</tr>';
 
-    // Sub-files individuals
-    inds.forEach(function(d) {
-      var nom = (d.jugadors && d.jugadors[0]) ? d.jugadors[0] : d.team.replace(/ \(.*\)/g,'');
-      html += '<tr onclick="showTeam(\''+esc(d.id)+'\')" style="border-left:5px solid #bfdbfe;background:#eff6ff;border-bottom:1px solid #dbeafe;cursor:pointer;" onmouseover="this.style.background=\'#dbeafe\'" onmouseout="this.style.background=\'#eff6ff\'">';
-      html += '<td style="padding:6px 14px 6px 30px;font-size:12px;" colspan="2">';
-      html += '<span style="display:inline-flex;width:16px;height:16px;border-radius:50%;background:#1e40af;color:white;font-size:9px;font-weight:700;align-items:center;justify-content:center;margin-right:6px;flex-shrink:0;">i</span>';
-      html += '<strong style="color:#1e40af;">'+esc(nom)+'</strong>';
-      if (d.cap && d.cap !== d.team) html += ' <span style="color:var(--text2);font-size:11px;"> · '+esc(d.cap)+'</span>';
-      html += '</td>';
-      html += '<td style="text-align:center;padding:6px 10px;font-size:12px;color:var(--text2);">individual</td>';
-      html += '<td colspan="2" style="padding:6px 14px;font-size:11px;color:var(--text2);">';
-      if (d.phone) html += '<span style="margin-right:8px;">'+esc(d.phone)+'</span>';
-      html += '<span style="font-family:monospace;font-size:10px;color:var(--text3);">'+esc(d.id)+'</span>';
-      html += '</td></tr>';
+    // Secció expandida (equips de la categoria)
+    html += '<tr id="catexpand_'+safeId+'" style="display:'+(isExp?'':'none')+'"><td colspan="5" style="padding:0;background:var(--bg-sec);border-left:5px solid '+c.border+';">';
+    html += '<div style="padding:8px 0;">';
+
+    teams.forEach(function(d) {
+      var sdot = statusDot[d.status] || '#999';
+      var stl = {confirmed:'Confirmat',pending_payment:'Pend. pag.',pending_proof:'Sense just.'}[d.status]||d.status;
+      var stBg = {confirmed:'#dcfce7',pending_payment:'#fef3c7',pending_proof:'#fee2e2'}[d.status]||'#f3f4f6';
+      var stTx = {confirmed:'#15803d',pending_payment:'#92400e',pending_proof:'#b91c1c'}[d.status]||'#374151';
+      var jugFilled = (d.jugadors||[]).filter(function(j){return j;}).length;
+      html += '<div class="team-mini-card" onclick="showTeam(\''+esc(d.id)+'\')">';
+      // Avatar mini
+      var color = avatarColor(d.team);
+      var initials = getInitials(d.team);
+      html += '<div style="width:32px;height:32px;border-radius:50%;background:'+color+';color:white;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">'+esc(initials)+'</div>';
+      html += '<div style="flex:1;min-width:0;">';
+      html += '<div class="team-mini-name">'+esc(d.team)+'</div>';
+      html += '<div class="team-mini-meta">';
+      if(d.cap) html += '<span>'+esc(d.cap)+'</span>';
+      html += '<span>'+jugFilled+'/'+d.jug+' jug</span>';
+      if(d.phone) html += '<span>'+esc(d.phone)+'</span>';
+      html += '</div></div>';
+      html += '<span class="team-mini-status" style="background:'+stBg+';color:'+stTx+';">'+stl+'</span>';
+      html += '</div>';
     });
+
+    // Individuals
+    if(inds.length>0){
+      html += '<div style="padding:4px 14px 4px 36px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#1e40af;background:#eff6ff;margin:4px 8px;border-radius:6px;">Individuals ('+inds.length+')</div>';
+      inds.forEach(function(d) {
+        var nom = (d.jugadors && d.jugadors[0]) ? d.jugadors[0] : d.team.replace(/ \(.*\)/g,'');
+        html += '<div class="team-mini-card" onclick="showTeam(\''+esc(d.id)+'\')" style="padding-left:36px;">';
+        html += '<div style="width:28px;height:28px;border-radius:50%;background:#1e40af;color:white;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">i</div>';
+        html += '<div style="flex:1;"><div class="team-mini-name" style="color:#1e40af;">'+esc(nom)+'</div>';
+        if(d.cap && d.cap!==d.team) html += '<div style="font-size:11px;color:var(--text2);">'+esc(d.cap)+'</div>';
+        html += '</div>';
+        if(d.phone) html += '<span style="font-size:11px;color:var(--text2);">'+esc(d.phone)+'</span>';
+        html += '</div>';
+      });
+    }
+
+    if(!hasItems){
+      html += '<div style="padding:10px 36px;font-size:12px;color:var(--text2);font-style:italic;">Cap equip inscrit</div>';
+    }
+
+    html += '</div></td></tr>';
   });
 
   html += '</tbody></table></div>';
-  html += '<p style="font-size:11px;color:var(--text2);margin-top:8px;font-style:italic;padding:0 2px;"><sup>+Ni</sup> = inclou N jugadors individuals · Punt ● = gènere (blau=M, lila=F)</p>';
+  html += '<p style="font-size:11px;color:var(--text2);margin-top:8px;font-style:italic;padding:0 2px;"><sup>+Ni</sup> = inclou N jugadors individuals · Punt ● = gènere (blau=M, lila=F) · Clica una fila per expandir els equips</p>';
 
   document.getElementById('catdetail-body').innerHTML = html;
 }
@@ -3315,25 +3603,145 @@ function printFitxes() {
   });
 }
 
+// ============================================================
+// CERCA GLOBAL
+// ============================================================
+(function() {
+  var input = document.getElementById('global-search');
+  var results = document.getElementById('global-search-results');
+  if(!input || !results) return;
+
+  // Shortcut "/" per activar la cerca
+  document.addEventListener('keydown', function(e) {
+    if(e.key === '/' && document.activeElement !== input &&
+       !['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)) {
+      e.preventDefault();
+      sv('cats');
+      input.focus();
+      input.select();
+    }
+    if(e.key === 'Escape' && document.activeElement === input) {
+      input.blur();
+      input.value = '';
+      results.innerHTML = '';
+      results.classList.remove('on');
+    }
+  });
+
+  input.addEventListener('input', function() {
+    var q = input.value.trim().toLowerCase();
+    if(q.length < 2) {
+      results.innerHTML = '';
+      results.classList.remove('on');
+      return;
+    }
+
+    var hits = DATA.filter(function(d) {
+      var haystack = [d.team, d.cat, d.cap, d.email, d.phone, d.id, d.note,
+        (d.jugadors||[]).join(' '), (d.clubs||[]).join(' ')
+      ].join(' ').toLowerCase();
+      return haystack.indexOf(q) !== -1;
+    }).slice(0, 12);
+
+    if(hits.length === 0) {
+      results.innerHTML = '<div style="padding:12px 16px;font-size:13px;color:var(--text2);">Cap resultat per <strong>"'+esc(q)+'"</strong></div>';
+      results.classList.add('on');
+      return;
+    }
+
+    var html = '';
+    hits.forEach(function(d) {
+      var sc = {confirmed:'#dcfce7',pending_payment:'#fef3c7',pending_proof:'#fee2e2'}[d.status]||'#f3f4f6';
+      var tc = {confirmed:'#15803d',pending_payment:'#92400e',pending_proof:'#b91c1c'}[d.status]||'#374151';
+      var sl = {confirmed:'✓',pending_payment:'⏳',pending_proof:'⚠'}[d.status]||'?';
+      var color = avatarColor(d.team);
+      var initials = getInitials(d.team);
+      html += '<div class="search-result-item" onclick="showTeam(\''+esc(d.id)+'\')">';
+      html += '<div style="width:32px;height:32px;border-radius:50%;background:'+color+';color:white;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">'+esc(initials)+'</div>';
+      html += '<div style="flex:1;min-width:0;">';
+      html += '<div class="search-result-name">'+esc(d.team)+'</div>';
+      html += '<div class="search-result-meta">'+esc(d.cat)+' · '+esc(d.cap||'')+(d.phone?' · '+esc(d.phone):'')+'</div>';
+      html += '</div>';
+      html += '<span class="search-result-badge" style="background:'+sc+';color:'+tc+';">'+sl+' '+esc(d.cat)+'</span>';
+      html += '</div>';
+    });
+    results.innerHTML = html;
+    results.classList.add('on');
+  });
+
+  // Tancar quan es clica fora
+  document.addEventListener('click', function(e) {
+    if(!input.contains(e.target) && !results.contains(e.target)) {
+      results.classList.remove('on');
+    }
+  });
+})();
+
+// ============================================================
+// COUNT-UP ANIMACIÓ KPIs
+// ============================================================
+function animateCountUp(el, finalVal) {
+  if(!el) return;
+  var isNum = !isNaN(parseFloat(finalVal));
+  if(!isNum) { el.textContent = finalVal; el.classList.add('anim'); return; }
+  var target = parseFloat(finalVal);
+  var isEur = String(finalVal).indexOf('EUR') !== -1;
+  var start = 0;
+  var dur = 600;
+  var step = function(ts) {
+    if(!start) start = ts;
+    var prog = Math.min((ts-start)/dur, 1);
+    var eased = 1 - Math.pow(1-prog, 3);
+    var cur = Math.round(target * eased);
+    el.textContent = cur + (isEur ? 'EUR' : '');
+    if(prog < 1) requestAnimationFrame(step);
+    else el.textContent = finalVal;
+  };
+  requestAnimationFrame(step);
+  el.classList.add('anim');
+}
+
+// Patch kpis() per afegir count-up
+var _origKpis = kpis;
+kpis = function() {
+  _origKpis();
+  ['k0','k2','k3','k4','k5','k6','k7','k8','k9','k10'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if(el) {
+      var val = el.textContent;
+      animateCountUp(el, val);
+    }
+  });
+};
+
+// Teclat ESC per tancar drawer
+document.addEventListener('keydown', function(e) {
+  if(e.key === 'Escape' && _currentTeam) closeTeam();
+});
+
 </script>
 
-<div class="modal-bg" id="team-modal" onclick="if(event.target===this)closeTeam()">
-  <div class="modal">
-    <div class="mh">
-      <div>
-        <div class="mt" id="m-team">---</div>
-        <div class="ms" id="m-meta">---</div>
-      </div>
-      <button onclick="closeTeam()" style="flex-shrink:0;">&#10005; Tancar</button>
+<!-- SLIDE-OVER DRAWER (substitueix modal centrat) -->
+<div id="team-drawer-bg" onclick="closeTeam()"></div>
+<div id="team-drawer">
+  <div class="drawer-header">
+    <div style="flex:1">
+      <div class="drawer-title" id="m-team">---</div>
+      <div class="drawer-meta" id="m-meta">---</div>
     </div>
-    <div id="m-body"></div>
-    <div class="mactions">
-      <button id="m-wa" class="wa-btn" onclick="openTeamWA()" style="display:none;">&#128172; WhatsApp</button>
-      <button id="m-mail" onclick="openTeamMail()" style="display:none;">&#128140; Email</button>
-      <button onclick="copyTeamInfo()">&#128203; Copiar info</button>
-      <button onclick="closeTeam()">Tancar</button>
-    </div>
+    <button class="drawer-close" onclick="closeTeam()">&#10005;</button>
+  </div>
+  <div class="drawer-body" id="m-body"></div>
+  <div class="drawer-actions">
+    <button id="m-wa" class="wa-btn" onclick="openTeamWA()" style="display:none;">&#128172; WhatsApp</button>
+    <button id="m-mail" onclick="openTeamMail()" style="display:none;">&#128140; Email</button>
+    <button onclick="copyTeamInfo()">&#128203; Copiar info</button>
+    <button onclick="closeTeam()">Tancar</button>
   </div>
 </div>
+
+<!-- FAB cerca (mòbil) -->
+<button id="fab-search" onclick="document.getElementById('global-search').focus();sv('cats')" title="Cerca ràpida">🔍</button>
+
 </body>
 </html>
