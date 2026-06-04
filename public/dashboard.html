@@ -3054,118 +3054,120 @@ function buildFitxaHtml_(d, qrSrc, teamIdx) {
   var jugadors = d.jugadors || [];
   var talles   = d.talles   || [];
   var isPagat  = d.status === 'confirmed';
-  var diaFull  = d.dia === '6/6' ? 'Dissabte 6 juny' : d.dia === '7/6' ? 'Diumenge 7 juny' : (d.dia || '');
+  var diaFull  = d.dia === '6/6' ? 'DISSABTE 6 JUNY' : d.dia === '7/6' ? 'DIUMENGE 7 JUNY' : (d.dia || '').toUpperCase();
   var genLbl   = d.gen === 'F' ? '♀ FEMENÍ' : '♂ MASCULÍ';
   var horari   = CAT_HORARI[d.cat] || {};
   var catColor = horari.color || '#c8102e';
+  var isRambleta = (horari.lloc || '').indexOf('Rambleta') !== -1;
 
-  // Llista jugadors
-  var jugsHtml = '<div class="jug-list"><div class="jug-hdr">Jugadors</div>';
+  // ── Jugadors ──────────────────────────────────────────────────────
+  var jugsHtml = '';
   if (jugadors.length > 0) {
     for (var i = 0; i < jugadors.length; i++) {
       var talla = talles[i] || '';
-      jugsHtml += '<div class="jug-row">' +
-        '<span class="jug-num">' + (i+1) + '</span>' +
-        '<span class="jug-name">' + escH_(jugadors[i] || '—') + '</span>' +
-        (talla ? '<span class="jug-talla">' + escH_(talla) + '</span>' : '<span class="jug-tno">—</span>') +
+      jugsHtml +=
+        '<div class="jr">' +
+          '<span class="jr-n" style="color:' + catColor + '">' + (i+1) + '</span>' +
+          '<span class="jr-nom">' + escH_(jugadors[i] || '—') + '</span>' +
+          (talla
+            ? '<span class="jr-t" style="background:' + catColor + '">' + escH_(talla) + '</span>'
+            : '<span class="jr-t-no">—</span>') +
         '</div>';
     }
   } else {
-    jugsHtml += '<span class="jug-pend">Noms pendents de confirmar</span>';
+    jugsHtml = '<div class="jr-pend">Noms pendents de confirmar</div>';
   }
-  jugsHtml += '</div>';
 
-  var qrHtml = qrSrc
-    ? '<div class="qr-wrap"><img src="' + qrSrc + '" class="qr-img" alt="QR"/><div class="qr-lbl">Escanejar</div></div>'
-    : '<div class="qr-wrap qr-empty">–</div>';
+  // ── QR ────────────────────────────────────────────────────────────
+  var qrBlock = qrSrc
+    ? '<div class="qr-col"><div class="qr-frame"><img src="' + qrSrc + '" class="qr-i" alt="QR"/></div><div class="qr-sub">Escanejar</div></div>'
+    : '<div class="qr-col"><div class="qr-frame qr-none">QR</div></div>';
 
-  // Venue especial: Rambleta del Clot = mostrar Eix del Clot
-  var isRambleta = (horari.lloc || '').indexOf('Rambleta') !== -1;
+  return (
+    '<div class="card">' +
 
-  return '<div class="card">' +
-
-    // ══ STRIPE DE COLORS EIX DEL CLOT (8 diamants) ═════════════════
-    '<div class="eix-stripe">' +
-      '<span style="background:#c9a0cc"></span>' +
-      '<span style="background:#5ec0d8"></span>' +
-      '<span style="background:#a8cc40"></span>' +
-      '<span style="background:#f0dc18"></span>' +
-      '<span style="background:#f0a020"></span>' +
-      '<span style="background:#cc3828"></span>' +
-      '<span style="background:#e88c88"></span>' +
-      '<span style="background:#b8a888"></span>' +
+    // ① STRIPE 8 COLORS EIX DEL CLOT
+    '<div class="es">' +
+      '<s style="background:#c9a0cc"></s><s style="background:#5ec0d8"></s>' +
+      '<s style="background:#a8cc40"></s><s style="background:#f0dc18"></s>' +
+      '<s style="background:#f0a020"></s><s style="background:#cc3828"></s>' +
+      '<s style="background:#e88c88"></s><s style="background:#b8a888"></s>' +
     '</div>' +
 
-    // ══ BANNER FOSC: logos + títol ══════════════════════════════════
-    '<div class="banner">' +
-      '<div class="banner-logos">' +
-        '<img src="https://cbgrupbarna-3x3timechamber.com/logo-barna-hd.png" class="b-logo b-logo-cb" alt="CB Grup Barna"/>' +
-        '<div class="b-sep"></div>' +
-        '<img src="https://cbgrupbarna-3x3timechamber.com/logos/westfield.svg" class="b-logo" alt="Westfield"/>' +
-        '<img src="https://cbgrupbarna-3x3timechamber.com/logos/timechamber.webp" class="b-logo" alt="Time Chamber"/>' +
-        '<img src="https://cbgrupbarna-3x3timechamber.com/logos/eix-clot-negatiu.svg" class="b-logo b-logo-eix" alt="Eix del Clot"/>' +
+    // ② CAPÇALERA FOSCA: logos
+    '<div class="ch">' +
+      '<div class="ch-logos">' +
+        '<img src="https://cbgrupbarna-3x3timechamber.com/logo-barna-hd.png" class="cl cl-cb" alt="CB"/>' +
+        '<div class="cl-sep"></div>' +
+        '<img src="https://cbgrupbarna-3x3timechamber.com/logos/westfield.svg" class="cl cl-f" alt="WF"/>' +
+        '<img src="https://cbgrupbarna-3x3timechamber.com/logos/timechamber.webp" class="cl cl-f" alt="TC"/>' +
+        '<img src="https://cbgrupbarna-3x3timechamber.com/logos/eix-clot-negatiu.svg" class="cl cl-f cl-eix" alt="Eix"/>' +
       '</div>' +
-      '<div class="banner-title">3×3 WESTFIELD GL\xd2RIES 2026 &nbsp;·&nbsp; <span style="opacity:.6;font-size:5pt">Barri del Clot · Barcelona</span></div>' +
+      '<div class="ch-sub">3\xd73 WESTFIELD GL\xd2RIES 2026 &middot; <span style="opacity:.55">Barri del Clot, Barcelona</span></div>' +
     '</div>' +
 
-    // ══ MISSATGE BENVINGUDA PERSONALITZAT ═══════════════════════════
-    '<div class="frase-wrap">' +
-      '<span class="frase-equip">Gr&agrave;cies, ' + escH_(d.team) + '!</span>' +
-      '<span class="frase-txt">' + escH_(getFrase_(teamIdx)) + '</span>' +
-    '</div>' +
-
-    // ══ FRANJA VERMELLA: badges + nom equip + QR ═══════════════════
-    '<div class="red-section">' +
-      '<div class="red-left">' +
-        '<div class="badge-row">' +
-          '<span class="b-cat" style="background:' + catColor + ';border-color:' + catColor + '">' + escH_(d.cat) + '</span>' +
-          '<span class="b-gen">' + genLbl + '</span>' +
-          '<span class="b-dia">' + escH_(diaFull).toUpperCase() + '</span>' +
+    // ③ BLOC HEROI: color categoria + nom equip + QR
+    '<div class="hero" style="background:' + catColor + '">' +
+      // Decoració: cercle gran semitransparent
+      '<div class="hero-bg-circle"></div>' +
+      '<div class="hero-content">' +
+        '<div class="hero-left">' +
+          '<div class="hero-badges">' +
+            '<span class="hb-cat">' + escH_(d.cat) + '</span>' +
+            '<span class="hb-meta">' + genLbl + '</span>' +
+            '<span class="hb-meta">' + diaFull + '</span>' +
+          '</div>' +
+          '<div class="hero-nom">' + escH_(d.team) + '</div>' +
         '</div>' +
-        '<div class="team-name">' + escH_(d.team) + '</div>' +
+        qrBlock +
       '</div>' +
-      qrHtml +
     '</div>' +
 
-    // ══ HORARI (Rambleta = badge Eix del Clot) ══════════════════════
+    // ④ BENVINGUDA (warm cream, nom en or)
+    '<div class="bv">' +
+      '<div class="bv-nom">Gr&agrave;cies, ' + escH_(d.team) + '!</div>' +
+      '<div class="bv-txt">' + escH_(getFrase_(teamIdx)) + '</div>' +
+    '</div>' +
+
+    // ⑤ HORARI
     (horari.hora || horari.lloc
-      ? '<div class="sched' + (isRambleta ? ' sched-rambleta' : '') + '">' +
-          (horari.hora ? '<span class="s-hora">' + escH_(horari.hora) + '</span>' : '') +
-          (horari.hora && horari.lloc ? '<span class="s-dot">·</span>' : '') +
-          (horari.lloc ? '<span class="s-lloc">' + escH_(horari.lloc) + '</span>' : '') +
-          (isRambleta
-            ? '<span class="eix-badge"><img src="https://cbgrupbarna-3x3timechamber.com/logos/eix-clot-oficial.png" class="eix-badge-logo" alt="Eix del Clot"/>Gr&agrave;cies!</span>'
-            : '') +
+      ? '<div class="sched' + (isRambleta ? ' sched-r' : '') + '">' +
+          '<span class="sh">' + escH_(horari.hora || '') + '</span>' +
+          (horari.lloc ? '<span class="sd">&middot;</span><span class="sl">' + escH_(horari.lloc) + '</span>' : '') +
+          (isRambleta ? '<span class="eixb"><img src="https://cbgrupbarna-3x3timechamber.com/logos/eix-clot-oficial.png" class="eixb-i" alt="Eix"/>Gr&agrave;cies!</span>' : '') +
         '</div>'
       : '') +
 
-    // ══ PAGAMENT ═══════════════════════════════════════════════════
-    (isPagat ? '<div class="pag-ok">&#10003; PAGAMENT VERIFICAT</div>' : '') +
+    // ⑥ PAGAMENT (només si verificat)
+    (isPagat
+      ? '<div class="pv">&#10003;&nbsp; Pagament verificat &nbsp;&middot;&nbsp; CB Grup Barna</div>'
+      : '') +
 
-    // ══ CAPITÀ ═════════════════════════════════════════════════════
-    '<div class="cap-row">' +
-      '<span class="cap-lbl">Capit&agrave;</span>' +
-      '<span class="cap-nom">' + escH_(d.cap || '—') + '</span>' +
-      (d.phone ? '<span class="cap-dot">·</span><span class="cap-tel">' + escH_(d.phone) + '</span>' : '') +
+    // ⑦ CAPITÀ
+    '<div class="cap">' +
+      '<span class="cap-l">Capit\xe0</span>' +
+      '<span class="cap-n">' + escH_(d.cap || '—') + '</span>' +
+      (d.phone ? '<span class="cap-d">&middot;</span><span class="cap-t">' + escH_(d.phone) + '</span>' : '') +
     '</div>' +
 
-    // ══ JUGADORS ════════════════════════════════════════════════════
-    jugsHtml +
-
-    // ══ STRIP COL·LABORADORS ════════════════════════════════════════
-    '<div class="collab-strip">' +
-      '<span class="collab-lbl">Amb el suport de</span>' +
-      '<img src="https://cbgrupbarna-3x3timechamber.com/logos/eix-clot-oficial.png" class="collab-logo" alt="Eix del Clot"/>' +
-      '<img src="https://cbgrupbarna-3x3timechamber.com/logos/westfield.svg" class="collab-logo collab-wf" alt="Westfield"/>' +
-      '<img src="https://cbgrupbarna-3x3timechamber.com/logos/timechamber.webp" class="collab-logo" alt="Time Chamber"/>' +
+    // ⑧ JUGADORS
+    '<div class="jl">' +
+      '<div class="jl-h">Jugadors</div>' +
+      jugsHtml +
     '</div>' +
 
-    // ══ FOOTER ══════════════════════════════════════════════════════
-    '<div class="card-ftr">' +
-      '<span class="ftr-id">ID: ' + escH_(d.id) + '</span>' +
+    // ⑨ FOOTER: partners + ID
+    '<div class="cf">' +
+      '<div class="cf-logos">' +
+        '<img src="https://cbgrupbarna-3x3timechamber.com/logos/eix-clot-oficial.png" class="cf-logo" alt="Eix"/>' +
+        '<img src="https://cbgrupbarna-3x3timechamber.com/logos/westfield.svg" class="cf-logo cf-wf" alt="WF"/>' +
+        '<img src="https://cbgrupbarna-3x3timechamber.com/logos/timechamber.webp" class="cf-logo" alt="TC"/>' +
+      '</div>' +
+      '<span class="cf-id">ID&nbsp;' + escH_(d.id) + '</span>' +
     '</div>' +
 
-  '</div>';
+  '</div>'
+  );
 }
 
 function printFitxes() {
@@ -3206,95 +3208,93 @@ function printFitxes() {
     var css = [
       "@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');",
       '*{box-sizing:border-box;margin:0;padding:0}',
-      "body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:#f5f0e8;color:#1a1a1a;font-size:7pt}",
+      "body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:#f0ece4;color:#1a1a1a;font-size:7pt}",
       '@page{size:A4 portrait;margin:5mm}',
       '@media print{.no-print{display:none!important}}',
 
-      // ─ Grid A4 ─
+      // ── GRID A4 ──
       '.page{width:100%;height:277mm;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:3mm;page-break-after:always}',
       '.page:last-child{page-break-after:avoid}',
-      '.card{border:1.5px solid #ddd6c8;border-radius:2.5mm;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 1px 6px rgba(0,0,0,.08);background:#fff}',
-      '.card-empty{border:1px dashed #ddd;background:#fafaf8}',
+      '.card{border-radius:3mm;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,.12);background:#fff;border:1px solid #e8e0d4}',
+      '.card-empty{border:1.5px dashed #ddd;border-radius:3mm;background:#fafaf8}',
 
-      // ─ Banner fosc (=team-banner del completar.html) ─
-      '.banner{background:linear-gradient(135deg,#1a0a0e,#3d1822);color:#fff;flex-shrink:0;padding:1.8mm 2.5mm 1.5mm}',
-      '.banner-logos{display:flex;align-items:center;gap:2mm;margin-bottom:1.5mm}',
-      '.b-logo{height:5.5mm;width:auto;filter:brightness(0)invert(1);flex-shrink:0;object-fit:contain}',
-      '.b-logo-cb{height:9mm;filter:none;mix-blend-mode:lighten}',
-      '.b-sep{width:.3mm;height:5mm;background:rgba(255,255,255,.25);flex-shrink:0;margin:0 .5mm}',
-      '.banner-title{font-size:6pt;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.75)}',
+      // ── ① STRIPE EIX DEL CLOT ──
+      '.es{display:flex;height:3mm;flex-shrink:0}',
+      '.es s{flex:1;display:block}',
 
-      // ─ Franja gradient vermell (=card-hdr del completar.html) ─
-      '.red-section{background:linear-gradient(90deg,#c8102e,#9a0d23);padding:2mm 2.5mm 2mm;display:flex;align-items:flex-start;gap:2mm;flex-shrink:0}',
-      '.red-left{flex:1;min-width:0}',
-      '.badge-row{display:flex;flex-wrap:wrap;gap:1mm;margin-bottom:2mm}',
-      '.b-cat{color:#fff;font-size:5.5pt;font-weight:900;padding:.5mm 1.8mm;border-radius:.8mm;text-transform:uppercase;letter-spacing:.3px;border:1px solid transparent}',
-      '.b-gen{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);color:#fff;font-size:5.5pt;font-weight:700;padding:.5mm 1.5mm;border-radius:.8mm;text-transform:uppercase;letter-spacing:.3px}',
-      '.b-dia{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.85);font-size:5.5pt;font-weight:700;padding:.5mm 1.5mm;border-radius:.8mm;text-transform:uppercase;letter-spacing:.2px}',
-      '.team-name{font-size:13pt;font-weight:900;line-height:1.1;word-break:break-word;color:#fff;letter-spacing:-.3px}',
+      // ── ② CAPÇALERA FOSCA ──
+      '.ch{background:linear-gradient(135deg,#1a0a0e 0%,#3d1822 100%);padding:2mm 2.5mm 1.5mm;flex-shrink:0}',
+      '.ch-logos{display:flex;align-items:center;gap:2mm;margin-bottom:1.5mm}',
+      '.cl{height:5mm;width:auto;filter:brightness(0)invert(1);flex-shrink:0;object-fit:contain}',
+      '.cl-cb{height:8mm;filter:none;mix-blend-mode:lighten}',
+      '.cl-eix{filter:none!important;height:5mm}',
+      '.cl-sep{width:.3mm;height:5mm;background:rgba(255,255,255,.2);flex-shrink:0;margin:0 .5mm}',
+      '.ch-sub{font-size:5.5pt;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:rgba(255,255,255,.6)}',
 
-      // ─ QR ─
-      '.qr-wrap{flex-shrink:0;text-align:center;width:26mm}',
-      '.qr-img{width:24mm;height:24mm;display:block;border:2px solid rgba(255,255,255,.2);border-radius:1.5mm;background:#fff;padding:.5mm}',
-      '.qr-lbl{font-size:4.5pt;color:rgba(255,255,255,.5);margin-top:.8mm;text-align:center;letter-spacing:.5px;text-transform:uppercase}',
-      '.qr-empty{width:24mm;height:24mm;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:1.5mm;display:flex;align-items:center;justify-content:center;font-size:7pt;color:rgba(255,255,255,.3)}',
+      // ── ③ BLOC HEROI (color categoria) ──
+      '.hero{position:relative;padding:2.5mm 2.5mm 2mm;display:flex;flex-shrink:0;overflow:hidden;min-height:32mm}',
+      '.hero-bg-circle{position:absolute;right:-8mm;top:-8mm;width:32mm;height:32mm;border-radius:50%;background:rgba(255,255,255,.08);pointer-events:none}',
+      '.hero-content{display:flex;align-items:flex-start;gap:2mm;width:100%;position:relative}',
+      '.hero-left{flex:1;min-width:0}',
+      '.hero-badges{display:flex;flex-wrap:wrap;gap:1mm;margin-bottom:2.5mm}',
+      '.hb-cat{background:rgba(255,255,255,.25);border:1px solid rgba(255,255,255,.4);color:#fff;font-size:6pt;font-weight:900;padding:.6mm 2mm;border-radius:1mm;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}',
+      '.hb-meta{background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.9);font-size:5.5pt;font-weight:700;padding:.6mm 1.8mm;border-radius:1mm;text-transform:uppercase;letter-spacing:.3px;white-space:nowrap}',
+      '.hero-nom{font-size:14pt;font-weight:900;color:#fff;line-height:1.05;word-break:break-word;letter-spacing:-.5px;text-shadow:0 1px 3px rgba(0,0,0,.3)}',
 
-      // ─ Horari ─
-      '.sched{background:#fdfbf8;border-top:1px solid #e8e0d4;border-bottom:1px solid #e8e0d4;padding:1.8mm 2.5mm;display:flex;align-items:center;gap:1.5mm;flex-shrink:0}',
-      '.s-hora{font-weight:900;color:#1a1a1a;font-size:8.5pt;letter-spacing:-.2px}',
-      '.s-dot{color:#c8932a;font-weight:900;font-size:8pt}',
-      '.s-lloc{color:#555;font-weight:700;font-size:7.5pt}',
+      // ── QR ──
+      '.qr-col{flex-shrink:0;text-align:center;display:flex;flex-direction:column;align-items:center}',
+      '.qr-frame{background:#fff;border-radius:2mm;padding:1.5mm;box-shadow:0 2px 8px rgba(0,0,0,.2);display:inline-block}',
+      '.qr-i{width:22mm;height:22mm;display:block}',
+      '.qr-sub{font-size:5pt;color:rgba(255,255,255,.5);margin-top:1mm;letter-spacing:.8px;text-transform:uppercase}',
+      '.qr-none{width:22mm;height:22mm;background:rgba(255,255,255,.1);border-radius:1.5mm;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.3);font-size:6pt}',
 
-      // ─ Pagament (gold accent igual que completar.html) ─
-      '.pag-ok{background:#e8f5ec;border-top:1px solid #8fd4a8;border-bottom:1px solid #8fd4a8;padding:1.5mm 2.5mm;font-size:7.5pt;font-weight:900;color:#1a7a3a;flex-shrink:0;letter-spacing:.2px}',
-      '.pag-no{background:#fff8e8;border-top:1px solid #e8c87a;border-bottom:1px solid #e8c87a;padding:1.5mm 2.5mm;font-size:7.5pt;font-weight:900;color:#7a5a00;flex-shrink:0;letter-spacing:.2px}',
+      // ── ④ BENVINGUDA (warm cream) ──
+      '.bv{background:#fdf6ec;border-top:2px solid #c8932a;border-bottom:1px solid #e8dcc8;padding:2mm 2.5mm;flex-shrink:0}',
+      '.bv-nom{font-size:7.5pt;font-weight:900;color:#9a6a00;text-transform:uppercase;letter-spacing:.5px;margin-bottom:1.5mm}',
+      '.bv-txt{font-size:6.5pt;color:#6a5030;font-style:italic;line-height:1.45}',
 
-      // ─ Capità ─
-      '.cap-row{padding:1.5mm 2.5mm;border-bottom:1px solid #f0ece4;display:flex;flex-wrap:wrap;gap:1mm;align-items:center;flex-shrink:0}',
-      '.cap-lbl{font-weight:800;color:#999;font-size:5.5pt;text-transform:uppercase;letter-spacing:.5px}',
-      '.cap-nom{font-weight:700;color:#1a1a1a;font-size:7.5pt}',
-      '.cap-dot{color:#ddd6c8}',
-      '.cap-tel{color:#c8102e;font-weight:800;font-size:7.5pt}',
+      // ── ⑤ HORARI ──
+      '.sched{background:#fdfbf8;border-bottom:1px solid #e8e0d4;padding:2mm 2.5mm;display:flex;align-items:center;gap:1.5mm;flex-shrink:0}',
+      '.sh{font-size:9pt;font-weight:900;color:#1a1a1a;letter-spacing:-.3px}',
+      '.sd{color:#c8932a;font-weight:900;font-size:9pt}',
+      '.sl{font-size:7.5pt;font-weight:700;color:#555}',
+      '.sched-r{background:#fff8f2;border-bottom:1.5px solid #f0a020}',
+      '.eixb{display:flex;align-items:center;gap:1.5mm;margin-left:auto;background:#fff;border:1px solid #e8d8c0;border-radius:2mm;padding:.5mm 2mm;flex-shrink:0;font-size:6pt;font-weight:700;color:#7a5a00}',
+      '.eixb-i{height:4mm;width:auto;object-fit:contain}',
 
-      // ─ Jugadors ─
-      '.jug-list{flex:1;overflow:hidden;padding:1.5mm 2.5mm}',
-      '.jug-hdr{font-size:5pt;font-weight:900;text-transform:uppercase;color:#bbb6ae;letter-spacing:.8px;margin-bottom:1.2mm}',
-      '.jug-row{display:flex;align-items:center;font-size:7.5pt;padding:.5mm 0;border-bottom:1px solid #f5f0e8}',
-      '.jug-row:last-child{border-bottom:none}',
-      '.jug-num{width:3.5mm;color:#c8932a;font-size:6pt;flex-shrink:0;font-weight:900}',
-      '.jug-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#1a1a1a;font-weight:600;padding-right:1mm}',
-      '.jug-talla{background:linear-gradient(90deg,#c8102e,#9a0d23);color:#fff;font-size:6.5pt;font-weight:900;padding:.3mm 1.8mm;border-radius:.8mm;flex-shrink:0;min-width:4.5mm;text-align:center;letter-spacing:.2px}',
-      '.jug-tno{color:#ddd;font-size:6.5pt;flex-shrink:0;margin-left:1mm}',
-      '.jug-pend{font-size:6.5pt;color:#bbb;padding:.5mm 0}',
+      // ── ⑥ PAGAMENT ──
+      '.pv{background:linear-gradient(90deg,#e8f5ec,#f0faf2);border-bottom:1px solid #b8e0c8;padding:1.5mm 2.5mm;font-size:7pt;font-weight:800;color:#1a7a3a;flex-shrink:0;letter-spacing:.3px}',
 
-      // ─ Footer ─
-      '.card-ftr{border-top:1px solid #f0ece4;padding:.8mm 2.5mm;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;background:#fdfbf8}',
-      '.ftr-id{font-size:5pt;font-family:monospace;color:#c8932a;letter-spacing:.5px}',
-      // Eix del Clot stripe
-      '.eix-stripe{display:flex;height:2.5mm;flex-shrink:0}',
-      '.eix-stripe span{flex:1}',
-      // Logo Eix del Clot al banner: sense filtre (negatiu ja és blanc)
-      '.b-logo-eix{filter:none!important;height:6mm}',
-      // Horari Rambleta
-      '.sched-rambleta{background:#fff8f0;border-top:1.5px solid #f0a020;border-bottom:1.5px solid #f0a020}',
-      '.eix-badge{display:flex;align-items:center;gap:1.5mm;margin-left:auto;background:#fff;border:1px solid #ddd;border-radius:2mm;padding:.5mm 2mm;flex-shrink:0}',
-      '.eix-badge-logo{height:4mm;width:auto;object-fit:contain}',
-      '.eix-badge{font-size:6pt;font-weight:700;color:#555}',
-      // Col·laboradors strip
-      '.collab-strip{border-top:1px solid #f0ece4;padding:2mm 2.5mm;display:flex;align-items:center;gap:2mm;flex-shrink:0;background:#fdfbf8}',
-      '.collab-lbl{font-size:5.5pt;color:#bbb;text-transform:uppercase;letter-spacing:.5px;font-weight:700;white-space:nowrap;margin-right:1mm}',
-      '.collab-logo{height:4.5mm;width:auto;object-fit:contain;flex-shrink:0}',
-      '.collab-wf{filter:brightness(0);opacity:.5}',
-      // Frase benvinguda (just sota el banner, molt visible)
-      '.frase-wrap{background:linear-gradient(135deg,#2d1218,#1a0a0e);border-bottom:2px solid #c8932a;padding:5px 10px 6px;flex-shrink:0}',
-      '.frase-equip{display:block;font-size:8pt;font-weight:900;color:#c8932a;letter-spacing:.3px;margin-bottom:2px;text-transform:uppercase}',
-      '.frase-txt{font-size:6.5pt;color:rgba(255,255,255,.8);font-style:italic;line-height:1.4;display:block}',
+      // ── ⑦ CAPITÀ ──
+      '.cap{padding:1.5mm 2.5mm;border-bottom:1px solid #f0ece4;display:flex;flex-wrap:wrap;gap:1mm;align-items:center;flex-shrink:0}',
+      '.cap-l{font-size:5.5pt;font-weight:800;color:#bbb;text-transform:uppercase;letter-spacing:.6px}',
+      '.cap-n{font-size:7.5pt;font-weight:700;color:#1a1a1a}',
+      '.cap-d{color:#ddd}',
+      '.cap-t{font-size:7.5pt;font-weight:800;color:#c8102e}',
 
-      // ─ Barra pantalla ─
+      // ── ⑧ JUGADORS ──
+      '.jl{flex:1;padding:1.5mm 2.5mm;overflow:hidden}',
+      '.jl-h{font-size:5pt;font-weight:900;text-transform:uppercase;color:#c8b8a0;letter-spacing:1px;margin-bottom:1.5mm}',
+      '.jr{display:flex;align-items:center;padding:.6mm 0;border-bottom:1px solid #f5f0e8}',
+      '.jr:last-child{border-bottom:none}',
+      '.jr-n{width:4mm;font-size:8pt;font-weight:900;flex-shrink:0;text-align:center;line-height:1}',
+      '.jr-nom{flex:1;font-size:7.5pt;font-weight:600;color:#1a1a1a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 1.5mm}',
+      '.jr-t{font-size:7pt;font-weight:900;color:#fff;padding:.4mm 2mm;border-radius:.8mm;flex-shrink:0;min-width:5mm;text-align:center;letter-spacing:.2px}',
+      '.jr-t-no{color:#ddd;font-size:6.5pt;flex-shrink:0;padding:0 1mm}',
+      '.jr-pend{font-size:6.5pt;color:#bbb;padding:1mm 0;font-style:italic}',
+
+      // ── ⑨ FOOTER ──
+      '.cf{border-top:1px solid #e8e0d4;padding:1mm 2.5mm;display:flex;align-items:center;gap:1.5mm;flex-shrink:0;background:#fdfbf8}',
+      '.cf-logos{display:flex;align-items:center;gap:1.5mm;flex:1}',
+      '.cf-logo{height:4mm;width:auto;object-fit:contain;flex-shrink:0}',
+      '.cf-wf{filter:brightness(0);opacity:.35}',
+      '.cf-id{font-size:5pt;font-family:monospace;color:#c8932a;letter-spacing:.5px;flex-shrink:0}',
+
+      // ── BARRA PANTALLA ──
       '.top-bar{background:linear-gradient(90deg,#1a0a0e,#3d1822);color:#fff;padding:10px 20px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;position:sticky;top:0;z-index:99;border-bottom:3px solid #c8932a}',
-      '.top-bar button{padding:8px 22px;background:#c8102e;color:#fff;border:none;border-radius:8px;font-weight:900;font-size:13px;cursor:pointer;letter-spacing:.3px}',
+      '.top-bar button{padding:8px 22px;background:#c8102e;color:#fff;border:none;border-radius:8px;font-weight:900;font-size:14px;cursor:pointer}',
       '.top-bar button:hover{background:#9a0d23}',
-      '.top-info{font-size:11px;color:rgba(255,255,255,.7)}'
+      '.top-info{font-size:11px;color:rgba(255,255,255,.65)}'
     ].join('\n');
 
     var nPag = Math.ceil(teams.length / 4);
