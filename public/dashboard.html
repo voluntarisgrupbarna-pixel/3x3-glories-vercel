@@ -825,7 +825,9 @@ var DATA = [
   {id:"T3X3-2026-EQTRN",team:"rober3x3",cat:"Senior Pro M",gen:"M",dia:"6/6",cap:"Gerard Grifol",email:"gerardgri51@gmail.com",phone:"685219333",jug:3,jugadors:["Gerard Grifol","Iker Montero","Adria Aragones"],talles:["S","L","XL"],anys:["2006","2003","2001"],clubs:["","",""],status:"confirmed",proof:false,total:85,club:"extern",note:"Inscrit 2/06 18:50. Senior Pro M. 3 jugadors. Talles S,L,XL. Sense justificant."},
   {id:"T3X3-2026-3GJBY",team:"PANTHERS 3X3 F",cat:"Senior Pro F",gen:"F",dia:"6/6",cap:"Ariadna Geli Perez",email:"ariigelii@gmail.com",phone:"34637607074",jug:4,jugadors:["Ari Geli","Kendall Martin","Adama Badjie","Malak Mohamed"],anys:["2002","2004","2005","2005"],clubs:["","","",""],status:"confirmed",proof:true,total:85,club:"extern",note:"Inscrit 2/06. Senior Pro F. Justificant rebut (lead email 2/06 'Ha pujat el justificant'). Falta talles. IANDREY PAGA els 3 equips Panthers (M+F+Mini).",talles:["M","M","M","M"]},
 
-  {id:"T3X3-2026-CACHOB",team:"Cacho burgers",cat:"Premini M",gen:"M",dia:"6/6",cap:"Nuria Barniol",email:"nuriabarniol88@gmail.com",phone:"688901801",jug:3,jugadors:["Gael Nanvou Barniol","Luca Lorenzo","Filippo Ferullo"],talles:["","","8-9"],anys:["~2018","","2017"],clubs:["CB Grup Barna","CB Grup Barna","CB Grup Barna"],status:"pending_payment",proof:false,total:63.75,club:"cbgb",note:"3/06 via WA Nuria Barniol. Formats des d'ESCOL1. ⚠️ Premini M COMPLET (8/8) — decidir ampliació o posar a Escoleta. Falta just. + talles Gael i Luca."}
+  {id:"T3X3-2026-CACHOB",team:"Cacho burgers",cat:"Premini M",gen:"M",dia:"6/6",cap:"Nuria Barniol",email:"nuriabarniol88@gmail.com",phone:"688901801",jug:3,jugadors:["Gael Nanvou Barniol","Luca Lorenzo","Filippo Ferullo"],talles:["","","8-9"],anys:["~2018","","2017"],clubs:["CB Grup Barna","CB Grup Barna","CB Grup Barna"],status:"pending_payment",proof:false,total:63.75,club:"cbgb",note:"3/06 via WA Nuria Barniol. Formats des d'ESCOL1. ⚠️ Premini M COMPLET (8/8) — decidir ampliació o posar a Escoleta. Falta just. + talles Gael i Luca."},
+  {id:"T3X3-2026-MNPTH",team:"MINI PANTHERS",cat:"Mini F",gen:"F",dia:"6/6",cap:"Ariadna Geli Perez",email:"ariigelii@gmail.com",phone:"34637607074",jug:4,jugadors:["Julia Moreno Giralt","Claudia Baquero Moreno","Naia Ramos Macho","Arlet Viure Pereda"],talles:["12","12","14","XS"],anys:["","","",""],clubs:["","","",""],status:"confirmed",proof:true,total:75,club:"extern",note:"Inscrit 3/06 via WA Ari Geli. Mini F. Talles: Julia 12, Claudia 12, Naia 14, Arlet XS. IANDREY PAGA els 3 equips Panthers (M+F+Mini)."},
+  {id:"T3X3-2026-75ZBV",team:"Manolos",cat:"Junior M",gen:"M",dia:"7/6",cap:"Pierre Baudoin",email:"ppo.baudoin@gmail.com",phone:"629912218",jug:4,jugadors:["Valerio Baudoin","Pol Segura","Alex Ferre","Sergi Cabrera"],talles:["M","S","S","M"],anys:["2009","2009","2009","2009"],clubs:["CB Grup Barna","Diagonal Mar","CB Grup Barna","CB Grup Barna"],status:"confirmed",proof:false,total:67.5,club:"cbgb",note:"Inscrit 4/06. Junior M. 4 jugadors 2009. Talles M,S,S,M. Tutor Alex Ferre 622158650. Promo -7.5EUR. Pendent justificant."}
 ];
 
 
@@ -3231,22 +3233,16 @@ var CAT_HORARI = {
 };
 
 function buildCheckinUrl_(d) {
-  var base = 'https://cbgrupbarna-3x3timechamber.com/checkin.html';
-  var parts = [
-    'id='      + encodeURIComponent(d.id),
-    'nom='     + encodeURIComponent(d.team),
-    'cat='     + encodeURIComponent(d.cat),
-    'cap='     + encodeURIComponent(d.cap || ''),
-    'dia='     + encodeURIComponent(d.dia || ''),
-    'pagat='   + (d.status === 'confirmed' ? '1' : '0'),
-    'jug='     + (d.jug || 4),
-    'tel='     + encodeURIComponent(d.phone || ''),
-  ];
-  var jns = (d.jugadors || []).filter(Boolean).join(',');
-  var tls = (d.talles   || []).map(function(t){return t||'';}).join(',');
-  if (jns) parts.push('jugadors=' + encodeURIComponent(jns));
-  if (tls.replace(/,/g,'')) parts.push('talles=' + encodeURIComponent(tls));
-  return base + '?' + parts.join('&');
+  // URL curta per a QR més net i escanejable
+  return 'https://cbgrupbarna-3x3timechamber.com/checkin.html' +
+    '?id='    + encodeURIComponent(d.id) +
+    '&nom='   + encodeURIComponent(d.team) +
+    '&cat='   + encodeURIComponent(d.cat) +
+    '&cap='   + encodeURIComponent(d.cap || '') +
+    '&dia='   + encodeURIComponent(d.dia || '') +
+    '&pagat=' + (d.status === 'confirmed' ? '1' : '0') +
+    '&jug='   + (d.jug || 4) +
+    '&tel='   + encodeURIComponent(d.phone || '');
 }
 
 function escH_(s) {
@@ -3254,7 +3250,88 @@ function escH_(s) {
 }
 
 var FRASES_BENVINGUDA = [
-  "Benvinguts al Westfield Glòries! Que el bàsquet us uneixi i la diversió sigui el vostre trofeu. Molta sort! 🏀",
+  // Cites de bàsquet en català — una per equip
+  '"El talent guanya partits, però el treball en equip i la intel·ligència guanyen campionats." — Michael Jordan',
+  '"No es tracta de ser millor que els altres. Es tracta de ser millor del que eres ahir." — Kobe Bryant',
+  '"L\'esforç mai decebrà. El sacrifici sempre val la pena." — Pau Gasol',
+  '"El bàsquet és un joc de cinc jugadors. Quan els cinc juguen com un, ningú els pot aturar." — Magic Johnson',
+  '"La diferència entre l\'impossible i el possible rau en la determinació d\'una persona." — Tommy Lasorda',
+  '"Cada vegada que surts a la pista, has de deixar-hi l\'ànima." — LeBron James',
+  '"El bàsquet no el guanya el més alt, sinó el que té el cor més gran." — Joe Dumars',
+  '"L\'equip que s\'esforça sempre guanya a l\'individu que brilla." — Bill Russell',
+  '"Un campió no és algú que sempre guanya, sinó algú que no es rendeix mai." — Billie Jean King',
+  '"Fes que cada segon a la pista compti. No n\'hi ha de repetits." — Tim Duncan',
+  '"El bàsquet no és un joc de temps, és un joc de moments." — Larry Bird',
+  '"Quan un equip treballa unit, les grans coses succeeixen naturalment." — Phil Jackson',
+  '"Estima el joc, respecta els teus rivals i mai t\'oblidis de divertir-te." — Steve Nash',
+  '"No hi ha jo en un equip, però sí que hi ha un tu dins de l\'esperit col·lectiu." — Shaquille O\'Neal',
+  '"El millor entrenament és l\'actitud correcta cada dia." — John Wooden',
+  '"Juga amb tanta passió que l\'adversari no pugui seguir el teu ritme." — Draymond Green',
+  '"La pista no s\'equivoca. El treball sempre apareix als resultats." — Hakeem Olajuwon',
+  '"El 3x3 no és un joc de tres contra tres. És un joc de tres que pensen com un." — FIBA',
+  '"Converteix les teves debilitats en fortaleses i les teves fortaleses en art." — Allen Iverson',
+  '"El cor dels grans equips sempre batega al ritme del joc col·lectiu." — Doc Rivers',
+  '"Cada cistella és una história. Escriviu la vostra avui a Glòries." — CB Grup Barna',
+  '"Gaudir és el millor combustible per guanyar. Jugueu amb alegria!" — Ricky Rubio',
+  '"L\'important no és ser el millor, sinó donar el millor de tu mateix." — Marc Gasol',
+  '"Un bon equip pot canviar un partit. Un gran equip pot canviar una temporada sencera." — Bill Bradley',
+  '"La victòria és el resultat de tot el que has fet des del primer entrenament." — Wilt Chamberlain',
+  '"Jugar en equip és l\'art més elevat del bàsquet." — Oscar Robertson',
+  '"Ningú que hagi donat el cent per cent a la pista mai s\'ha penedit." — Gary Payton',
+  '"El respectable en el 3x3 és que qualsevol pot guanyar qualsevol. Eixiu a demostrar-ho!" — Jordi Bertomeu',
+  '"La confiança en els teus companys és la tàctica més poderosa." — Gregg Popovich',
+  '"Quan l\'equip juga unit, la cistella sembla més gran." — Pau Gasol',
+  '"No hi ha límits per a aquells que estimen el que fan." — Kobe Bryant',
+  '"El 3x3 és bàsquet destil·lat: ràpid, intens i pur." — FIBA 3x3',
+  '"Un equip que defensa unit, guanya unit." — Larry Brown',
+  '"Cada error és una lliçó. Cada lliçó us fa millors." — Michael Jordan',
+  '"El bàsquet t\'ensenya que la perseverança sempre obri les portes." — Dirk Nowitzki',
+  '"El millor moment del bàsquet és quan l\'equip flueix com un sol." — Jason Kidd',
+  '"Sou aquí perquè sou bons. Ara demostreu que sou un equip." — CB Grup Barna',
+  '"L\'esportivitat és tan important com la victòria. Jugueu net, jugueu fort." — David Stern',
+  '"Quan surts a la pista, tot el que has entrenat torna a tu. Confieu-hi." — Kawhi Leonard',
+  '"El 3x3 és la millor manera de viure el bàsquet al barri." — Eix del Clot',
+  '"Feu del Clot la vostra pista avui. Deixeu aquí la vostra empremta." — CB Grup Barna',
+  '"Un gran llançament comença molt abans que la pilota surti de les mans." — Steph Curry',
+  '"El bàsquet és una dansa. Avui, balleu junts." — Pete Maravich',
+  '"No busqueu la perfecció. Busqueu el progrés constant." — Giannis Antetokounmpo',
+  '"Els grans equips no neixen, es construeixen punt a punt, entrenament a entrenament." — Red Auerbach',
+  '"El cor d\'un campió bat quan la pressió és màxima." — Jerry West',
+  '"Estimeu el joc i el joc us correspondrà." — Walt Frazier',
+  '"El bàsquet 3x3 és democràtic: quatre jugadors, una pilota, infinites possibilitats." — FIBA',
+  '"Avui el Westfield Glòries és el vostre escenari. Feu que sigui inoblidable." — CB Grup Barna',
+  '"La grandesa no ve de la sort. Ve de l\'esforç diari." — Kevin Durant',
+  '"Quan l\'equip creu en si mateix, ningú li pot treure el somni." — LeBron James',
+  '"El bàsquet és un idioma universal que parlem tots avui aquí." — Ricky Rubio',
+  '"Sou part de la historia del 3x3 a Barcelona. Feu-la gran." — CB Grup Barna',
+  '"Un rebote és una oportunitat. Una defensa és un regal. Un assit és amor." — Scottie Pippen',
+  '"Avui no existeix la paraula impossible a la pista." — Vince Carter',
+  '"El millor que té el bàsquet és que et necessite complet: cos, ment i cor." — Grant Hill',
+  '"Els campions s\'entrenen, els perdedors es queixen. Vosaltres sou aquí: ja heu guanyat." — Bo Jackson',
+  '"El 3x3 és el bàsquet que tothom pot jugar. Gràcies per ser-hi." — CB Grup Barna',
+  '"La pilota sempre troba el camí si l\'equip confia l\'un en l\'altre." — John Stockton',
+  '"Jugueu cada segon com si fos l\'últim de la vostra carrera." — Reggie Miller',
+  '"El bàsquet t\'ensenya que cada moment és una nova oportunitat." — Ray Allen',
+  '"Avui a Glòries, el barri del Clot és el millor camp de bàsquet del món." — CB Grup Barna',
+  '"Ser equip significa que la victòria d\'un és la victòria de tots." — Isaiah Thomas',
+  '"El talent individual crida l\'atenció. El treball en equip guanya el trofeu." — John Wooden',
+  '"Cada cop que sortis a la pista, juga amb el cor dels que volen ser-hi i no poden." — Bill Russell',
+  '"El bàsquet és una conversació constant entre quatre persones." — Hubie Brown',
+  '"Avui teniu l\'oportunitat de fer quelcom del que us sentireu orgullosos tota la vida." — Michael Jordan',
+  '"El caràcter es forma en l\'adversitat. Avui, mostreu el vostre caràcter." — Doc Rivers',
+  '"La pista no menteix. Tot el que heu treballat es veurà avui." — Scottie Pippen',
+  '"El millor equip no és el que té les millors estreles, sinó el que juga millor en conjunt." — Pat Riley',
+  '"Avui, el Westfield Glòries és la vostra casa. Benvinguts!" — CB Grup Barna',
+  '"Un bon passat es recorda. Un gran partit es viu per sempre." — Magic Johnson',
+  '"Feu que cada acció a la pista sigui intencionada, enèrgica i col·lectiva." — Gregg Popovich',
+  '"Quan un equip juga amb alegria, és imbatible." — Luka Doncic',
+  '"El 3x3 és el bàsquet en el seu estat més pur: rapidesa, habilitat i cor." — FIBA 3x3',
+  '"Avui, el Clot vibra amb el so de les pilotes. Gràcies per ser-ne part." — CB Grup Barna',
+  '"No és el físic el que guanya. És la voluntat de no rendir-se mai." — Kobe Bryant',
+  '"Jugueu per a l\'equip, no per al marcador. El marcador s\'encarrega sol." — Dean Smith',
+  '"El bàsquet és un joc de moments. Avui, tots els moments són vostres." — Phil Jackson',
+  "El bàsquet 3x3 és pur instint. Confieu els uns en els altres i que flueixi el joc. Gaudiu-ne al màxim!"
+];
   "¡Bienvenidos! Habéis entrenado para este momento. Disfrutadlo al máximo y que gane el mejor equipo. ¡Suerte! 🌟",
   "Avui el Clot és la vostra pista! Jugueu amb cor, somrieu i feu-ho per vosaltres. Molta sort, equip! 🔥",
   "¡El esfuerzo de meses llega hoy! Disfrutad cada segundo en pista. ¡Mucha suerte y que lo disfrutéis! 💪",
@@ -3331,10 +3408,7 @@ var FRASES_BENVINGUDA = [
   "Avui el vostre nom ressona a les pistes del Westfield. Feu-lo ressonar amb força i orgull. Molta sort! 📢",
   "¡El 3x3 premia la valentía! Atreveos, lanzad, disfrutad. ¡Mucha suerte y a por todas! 🦅",
   "Gràcies per fer que el bàsquet 3x3 creixi any rere any. Sou els protagonistes d'aquesta historia. Molta sort! 📚",
-  "¡Que este torneig sea el comienzo de algo grande para vuestro equipo! ¡Mucha suerte y ánimo! 🚀",
-  "Avui el bàsquet i el barri es fusionen gràcies a vosaltres. Que la festa duri fins al xiulet final. Molta sort! 🎊",
-  {id:"T3X3-2026-MNPTH",team:"MINI PANTHERS",cat:"Mini F",gen:"F",dia:"7/6",cap:"Ariadna Geli Perez",email:"ariigelii@gmail.com",phone:"34637607074",jug:4,jugadors:["Julia Moreno Giralt","Claudia Baquero Moreno","Naia Ramos Macho","Arlet Viure Pereda"],talles:["12","12","14","XS"],anys:["","","",""],clubs:["","","",""],status:"confirmed",proof:true,total:75,club:"extern",note:"Inscrit 3/06 via WA Ari Geli. Mini F. Talles: Julia 12, Claudia 12, Naia 14, Arlet XS. Pagament pendent. IANDREY PAGA els 3 equips Panthers (M+F+Mini)."},
-  {id:"T3X3-2026-75ZBV",team:"Manolos",cat:"Junior M",gen:"M",dia:"7/6",cap:"Pierre Baudoin",email:"ppo.baudoin@gmail.com",phone:"629912218",jug:4,jugadors:["Valerio Baudoin","Pol Segura","Alex Ferre","Sergi Cabrera"],talles:["M","S","S","M"],anys:["2009","2009","2009","2009"],clubs:["CB Grup Barna","Diagonal Mar","CB Grup Barna","CB Grup Barna"],status:"confirmed",proof:false,total:67.5,club:"cbgb",note:"Inscrit 4/06. Junior M. 4 jugadors 2009. Talles M,S,S,M. Tutor Alex Ferre 622158650. Promo -7.5EUR. Pendent justificant."}
+  "El bàsquet 3x3 és pur instint. Confieu els uns en els altres i que flueixi el joc. Gaudiu-ne al màxim!"
 ];
 
 function getFrase_(teamIndex) {
@@ -3475,13 +3549,17 @@ function printFitxes() {
 
   showStatus('Generant fitxes PRO (' + teams.length + ' entrades)...', 'info');
 
-  var useQR = typeof QRCode !== 'undefined' && QRCode.toDataURL;
+  // Generar QRs com SVG (no necessita Canvas, funciona sempre al navegador)
+  var useQR = typeof QRCode !== 'undefined' && typeof QRCode.toString === 'function';
   var promises = teams.map(function(d) {
     if (!useQR) return Promise.resolve('');
     return new Promise(function(resolve) {
-      QRCode.toDataURL(buildCheckinUrl_(d), {width:130, margin:1, errorCorrectionLevel:'M'}, function(err, url) {
-        resolve(err ? '' : url);
-      });
+      try {
+        QRCode.toString(buildCheckinUrl_(d), {type:'svg', margin:1, errorCorrectionLevel:'M'}, function(err, svg) {
+          if (err || !svg) { resolve(''); return; }
+          resolve('data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg));
+        });
+      } catch(e) { resolve(''); }
     });
   });
 
