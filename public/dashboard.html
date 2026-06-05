@@ -3590,12 +3590,26 @@ function buildFitxaHtml_(d, _unused, teamIdx, numSorteig) {
       ? '<div class="pv">&#10003;&nbsp; Pagament verificat &nbsp;&middot;&nbsp; CB Grup Barna</div>'
       : '') +
 
-    // ⑦ CAPITÀ
-    '<div class="cap">' +
-      '<span class="cap-l">Capit\xe0</span>' +
-      '<span class="cap-n">' + escH_(d.cap || '—') + '</span>' +
-      (d.phone ? '<span class="cap-d">&middot;</span><span class="cap-t">' + escH_(d.phone) + '</span>' : '') +
-    '</div>' +
+    // ⑦ CAPITÀ — si el capità és jugador (adult), mostra la seva talla
+    (function() {
+      var capName = (d.cap || '').toLowerCase().trim();
+      var capTallaIdx = -1;
+      if (capName && jugadors.length > 0) {
+        for (var ci = 0; ci < jugadors.length; ci++) {
+          var jn = (jugadors[ci] || '').toLowerCase().trim();
+          if (jn && capName && (jn.indexOf(capName.split(' ')[0]) >= 0 || capName.indexOf(jn.split(' ')[0]) >= 0)) {
+            capTallaIdx = ci; break;
+          }
+        }
+      }
+      var capTalla = capTallaIdx >= 0 ? (talles[capTallaIdx] || '') : '';
+      return '<div class="cap">' +
+        '<span class="cap-l">Capit\xe0</span>' +
+        '<span class="cap-n">' + escH_(d.cap || '—') + '</span>' +
+        (capTalla ? '<span class="jr-t" style="color:' + catColor + ';border-color:' + catColor + ';margin-left:2mm;font-size:7pt;padding:.3mm 1.5mm;border-radius:.6mm;border:1.5px solid;font-weight:900">' + escH_(capTalla) + '</span>' : '') +
+        (d.phone ? '<span class="cap-d">&middot;</span><span class="cap-t">' + escH_(d.phone) + '</span>' : '') +
+      '</div>';
+    })() +
 
     // ⑧ JUGADORS
     '<div class="jl">' +
