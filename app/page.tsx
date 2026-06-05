@@ -1,4 +1,5 @@
 import EarlyBirdBanner from "./components/EarlyBirdBanner";
+import HorarisBanner from "./components/HorarisBanner";
 import HeroFestival from "./components/HeroFestival";
 import RuletaBanner from "./components/RuletaBanner";
 import IdentityChipsStrip from "./components/IdentityChipsStrip";
@@ -20,6 +21,7 @@ export default function Home() {
   return (
     <>
       <EarlyBirdBanner />
+      <HorarisBanner />
       <main className="experience-shell">
         {/* === HERO FESTIVAL — primer impacte amb foto + nav + stats + IG === */}
         <HeroFestival />

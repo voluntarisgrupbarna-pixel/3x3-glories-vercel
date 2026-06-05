@@ -32,8 +32,8 @@ const PROGRAMA = [
     bgColor: "rgba(249,115,22,0.08)",
     borderColor: "rgba(249,115,22,0.25)",
     categories: [
-      { nom: "Sènior Masculí Pro", hora: "09:00–18:00", seu: "Nau del Clot + Finals Westfield", fiba: true },
-      { nom: "Sènior Femení Pro", hora: "09:00–18:00", seu: "Nau del Clot + Finals Westfield", fiba: true },
+      { nom: "Sènior Masculí Pro", hora: "10:00–21:00", seu: "Pista A · Westfield Glòries", fiba: true },
+      { nom: "Sènior Femení Pro", hora: "15:00–21:00", seu: "Pista A · Westfield Glòries", fiba: true },
       { nom: "Sènior Amateur Masculí", hora: "10:00–14:00", seu: "Rambleta del Clot", fiba: false },
       { nom: "Sènior Amateur Femení", hora: "10:00–14:00", seu: "Rambleta del Clot", fiba: false },
       { nom: "Escoleta", hora: "10:00–13:00", seu: "La Nau del Clot", fiba: false },
@@ -124,6 +124,112 @@ export default function HorarisPage() {
         </div>
 
         <main className="page-content">
+
+          {/* ── FIBA Play alert — Dissabte publicat ── */}
+          <div style={{
+            background: "linear-gradient(135deg, #1e3a5f, #0f2540)",
+            border: "2px solid #3b82f6",
+            borderRadius: 14,
+            padding: "16px 20px",
+            marginBottom: "2rem",
+            display: "flex",
+            alignItems: "center",
+            gap: 16,
+            flexWrap: "wrap",
+          }}>
+            <div style={{ flex: 1, minWidth: 220 }}>
+              <p style={{ margin: "0 0 4px", fontWeight: 800, fontSize: 16, color: "#fff" }}>
+                📅 Horaris Dissabte 6 de Juny ja publicats a FIBA Play
+              </p>
+              <p style={{ margin: 0, fontSize: 13, color: "rgba(255,255,255,0.7)" }}>
+                Sènior Masculí Pro (Pool A + Pool B) · Sènior Femení Pro · 10:00–21:00 · Pista A Westfield Glòries
+              </p>
+            </div>
+            <a
+              href="https://play.fiba3x3.com/events/4a4773cb-79be-4777-b164-220b36aacbe6/schedule"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                background: "#3b82f6", color: "#fff", fontWeight: 800, fontSize: 14,
+                padding: "10px 20px", borderRadius: 10, textDecoration: "none",
+                whiteSpace: "nowrap", flexShrink: 0,
+              }}
+            >
+              Consulta el programa complet →
+            </a>
+          </div>
+
+          {/* ── Programa detallat Dissabte ── */}
+          <div style={{
+            background: "rgba(249,115,22,0.06)", border: "1px solid rgba(249,115,22,0.2)",
+            borderRadius: 14, padding: "16px 20px", marginBottom: "2rem",
+          }}>
+            <h3 style={{ margin: "0 0 14px", color: "#f97316", fontSize: 16, fontWeight: 800 }}>
+              🟠 Dissabte 6 · Programa Sènior (FIBA Play)
+            </h3>
+            <div style={{ overflowX: "auto" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13px" }}>
+                <thead>
+                  <tr style={{ borderBottom: "1px solid rgba(249,115,22,0.3)" }}>
+                    <th style={{ textAlign: "left", padding: "6px 10px", color: "#f97316" }}>Hora</th>
+                    <th style={{ textAlign: "left", padding: "6px 10px", color: "#f97316" }}>Equips</th>
+                    <th style={{ textAlign: "left", padding: "6px 10px", color: "#f97316" }}>Categoria</th>
+                    <th style={{ textAlign: "left", padding: "6px 10px", color: "#f97316" }}>Fase</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    ["10:00","Time Shoko vs mascherano14","Sènior Masc Pro","Pool A"],
+                    ["10:20","PANTERAS vs Los Tlatolanis","Sènior Masc Pro","Pool B"],
+                    ["10:40","rober3x3 vs Tax 3x3","Sènior Masc Pro","Pool A"],
+                    ["11:00","Los Ángeles de Dani vs Chosen Ones","Sènior Masc Pro","Pool B"],
+                    ["11:20","mascherano14 vs rober3x3","Sènior Masc Pro","Pool A"],
+                    ["11:40","Los Tlatolanis vs Los Ángeles de Dani","Sènior Masc Pro","Pool B"],
+                    ["12:00","PANTHERS 3x3 vs Time Shoko","Sènior Masc Pro","Pool A"],
+                    ["12:20","CENTREMÈDICMARTORELLES vs PANTERAS","Sènior Masc Pro","Pool B"],
+                    ["12:40","rober3x3 vs PANTHERS 3x3","Sènior Masc Pro","Pool A"],
+                    ["13:00","Los Ángeles de Dani vs CENTREMÈDICMARTORELLES","Sènior Masc Pro","Pool B"],
+                    ["13:20","Tax 3x3 vs mascherano14","Sènior Masc Pro","Pool A"],
+                    ["13:40","Chosen Ones vs Los Tlatolanis","Sènior Masc Pro","Pool B"],
+                    ["14:40","PANTHERS 3x3 vs Tax 3x3","Sènior Masc Pro","Pool A"],
+                    ["15:00","PANTHERS 3x3 vs ProSport 3x3","Sènior Fem Pro","Pool A"],
+                    ["15:20","CENTREMÈDICMARTORELLES vs Chosen Ones","Sènior Masc Pro","Pool B"],
+                    ["15:40","Streetball Sants vs Team Work","Sènior Fem Pro","Pool A"],
+                    ["16:00","Time Shoko vs rober3x3","Sènior Masc Pro","Pool A"],
+                    ["16:20","ProSport 3x3 vs Team Work","Sènior Fem Pro","Pool A"],
+                    ["16:40","PANTERAS vs Los Ángeles de Dani","Sènior Masc Pro","Pool B"],
+                    ["17:00","PANTHERS 3x3 vs Streetball Sants","Sènior Fem Pro","Pool A"],
+                    ["17:20","Tax 3x3 vs Time Shoko","Sènior Masc Pro","Pool A"],
+                    ["17:40","Chosen Ones vs PANTERAS","Sènior Masc Pro","Pool B"],
+                    ["18:00","Streetball Sants vs ProSport 3x3","Sènior Fem Pro","Pool A"],
+                    ["18:20","mascherano14 vs PANTHERS 3x3","Sènior Masc Pro","Pool A"],
+                    ["18:40","Team Work vs PANTHERS 3x3","Sènior Fem Pro","Pool A"],
+                    ["19:00","Los Tlatolanis vs CENTREMÈDICMARTORELLES","Sènior Masc Pro","Pool B"],
+                    ["19:20","Semi-finals A/I vs B/II","Sènior Masc Pro","Semifinals"],
+                    ["19:40","Semi-finals B/I vs A/II","Sènior Masc Pro","Semifinals"],
+                    ["20:00","Final Femenina","Sènior Fem Pro","Final 🏆"],
+                    ["20:40","Final Masculina","Sènior Masc Pro","Final 🏆"],
+                  ].map(([hora, equips, cat, fase], i) => (
+                    <tr key={i} style={{
+                      background: i % 2 === 0 ? "rgba(255,255,255,0.02)" : "transparent",
+                      borderBottom: hora === "20:00" || hora === "19:20" ? "1px solid rgba(249,115,22,0.3)" : "none",
+                    }}>
+                      <td style={{ padding: "5px 10px", color: "#f97316", fontWeight: 700, whiteSpace: "nowrap" }}>{hora}</td>
+                      <td style={{ padding: "5px 10px", color: "#e5e7eb", fontSize: 12 }}>{equips}</td>
+                      <td style={{ padding: "5px 10px", color: "#9ca3af", fontSize: 12, whiteSpace: "nowrap" }}>{cat}</td>
+                      <td style={{ padding: "5px 10px" }}>
+                        <span style={{
+                          background: fase.includes("Final") ? "rgba(255,78,138,0.2)" : fase.includes("Semi") ? "rgba(249,115,22,0.2)" : "rgba(96,165,250,0.15)",
+                          color: fase.includes("Final") ? "#ff4e8a" : fase.includes("Semi") ? "#f97316" : "#93c5fd",
+                          fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 6,
+                        }}>{fase}</span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
 
           {PROGRAMA.map((d) => (
             <div key={d.dia}>
