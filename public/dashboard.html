@@ -3611,6 +3611,8 @@ function printFitxes() {
       '*{box-sizing:border-box;margin:0;padding:0}',
       "body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:#f0ece4;color:#1a1a1a;font-size:7pt}",
       '@page{size:A4 portrait;margin:5mm}',
+      // FORÇAR IMPRESSIÓ A COLOR — imprescindible
+      '*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;color-adjust:exact!important}',
       '@media print{.no-print{display:none!important}}',
 
       // ── GRID A4 ──
