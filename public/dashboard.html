@@ -3441,7 +3441,7 @@ function getSorteigMap_(teams) {
   return _sorteigMap;
 }
 
-function buildFitxaHtml_(d, qrSrc, teamIdx, numSorteig) {
+function buildFitxaHtml_(d, _unused, teamIdx, numSorteig) {
   var jugadors = d.jugadors || [];
   var talles   = d.talles   || [];
   var isPagat  = d.status === 'confirmed';
@@ -3470,9 +3470,10 @@ function buildFitxaHtml_(d, qrSrc, teamIdx, numSorteig) {
   }
 
   // ── QR ────────────────────────────────────────────────────────────
-  var qrBlock = qrSrc
-    ? '<div class="qr-col"><div class="qr-frame"><img src="' + qrSrc + '" class="qr-i" alt="QR"/></div><div class="qr-sub">Escanejar</div></div>'
-    : '<div class="qr-col"><div class="qr-frame qr-none">QR</div></div>';
+  // QR via API externa — fiable, sense JS, funciona sempre amb internet
+  var qrApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=140x140&ecc=M&margin=2&data=' +
+    encodeURIComponent(buildCheckinUrl_(d));
+  var qrBlock = '<div class="qr-col"><div class="qr-frame"><img src="' + qrApiUrl + '" class="qr-i" alt="QR" crossorigin="anonymous"/></div><div class="qr-sub">Escanejar</div></div>';
 
   return (
     '<div class="card">' +
@@ -3586,27 +3587,14 @@ function printFitxes() {
 
   showStatus('Generant fitxes PRO (' + teams.length + ' entrades)...', 'info');
 
-  // Generar QRs com SVG (no necessita Canvas, funciona sempre al navegador)
-  var useQR = typeof QRCode !== 'undefined' && typeof QRCode.toString === 'function';
-  var promises = teams.map(function(d) {
-    if (!useQR) return Promise.resolve('');
-    return new Promise(function(resolve) {
-      try {
-        QRCode.toString(buildCheckinUrl_(d), {type:'svg', margin:1, errorCorrectionLevel:'M'}, function(err, svg) {
-          if (err || !svg) { resolve(''); return; }
-          resolve('data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg));
-        });
-      } catch(e) { resolve(''); }
-    });
-  });
+  // QRs generats via api.qrserver.com — no cal JS ni Canvas
+  // Calcular números de sorteig (únics 1-500, llavor fixa)
+  var sorteigMap = getSorteigMap_(teams);
 
-  Promise.all(promises).then(function(qrUrls) {
-    // Calcular números de sorteig (únics 1-500, llavor fixa)
-    var sorteigMap = getSorteigMap_(teams);
-
+  (function() {
     var cardsHtml = '', pageCards = '';
     teams.forEach(function(d, i) {
-      pageCards += buildFitxaHtml_(d, qrUrls[i], i, sorteigMap[d.id]);
+      pageCards += buildFitxaHtml_(d, null, i, sorteigMap[d.id]);
       if ((i + 1) % 4 === 0 || i === teams.length - 1) {
         var n = (i + 1) % 4;
         if (n > 0 && i === teams.length - 1) {
@@ -3734,7 +3722,7 @@ function printFitxes() {
     w.document.write(html);
     w.document.close();
     showStatus('Fitxes PRO generades · ' + teams.length + ' equips · ' + nPag + ' p\xe0gines A4', 'ok');
-  });
+  })();
 }
 
 // ============================================================
