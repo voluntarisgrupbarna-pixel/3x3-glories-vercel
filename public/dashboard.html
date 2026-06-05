@@ -3461,7 +3461,7 @@ function buildFitxaHtml_(d, _unused, teamIdx, numSorteig) {
           '<span class="jr-n" style="color:' + catColor + '">' + (i+1) + '</span>' +
           '<span class="jr-nom">' + escH_(jugadors[i] || '—') + '</span>' +
           (talla
-            ? '<span class="jr-t" style="background:' + catColor + '">' + escH_(talla) + '</span>'
+            ? '<span class="jr-t" style="color:' + catColor + ';border-color:' + catColor + '">' + escH_(talla) + '</span>'
             : '<span class="jr-t-no">—</span>') +
         '</div>';
     }
@@ -3478,16 +3478,25 @@ function buildFitxaHtml_(d, _unused, teamIdx, numSorteig) {
   return (
     '<div class="card">' +
 
-    // ① STRIPE 8 COLORS EIX DEL CLOT
-    '<div class="es">' +
-      '<s style="background:#c9a0cc"></s><s style="background:#5ec0d8"></s>' +
-      '<s style="background:#a8cc40"></s><s style="background:#f0dc18"></s>' +
-      '<s style="background:#f0a020"></s><s style="background:#cc3828"></s>' +
-      '<s style="background:#e88c88"></s><s style="background:#b8a888"></s>' +
-    '</div>' +
+    // ① STRIPE EIX CLOT — SVG (sempre imprimeix a color)
+    '<svg width="100%" height="3mm" style="display:block;flex-shrink:0" aria-hidden="true">' +
+      '<rect x="0%"    width="12.5%" height="100%" fill="#c9a0cc"/>' +
+      '<rect x="12.5%" width="12.5%" height="100%" fill="#5ec0d8"/>' +
+      '<rect x="25%"   width="12.5%" height="100%" fill="#a8cc40"/>' +
+      '<rect x="37.5%" width="12.5%" height="100%" fill="#f0dc18"/>' +
+      '<rect x="50%"   width="12.5%" height="100%" fill="#f0a020"/>' +
+      '<rect x="62.5%" width="12.5%" height="100%" fill="#cc3828"/>' +
+      '<rect x="75%"   width="12.5%" height="100%" fill="#e88c88"/>' +
+      '<rect x="87.5%" width="12.5%" height="100%" fill="#b8a888"/>' +
+    '</svg>' +
 
-    // ② CAPÇALERA FOSCA: logos
-    '<div class="ch">' +
+    // ② CAPÇALERA FOSCA — SVG de fons + logos
+    '<div class="ch" style="position:relative;overflow:hidden">' +
+      '<svg style="position:absolute;inset:0;width:100%;height:100%;z-index:0" aria-hidden="true" preserveAspectRatio="none">' +
+        '<defs><linearGradient id="gch" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#1a0a0e"/><stop offset="100%" stop-color="#3d1822"/></linearGradient></defs>' +
+        '<rect width="100%" height="100%" fill="url(#gch)"/>' +
+      '</svg>' +
+      '<div style="position:relative;z-index:1">' +
       '<div class="ch-logos">' +
         '<img src="https://cbgrupbarna-3x3timechamber.com/logo-barna-hd.png" class="cl cl-cb" alt="CB"/>' +
         '<div class="cl-sep"></div>' +
@@ -3496,12 +3505,16 @@ function buildFitxaHtml_(d, _unused, teamIdx, numSorteig) {
         '<img src="https://cbgrupbarna-3x3timechamber.com/logos/eix-clot-negatiu.svg" class="cl cl-f cl-eix" alt="Eix"/>' +
       '</div>' +
       '<div class="ch-sub">3\xd73 WESTFIELD GL\xd2RIES 2026 &middot; <span style="opacity:.55">Barri del Clot, Barcelona</span></div>' +
+      '</div>' +
     '</div>' +
 
-    // ③ BLOC HEROI: color categoria + nom equip + QR
-    '<div class="hero" style="background:' + catColor + '">' +
-      '<div class="hero-bg-circle"></div>' +
-      '<div class="hero-content">' +
+    // ③ BLOC HEROI — SVG de fons (color categoria, sempre imprimeix)
+    '<div class="hero" style="position:relative;overflow:hidden">' +
+      '<svg style="position:absolute;inset:0;width:100%;height:100%;z-index:0" aria-hidden="true" preserveAspectRatio="none">' +
+        '<rect width="100%" height="100%" fill="' + catColor + '"/>' +
+        '<circle cx="105%" cy="-15%" r="90" fill="rgba(255,255,255,0.09)"/>' +
+      '</svg>' +
+      '<div class="hero-content" style="position:relative;z-index:1">' +
         '<div class="hero-left">' +
           '<div class="hero-badges">' +
             '<span class="hb-cat">' + escH_(d.cat) + '</span>' +
@@ -3514,8 +3527,8 @@ function buildFitxaHtml_(d, _unused, teamIdx, numSorteig) {
             : '') +
         '</div>' +
         qrBlock +
-      '</div>' +
-    '</div>' +
+      '</div>' +  // hero-content
+    '</div>' +    // hero
 
     // ④ BENVINGUDA + NÚMERO DE SORTEIG
     '<div class="bv">' +
@@ -3675,7 +3688,8 @@ function printFitxes() {
       '.eixb-i{height:4mm;width:auto;object-fit:contain}',
 
       // ── ⑥ PAGAMENT ──
-      '.pv{background:linear-gradient(90deg,#e8f5ec,#f0faf2);border-bottom:1px solid #b8e0c8;padding:1.5mm 2.5mm;font-size:8pt;font-weight:800;color:#1a7a3a;flex-shrink:0;letter-spacing:.3px}',
+      // Pagament: border verd + text verd (no background-color)
+      '.pv{border:1.5px solid #2d7d3a;border-left:4mm solid #2d7d3a;padding:1.5mm 2.5mm;font-size:8pt;font-weight:900;color:#2d7d3a;flex-shrink:0;letter-spacing:.3px;margin:0}',
 
       // ── ⑦ CAPITÀ ──
       '.cap{padding:2mm 2.5mm;border-bottom:1px solid #f0ece4;display:flex;flex-wrap:wrap;gap:1mm;align-items:center;flex-shrink:0}',
@@ -3691,7 +3705,8 @@ function printFitxes() {
       '.jr:last-child{border-bottom:none}',
       '.jr-n{width:5mm;font-size:9pt;font-weight:900;flex-shrink:0;text-align:center;line-height:1}',
       '.jr-nom{flex:1;font-size:9pt;font-weight:700;color:#1a1a1a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 1.5mm}',
-      '.jr-t{font-size:8pt;font-weight:900;color:#fff;padding:.5mm 2.5mm;border-radius:.8mm;flex-shrink:0;min-width:6mm;text-align:center;letter-spacing:.2px}',
+      // Talles: border + color (no background) per garantir impressió
+      '.jr-t{font-size:8pt;font-weight:900;padding:.5mm 2.5mm;border-radius:.8mm;flex-shrink:0;min-width:6mm;text-align:center;letter-spacing:.2px;border:1.5px solid;background:transparent}',
       '.jr-t-no{color:#ddd;font-size:7pt;flex-shrink:0;padding:0 1mm}',
       '.jr-pend{font-size:7pt;color:#bbb;padding:1mm 0;font-style:italic}',
 
