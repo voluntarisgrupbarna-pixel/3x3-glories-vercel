@@ -104,9 +104,9 @@ export default function HeroFestival() {
               {l.label}
             </a>
           ))}
-          <a href="/inscripcion" className="hero-festival-nav-cta">
-            Inscriu-te
-          </a>
+          <span className="hero-festival-nav-cta" style={{ opacity: 0.5, cursor: "default", pointerEvents: "none" }}>
+            Inscripcions tancades
+          </span>
         </nav>
 
         {/* Mobile hamburger */}
@@ -127,9 +127,9 @@ export default function HeroFestival() {
                 {l.label}
               </a>
             ))}
-            <a href="/inscripcion" className="hero-festival-mobile-cta">
-              🏀 Inscriu-te
-            </a>
+            <span className="hero-festival-mobile-cta" style={{ opacity: 0.5, cursor: "default" }}>
+              🔴 Inscripcions tancades
+            </span>
           </nav>
         )}
       </header>
@@ -194,11 +194,11 @@ export default function HeroFestival() {
         )}
 
         <div className="hero-festival-actions">
-          <a href="/inscripcion" className="hero-festival-cta-primary">
-            <span aria-hidden="true">🏀</span> Inscriu el teu equip — des de 75 €
-          </a>
+          <span className="hero-festival-cta-primary" style={{ opacity: 0.55, cursor: "default", pointerEvents: "none", background: "rgba(255,31,58,0.35)", boxShadow: "none" }}>
+            🔴 Inscripcions tancades
+          </span>
           <a href="#torneig" className="hero-festival-cta-secondary">
-            Saber més <span aria-hidden="true">▾</span>
+            Veure el programa <span aria-hidden="true">▾</span>
           </a>
         </div>
 
@@ -218,7 +218,7 @@ export default function HeroFestival() {
         </div>
 
         <div className="hero-festival-progress">
-          <span className="hero-festival-progress-icon">🔥</span> <strong>73%</strong> ocupat · <strong>27</strong> places lliures
+          <span className="hero-festival-progress-icon">🔥</span> 🔴 <strong>Inscripcions tancades</strong> · 100% ocupat
         </div>
       </div>
 

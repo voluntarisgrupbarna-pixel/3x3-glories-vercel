@@ -71,9 +71,9 @@ export default function SiteNav() {
           <a href={WA_REGISTRE_URL} className="site-nav-contact">
             WhatsApp
           </a>
-          <a href="/inscripcion" className="site-nav-cta">
-            Inscriu-te
-          </a>
+          <span className="site-nav-cta" style={{ opacity: 0.45, cursor: "default", background: "rgba(37,211,102,0.2)" }}>
+            Tancades
+          </span>
           <button
             type="button"
             className="site-nav-hamburger"
@@ -141,13 +141,9 @@ export default function SiteNav() {
               </svg>
               Contactar per WhatsApp
             </a>
-            <a
-              href="/inscripcion"
-              className="site-nav-drawer-cta"
-              onClick={() => setDrawerOpen(false)}
-            >
-              🏀 Inscriu el teu equip
-            </a>
+            <span className="site-nav-drawer-cta" style={{ opacity: 0.45, cursor: "default", background: "rgba(37,211,102,0.2)" }}>
+              🔴 Inscripcions tancades
+            </span>
           </div>
         </div>
       </div>

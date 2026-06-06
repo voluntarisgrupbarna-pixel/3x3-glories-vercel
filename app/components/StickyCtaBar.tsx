@@ -53,18 +53,17 @@ export default function StickyCtaBar() {
   if (!visible || HIDE_ON.some((p) => path.startsWith(p))) return null;
 
   return (
-    <div className="sticky-cta-bar" role="region" aria-label="Inscripció ràpida">
-      {/* Botó principal — inscripció */}
-      <Link href="/inscripcion" className="sticky-cta-register">
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
-          <path d="M12 2a5 5 0 1 0 0 10A5 5 0 0 0 12 2zm0 12c-5.33 0-8 2.67-8 4v2h16v-2c0-1.33-2.67-4-8-4z"/>
+    <div className="sticky-cta-bar" role="region" aria-label="Informació del torneig">
+      {/* Inscripcions tancades */}
+      <div className="sticky-cta-register" style={{ cursor: "default", background: "linear-gradient(100deg, #1a1a1a 0%, #2a2a2a 100%)", opacity: 0.9 }}>
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="#ef4444" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6" stroke="#fff" strokeWidth="2" strokeLinecap="round"/>
         </svg>
         <span className="sticky-cta-text">
-          <strong>Inscriu el teu equip</strong>
-          <em>des de 75 € · places limitades</em>
+          <strong>Inscripcions tancades</strong>
+          <em>3×3 Westfield Glòries · 6-7 juny</em>
         </span>
-        <span className="sticky-cta-arrow" aria-hidden="true">→</span>
-      </Link>
+      </div>
 
       <div className="sticky-cta-side">
         {/* WhatsApp */}

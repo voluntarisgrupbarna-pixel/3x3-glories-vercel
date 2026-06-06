@@ -114,9 +114,7 @@ function formatTeamName(slug: string): string {
 
 export default async function InscripcionPage({ searchParams }: InscripcionPageProps) {
   const params = (await searchParams) ?? {};
-  const ref = sanitizeRef(params.ref);
-  const fromTeam = ref ? formatTeamName(ref) : "";
-  const rivalCode = ref ? `RIVAL-${ref.toUpperCase()}` : "";
+  void params; // inscripcions tancades — paràmetres ignorats
   return (
     <>
       <Script
@@ -134,7 +132,7 @@ export default async function InscripcionPage({ searchParams }: InscripcionPageP
         <span className="page-nav-logo">3×3 Glòries 2026</span>
       </nav>
 
-      {/* ── Hero amb foto ── */}
+      {/* ── Hero ── */}
       <div className="insc-hero">
         <img
           src="/hero-bg-1.jpg"
@@ -144,74 +142,64 @@ export default async function InscripcionPage({ searchParams }: InscripcionPageP
         <div className="insc-hero-overlay" />
         <div className="insc-hero-body">
           <span className="insc-hero-kicker">3a edició · 6-7 Juny 2026 · Clot-Glòries, Barcelona</span>
-          <h1 className="insc-hero-title">Inscriu el teu equip</h1>
+          <h1 className="insc-hero-title">Inscripcions tancades</h1>
           <p className="insc-hero-sub">
-            El torneig 3×3 FIBA més potent de Barcelona — 11 categories, 3 seus, 2.000€ premi en metàl·lic
+            Les places s&apos;han esgotat. Gràcies a tots els equips inscrits — ens veiem a la pista! 🏀
           </p>
           <div className="insc-hero-chips">
-            <span>🔥 Early Bird −10%</span>
-            <span>🏀 Des de 75€</span>
-            <span>🏆 FIBA · Premi en Metàl·lic</span>
-            <span>📍 3 seus al Clot</span>
+            <span>✅ 100% ocupat</span>
+            <span>📅 6-7 Juny 2026</span>
+            <span>📍 Clot-Glòries, Barcelona</span>
           </div>
         </div>
-        <a href="#form" className="insc-hero-scroll" aria-label="Anar al formulari d'inscripció">
-          <span className="insc-hero-scroll-text">Comença la inscripció</span>
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.5">
-            <path d="M6 9l6 6 6-6" />
-          </svg>
-        </a>
       </div>
 
-      {/* ── Contingut principal ── */}
+      {/* ── Panell central TANCAT ── */}
       <main className="page-content" id="form">
 
-        {ref && (
-          <div className="rival-banner">
-            <span className="rival-banner-tag">Pack rival actiu</span>
-            <strong>T&apos;ha desafiat el {fromTeam} 🏀</strong>
-            <p>
-              Aplicarem <strong>−5 €</strong> a la teva inscripció i <strong>−5 €</strong> a la del{" "}
-              {fromTeam}. Cita aquest codi quan ens escriguis:
-            </p>
-            <div className="rival-banner-code">
-              <code>{rivalCode}</code>
-            </div>
-            <p className="rival-banner-hint">
-              Guarda aquest codi i completa el formulari d&apos;inscripció. Si tens dubtes, deixa el teu
-              contacte i et respondrem per WhatsApp.
-            </p>
-          </div>
-        )}
-
-        <p className="insc-intro-text">
-          5 passos: tria el paquet, registra els contactes, fes la transferència i puja el justificant,
-          omple les dades dels jugadors i envia. <strong>El justificant no et bloqueja</strong> — pots
-          continuar de seguida i nosaltres validem el pagament en menys de 24h.
-        </p>
-
-        {/* ── WhatsApp-style chat wrapper ── */}
-        <div className="wa-form-shell">
-          <div className="wa-form-header">
-            <div className="wa-form-header-avatar">🏀</div>
-            <div className="wa-form-header-info">
-              <span className="wa-form-header-name">3×3 Westfield Glòries 2026</span>
-              <span className="wa-form-header-status">CB Grup Barna · 6-7 juny · Clot, Barcelona</span>
-            </div>
-          </div>
-
-          {/* Trust bar — responsive, sense separadors orfes */}
-          <div className="insc-trust-bar">
-            <span>🔒 HTTPS segura</span>
-            <span>🛡️ Dades protegides</span>
-            <span>✅ Transferència verificada</span>
-            <span>⚡ Confirmació &lt;24h WA</span>
-          </div>
-
-          <InscripcioWizard initialRefCode={rivalCode} />
+        {/* Avís principal */}
+        <div style={{
+          background: "linear-gradient(135deg, rgba(239,68,68,0.12), rgba(239,68,68,0.05))",
+          border: "2px solid rgba(239,68,68,0.4)",
+          borderRadius: "16px",
+          padding: "2rem",
+          textAlign: "center",
+          margin: "0 0 2rem",
+        }}>
+          <div style={{ fontSize: "3rem", marginBottom: "0.75rem" }}>🔴</div>
+          <h2 style={{ margin: "0 0 0.5rem", fontSize: "1.6rem", color: "#fff7ef" }}>
+            Inscripcions tancades
+          </h2>
+          <p style={{ margin: "0 0 1rem", color: "rgba(255,247,239,0.7)", fontSize: "1rem" }}>
+            Totes les places del <strong>3×3 Westfield Glòries 2026</strong> estan ocupades.<br />
+            El torneig es celebra el <strong>dissabte 6 i diumenge 7 de juny de 2026</strong> al Clot-Glòries.
+          </p>
+          <a
+            href={WA_REGISTER_URL}
+            target="_blank"
+            rel="noreferrer noopener"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              background: "#25d366",
+              color: "#fff",
+              fontWeight: 800,
+              fontSize: "1rem",
+              padding: "0.85rem 2rem",
+              borderRadius: "50px",
+              textDecoration: "none",
+            }}
+          >
+            💬 Contacta&apos;ns per WhatsApp
+          </a>
+          <p style={{ marginTop: "1rem", fontSize: "0.85rem", color: "rgba(255,247,239,0.45)" }}>
+            Si tens algun dubte sobre la teva inscripció ja realitzada, escriu-nos i et responem en menys de 24h.
+          </p>
         </div>
 
-        {/* insc-wa-hint removed — leads capturats via formulari d'abandó */}
+        {/* Enllaços útils */}
+        <hr className="page-divider" />
 
         <hr className="page-divider" />
 
