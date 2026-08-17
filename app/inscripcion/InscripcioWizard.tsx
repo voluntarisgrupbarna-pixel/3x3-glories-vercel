@@ -1907,7 +1907,13 @@ function Step5Confirm({
         )}
         <label className="wizard-toggle" style={{ background: !state.rgpdConsent ? "rgba(240,140,0,0.06)" : "transparent", borderRadius: 8, padding: "4px 0" }}>
           <input type="checkbox" checked={state.rgpdConsent} onChange={(e) => setRgpd(e.target.checked)} />
-          <span>Accepto la política de privadesa i el tractament de les dades (RGPD). *</span>
+          <span>
+            Accepto la{" "}
+            <a href="/avis-legal" target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "underline" }}>
+              política de privadesa i el tractament de les dades (RGPD)
+            </a>
+            . *
+          </span>
         </label>
         <label className="wizard-toggle" style={{ background: !state.imageRightsConsent ? "rgba(240,140,0,0.06)" : "transparent", borderRadius: 8, padding: "4px 0" }}>
           <input type="checkbox" checked={state.imageRightsConsent} onChange={(e) => setImageRights(e.target.checked)} />

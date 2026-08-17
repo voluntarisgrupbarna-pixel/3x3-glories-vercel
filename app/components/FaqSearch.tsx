@@ -144,7 +144,7 @@ export default function FaqSearch({ items = faqs, page = "frequents" }: Props) {
                 <span>
                   Accepto que CB Grup Barna guardi les meves dades per respondre la
                   meva consulta, d'acord amb la{" "}
-                  <Link href="/contacte" style={{ color: "#ff375f" }}>
+                  <Link href="/avis-legal" style={{ color: "#ff375f" }}>
                     política de privacitat
                   </Link>
                   .

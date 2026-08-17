@@ -79,13 +79,17 @@ export default function SiteFooter() {
       <div className="site-footer-institutional">
         Organitzat per <strong>CB Grup Barna</strong> ·
         Pla d&apos;Igualtat 2026-2029 aprovat ·
+        Tractament de dades conforme al RGPD ·
         Delegat de Protecció del Menor (LOPIVI) ·
         Club nominat als Premis Dona i Esport
       </div>
 
       <div className="site-footer-bottom">
         <span className="site-footer-copy">
-          © 2026 CB Grup Barna · Time Chamber · Eix Clot. Tots els drets reservats.
+          © 2026 CB Grup Barna · Time Chamber · Eix Clot. Tots els drets reservats. ·{" "}
+          <Link href="/avis-legal" className="site-footer-nav-link">
+            Avís Legal / RGPD
+          </Link>
         </span>
         <span className="site-footer-bottom-name">3×3 Westfield Glòries</span>
       </div>

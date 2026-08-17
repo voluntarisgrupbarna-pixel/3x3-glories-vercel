@@ -273,8 +273,11 @@ export default function IndividualSignupForm() {
             required
           />
           <span>
-            Accepto rebre comunicacions del club via WhatsApp i email sobre la meva inscripció, i la política
-            de tractament de dades (RGPD). *
+            Accepto rebre comunicacions del club via WhatsApp i email sobre la meva inscripció, i la{" "}
+            <a href="/avis-legal" target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "underline" }}>
+              política de tractament de dades (RGPD)
+            </a>
+            . *
           </span>
         </label>
       </div>

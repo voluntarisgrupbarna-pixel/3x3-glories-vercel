@@ -195,8 +195,11 @@ export default function BuscaElBalloForm() {
             onChange={(e) => setCbBases(e.target.checked)}
           />
           <span>
-            Accepto les <strong>bases del sorteig</strong> i la política de
-            privacitat <span className="beb-req">*</span>
+            Accepto les <strong>bases del sorteig</strong> i la{" "}
+            <a href="/avis-legal" target="_blank" rel="noopener noreferrer" style={{ color: "inherit", textDecoration: "underline" }}>
+              política de privacitat (RGPD)
+            </a>{" "}
+            <span className="beb-req">*</span>
           </span>
         </label>
       </div>
