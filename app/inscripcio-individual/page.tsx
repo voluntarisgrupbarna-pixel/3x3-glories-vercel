@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import IndividualSignupForm from "./IndividualSignupForm";
+import RegistrationClosedNotice from "../components/RegistrationClosedNotice";
 
 export const metadata: Metadata = {
   title: "Inscripció individual | 3×3 Westfield Glòries 2026",
@@ -60,14 +60,12 @@ export default function InscripcioIndividualPage() {
           </div>
         </div>
 
-        <h2>Inscriu-te</h2>
-        <p>
-          Omple les dades a continuació. Quan acabis, generem un missatge de WhatsApp amb tota la informació
-          ja preparada i només has de clicar enviar. L'organització et confirma la plaça en menys de 24h i
-          t'envia les dades de pagament (20 € per transferència).
-        </p>
+        <h2>Temporada 2025-26</h2>
 
-        <IndividualSignupForm />
+        <RegistrationClosedNotice
+          title="Inscripcions individuals tancades"
+          body="El 3×3 Westfield Glòries 2026 (6-7 juny) ja s'ha celebrat. Gràcies a tothom qui es va apuntar sense equip!"
+        />
 
         <hr className="page-divider" />
 

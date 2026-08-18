@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import BuscaElBalloForm from "./BuscaElBalloForm";
+import RegistrationClosedNotice from "../components/RegistrationClosedNotice";
 
 export const metadata: Metadata = {
   title: "Busca el Balló Wilson — Sorteig 3×3 Westfield Glòries 2026",
@@ -31,13 +31,10 @@ export default function BuscaElBalloPage() {
         <h1>🔍 Busca el Balló!</h1>
         <p className="beb-hero-sub">3×3 Westfield Glòries · 6 &amp; 7 Juny 2026</p>
 
-        <p>
-          Registra&apos;t per participar en el sorteig. Troba el balló al cartell i comenta{" "}
-          <strong style={{ color: "#FFD700" }}>WILSON</strong> a Instagram.
-          Etiqueta amics per multiplicar les teves opcions.
-        </p>
-
-        <BuscaElBalloForm />
+        <RegistrationClosedNotice
+          title="Sorteig finalitzat"
+          body="El 3×3 Westfield Glòries 2026 ja s'ha celebrat i el sorteig Busca el Balló Wilson ja ha tingut lloc. Gràcies a tothom qui hi va participar!"
+        />
 
         <h2 style={{ marginTop: 40 }}>Com funciona el sorteig</h2>
         <ol

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import WaRegistreClient from "./WaRegistreClient";
+import RegistrationClosedNotice from "../components/RegistrationClosedNotice";
 
 // Formulari intern d'inscripció per WhatsApp — no ha d'aparèixer als resultats de cerca
 export const metadata: Metadata = {
@@ -10,5 +10,11 @@ export const metadata: Metadata = {
 };
 
 export default function WaRegistrePage() {
-  return <WaRegistreClient />;
+  return (
+    <div className="page-shell">
+      <main className="page-content" style={{ paddingTop: 24 }}>
+        <RegistrationClosedNotice />
+      </main>
+    </div>
+  );
 }
