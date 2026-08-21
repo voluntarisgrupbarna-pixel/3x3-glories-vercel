@@ -3,14 +3,14 @@ import Script from "next/script";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Horaris 3×3 Westfield Glòries 2026 | Dissabte 6 i Diumenge 7 de Juny · Barcelona",
+  title: "Com va anar el programa del 3×3 Westfield Glòries 2026 | 6 i 7 de Juny · Barcelona",
   description:
-    "Horaris complets del Torneig 3×3 Barcelona 2026. Dissabte 6 de juny: Sèniors FIBA i Sènior Amateur. Diumenge 7 de juny: Màgics Inclusiva i categories formatives. 3 seus al Clot-Glòries.",
+    "Recull del programa del Torneig 3×3 Barcelona 2026, ja celebrat: dissabte 6 de juny, Sèniors FIBA i Sènior Amateur; diumenge 7 de juny, Màgics Inclusiva i categories formatives. 3 seus al Clot-Glòries.",
   alternates: { canonical: "/horarios-3x3-barcelona-2026" },
   openGraph: {
-    title: "Horaris 3×3 Westfield Glòries 2026 — 6 i 7 de Juny · Barcelona",
+    title: "Com va anar el programa del 3×3 Westfield Glòries 2026 · Barcelona",
     description:
-      "Tots els horaris del torneig 3×3 FIBA de Barcelona 2026. Sèniors, Sènior Amateur, Màgics i categories formatives. 3 seus al barri del Clot-Glòries.",
+      "Recull del programa del torneig 3×3 FIBA de Barcelona 2026: Sèniors, Sènior Amateur, Màgics i categories formatives, en 3 seus al barri del Clot-Glòries.",
   },
 };
 
@@ -110,11 +110,11 @@ export default function HorarisPage() {
           />
           <div className="insc-hero-overlay" />
           <div className="insc-hero-body">
-            <span className="insc-hero-kicker">6-7 Juny 2026 · 3 seus · Clot-Glòries, Barcelona</span>
-            <h1 className="insc-hero-title">Horaris 3×3 Barcelona 2026</h1>
+            <span className="insc-hero-kicker">3a edició · 6-7 Juny 2026 · Ja celebrada · 3 seus al Clot-Glòries, Barcelona</span>
+            <h1 className="insc-hero-title">Com va anar el programa del 3×3 Barcelona 2026</h1>
             <p className="insc-hero-sub">
-              Programa complet del Torneig 3×3 Westfield Glòries — totes les categories,
-              seus i franges horàries.
+              Recull del programa del Torneig 3×3 Westfield Glòries — com es van repartir totes
+              les categories, seus i franges horàries a la 3a edició.
             </p>
             <div className="insc-hero-chips">
               <span>📅 Dis 6 Juny · Sèniors + Sènior Amateur + Escoleta</span>
@@ -125,37 +125,41 @@ export default function HorarisPage() {
 
         <main className="page-content">
 
-          {/* ── FIBA Play alert — Dissabte publicat ── */}
-          <div style={{
-            background: "linear-gradient(135deg, #1e3a5f, #0f2540)",
-            border: "2px solid #3b82f6",
-            borderRadius: 14,
-            padding: "16px 20px",
-            marginBottom: "2rem",
-            display: "flex",
-            alignItems: "center",
-            gap: 16,
-            flexWrap: "wrap",
-          }}>
-            <div style={{ flex: 1, minWidth: 220 }}>
-              <p style={{ margin: "0 0 4px", fontWeight: 800, fontSize: 16, color: "#fff" }}>
-                📅 Horaris Dissabte 6 de Juny ja publicats a FIBA Play
-              </p>
-              <p style={{ margin: 0, fontSize: 13, color: "rgba(255,255,255,0.7)" }}>
-                Sènior Masculí Pro (Pool A + Pool B) · Sènior Femení Pro · 10:00–21:00 · Pista A Westfield Glòries
-              </p>
-            </div>
+          {/* ── Recap: l'edició ja s'ha celebrat ── */}
+          <div
+            style={{
+              background: "linear-gradient(135deg, rgba(239,68,68,0.12), rgba(239,68,68,0.04))",
+              border: "2px solid rgba(239,68,68,0.35)",
+              borderRadius: 14,
+              padding: "1.5rem",
+              marginBottom: "2rem",
+            }}
+          >
+            <p style={{ margin: "0 0 8px", fontWeight: 800, fontSize: 16, color: "#fff7ef" }}>
+              🏀 La 3a edició ja s&apos;ha celebrat — així va anar el programa
+            </p>
+            <p style={{ margin: "0 0 14px", fontSize: 14, color: "rgba(255,247,239,0.75)", lineHeight: 1.6 }}>
+              El 3×3 Westfield Glòries es va disputar el 6 i 7 de juny de 2026 amb{" "}
+              <strong>113 equips inscrits</strong> (rècord) i uns <strong>508 jugadors i jugadores</strong>{" "}
+              repartits en 10 categories i 3 seus del Clot-Glòries. A sota trobaràs com es va
+              repartir el programa dia a dia. La propera edició encara no té data confirmada.
+            </p>
             <a
-              href="https://play.fiba3x3.com/events/4a4773cb-79be-4777-b164-220b36aacbe6/schedule"
+              href="https://cbgrupbarna.info/fotos-3x3/"
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noreferrer noopener"
               style={{
-                background: "#3b82f6", color: "#fff", fontWeight: 800, fontSize: 14,
-                padding: "10px 20px", borderRadius: 10, textDecoration: "none",
-                whiteSpace: "nowrap", flexShrink: 0,
+                display: "inline-block",
+                background: "#EF4444",
+                color: "#fff",
+                fontWeight: 800,
+                padding: "10px 22px",
+                borderRadius: 50,
+                textDecoration: "none",
+                fontSize: "0.9rem",
               }}
             >
-              Consulta el programa complet →
+              📸 Veure fotos i resultats
             </a>
           </div>
 
@@ -165,8 +169,19 @@ export default function HorarisPage() {
             borderRadius: 14, padding: "16px 20px", marginBottom: "2rem",
           }}>
             <h3 style={{ margin: "0 0 14px", color: "#f97316", fontSize: 16, fontWeight: 800 }}>
-              🟠 Dissabte 6 · Programa Sènior (FIBA Play)
+              🟠 Dissabte 6 de juny · Com es va jugar la fase Sènior (quadre a FIBA Play)
             </h3>
+            <p style={{ margin: "0 0 14px", fontSize: 13, color: "rgba(255,255,255,0.6)" }}>
+              Sènior Masculí Pro (Pool A + Pool B) i Sènior Femení Pro, 10:00–21:00, Pista A Westfield Glòries.{" "}
+              <a
+                href="https://play.fiba3x3.com/events/4a4773cb-79be-4777-b164-220b36aacbe6/schedule"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: "#3b82f6", fontWeight: 700, textDecoration: "none" }}
+              >
+                Veure el quadre complet a FIBA Play →
+              </a>
+            </p>
             <div style={{ overflowX: "auto" }}>
               <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13px" }}>
                 <thead>
@@ -231,9 +246,10 @@ export default function HorarisPage() {
             </div>
           </div>
 
+          <h2 style={{ marginTop: "1.5rem" }}>Com es va repartir cada categoria</h2>
           {PROGRAMA.map((d) => (
             <div key={d.dia}>
-              <h2 style={{ color: d.color }}>{d.dia}</h2>
+              <h3 style={{ color: d.color }}>{d.dia}</h3>
               <div style={{ overflowX: "auto", marginBottom: "2rem" }}>
                 <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.9rem" }}>
                   <thead>
@@ -287,7 +303,7 @@ export default function HorarisPage() {
           ))}
 
           <p style={{ fontSize: "0.8rem", color: "rgba(255,247,239,0.4)", marginTop: "-1rem", marginBottom: "2rem" }}>
-            * Horaris orientatius. Els horaris definitius de cada grup es comuniquen per email i WhatsApp als equips inscrits una setmana abans del torneig.
+            * Horaris tal com es van comunicar als equips inscrits abans del torneig. Els horaris definitius de cada grup es van confirmar per email i WhatsApp la setmana prèvia.
           </p>
 
           <hr className="page-divider" />
@@ -317,7 +333,9 @@ export default function HorarisPage() {
 
           <div style={{ textAlign: "center", padding: "0.5rem 0 2rem" }}>
             <a
-              href="/inscripcion"
+              href="https://cbgrupbarna.info/fotos-3x3/"
+              target="_blank"
+              rel="noreferrer noopener"
               style={{
                 display: "inline-block",
                 background: "#f97316",
@@ -329,7 +347,7 @@ export default function HorarisPage() {
                 textDecoration: "none",
               }}
             >
-              🏀 Inscriu el teu equip — des de 75€
+              📸 Veure fotos i resultats
             </a>
           </div>
 
@@ -340,8 +358,8 @@ export default function HorarisPage() {
             Consulta les{" "}
             <Link href="/preguntes-frequents" className="insc-link">preguntes freqüents</Link>
             {" "}o{" "}
-            <Link href="/contacte" className="insc-link">contacta&apos;ns per WhatsApp</Link>.
-            Resposta en menys de 24h.
+            <Link href="/contacte" className="insc-link">contacta&apos;ns per WhatsApp</Link>{" "}
+            per saber-ne més o quan obrim la propera edició. Resposta en menys de 24h.
           </p>
         </main>
       </div>

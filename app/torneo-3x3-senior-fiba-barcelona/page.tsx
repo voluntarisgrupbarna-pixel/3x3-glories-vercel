@@ -5,14 +5,14 @@ import Image from "next/image";
 import { WA_REGISTER_URL } from "../lib/whatsapp";
 
 export const metadata: Metadata = {
-  title: "3×3 Sènior FIBA Barcelona 2026 | 1.000€ premi + punts rànquing mundial",
+  title: "3×3 Sènior FIBA Barcelona 2026 | 113 equips · 1.000€ premi paritari · Ja celebrat",
   description:
-    "Competeix al torneig 3×3 Sènior FIBA de Barcelona. 1.000€ de premi en metàl·lic per Sèniors Masculí i Femení + punts FIBA rànquing mundial. 6 de juny 2026 al Westfield Glòries.",
+    "El torneig 3×3 Sènior FIBA de Barcelona 2026 ja s'ha celebrat: 1.000€ de premi en metàl·lic paritari per a Sèniors Masculí i Femení + punts FIBA rànquing mundial. Descobreix com va anar el 6 de juny al Westfield Glòries i quan és la propera edició.",
   alternates: { canonical: "/torneo-3x3-senior-fiba-barcelona" },
   openGraph: {
-    title: "3×3 Sènior FIBA Barcelona 2026 — 1.000€ premis + ranking mundial",
+    title: "3×3 Sènior FIBA Barcelona 2026 — Ja celebrat · 1.000€ premi paritari",
     description:
-      "L'única competició 3×3 FIBA oficial de Barcelona el 2026. Sèniors M i F: 1.000€ cadascuna + punts pel rànquing mundial FIBA. Dissabte 6 de juny, Finals a Westfield Glòries.",
+      "L'única competició 3×3 FIBA oficial de Barcelona es va disputar el 6 de juny de 2026. Sèniors M i F: 1.000€ cadascuna + punts pel rànquing mundial FIBA. Fotos i resultats disponibles — ens veiem el 2027.",
   },
 };
 
@@ -51,11 +51,12 @@ export default function SeniorFibaPage() {
             className="insc-hero-img" style={{ objectFit: "cover", objectPosition: "center 30%" }} />
           <div className="insc-hero-overlay" />
           <div className="insc-hero-body">
-            <span className="insc-hero-kicker">Dissabte 6 de Juny 2026 · Westfield Glòries, Barcelona</span>
+            <span className="insc-hero-kicker">6 de Juny 2026 · Ja celebrat · Westfield Glòries, Barcelona</span>
             <h1 className="insc-hero-title">3×3 Sènior FIBA Barcelona</h1>
             <p className="insc-hero-sub">
               L&apos;única competició 3×3 oficial FIBA de la ciutat — 1.000€ de premi en metàl·lic
-              per a Sèniors Masculí i Femení + punts pel rànquing mundial individual FIBA 3×3.
+              per a Sèniors Masculí i Femení + punts pel rànquing mundial individual FIBA 3×3. La
+              3a edició (2026) es va disputar amb un rècord de 113 equips inscrits.
             </p>
             <div className="insc-hero-chips">
               <span>🔴 FIBA Oficial</span>
@@ -96,12 +97,12 @@ export default function SeniorFibaPage() {
             <li>Format oficial FIBA 3×3: fases de grups + eliminatòria directa.</li>
             <li>Finals a la pista principal de <strong>Westfield Glòries</strong> (Av. Diagonal 208).</li>
             <li>Semifinals a La Nau del Clot (pavelló cobert oficial).</li>
-            <li>Horari: <strong>dissabte 6 de juny, 09:00–18:00h</strong>.</li>
+            <li>Horari de la 3a edició: <strong>dissabte 6 de juny, 09:00–18:00h</strong>.</li>
           </ul>
 
           <hr className="page-divider" />
 
-          <h2>Inscripció equip Sènior</h2>
+          <h2>Preus de la 3a edició (2026)</h2>
           <div className="insc-cat-grid">
             <div className="insc-cat-card insc-cat-card--pro">
               <span className="insc-cat-emoji">🏆</span>
@@ -119,12 +120,15 @@ export default function SeniorFibaPage() {
             </div>
           </div>
           <p style={{ fontSize: "0.85rem", color: "rgba(255,247,239,0.5)", marginTop: 8 }}>
-            Cada equip inclou samarreta oficial i dorsal. Samarreta addicional (recanvi): 25€/u.
+            Preus de referència de l&apos;última edició (inclouen samarreta oficial i dorsal). El
+            preu de la propera edició es confirma quan s&apos;obrin les inscripcions del 2027.
           </p>
 
           <div style={{ textAlign: "center", padding: "1.5rem 0 2rem" }}>
             <a
-              href="/inscripcion"
+              href="https://cbgrupbarna.info/fotos-3x3/"
+              target="_blank"
+              rel="noreferrer noopener"
               style={{
                 display: "inline-block",
                 background: "#f97316",
@@ -137,7 +141,7 @@ export default function SeniorFibaPage() {
                 marginBottom: "1rem",
               }}
             >
-              🏀 Inscriu el teu equip Sènior
+              📸 Veure fotos i resultats
             </a>
             <br />
             <a href={CONTACT_LINK} target="_blank" rel="noreferrer noopener" style={{ fontSize: "0.9rem", color: "rgba(255,247,239,0.6)", textDecoration: "underline" }}>
@@ -150,7 +154,7 @@ export default function SeniorFibaPage() {
           <h2>Per què és el millor 3×3 Sènior de Barcelona?</h2>
           <ul>
             <li>Únic torneig 3×3 amb <strong>punts FIBA oficials</strong> a Barcelona el 2026.</li>
-            <li>3a edició consecutiva (2023–2026) — historial de creixement i continuïtat.</li>
+            <li>3 edicions consecutives (2024–2026) — historial de creixement i continuïtat, amb rècord de 113 equips el 2026.</li>
             <li>Finals a la pista del <strong>Westfield Glòries</strong> — ambient i visibilitat únics.</li>
             <li>Arbitratge oficial seguint les regles FIBA 3×3.</li>
             <li>Premi equiparat M/F — <strong>1.000€ cadascun</strong>.</li>

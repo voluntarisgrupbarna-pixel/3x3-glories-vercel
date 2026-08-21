@@ -282,9 +282,9 @@ export default function ReglesPage() {
               Si vens de jugar a 5×5, les diferències clau les trobaràs al final de la pàgina.
             </p>
             <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-              <Link href="/inscripcion" className="page-cta-btn">
-                Inscriu el teu equip →
-              </Link>
+              <a href="https://cbgrupbarna.info/fotos-3x3/" target="_blank" rel="noreferrer noopener" className="page-cta-btn">
+                📸 Veure fotos i resultats
+              </a>
               <Link href="/preguntes-frequents" className="page-cta-btn-ghost">
                 Preguntes freqüents
               </Link>
@@ -405,17 +405,23 @@ export default function ReglesPage() {
             marginBottom: 48,
           }}>
             <p style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.12em", color: "#ff5b1f", textTransform: "uppercase", marginBottom: 8 }}>
-              6-7 juny 2026 · Westfield Glòries, Barcelona
+              6-7 juny 2026 · Ja celebrat · Westfield Glòries, Barcelona
             </p>
             <h2 style={{ fontSize: 28, fontWeight: 900, color: "#fff7ef", margin: "0 0 12px" }}>
-              Ja coneixes les regles.<br />Ara inscriu el teu equip.
+              Ja coneixes les regles.<br />Mira com es van aplicar a la 3a edició.
             </h2>
             <p style={{ color: "#c8b99a", fontSize: 15, marginBottom: 24 }}>
-              Des de 75 € · 10 categories · Premi 2.000 € Sènior · Places limitades
+              113 equips · 508 jugadors/es · 10 categories · 2.000 € en premi paritari
             </p>
-            <Link href="/inscripcion" className="page-cta-btn" style={{ fontSize: 17, padding: "14px 36px" }}>
-              Inscriu-te ara →
-            </Link>
+            <a
+              href="https://cbgrupbarna.info/fotos-3x3/"
+              target="_blank"
+              rel="noreferrer noopener"
+              className="page-cta-btn"
+              style={{ fontSize: 17, padding: "14px 36px" }}
+            >
+              📸 Veure fotos i resultats
+            </a>
             <p style={{ color: "#555", fontSize: 13, marginTop: 16 }}>
               Dubtes?{" "}
               <Link href="/preguntes-frequents" style={{ color: "#888" }}>

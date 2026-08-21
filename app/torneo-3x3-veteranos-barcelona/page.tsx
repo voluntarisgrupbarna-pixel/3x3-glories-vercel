@@ -4,14 +4,14 @@ import Link from "next/link";
 import { WA_REGISTER_URL } from "../lib/whatsapp";
 
 export const metadata: Metadata = {
-  title: "3×3 Sènior Amateur Barcelona 2026 | +35 anys · Torna a la pista al Clot-Glòries",
+  title: "3×3 Sènior Amateur Barcelona 2026 | +35 anys · Ja celebrat al Clot-Glòries",
   description:
-    "Torneig 3×3 sènior amateur a Barcelona. Categories Sènior Amateur Masculí i Femení (nascuts fins 1986, +38 anys el 2026). Dissabte 6 de juny a la Rambleta del Clot. Trofeus, medalles i festa esportiva.",
+    "El torneig 3×3 sènior amateur de Barcelona ja s'ha celebrat. Categories Sènior Amateur Masculí i Femení (nascuts fins 1986, +38 anys el 2026), dissabte 6 de juny a la Rambleta del Clot, dins una edició amb 113 equips. Descobreix com va anar i la propera convocatòria.",
   alternates: { canonical: "/torneo-3x3-veteranos-barcelona" },
   openGraph: {
-    title: "3×3 Sènior Amateur Barcelona 2026 — +35 anys · Clot-Glòries · 6 de juny",
+    title: "3×3 Sènior Amateur Barcelona 2026 — Ja celebrat · Clot-Glòries",
     description:
-      "Torna a competir. Munta el teu equip de sènior amateur i viu el 3×3 a l&apos;aire lliure. Categories Sènior Amateur M/F al 3×3 Westfield Glòries 2026 de Barcelona.",
+      "Es va tornar a la pista. Equips de sènior amateur van viure el 3×3 a l&apos;aire lliure. Categories Sènior Amateur M/F al 3×3 Westfield Glòries 2026 de Barcelona — fotos i resultats disponibles.",
   },
 };
 
@@ -52,11 +52,12 @@ export default function VeteransPage() {
           />
           <div className="insc-hero-overlay" />
           <div className="insc-hero-body">
-            <span className="insc-hero-kicker">Dissabte 6 de Juny 2026 · Rambleta del Clot, Barcelona</span>
+            <span className="insc-hero-kicker">6 de Juny 2026 · Ja celebrat · Rambleta del Clot, Barcelona</span>
             <h1 className="insc-hero-title">3×3 Sènior Amateur Barcelona</h1>
             <p className="insc-hero-sub">
-              Torna a la pista. La categoria Sènior Amateur del 3×3 Westfield Glòries és per a jugadors
-              i jugadores nascuts fins al 1986 — perquè l&apos;esport no té edat de jubilació.
+              La categoria Sènior Amateur del 3×3 Westfield Glòries és per a jugadors i jugadores
+              nascuts fins al 1986 — perquè l&apos;esport no té edat de jubilació. La 3a edició es va
+              disputar amb un rècord de 113 equips inscrits en total.
             </p>
             <div className="insc-hero-chips">
               <span>🎖️ +35 anys (nascuts fins 1986)</span>
@@ -70,10 +71,10 @@ export default function VeteransPage() {
 
           <p style={{ fontSize: "1.05rem", lineHeight: 1.7 }}>
             El 3×3 Westfield Glòries és un dels pocs torneigs de la zona que manté una{" "}
-            <strong>categoria sènior amateur activa i creixent</strong>. Si ets pare o mare d&apos;un
-            jugador del club, exjugador, o simplement tens les ganes de competir de nou — és el teu
-            moment. L&apos;ambient és de festa esportiva, la pista és a l&apos;aire lliure i el
-            barri sencer et veu jugar.
+            <strong>categoria sènior amateur activa i creixent</strong>. Pares i mares de jugadors
+            del club, exjugadors i qualsevol amb ganes de competir de nou hi van tenir el seu
+            moment: l&apos;ambient va ser de festa esportiva, amb pista a l&apos;aire lliure i el
+            barri sencer animant. Escriu-nos per WhatsApp per no perdre&apos;t la propera convocatòria.
           </p>
 
           <hr className="page-divider" />
@@ -104,7 +105,7 @@ export default function VeteransPage() {
 
           <hr className="page-divider" />
 
-          <h2>On i quan</h2>
+          <h2>On i quan es va jugar</h2>
           <div style={{ background: "rgba(249,115,22,0.08)", border: "1px solid rgba(249,115,22,0.2)", borderRadius: "12px", padding: "1.25rem", margin: "1rem 0" }}>
             <p style={{ fontWeight: 700, marginBottom: "0.5rem" }}>🟠 Dissabte 6 de juny · 10:00–14:00h</p>
             <p style={{ margin: 0 }}>
@@ -120,15 +121,17 @@ export default function VeteransPage() {
 
           <h2>Premis</h2>
           <p>
-            Les categories Sènior Amateur reben <strong>trofeus i medalles</strong> per als 3 primers
-            classificats. A més, tots els equips participants opten als{" "}
+            Les categories Sènior Amateur van rebre <strong>trofeus i medalles</strong> per als 3
+            primers classificats. A més, tots els equips participants van optar als{" "}
             <strong>premis dels comerços col·laboradors de l&apos;Eix Clot</strong> (sortejos,
             lots de productes i experiències del barri).
           </p>
 
           <div style={{ textAlign: "center", padding: "1.5rem 0 2rem" }}>
             <a
-              href="/inscripcion"
+              href="https://cbgrupbarna.info/fotos-3x3/"
+              target="_blank"
+              rel="noreferrer noopener"
               style={{
                 display: "inline-block",
                 background: "#f97316",
@@ -141,7 +144,7 @@ export default function VeteransPage() {
                 marginBottom: "1rem",
               }}
             >
-              🎖️ Inscriu el teu equip Sènior Amateur
+              📸 Veure fotos i resultats
             </a>
             <br />
             <a href={CONTACT_LINK} target="_blank" rel="noreferrer noopener" style={{ fontSize: "0.9rem", color: "rgba(255,247,239,0.6)", textDecoration: "underline" }}>

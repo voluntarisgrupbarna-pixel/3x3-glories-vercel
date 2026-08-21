@@ -6,12 +6,12 @@ import { WA_REGISTER_URL } from "../lib/whatsapp";
 export const metadata: Metadata = {
   title: "Qué es el Baloncesto 3x3 FIBA | Regles i format — 3×3 Barcelona 2026",
   description:
-    "Descobreix com funciona el bàsquet 3x3 FIBA: format de joc, regles oficials, categories i per què el Torneig 3×3 Westfield Glòries 2026 és la cita imprescindible de Barcelona.",
+    "Descobreix com funciona el bàsquet 3x3 FIBA: format de joc, regles oficials i categories, explicat a partir del Torneig 3×3 Westfield Glòries, que va celebrar la seva 3a edició (113 equips) el 6-7 de juny de 2026 a Barcelona.",
   alternates: { canonical: "/que-es-basquet-3x3" },
   openGraph: {
     title: "Qué es el Baloncesto 3x3 FIBA | Regles i format — 3×3 Barcelona 2026",
     description:
-      "Format, regles FIBA i categories del bàsquet 3x3. Tot el que necessites saber abans d'inscriure el teu equip al Torneig Westfield Glòries 2026.",
+      "Format, regles FIBA i categories del bàsquet 3x3, explicat amb l'exemple del Torneig Westfield Glòries. 3a edició ja celebrada — la propera encara no té data.",
   },
 };
 
@@ -106,9 +106,9 @@ export default function QueEsBasquet3x3Page() {
                 partits intensos de 10 minuts. Aquí t&apos;ho expliquem tot.
               </p>
               <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-                <Link href="/inscripcion" className="page-cta-btn">
-                  Inscriu el teu equip →
-                </Link>
+                <a href="https://cbgrupbarna.info/fotos-3x3/" target="_blank" rel="noreferrer noopener" className="page-cta-btn">
+                  📸 Veure fotos i resultats
+                </a>
                 <Link href="/regles-3x3" className="page-cta-btn-ghost">
                   Veure reglament complet
                 </Link>
@@ -198,7 +198,7 @@ export default function QueEsBasquet3x3Page() {
                     <tr style={{ background: "#1a1a1a" }}>
                       <th style={{ padding: "10px 14px", textAlign: "left", color: "#888", fontWeight: 600, borderBottom: "1px solid #2a2a2a" }}>Categoria</th>
                       <th style={{ padding: "10px 14px", textAlign: "left", color: "#888", fontWeight: 600, borderBottom: "1px solid #2a2a2a" }}>Edats</th>
-                      <th style={{ padding: "10px 14px", textAlign: "left", color: "#ff5b1f", fontWeight: 600, borderBottom: "1px solid #2a2a2a" }}>Preu inscripció</th>
+                      <th style={{ padding: "10px 14px", textAlign: "left", color: "#ff5b1f", fontWeight: 600, borderBottom: "1px solid #2a2a2a" }}>Preu inscripció 2026</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -224,8 +224,9 @@ export default function QueEsBasquet3x3Page() {
                 </table>
               </div>
               <p style={{ color: "#888", fontSize: 13, marginTop: 12 }}>
-                * Les categories formatives (Escoleta, Premini, Mini, Preinfantil, Infantil, Cadet, Júnior) inscriuen a 75€.
-                La categoria Sènior té early bird a 85€ i preu regular a 90€.
+                * Preus de referència de la 3a edició (juny 2026), ja tancada: 75€ per a les categories
+                formatives (Escoleta, Premini, Mini, Preinfantil, Infantil, Cadet, Júnior) i 85-90€ per
+                a Sènior. El preu de la propera edició es confirmarà quan s&apos;obrin les inscripcions.
               </p>
             </section>
 
@@ -235,14 +236,15 @@ export default function QueEsBasquet3x3Page() {
               <p>
                 El <strong>Torneig 3×3 Westfield Glòries</strong> és la cita de bàsquet urbà
                 de referència a Barcelona. Organitzat per CB Grup Barna, Time Chamber i l&apos;Eix
-                Clot, arriba a la seva 3a edició el <strong>6 i 7 de juny de 2026</strong> amb
-                més de 10 categories i premi en metàl·lic per a la categoria Sènior.
+                Clot, va celebrar la seva 3a edició el <strong>6 i 7 de juny de 2026</strong> amb
+                un rècord de <strong>113 equips</strong> en 10 categories i premi en metàl·lic
+                paritari per a Sènior Masculí i Femení.
               </p>
               <p>
-                Tres seus en plena Barcelona: <strong>Westfield Glòries</strong> (Av. Diagonal 208),
-                <strong> La Nau del Clot</strong> (C/ Llacuna 172) i la <strong>Rambleta del Clot</strong>.
-                Una experiència de bàsquet urbà amb ambient de barri, música, públic i el millor
-                3×3 de la temporada.
+                Es va disputar en tres seus del mateix barri: <strong>Westfield Glòries</strong> (Av.
+                Diagonal 208), <strong>La Nau del Clot</strong> (C/ Llacuna 172) i la{" "}
+                <strong>Rambleta del Clot</strong>. Una experiència de bàsquet urbà amb ambient de
+                barri, música, públic i el millor 3×3 de la temporada.
               </p>
               <ul style={{ color: "#d4c9b8", lineHeight: 1.8, paddingLeft: 24 }}>
                 <li>
@@ -253,12 +255,12 @@ export default function QueEsBasquet3x3Page() {
                 <li>Samarreta oficial del torneig inclosa en la inscripció.</li>
                 <li>Accessible en transport públic: metro L1 Glòries, L1 Clot, tramvia i múltiples
                   línies de bus.</li>
-                <li>Places limitades — les inscripcions s&apos;obren per ordre d&apos;arribada.</li>
               </ul>
               <p>
                 Tant si ets un equip federat com si jugues entre amics, el 3×3 Westfield Glòries
                 és l&apos;oportunitat perfecta per viure el bàsquet d&apos;una altra manera. El format
-                és ràpid, espectacular i accessible per a tothom que vulgui competir.
+                és ràpid, espectacular i accessible per a tothom que vulgui competir — la propera
+                edició encara no té data confirmada.
               </p>
             </section>
 
@@ -312,18 +314,23 @@ export default function QueEsBasquet3x3Page() {
               }}
             >
               <p style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.12em", color: "#ff5b1f", textTransform: "uppercase", marginBottom: 8 }}>
-                6-7 juny 2026 · Westfield Glòries, Barcelona
+                6-7 juny 2026 · Ja celebrat · Westfield Glòries, Barcelona
               </p>
               <h2 style={{ fontSize: 28, fontWeight: 900, color: "#fff7ef", margin: "0 0 12px" }}>
-                Ja saps com funciona el 3×3.<br />Ara inscriu el teu equip.
+                Ja saps com funciona el 3×3.<br />Ara mira com va anar la 3a edició.
               </h2>
               <p style={{ color: "#c8b99a", fontSize: 15, marginBottom: 24 }}>
-                Des de 75 € · 10 categories · Premi 2.000 € Sènior · Places limitades
+                113 equips · 508 jugadors/es · 10 categories · 2.000 € en premi paritari
               </p>
               <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-                <Link href="/inscripcion" className="article-cta-btn">
-                  Inscriu el teu equip →
-                </Link>
+                <a
+                  href="https://cbgrupbarna.info/fotos-3x3/"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="article-cta-btn"
+                >
+                  📸 Veure fotos i resultats
+                </a>
                 <a
                   href={WA_REGISTER_URL}
                   target="_blank"

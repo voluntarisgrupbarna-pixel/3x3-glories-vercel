@@ -4,14 +4,14 @@ import Link from "next/link";
 import { WA_REGISTER_URL } from "../lib/whatsapp";
 
 export const metadata: Metadata = {
-  title: "3×3 Inclusiu Barcelona — Barna Màgics | Categoria inclusiva Westfield Glòries 2026",
+  title: "3×3 Inclusiu Barcelona — Barna Màgics | Categoria inclusiva 3×3 Westfield Glòries",
   description:
-    "Barna Màgics: la categoria inclusiva del 3×3 Westfield Glòries 2026. Esport adaptat i inclusiu a Barcelona, diumenge 7 de juny a la Rambleta del Clot. Oberta a tothom.",
+    "Barna Màgics: la categoria inclusiva del 3×3 Westfield Glòries. Esport adaptat a Barcelona — a la 3a edició (6-7 juny 2026) hi va competir amb trofeu propi a la Rambleta del Clot.",
   alternates: { canonical: "/3x3-inclusivo-barcelona-magics" },
   openGraph: {
-    title: "Barna Màgics — 3×3 Inclusiu Barcelona 2026 · Westfield Glòries",
+    title: "Barna Màgics — 3×3 Inclusiu Barcelona · Westfield Glòries",
     description:
-      "La categoria inclusiva del torneig 3×3 de Barcelona. Barna Màgics: esport, inclusió i comunitat. Diumenge 7 de juny 2026 a la Rambleta del Clot.",
+      "La categoria inclusiva del torneig 3×3 de Barcelona. Barna Màgics: esport, inclusió i comunitat. Va competir el 7 de juny de 2026 a la Rambleta del Clot.",
   },
 };
 
@@ -52,15 +52,15 @@ export default function MagicsPage() {
           />
           <div className="insc-hero-overlay" />
           <div className="insc-hero-body">
-            <span className="insc-hero-kicker">Diumenge 7 de Juny 2026 · Rambleta del Clot, Barcelona</span>
+            <span className="insc-hero-kicker">3a edició · 7 de Juny 2026 · Rambleta del Clot, Barcelona</span>
             <h1 className="insc-hero-title">Barna Màgics</h1>
             <p className="insc-hero-sub">
               La categoria inclusiva del 3×3 Westfield Glòries. Esport, diversitat i comunitat —
-              perquè el bàsquet és per a tothom. Novetat 2026.
+              perquè el bàsquet és per a tothom. Estrena a la 3a edició, 2026.
             </p>
             <div className="insc-hero-chips">
               <span>💙 Categoria inclusiva</span>
-              <span>✨ Novetat 2026</span>
+              <span>✨ Estrena 2026</span>
               <span>🌳 Rambleta del Clot</span>
               <span>♂ ♀ Mixta</span>
             </div>
@@ -82,25 +82,25 @@ export default function MagicsPage() {
               💙 Barna Màgics — Categoria INCLUSIVA
             </p>
             <p style={{ margin: 0, lineHeight: 1.7 }}>
-              El 3×3 Westfield Glòries 2026 incorpora per primera vegada una{" "}
-              <strong>categoria inclusiva</strong> anomenada <strong>Barna Màgics</strong>. És una
+              El 3×3 Westfield Glòries va incorporar per primera vegada, a la 3a edició de 2026, una{" "}
+              <strong>categoria inclusiva</strong> anomenada <strong>Barna Màgics</strong>. Va ser una
               competició adaptada, oberta a jugadors de totes les capacitats, gèneres i nivells.
-              L&apos;objectiu és que ningú quedi fora del 3×3.
+              L&apos;objectiu: que ningú quedi fora del 3×3.
             </p>
           </div>
 
-          <h2>Com funciona la categoria Màgics</h2>
+          <h2>Com va funcionar la categoria Màgics</h2>
           <ul>
-            <li>Categoria <strong>mixta</strong>: poden jugar persones de qualsevol gènere.</li>
-            <li>Format adaptat a les capacitats de cada equip — les regles s&apos;ajusten.</li>
-            <li>No cal experiència prèvia en competició.</li>
-            <li>Preu d&apos;inscripció: <strong>75€ per equip de 4 jugadors</strong>.</li>
-            <li>Inclou samarreta oficial i dorsal del torneig.</li>
+            <li>Categoria <strong>mixta</strong>: hi van poder jugar persones de qualsevol gènere.</li>
+            <li>Format adaptat a les capacitats de cada equip — les regles es van ajustar.</li>
+            <li>No calia experiència prèvia en competició.</li>
+            <li>Preu d&apos;inscripció de referència (2026): <strong>75€ per equip de 4 jugadors</strong>.</li>
+            <li>Incloïa samarreta oficial i dorsal del torneig.</li>
           </ul>
 
           <hr className="page-divider" />
 
-          <h2>On i quan</h2>
+          <h2>On i quan es va jugar</h2>
           <div
             style={{
               background: "rgba(249,115,22,0.08)",
@@ -114,7 +114,7 @@ export default function MagicsPage() {
               🔵 Diumenge 7 de juny · 11:00–13:00h
             </p>
             <p style={{ margin: 0 }}>
-              <strong>Rambleta del Clot</strong> — Pista exterior, ambient festiu, música i públic
+              <strong>Rambleta del Clot</strong> — pista exterior, ambient festiu, música i públic
               del barri. Rambla del Poblenou / Clot, Barcelona.
             </p>
             <p style={{ fontSize: "0.85rem", color: "rgba(255,247,239,0.55)", marginTop: "0.5rem" }}>
@@ -124,7 +124,7 @@ export default function MagicsPage() {
 
           <hr className="page-divider" />
 
-          <h2>Ja s&apos;hi apunten ✨</h2>
+          <h2>Qui hi va competir ✨</h2>
           <div
             style={{
               background: "linear-gradient(135deg, rgba(96,165,250,0.10) 0%, rgba(236,72,153,0.08) 100%)",
@@ -135,7 +135,7 @@ export default function MagicsPage() {
             }}
           >
             <p style={{ marginBottom: "0.75rem", color: "rgba(255,247,239,0.7)", fontSize: "0.9rem" }}>
-              Equips i entitats que ja han confirmat la seva participació a la categoria Màgics:
+              Equips i entitats que van participar a la primera edició de la categoria Màgics:
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
@@ -152,7 +152,7 @@ export default function MagicsPage() {
               </div>
             </div>
             <p style={{ marginTop: "1rem", fontSize: "0.85rem", color: "rgba(255,247,239,0.5)", margin: "1rem 0 0" }}>
-              Vols sumar el teu equip? Inscriu-te avui i forma part de la primera edició Màgics.
+              Vols que el teu equip hi sigui a la propera edició? Escriu-nos per WhatsApp i t&apos;avisem quan obrim el 2027.
             </p>
           </div>
 
@@ -160,9 +160,9 @@ export default function MagicsPage() {
 
           <h2>Premis</h2>
           <p>
-            Tots els equips participants a Barna Màgics reben{" "}
+            Tots els equips participants a Barna Màgics van rebre{" "}
             <strong>trofeus, medalles i premis dels comerços col·laboradors de l&apos;Eix Clot</strong>.
-            L&apos;objectiu és que tothom marxi amb un reconeixement del dia.
+            L&apos;objectiu va ser que tothom marxés amb un reconeixement del dia.
           </p>
           <p>
             Si ets una empresa o entitat que vol donar suport específic a la categoria Màgics, consulta
@@ -174,7 +174,9 @@ export default function MagicsPage() {
 
           <div style={{ textAlign: "center", padding: "1rem 0 2rem" }}>
             <a
-              href="/inscripcion"
+              href="https://cbgrupbarna.info/fotos-3x3/"
+              target="_blank"
+              rel="noreferrer noopener"
               style={{
                 display: "inline-block",
                 background: "#ec4899",
@@ -187,7 +189,7 @@ export default function MagicsPage() {
                 marginBottom: "1rem",
               }}
             >
-              💙 Inscriure&apos;s a la categoria Màgics
+              📸 Veure fotos i resultats
             </a>
             <br />
             <a href={CONTACT_LINK} target="_blank" rel="noreferrer noopener" style={{ fontSize: "0.9rem", color: "rgba(255,247,239,0.6)", textDecoration: "underline" }}>
@@ -201,7 +203,7 @@ export default function MagicsPage() {
           <p>
             Contacta&apos;ns per{" "}
             <a href={WA_REGISTER_URL} target="_blank" rel="noreferrer noopener" className="insc-link">WhatsApp</a>{" "}
-            i t&apos;expliquem com funciona la categoria Màgics i com inscriure el teu equip.
+            i t&apos;expliquem com va funcionar la categoria Màgics i quan obrirem la propera edició.
             Resposta en menys de 24h.
           </p>
         </main>

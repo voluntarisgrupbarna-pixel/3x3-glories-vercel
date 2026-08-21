@@ -4,14 +4,14 @@ import Link from "next/link";
 import { WA_REGISTER_URL } from "../lib/whatsapp";
 
 export const metadata: Metadata = {
-  title: "3×3 Femení Barcelona 2026 | Sènior Femení FIBA · 1.000€ premi",
+  title: "3×3 Femení Barcelona 2026 | Sènior Femení FIBA · 1.000€ premi · Ja celebrat",
   description:
-    "Torneig 3×3 femení a Barcelona 2026. Sènior Femení FIBA: 1.000€ de premi en metàl·lic + punts rànquing mundial. Categories Mini, Infantil, Cadet, Júnior, Sènior Amateur i Sènior Femení. 6-7 juny.",
+    "El torneig 3×3 femení de Barcelona ja s'ha celebrat: Sènior Femení FIBA amb 1.000€ de premi en metàl·lic + punts rànquing mundial, dins una edició amb 113 equips. Descobreix com va anar i la propera edició.",
   alternates: { canonical: "/torneo-3x3-femenino-barcelona" },
   openGraph: {
-    title: "3×3 Femení Barcelona 2026 — Sènior F FIBA + 1.000€ · Totes les categories",
+    title: "3×3 Femení Barcelona 2026 — Ja celebrat · Sènior F FIBA + 1.000€",
     description:
-      "Bàsquet 3×3 femení a Barcelona: des de Mini fins a Sènior Amateur i Sènior Pro. Premi equiparat 1.000€ Sènior Femení. 6-7 juny 2026 al Clot-Glòries.",
+      "Bàsquet 3×3 femení a Barcelona: des de Mini fins a Sènior Amateur i Sènior Pro. Premi equiparat 1.000€ Sènior Femení. Es va disputar el 6-7 de juny de 2026 al Clot-Glòries — fotos i resultats disponibles.",
   },
 };
 
@@ -58,11 +58,11 @@ export default function FemeniPage() {
           />
           <div className="insc-hero-overlay" />
           <div className="insc-hero-body">
-            <span className="insc-hero-kicker">6-7 Juny 2026 · Clot-Glòries, Barcelona</span>
+            <span className="insc-hero-kicker">6-7 Juny 2026 · Ja celebrat · Clot-Glòries, Barcelona</span>
             <h1 className="insc-hero-title">3×3 Femení Barcelona 2026</h1>
             <p className="insc-hero-sub">
               Premi equiparat, FIBA oficial i totes les categories — del torneig 3×3 de bàsquet
-              femení de referència a Barcelona.
+              femení de referència a Barcelona. La 3a edició va reunir un rècord de 113 equips.
             </p>
             <div className="insc-hero-chips">
               <span>🏆 1.000€ Sènior Femení</span>
@@ -78,7 +78,9 @@ export default function FemeniPage() {
             El 3×3 Westfield Glòries és un dels pocs torneigs de bàsquet 3×3 d&apos;Espanya amb{" "}
             <strong>premi en metàl·lic equiparat</strong> entre Sèniors Masculí i Sèniors Femení.{" "}
             <strong>1.000€ per a les Sèniors Femení</strong> i punts FIBA per al rànquing mundial
-            individual — perquè el bàsquet femení mereix el mateix reconeixement.
+            individual — perquè el bàsquet femení mereix el mateix reconeixement. La 3a edició
+            (6-7 de juny de 2026) es va tancar amb rècord de 113 equips inscrits i 508
+            jugadors/es en total.
           </p>
 
           <hr className="page-divider" />
@@ -104,7 +106,7 @@ export default function FemeniPage() {
 
           <hr className="page-divider" />
 
-          <h2>Horari categories femenines</h2>
+          <h2>Horari de la 3a edició (categories femenines)</h2>
           <div style={{ background: "rgba(249,115,22,0.08)", border: "1px solid rgba(249,115,22,0.2)", borderRadius: "12px", padding: "1.25rem", margin: "1rem 0" }}>
             <p style={{ fontWeight: 700, color: "#f97316", marginBottom: "0.5rem" }}>
               🟠 Dissabte 6 de juny — Sèniores i Sènior Amateur
@@ -129,7 +131,9 @@ export default function FemeniPage() {
 
           <div style={{ textAlign: "center", padding: "1rem 0 2rem" }}>
             <a
-              href="/inscripcion"
+              href="https://cbgrupbarna.info/fotos-3x3/"
+              target="_blank"
+              rel="noreferrer noopener"
               style={{
                 display: "inline-block",
                 background: "#f97316",
@@ -142,7 +146,7 @@ export default function FemeniPage() {
                 marginBottom: "1rem",
               }}
             >
-              🏀 Inscriu el teu equip femení
+              📸 Veure fotos i resultats
             </a>
             <br />
             <a href={CONTACT_LINK} target="_blank" rel="noreferrer noopener" style={{ fontSize: "0.9rem", color: "rgba(255,247,239,0.6)", textDecoration: "underline" }}>

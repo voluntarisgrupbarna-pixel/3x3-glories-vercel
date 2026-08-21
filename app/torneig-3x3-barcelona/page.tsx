@@ -5,9 +5,9 @@ import Image from "next/image";
 import { WA_REGISTER_URL } from "../lib/whatsapp";
 
 export const metadata: Metadata = {
-  title: "Torneig 3×3 Barcelona 2026 — Westfield Glòries · FIBA · 2.000€ premis",
+  title: "Torneig 3×3 Barcelona 2026 — Westfield Glòries · FIBA · 113 equips",
   description:
-    "Torneig 3×3 Barcelona 2026: bàsquet 3×3 FIBA al Clot-Glòries. 10 categories (Premini a Sènior Amateur), 2.000€ premi en metàl·lic Sèniors, punts FIBA. 6-7 Juny 2026. Inscriu-te des de 75€!",
+    "El Torneig 3×3 Barcelona 2026 ja s'ha celebrat al Clot-Glòries: rècord de 113 equips, 10 categories (Premini a Sènior Amateur), 2.000€ de premi paritari, punts FIBA. Veure fotos i resultats — ens veiem el 2027.",
   alternates: {
     canonical: "/torneig-3x3-barcelona",
     languages: {
@@ -17,9 +17,9 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Torneig 3×3 Barcelona 2026 — Westfield Glòries · FIBA",
+    title: "Torneig 3×3 Barcelona 2026 — Westfield Glòries · FIBA · Ja celebrat",
     description:
-      "El torneig 3×3 FIBA de Barcelona: 10 categories, 2.000€ premi, 3 seus al Clot-Glòries. 6-7 juny 2026. Inscripció des de 75€.",
+      "El torneig 3×3 FIBA de Barcelona ja s'ha celebrat: rècord de 113 equips, 10 categories, 2.000€ de premi paritari, 3 seus al Clot-Glòries. Veure fotos i resultats.",
   },
 };
 
@@ -31,7 +31,7 @@ const jsonLd = {
   name: "Torneig 3×3 Barcelona 2026",
   alternateName: ["Torneig 3×3 Barcelona", "Torneig 3x3 Barna 2026", "3×3 Barcelona 2026", "3x3 Barna"],
   description:
-    "Torneig de bàsquet 3×3 FIBA a Barcelona — 10 categories de Premini a Sènior Amateur, 3 seus al barri del Clot-Glòries, 2.000€ de premi Sèniors M/F, punts rànquing mundial FIBA. 3a edició, 6-7 juny 2026.",
+    "Torneig de bàsquet 3×3 FIBA a Barcelona — 10 categories de Premini a Sènior Amateur, 3 seus al barri del Clot-Glòries, 2.000€ de premi paritari Sèniors M/F, punts rànquing mundial FIBA. 3a edició, celebrada el 6-7 juny 2026 amb rècord de 113 equips.",
   startDate: "2026-06-06T09:00:00+02:00",
   endDate: "2026-06-07T20:00:00+02:00",
   eventStatus: "https://schema.org/EventScheduled",
@@ -51,7 +51,16 @@ const jsonLd = {
     geo: { "@type": "GeoCoordinates", latitude: 41.4048, longitude: 2.1896 },
   },
   organizer: { "@type": "SportsOrganization", name: "CB Grup Barna", url: "https://cbgrupbarna.com" },
-  offers: { "@type": "AggregateOffer", lowPrice: "75", highPrice: "105", priceCurrency: "EUR", url: `${SITE_URL}/inscripcion`, availability: "https://schema.org/InStock" },
+  offers: {
+    "@type": "AggregateOffer",
+    lowPrice: "75",
+    highPrice: "105",
+    priceCurrency: "EUR",
+    url: `${SITE_URL}/inscripcion`,
+    availability: "https://schema.org/SoldOut",
+    validFrom: "2026-04-01T00:00:00+02:00",
+    validThrough: "2026-06-05T23:59:59+02:00",
+  },
 };
 
 const jsonLdBreadcrumb = {
@@ -85,14 +94,14 @@ export default function TorneigPage() {
             className="insc-hero-img" style={{ objectFit: "cover", objectPosition: "center 30%" }} />
           <div className="insc-hero-overlay" />
           <div className="insc-hero-body">
-            <span className="insc-hero-kicker">3a edició · 6-7 Juny 2026 · Clot-Glòries, Barcelona</span>
+            <span className="insc-hero-kicker">3a edició · Celebrada el 6-7 Juny 2026 · Clot-Glòries, Barcelona</span>
             <h1 className="insc-hero-title">Torneig 3×3 Barcelona 2026</h1>
             <p className="insc-hero-sub">
-              El torneig de bàsquet 3×3 FIBA de Barcelona. 10 categories, 3 seus al Clot-Glòries i 2.000€ de premi en metàl·lic per als Sèniors.
+              El torneig de bàsquet 3×3 FIBA de Barcelona. Rècord de 113 equips, 10 categories, 3 seus al Clot-Glòries i 2.000€ de premi en metàl·lic paritari per als Sèniors.
             </p>
             <div className="insc-hero-chips">
-              <span>🔥 Early Bird −10%</span>
-              <span>🏀 Des de 75€</span>
+              <span>🏆 113 equips · rècord</span>
+              <span>⚖️ 2.000€ premi paritari</span>
               <span>🔴 FIBA · Punts rànquing</span>
               <span>📍 Clot-Glòries</span>
             </div>
@@ -106,18 +115,20 @@ export default function TorneigPage() {
             El <strong>Torneig 3×3 Barcelona</strong> és el nom amb el qual es coneix popularment el{" "}
             <strong>3×3 Westfield Glòries</strong>, l&apos;esdeveniment de bàsquet urbà organitzat anualment per{" "}
             <strong>CB Grup Barna</strong>, <strong>Time Chamber</strong> i <strong>Eix Clot</strong> al barri del
-            Clot-Glòries. La 3a edició es celebra el <strong>6 i 7 de juny de 2026</strong>.
+            Clot-Glòries. La 3a edició es va celebrar el <strong>6 i 7 de juny de 2026</strong>, amb un rècord de{" "}
+            <strong>113 equips</strong> i uns 508 jugadors i jugadores.
           </p>
           <p>
-            És l&apos;únic torneig 3×3 amb punts FIBA oficials a la ciutat de Barcelona el 2026. Els jugadors Sèniors
-            competeixen pel <strong>rànquing mundial individual FIBA 3×3</strong> i s&apos;enfronten per un{" "}
-            <strong>premi en metàl·lic de 2.000€</strong> (1.000€ Sèniors Masculí + 1.000€ Sèniors Femení).
+            Va ser l&apos;únic torneig 3×3 amb punts FIBA oficials a la ciutat de Barcelona el 2026. Els jugadors Sèniors
+            van competir pel <strong>rànquing mundial individual FIBA 3×3</strong> i es van disputar, per primer cop,{" "}
+            un <strong>premi en metàl·lic paritari de 2.000€</strong> (1.000€ Sèniors Masculí + 1.000€ Sèniors Femení).
+            La propera edició, el 2027, encara no té data confirmada.
           </p>
 
           <hr className="page-divider" />
 
           <h2>Categories del Torneig 3×3 Barcelona</h2>
-          <p>10 categories per edat i gènere, del Premini (8 anys) al Sènior Amateur (+38 anys):</p>
+          <p>10 categories per edat i gènere, del Premini (8 anys) al Sènior Amateur (+38 anys), van competir a l&apos;edició 2026:</p>
 
           <div className="insc-cat-grid">
             {[
@@ -143,30 +154,30 @@ export default function TorneigPage() {
           </div>
 
           <div style={{ textAlign: "center", padding: "1.5rem 0 2rem" }}>
-            <Link href="/inscripcion" style={{
+            <a href="https://cbgrupbarna.info/fotos-3x3/" target="_blank" rel="noreferrer noopener" style={{
               display: "inline-block",
               background: "linear-gradient(135deg, #ff5b1f, #ff2563)",
               color: "#fff", fontWeight: 800, fontSize: "1.05rem",
               padding: "0.9rem 2.5rem", borderRadius: "50px", textDecoration: "none",
             }}>
-              🏀 Inscriu el teu equip al Torneig 3×3 Barcelona
-            </Link>
+              📸 Veure fotos i resultats del Torneig 3×3 Barcelona
+            </a>
             <br />
             <a href={CONTACT_LINK} target="_blank" rel="noreferrer noopener"
               style={{ fontSize: "0.9rem", color: "rgba(255,247,239,0.6)", textDecoration: "underline", marginTop: 8, display: "inline-block" }}>
-              Pregunta per WhatsApp →
+              Contacta&apos;ns per WhatsApp →
             </a>
           </div>
 
           <hr className="page-divider" />
 
-          <h2>Com funciona el Torneig 3×3 Barcelona?</h2>
+          <h2>Com va funcionar el Torneig 3×3 Barcelona 2026?</h2>
           <ul>
             <li><strong>Format FIBA 3×3</strong>: fases de grups + eliminatòria directa. 3 titulars + fins a 2 suplents per equip.</li>
             <li><strong>Durada dels partits</strong>: 10 minuts o primer equip que arriba a 21 punts.</li>
             <li><strong>Dissabte 6 de juny</strong>: Sèniors M/F (Nau del Clot + Finals Westfield), Sènior Amateur M/F (Rambleta del Clot) i Escoleta (Nau del Clot).</li>
             <li><strong>Diumenge 7 de juny</strong>: Barna Màgics (Rambleta del Clot), Premini, Mini, Infantil, Cadet, Júnior, Sub-23 (Nau del Clot).</li>
-            <li>Arbitratge oficial FIBA. No cal ser federat per participar.</li>
+            <li>Arbitratge oficial FIBA. No calia ser federat per participar.</li>
           </ul>
 
           <hr className="page-divider" />
@@ -174,7 +185,7 @@ export default function TorneigPage() {
           <h2>Pages relacionades</h2>
           <ul>
             <li><Link href="/3x3-barna" className="insc-link">3×3 Barna 2026</Link> — la pàgina del torneig per als barcelonins</li>
-            <li><Link href="/inscripcion" className="insc-link">Inscripció d&apos;equip</Link> — formulari online en 5 passos</li>
+            <li><a href="https://cbgrupbarna.info/fotos-3x3/" target="_blank" rel="noreferrer noopener" className="insc-link">Fotos i resultats 2026</a> — les 377 fotos oficials del torneig</li>
             <li><Link href="/torneo-3x3-senior-fiba-barcelona" className="insc-link">3×3 Sènior FIBA Barcelona</Link></li>
             <li><Link href="/torneo-3x3-femenino-barcelona" className="insc-link">3×3 Femení Barcelona</Link></li>
             <li><Link href="/torneo-3x3-veteranos-barcelona" className="insc-link">3×3 Sènior Amateur Barcelona</Link></li>

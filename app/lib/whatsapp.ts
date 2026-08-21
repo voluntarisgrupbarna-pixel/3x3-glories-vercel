@@ -6,35 +6,18 @@
 export const WA_PHONE = "34698425153";
 
 /**
- * Missatge pre-omplert per a inscripció directa via WhatsApp.
- * L'usuari obre WhatsApp, veu la plantilla i l'omple.
- * En enviar-la, Ana rep el número + totes les dades de l'equip.
+ * Missatge pre-omplert per al botó general de contacte per WhatsApp.
+ * La 3a edició (6-7 juny 2026) ja s'ha celebrat i les inscripcions estan
+ * tancades: aquest botó ja NO ha de demanar dades d'equip ni justificant
+ * de pagament, només obrir la conversa perquè el club respongui.
  */
-const REGISTER_TEMPLATE = `Hola Ana! 👋 Vull inscriure el meu equip al 3×3 Westfield Glòries 2026 (6-7 juny).
+const CONTACT_TEMPLATE = `Hola! 👋 Us escric sobre el 3×3 Westfield Glòries.
 
-🏀 NOM EQUIP:
-📂 CATEGORIA: (Sènior Amateur / Sènior Masc / Sènior Fem / Cadet Masc / Cadet Fem / Mini / Màgics)
-👤 CAPITÀ/ANA:
-   Nom i cognoms:
-   Telèfon:
-   Email:
-   Talla samarreta: (XS/S/M/L/XL/XXL)
+La 3a edició (6-7 juny 2026) ja s'ha celebrat. Voldria saber:`;
 
-👥 JUGADORS (nom + any naix. + talla):
-1.
-2.
-3.
-4. (opcional)
-
-💳 PAGAMENT:
-He fet transferència de ___ € a:
-IBAN: ES25 0182 1797 3002 0387 8558
-Titular: GRUP BARNA
-Concepte: [NOM EQUIP] 3X3`;
-
-/** URL wa.me per obrir WhatsApp amb la plantilla d'inscripció pre-omplerta */
+/** URL wa.me per obrir WhatsApp amb el missatge de contacte pre-omplert */
 export const WA_REGISTER_URL =
-  `https://wa.me/${WA_PHONE}?text=${encodeURIComponent(REGISTER_TEMPLATE)}`;
+  `https://wa.me/${WA_PHONE}?text=${encodeURIComponent(CONTACT_TEMPLATE)}`;
 
 /**
  * Pàgina de pre-registre: recull dades de l'equip, guarda a Sheets
@@ -52,9 +35,9 @@ export const WA_REGISTRE_URL = "/wa-registre";
 /** URL wa.me per compartir el torneig (sense destí — broadcast) */
 export function buildShareWaUrl() {
   const text = [
-    "🏀 Juga el 3x3 a Westfield Glòries!",
-    "CB Grup Barna organitza el torneig de bàsquet 3x3 urbà el 6-7 de juny.",
-    "Inscriu el teu equip 👉 https://www.cbgrupbarna-3x3timechamber.com",
+    "🏀 3×3 Westfield Glòries — Barcelona",
+    "CB Grup Barna, Time Chamber i Eix Clot van organitzar el torneig de bàsquet 3x3 urbà: 113 equips, rècord de l'edició 2026.",
+    "Fotos i resultats 👉 https://www.cbgrupbarna-3x3timechamber.com",
   ].join("\n");
   return `https://wa.me/?text=${encodeURIComponent(text)}`;
 }

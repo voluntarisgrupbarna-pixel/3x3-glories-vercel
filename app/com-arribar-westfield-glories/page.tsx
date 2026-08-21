@@ -4,14 +4,14 @@ import Link from "next/link";
 import { WA_REGISTER_URL } from "../lib/whatsapp";
 
 export const metadata: Metadata = {
-  title: "Com arribar al 3×3 Westfield Glòries 2026 | Metro, Bus i Parking Barcelona",
+  title: "Com arribar a Westfield Glòries | Metro, Bus i Parking Barcelona · 3×3 Glòries",
   description:
-    "Com arribar al Torneig 3×3 Westfield Glòries 2026 de Barcelona: metro L1 i L2, autobús, Bicing i parking. Les 3 seus: Westfield Glòries, La Nau del Clot i Rambleta del Clot.",
+    "Com arribar a Westfield Glòries i al barri del Clot-Glòries de Barcelona: metro L1 i L2, autobús, Bicing i parking. Guia de transport, útil per a properes visites i edicions del 3×3.",
   alternates: { canonical: "/com-arribar-westfield-glories" },
   openGraph: {
-    title: "Com arribar al 3×3 Westfield Glòries 2026 | Metro, Bus i Parking Barcelona",
+    title: "Com arribar a Westfield Glòries | Metro, Bus i Parking Barcelona",
     description:
-      "Metro, bus, bici i parking per arribar al Torneig 3×3 Westfield Glòries 2026. 3 seus al barri del Clot-Glòries de Barcelona.",
+      "Metro, bus, bici i parking per arribar a Westfield Glòries i al barri del Clot-Glòries de Barcelona.",
   },
 };
 
@@ -105,15 +105,16 @@ export default function ComArribarWestfieldGloriesPage() {
             {/* Hero */}
             <div className="article-hero">
               <p style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.12em", color: "#ff5b1f", textTransform: "uppercase", marginBottom: 12 }}>
-                6-7 juny 2026 · Barri Clot-Glòries, Barcelona
+                Barri Clot-Glòries, Barcelona
               </p>
               <h1 className="article-h1">
-                Com arribar al Torneig 3×3 Westfield Glòries 2026
+                Com arribar a Westfield Glòries
               </h1>
               <p style={{ color: "#c8b99a", fontSize: "clamp(15px, 2.5vw, 18px)", maxWidth: 600, margin: "0 auto 28px" }}>
-                El torneig se celebra al barri del Clot-Glòries de Barcelona, molt ben connectat
-                en transport públic. Les 3 seus es troben a menys de 10 minuts a peu des de
-                les estacions de metro i tramvia.
+                El 3×3 Westfield Glòries es va celebrar al barri del Clot-Glòries de Barcelona,
+                molt ben connectat en transport públic. Les 3 seus es troben a menys de 10 minuts
+                a peu des de les estacions de metro i tramvia — informació útil per a properes
+                visites a la zona i per a la propera edició del torneig.
               </p>
             </div>
 
@@ -121,7 +122,7 @@ export default function ComArribarWestfieldGloriesPage() {
             <section className="article-section">
               <h2 className="article-h2">Les 3 seus del torneig</h2>
               <p>
-                El 3×3 Westfield Glòries 2026 reparteix les categories entre tres espais
+                El 3×3 Westfield Glòries va repartir les categories entre tres espais
                 emblemàtics del barri:
               </p>
               <div style={{ display: "flex", flexDirection: "column", gap: 16, marginTop: 20 }}>
@@ -263,7 +264,7 @@ export default function ComArribarWestfieldGloriesPage() {
                 <p style={{ color: "#c8b99a", margin: 0, fontSize: 14, lineHeight: 1.7 }}>
                   El parking del Westfield Glòries ofereix 2 hores gratuïtes de pàrquing als clients
                   del centre comercial. Accés per Av. Diagonal 208. Capacitat per a més de 2.500 vehicles.
-                  Tanmateix, el dia del torneig s&apos;esperen altes afluències — es recomana arribar
+                  En dies d&apos;alta afluència (com durant el torneig) es recomana arribar
                   en transport públic per comoditat.
                 </p>
               </div>
@@ -294,18 +295,23 @@ export default function ComArribarWestfieldGloriesPage() {
               }}
             >
               <p style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.12em", color: "#ff5b1f", textTransform: "uppercase", marginBottom: 8 }}>
-                6-7 juny 2026 · Westfield Glòries, Barcelona
+                3a edició · 6-7 juny 2026 · Westfield Glòries, Barcelona
               </p>
               <h2 style={{ fontSize: 26, fontWeight: 900, color: "#fff7ef", margin: "0 0 12px" }}>
-                Ja saps com arribar.<br />Ara inscriu el teu equip.
+                Ja saps com arribar-hi.<br />Descobreix com va anar la 3a edició.
               </h2>
               <p style={{ color: "#c8b99a", fontSize: 15, marginBottom: 24 }}>
-                Des de 75 € · 10 categories · Premi 2.000 € Sènior
+                113 equips · 10 categories · 2.000 € de premi paritari
               </p>
               <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-                <Link href="/inscripcion" className="article-cta-btn">
-                  Inscriu el teu equip →
-                </Link>
+                <a
+                  href="https://cbgrupbarna.info/fotos-3x3/"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="article-cta-btn"
+                >
+                  📸 Veure fotos i resultats
+                </a>
                 <a
                   href={WA_REGISTER_URL}
                   target="_blank"

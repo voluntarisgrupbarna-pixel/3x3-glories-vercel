@@ -7,16 +7,16 @@ import { WA_REGISTER_URL } from "../lib/whatsapp";
 const SITE_URL = "https://www.cbgrupbarna-3x3timechamber.com";
 
 export const metadata: Metadata = {
-  title: "Inscriu el teu equip — 3×3 Westfield Glòries 2026 · Des de 75€",
+  title: "Inscripcions tancades — 3×3 Westfield Glòries · Ja celebrat",
   description:
-    "Places limitades. Des de 75€/equip. 11 categories de Escoleta a Sènior FIBA. Confirma en menys de 24h. 6-7 juny 2026 · Westfield Glòries, Barcelona.",
+    "La 3a edició del 3×3 Westfield Glòries (6-7 juny 2026) ja s'ha celebrat, amb un rècord de 113 equips. Veure fotos i resultats, o avisar-nos per a la propera edició.",
   alternates: {
     canonical: "/inscripcion",
   },
   openGraph: {
-    title: "Inscripció — 3×3 Westfield Glòries 2026 · Des de 75€",
+    title: "Inscripcions tancades — 3×3 Westfield Glòries",
     description:
-      "Places al 64%. Des de 75€ per equip. 11 categories, punts FIBA Sèniors, 2.000€ de premi. Inscripció en 10 min · Confirmació en 24h.",
+      "La 3a edició ja s'ha celebrat: 113 equips (rècord), 2.000€ de premi paritari. Veure fotos i resultats de l'edició 2026.",
   },
 };
 

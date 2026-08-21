@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { WA_REGISTER_URL } from "../lib/whatsapp";
 
 export const metadata: Metadata = {
   title: "Equip organitzador | 3×3 Westfield Glòries 2026",
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Equip organitzador — 3×3 Westfield Glòries 2026",
     description:
-      "CB Grup Barna, Time Chamber i Eix Clot. Organitzadors del torneig 3×3 de Barcelona des de 2023.",
+      "CB Grup Barna, Time Chamber i Eix Clot. Organitzadors del torneig 3×3 de Barcelona des de 2024.",
   },
 };
 
@@ -32,8 +33,8 @@ export default function EquipPage() {
         <p>
           El <strong>3×3 Westfield Glòries</strong> és una iniciativa conjunta de tres entitats del barri
           del Clot-Glòries de Barcelona: <strong>CB Grup Barna</strong>, <strong>Time Chamber</strong> i{" "}
-          <strong>Eix Clot</strong>. La 3a edició del torneig oficial de bàsquet 3×3 FIBA se celebra el 6 i
-          7 de juny de 2026.
+          <strong>Eix Clot</strong>. La 3a edició del torneig oficial de bàsquet 3×3 FIBA es va disputar el 6
+          i 7 de juny de 2026, amb un rècord de 113 equips inscrits.
         </p>
 
         <div className="page-card-grid" style={{ marginTop: 32 }}>
@@ -70,17 +71,17 @@ export default function EquipPage() {
           les edats al barri del Clot-Glòries, amb seu a La Nau del Clot (Carrer de la Llacuna 172).
         </p>
         <p>
-          El CB Grup Barna és l'organitzador principal del 3×3 Westfield Glòries, que ja va per la seva 4a
-          edició amb més de 100 equips participants i jugadors de tot Catalunya i la península.
+          El CB Grup Barna és l&apos;organitzador principal del 3×3 Westfield Glòries, que a la seva 3a
+          edició (2026) va reunir un rècord de 113 equips participants i uns 508 jugadors i jugadores de
+          Catalunya.
         </p>
 
         <h2>Historia del torneig</h2>
         <div className="page-card-grid">
           {[
-            { any: "2023", ed: "1a edició", nota: "Torneig pilot al barri del Clot" },
-            { any: "2024", ed: "2a edició", nota: "Incorporació de punts FIBA" },
-            { any: "2025", ed: "3a edició", nota: "3 seus · 2.000 € premi en metàl·lic" },
-            { any: "2026", ed: "3a edició", nota: "6-7 juny · Westfield Glòries" },
+            { any: "2024", ed: "1a edició", nota: "80 equips · torneig pilot al barri del Clot" },
+            { any: "2025", ed: "2a edició", nota: "100 equips · incorporació de punts FIBA" },
+            { any: "2026", ed: "3a edició", nota: "113 equips (rècord) · 2.000 € de premi paritari" },
           ].map((item) => (
             <div key={item.any} className="page-card">
               <span className="page-card-label">{item.any}</span>
@@ -100,23 +101,29 @@ export default function EquipPage() {
           Contacta amb nosaltres →
         </Link>
         <span style={{ display: "inline-block", width: 16 }} />
-        <Link href="/inscripcion" className="page-cta-secondary">
-          Inscriu l'equip
-        </Link>
+        <a
+          href="https://cbgrupbarna.info/fotos-3x3/"
+          target="_blank"
+          rel="noreferrer noopener"
+          className="page-cta-secondary"
+        >
+          Veure fotos i resultats
+        </a>
 
         <div style={{ marginTop: 48, padding: "28px", border: "1px solid rgba(255,55,95,0.22)", borderRadius: 10, background: "rgba(255,55,95,0.05)" }}>
           <p style={{ margin: "0 0 6px", fontSize: 12, fontWeight: 900, letterSpacing: "0.14em", textTransform: "uppercase", color: "#ff375f" }}>
             Repte obert
           </p>
           <strong style={{ display: "block", fontSize: 20, color: "#fff7ef", marginBottom: 8 }}>
-            Creus que pots guanyar-nos?
+            Vols competir a la propera edició?
           </strong>
           <p style={{ margin: "0 0 20px", fontSize: 15, color: "rgba(255,247,239,0.7)", lineHeight: 1.6 }}>
-            Inscriu el teu equip al 3×3 Westfield Glòries 2026 i demostra-ho a la pista.
+            Les inscripcions de la 3a edició ja estan tancades. Escriu-nos per WhatsApp i t&apos;avisem quan
+            obrim el 3×3 Barna 2027.
           </p>
-          <Link href="/inscripcion" className="page-cta" style={{ marginTop: 0 }}>
-            Desafia'ns al 3×3 →
-          </Link>
+          <a href={WA_REGISTER_URL} target="_blank" rel="noreferrer noopener" className="page-cta" style={{ marginTop: 0 }}>
+            Contacta&apos;ns per WhatsApp →
+          </a>
         </div>
       </main>
     </div>

@@ -2,16 +2,17 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import Link from "next/link";
 import { WA_REGISTER_URL } from "../lib/whatsapp";
+import RegistrationClosedNotice from "../components/RegistrationClosedNotice";
 
 export const metadata: Metadata = {
-  title: "Cómo inscribir un equipo en el Torneo 3x3 Barcelona 2026 | Guia pas a pas",
+  title: "Cómo se inscribían los equipos en el Torneo 3x3 Barcelona | Guia de referència",
   description:
-    "Guia pas a pas per inscriure el teu equip al Torneig 3×3 Westfield Glòries Barcelona 2026. Requisits, preus, formulari i preguntes freqüents de la inscripció.",
+    "Les inscripcions del 3×3 Westfield Glòries 2026 ja estan tancades (torneig celebrat el 6-7 de juny, amb 113 equips). Aquí tens com funcionava el procés, de referència per a la propera edició.",
   alternates: { canonical: "/com-inscriure-equip-3x3" },
   openGraph: {
-    title: "Cómo inscribir un equipo en el Torneo 3x3 Barcelona 2026",
+    title: "Cómo se inscribían los equipos en el Torneo 3x3 Barcelona",
     description:
-      "Pas a pas per inscriure el teu equip al 3×3 Westfield Glòries 2026. Des de 75€. Formulari en 5 minuts.",
+      "Inscripcions tancades — la 3a edició ja es va celebrar. Guia de referència del procés d'inscripció i com apuntar-te a la llista d'avís del 2027.",
   },
 };
 
@@ -20,9 +21,9 @@ const SITE_URL = "https://www.cbgrupbarna-3x3timechamber.com";
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "HowTo",
-  name: "Cómo inscribir un equipo en el Torneo 3x3 Westfield Glòries Barcelona 2026",
+  name: "Com funcionava la inscripció d'equips al Torneig 3x3 Westfield Glòries Barcelona (edició 2026)",
   description:
-    "Guia en 5 passos per inscriure el teu equip de bàsquet 3x3 al Torneig Westfield Glòries 2026 de Barcelona.",
+    "Guia de referència en 5 passos de com es van inscriure els equips de bàsquet 3x3 a la 3a edició (juny 2026) del Torneig Westfield Glòries de Barcelona. Les inscripcions d'aquesta edició ja estan tancades.",
   url: `${SITE_URL}/com-inscriure-equip-3x3`,
   totalTime: "PT5M",
   tool: [
@@ -34,32 +35,31 @@ const jsonLd = {
       "@type": "HowToStep",
       position: 1,
       name: "Omplir les dades de l'equip",
-      text: "Accedeix al formulari d'inscripció i introdueix el nom de l'equip, la categoria i les dades de contacte del capità o responsable.",
-      url: `${SITE_URL}/inscripcion`,
+      text: "S'accedia al formulari d'inscripció i s'hi introduïen el nom de l'equip, la categoria i les dades de contacte del capità o responsable.",
     },
     {
       "@type": "HowToStep",
       position: 2,
       name: "Triar el paquet d'inscripció",
-      text: "Selecciona la mida de l'equip (4 o 5 jugadors) i el paquet corresponent. Categories formatives: 75€. Sènior early bird: 85€. Sènior regular: 90€.",
+      text: "Es triava la mida de l'equip (4 o 5 jugadors) i el paquet corresponent. Categories formatives: 75€. Sènior early bird: 85€. Sènior regular: 90€.",
     },
     {
       "@type": "HowToStep",
       position: 3,
       name: "Realitzar el pagament i pujar el comprovant",
-      text: "Fes la transferència o pagament per Bizum i puja el comprovant directament al formulari. La plaça es reserva quan es confirma el pagament.",
+      text: "Es feia la transferència o pagament per Bizum i es pujava el comprovant al formulari. La plaça es reservava quan es confirmava el pagament.",
     },
     {
       "@type": "HowToStep",
       position: 4,
       name: "Introduir les dades dels jugadors",
-      text: "Afegeix el nom, cognoms, DNI/NIE i data de naixement de cada jugador. En categories formatives, cal indicar el tutors legals dels menors.",
+      text: "S'afegien el nom, cognoms, DNI/NIE i data de naixement de cada jugador. En categories formatives, calia indicar el tutor legal dels menors.",
     },
     {
       "@type": "HowToStep",
       position: 5,
       name: "Confirmació i acreditació",
-      text: "Rebràs un email de confirmació amb tots els detalls. El dia del torneig, presenta't al punt d'acreditació 30 minuts abans del teu primer partit.",
+      text: "S'enviava un email de confirmació amb tots els detalls. El dia del torneig, cada equip es presentava al punt d'acreditació 30 minuts abans del seu primer partit.",
     },
   ],
 };
@@ -86,95 +86,101 @@ export default function ComInscriureEquip3x3Page() {
             {/* Hero */}
             <div className="article-hero">
               <p style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.12em", color: "#ff5b1f", textTransform: "uppercase", marginBottom: 12 }}>
-                Inscripcions obertes · 3×3 Westfield Glòries 2026
+                Inscripcions tancades · 3a edició ja celebrada
               </p>
               <h1 className="article-h1">
-                Cómo inscribir tu equipo en el 3×3 Westfield Glòries 2026
+                Com es van inscriure els equips al 3×3 Westfield Glòries 2026
               </h1>
               <p style={{ color: "#c8b99a", fontSize: "clamp(15px, 2.5vw, 18px)", maxWidth: 600, margin: "0 auto 28px" }}>
-                El procés d&apos;inscripció és senzill i es fa completament en línia. En menys de
-                5 minuts podràs reservar la plaça del teu equip al Torneig 3×3 Westfield Glòries
-                2026 de Barcelona.
+                Les inscripcions del <strong>3×3 Westfield Glòries 2026</strong> ja estan tancades:
+                el torneig es va celebrar el 6 i 7 de juny de 2026 amb un rècord de{" "}
+                <strong>113 equips</strong>. Aquí tens, de referència, com funcionava el procés —
+                probablement s&apos;assemblarà al de la propera edició.
               </p>
               <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-                <Link href="/inscripcion" className="page-cta-btn">
-                  Inscriu el teu equip ara →
-                </Link>
+                <a href="https://cbgrupbarna.info/fotos-3x3/" target="_blank" rel="noreferrer noopener" className="page-cta-btn">
+                  📸 Veure fotos i resultats
+                </a>
                 <Link href="/que-es-basquet-3x3" className="page-cta-btn-ghost">
                   Saber més sobre el 3×3
                 </Link>
               </div>
             </div>
 
+            <RegistrationClosedNotice
+              title="Inscripcions tancades"
+              body="El 3×3 Westfield Glòries 2026 (6-7 juny), amb 113 equips i 508 jugadors/es, ja s'ha celebrat. Deixa'ns el teu contacte o escriu-nos per WhatsApp i t'avisem quan obrim les inscripcions del 2027."
+            />
+
             {/* Secció 1: Requisits */}
             <section className="article-section">
-              <h2 className="article-h2">Requisits per inscriure&apos;s</h2>
+              <h2 className="article-h2">Així eren els requisits per inscriure&apos;s (edició 2026)</h2>
               <p>
-                Qualsevol persona pot participar al Torneig 3×3 Westfield Glòries 2026, tant si
-                ets jugador federat com si jugues a bàsquet de forma recreativa. Els requisits
-                bàsics són:
+                Qualsevol persona podia participar al Torneig 3×3 Westfield Glòries 2026, tant si
+                era jugador federat com si jugava a bàsquet de forma recreativa. Els requisits
+                bàsics eren:
               </p>
               <ul style={{ color: "#d4c9b8", lineHeight: 1.8, paddingLeft: 24 }}>
                 <li>
-                  <strong>Equip de mínim 3 jugadors</strong> (màxim 5). Cada equip ha de tenir
+                  <strong>Equip de mínim 3 jugadors</strong> (màxim 5). Cada equip havia de tenir
                   almenys 3 jugadors per poder disputar partits.
                 </li>
                 <li>
-                  <strong>Edat corresponent a la categoria.</strong> Consulta la taula de categories
-                  per verificar que tots els jugadors compleixen els requisits d&apos;edat.
+                  <strong>Edat corresponent a la categoria.</strong> La taula de categories servia
+                  per verificar que tots els jugadors complien els requisits d&apos;edat.
                 </li>
                 <li>
-                  <strong>DNI/NIE o passaport vigent</strong> per a tots els jugadors. Es demanarà
-                  en el formulari i es podrà verificar el dia del torneig.
+                  <strong>DNI/NIE o passaport vigent</strong> per a tots els jugadors, verificable
+                  el dia del torneig.
                 </li>
                 <li>
-                  <strong>En categories formatives (fins a Júnior):</strong> és necessari el
-                  consentiment del tutor legal per a jugadors menors d&apos;edat.
+                  <strong>En categories formatives (fins a Júnior):</strong> calia el
+                  consentiment del tutor legal per als jugadors menors d&apos;edat.
                 </li>
                 <li>
                   <strong>Pagament complet</strong> de la inscripció abans de la data límit. La
-                  plaça es confirma quan es verifica el pagament.
+                  plaça es confirmava quan es verificava el pagament.
                 </li>
               </ul>
               <p>
-                No cal ser soci ni federat del CB Grup Barna. El torneig és obert a tothom.
-                Equips d&apos;altres clubs, grups d&apos;amics i equips mixtos benvinguts.
+                No calia ser soci ni federat del CB Grup Barna: el torneig era obert a tothom,
+                amb equips d&apos;altres clubs, grups d&apos;amics i equips mixtos.
               </p>
             </section>
 
             {/* Secció 2: Passos del formulari */}
             <section className="article-section">
-              <h2 className="article-h2">Passos del formulari (5 minuts)</h2>
+              <h2 className="article-h2">Així funcionava el procés d&apos;inscripció (5 minuts)</h2>
               <p>
-                El formulari d&apos;inscripció és completament en línia. Aquí tens el detall de
-                cada pas:
+                El formulari d&apos;inscripció era completament en línia. Aquí tens el detall de
+                cada pas, de referència per a la propera edició:
               </p>
               <div style={{ display: "flex", flexDirection: "column", gap: 16, marginTop: 20 }}>
                 {[
                   {
                     num: "01",
                     titol: "Dades de l'equip",
-                    desc: "Introdueix el nom de l'equip, la categoria i les dades de contacte del capità o responsable de l'equip. Guarda bé el teu email, ja que t'enviarem tota la informació aquí.",
+                    desc: "Es demanava el nom de l'equip, la categoria i les dades de contacte del capità o responsable de l'equip, ja que tota la informació s'enviava a aquest email.",
                   },
                   {
                     num: "02",
-                    titol: "Tria el paquet",
-                    desc: "Selecciona si el teu equip és de 4 o 5 jugadors. El preu varia en funció de la mida i la categoria. Les categories sènior disposen d'un descompte early bird si t'inscrius abans de la data límit.",
+                    titol: "Tria del paquet",
+                    desc: "Es triava si l'equip era de 4 o 5 jugadors. El preu variava en funció de la mida i la categoria. Les categories sènior tenien un descompte early bird per a qui s'inscrivia abans de la data límit.",
                   },
                   {
                     num: "03",
-                    titol: "Puja el comprovant de pagament",
-                    desc: "Fes la transferència o pagament per Bizum i adjunta el comprovant al formulari. La plaça queda reservada però no confirmada fins que el pagament és verificat per l'organització.",
+                    titol: "Pagament i comprovant",
+                    desc: "Es feia la transferència o pagament per Bizum i s'adjuntava el comprovant al formulari. La plaça quedava reservada però no confirmada fins que l'organització verificava el pagament.",
                   },
                   {
                     num: "04",
                     titol: "Dades dels jugadors",
-                    desc: "Afegeix el nom complet, data de naixement i DNI/NIE de cada jugador. En categories formatives, indica el nom del tutor legal dels jugadors menors d'edat.",
+                    desc: "S'afegien el nom complet, la data de naixement i el DNI/NIE de cada jugador. En categories formatives, calia indicar el nom del tutor legal dels jugadors menors d'edat.",
                   },
                   {
                     num: "05",
                     titol: "Confirmació i acreditació",
-                    desc: "Un cop revisat el formulari, rebràs un email de confirmació amb tots els detalls del torneig: hora, seu, horaris dels teus partits i punt d'acreditació.",
+                    desc: "Un cop revisat el formulari, s'enviava un email de confirmació amb tots els detalls del torneig: hora, seu, horaris dels partits i punt d'acreditació.",
                   },
                 ].map((pas) => (
                   <div
@@ -216,10 +222,10 @@ export default function ComInscriureEquip3x3Page() {
 
             {/* Secció 3: Preus */}
             <section className="article-section">
-              <h2 className="article-h2">Preus i descomptes</h2>
+              <h2 className="article-h2">Preus de l&apos;edició 2026 (referència)</h2>
               <p>
-                El preu de la inscripció depèn de la categoria i del moment en què et registris.
-                Aquí tens la taula completa de preus:
+                El preu de la inscripció depenia de la categoria i del moment del registre. Aquí
+                tens la taula de preus de la 3a edició, de referència per a la propera:
               </p>
               <div style={{ overflowX: "auto", marginTop: 16 }}>
                 <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 14 }}>
@@ -246,35 +252,36 @@ export default function ComInscriureEquip3x3Page() {
                 </table>
               </div>
               <p style={{ color: "#888", fontSize: 13, marginTop: 12 }}>
-                * El preu és per equip (no per jugador). Inclou samarreta oficial del torneig per a cada jugador.
-                El nombre mínim de jugadors per inscriure un equip és 3. El màxim és 5.
+                * Preus de la 3a edició, ja tancada. Eren per equip (no per jugador) i incloïen la
+                samarreta oficial del torneig per a cada jugador. El preu de la propera edició es
+                confirmarà quan s&apos;obrin les inscripcions.
               </p>
             </section>
 
             {/* Secció 4: FAQ inscripció */}
             <section className="article-section">
-              <h2 className="article-h2">Preguntes freqüents de la inscripció</h2>
+              <h2 className="article-h2">Preguntes freqüents sobre la inscripció (edició 2026)</h2>
               <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                 {[
                   {
-                    q: "Puc inscriure un equip mixt (nois i noies junts)?",
-                    a: "Depèn de la categoria. Les categories formatives admeten equips mixtos. Les categories Sènior estan separades per gènere (Sènior Masculí i Sènior Femení). Consulta els detalls de cada categoria al formulari.",
+                    q: "Es podia inscriure un equip mixt (nois i noies junts)?",
+                    a: "Depenia de la categoria. Les categories formatives admetien equips mixtos. Les categories Sènior anaven separades per gènere (Sènior Masculí i Sènior Femení).",
                   },
                   {
-                    q: "Puc canviar jugadors després de la inscripció?",
-                    a: "Sí, es poden fer canvis a la llista de jugadors fins a 48 hores abans del torneig, sempre que els nous jugadors compleixin els requisits d'edat de la categoria. Cal comunicar-ho per WhatsApp o email.",
+                    q: "Es podien canviar jugadors després de la inscripció?",
+                    a: "Sí, es podien fer canvis a la llista de jugadors fins a 48 hores abans del torneig, sempre que els nous jugadors complissin els requisits d'edat de la categoria, comunicant-ho per WhatsApp o email.",
                   },
                   {
-                    q: "Quin és el termini màxim d'inscripció?",
-                    a: "Les places son limitades i s'assignen per ordre d'arribada. Es recomana inscriure's tan aviat com sigui possible per garantir la plaça. El formulari es tanca quan s'omple el límit de cada categoria.",
+                    q: "Quin era el termini màxim d'inscripció?",
+                    a: "Les places eren limitades i s'assignaven per ordre d'arribada; el formulari es tancava quan s'omplia el límit de cada categoria. Va acabar amb un rècord de 113 equips inscrits.",
                   },
                   {
-                    q: "Es pot demanar la devolució de la inscripció?",
-                    a: "Les inscripcions no es poden devolució un cop confirmades. En cas de força major (lesió documentada del capità o impossibilitat de l'equip) es valorarà cas per cas. Contacta'ns per WhatsApp.",
+                    q: "Es podia demanar la devolució de la inscripció?",
+                    a: "Les inscripcions no eren reemborsables un cop confirmades, tret de força major (lesió documentada del capità o impossibilitat de l'equip), que es valorava cas per cas.",
                   },
                   {
-                    q: "Cal portar llicència esportiva o estar federat?",
-                    a: "No. El Torneig 3×3 Westfield Glòries és obert a tothom, federat o no. No cal llicència de la Federació Catalana de Bàsquet per participar.",
+                    q: "Calia portar llicència esportiva o estar federat?",
+                    a: "No. El Torneig 3×3 Westfield Glòries és obert a tothom, federat o no. No calia llicència de la Federació Catalana de Bàsquet per participar.",
                   },
                 ].map(({ q, a }) => (
                   <div
@@ -311,17 +318,18 @@ export default function ComInscriureEquip3x3Page() {
               }}
             >
               <p style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.12em", color: "#ff5b1f", textTransform: "uppercase", marginBottom: 8 }}>
-                6-7 juny 2026 · Westfield Glòries, Barcelona
+                6-7 juny 2026 · Ja celebrat · Westfield Glòries, Barcelona
               </p>
               <h2 style={{ fontSize: 28, fontWeight: 900, color: "#fff7ef", margin: "0 0 12px" }}>
-                Inscriu el teu equip ara
+                Vols ser dels primers a saber-ho el 2027?
               </h2>
               <p style={{ color: "#c8b99a", fontSize: 15, marginBottom: 24 }}>
-                Places limitades. Formulari en línia en 5 minuts.
+                Encara no hi ha data confirmada per a la propera edició. Deixa el teu contacte o
+                escriu-nos i t&apos;avisem en obrir les inscripcions.
               </p>
               <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-                <Link href="/inscripcion" className="article-cta-btn">
-                  Inscriu el teu equip →
+                <Link href="/#torneig" className="article-cta-btn">
+                  🔔 Avisa&apos;m pel 2027 →
                 </Link>
                 <a
                   href={WA_REGISTER_URL}
@@ -341,6 +349,16 @@ export default function ComInscriureEquip3x3Page() {
                   Preguntar per WhatsApp
                 </a>
               </div>
+              <p style={{ marginTop: 20 }}>
+                <a
+                  href="https://cbgrupbarna.info/fotos-3x3/"
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  style={{ color: "#ff5b1f", fontWeight: 600, textDecoration: "none" }}
+                >
+                  📸 Veure fotos i resultats de la 3a edició →
+                </a>
+              </p>
             </div>
 
           </div>

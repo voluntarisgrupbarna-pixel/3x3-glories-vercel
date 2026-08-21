@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import Link from "next/link";
 import { WA_REGISTER_URL } from "../../lib/whatsapp";
+import RegistrationClosedNotice from "../../components/RegistrationClosedNotice";
 
 export const metadata: Metadata = {
-  title: "Torneo 3x3 Barcelona 2026 | Westfield Glòries · FIBA · 2.000€ premios",
+  title: "Torneo 3x3 Barcelona 2026 | Westfield Glòries · FIBA · 113 equipos",
   description:
-    "Inscríbete al torneo 3x3 de Barcelona 2026 en Westfield Glòries. Categorías desde Premini hasta Sénior Pro, puntos FIBA, 2.000€ en premios y camiseta oficial. 6-7 junio.",
+    "El torneo 3x3 Barcelona 2026 en Westfield Glòries ya se ha celebrado: 113 equipos (récord), 508 jugadores/as, 2.000€ en premios paritarios y oficialidad FIBA. Ver fotos y resultados — nos vemos en 2027.",
   alternates: {
     canonical: "/es/torneo-3x3-barcelona",
     languages: {
@@ -16,9 +17,9 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Torneo 3x3 Barcelona 2026 — Westfield Glòries · FIBA · Premios",
+    title: "Torneo 3x3 Barcelona 2026 — Westfield Glòries · FIBA · Ya celebrado",
     description:
-      "El torneo 3x3 FIBA de referencia en Barcelona. Sábado 6 y domingo 7 de junio en el barrio del Clot-Glòries. 10 categorías, 3 sedes, 2.000€ en premios.",
+      "El torneo 3x3 FIBA de referencia en Barcelona ya se disputó el 6-7 de junio en el barrio del Clot-Glòries: 113 equipos récord, 10 categorías, 3 sedes, 2.000€ en premios paritarios.",
   },
 };
 
@@ -72,16 +73,17 @@ export default function TorneoESPage() {
           />
           <div className="insc-hero-overlay" />
           <div className="insc-hero-body">
-            <span className="insc-hero-kicker">3a edición · 6-7 Junio 2026 · Clot-Glòries, Barcelona</span>
+            <span className="insc-hero-kicker">3a edición · Ya celebrada · 6-7 Junio 2026 · Clot-Glòries, Barcelona</span>
             <h1 className="insc-hero-title">Torneo 3x3 Barcelona 2026</h1>
             <p className="insc-hero-sub">
-              El torneo de baloncesto 3x3 FIBA de referencia en Barcelona — 10 categorías, 3 sedes,
-              2.000€ en premios y ambiente urbano en el Clot-Glòries.
+              El torneo de baloncesto 3x3 FIBA de referencia en Barcelona reunió un récord de{" "}
+              <strong>113 equipos</strong> en 10 categorías, 3 sedes y 2.000€ en premios paritarios.
+              Nos vemos en la próxima edición.
             </p>
             <div className="insc-hero-chips">
               <span>🏆 FIBA Oficial</span>
-              <span>💰 2.000€ premios</span>
-              <span>🏀 Desde 75€</span>
+              <span>💰 2.000€ premios paritarios</span>
+              <span>🥇 113 equipos récord</span>
               <span>📍 3 sedes · Barrio Clot</span>
             </div>
           </div>
@@ -89,12 +91,17 @@ export default function TorneoESPage() {
 
         <main className="page-content">
 
+          <RegistrationClosedNotice
+            title="Inscripciones cerradas"
+            body="El 3×3 Westfield Glòries 2026 (6-7 junio), con 113 equipos y 508 jugadores/as, ya se ha celebrado. Déjanos tu contacto o escríbenos por WhatsApp y te avisamos cuando abramos las inscripciones de 2027."
+          />
+
           <p style={{ fontSize: "1.05rem", lineHeight: 1.7 }}>
-            El <strong>3×3 Westfield Glòries</strong> es el único torneo de baloncesto 3x3 con
+            El <strong>3×3 Westfield Glòries</strong> fue el único torneo de baloncesto 3x3 con
             puntos FIBA oficial en la ciudad de Barcelona en 2026. Organizado por{" "}
             <strong>CB Grup Barna</strong> (club con 60 años de historia en el barrio), Time Chamber
             y Eix Clot. El <strong>sábado 6 y domingo 7 de junio</strong> el barrio del
-            Clot-Glòries se convierte en la capital del 3x3.
+            Clot-Glòries se convirtió en la capital del 3x3.
           </p>
 
           <div
@@ -106,10 +113,10 @@ export default function TorneoESPage() {
             }}
           >
             {[
-              { v: "180+", l: "Equipos en ediciones anteriores" },
-              { v: "800+", l: "Jugadores y jugadoras" },
+              { v: "113", l: "Equipos · récord 2026" },
+              { v: "508", l: "Jugadores y jugadoras" },
               { v: "10", l: "Categorías" },
-              { v: "4ª", l: "Edición consecutiva" },
+              { v: "3ª", l: "Edición · ya celebrada" },
             ].map((s) => (
               <div
                 key={s.l}
@@ -131,7 +138,7 @@ export default function TorneoESPage() {
 
           <hr className="page-divider" />
 
-          <h2>Programa — ¿Cuándo juega cada categoría?</h2>
+          <h2>Programa de la 3a edición — ¿Cuándo jugó cada categoría?</h2>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "1rem", margin: "1.5rem 0" }}>
             <div style={{ background: "rgba(249,115,22,0.08)", border: "1px solid rgba(249,115,22,0.25)", borderRadius: "12px", padding: "1.5rem" }}>
               <div style={{ fontWeight: 700, fontSize: "1.05rem", color: "#f97316", marginBottom: "0.75rem" }}>
@@ -161,8 +168,11 @@ export default function TorneoESPage() {
 
           <hr className="page-divider" />
 
-          <h2>Categorías y precios de inscripción</h2>
-          <p>10 categorías por edad y género. Todos los equipos reciben camiseta oficial y dorsal.</p>
+          <h2>Categorías y precios de inscripción (edición 2026, referencia)</h2>
+          <p>
+            10 categorías por edad y género. Todos los equipos recibieron camiseta oficial y dorsal.
+            Precios de la edición ya celebrada, de referencia para la próxima.
+          </p>
 
           <div className="insc-cat-grid">
             {CATEGORIAS.map((c) => (
@@ -198,7 +208,9 @@ export default function TorneoESPage() {
 
           <div style={{ textAlign: "center", padding: "1rem 0 2rem" }}>
             <a
-              href="/inscripcion"
+              href="https://cbgrupbarna.info/fotos-3x3/"
+              target="_blank"
+              rel="noreferrer noopener"
               style={{
                 display: "inline-block",
                 background: "#f97316",
@@ -211,7 +223,7 @@ export default function TorneoESPage() {
                 marginBottom: "1rem",
               }}
             >
-              🏀 Inscribir equipo — desde 75€
+              📸 Ver fotos y resultados
             </a>
             <br />
             <a
@@ -219,7 +231,7 @@ export default function TorneoESPage() {
               target="_blank" rel="noreferrer noopener"
               style={{ fontSize: "0.9rem", color: "rgba(255,247,239,0.6)", textDecoration: "underline" }}
             >
-              ¿Prefieres WhatsApp? Escríbenos →
+              ¿Quieres que te avisemos del 2027? Escríbenos por WhatsApp →
             </a>
           </div>
 
