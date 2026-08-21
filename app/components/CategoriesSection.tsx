@@ -60,20 +60,30 @@ export default function CategoriesSection() {
           ))}
         </div>
 
-        {/* ── Urgency strip — fil de la xarxa ── */}
+        {/* ── Recap strip — 3a edició ja celebrada ── */}
         <div className="urgency-strip">
-          <span className="urgency-strip-icon" aria-hidden="true">🔥</span>
+          <span className="urgency-strip-icon" aria-hidden="true">🏀</span>
           <span className="urgency-strip-text">
-            <strong>Early Bird −10%</strong> actiu ara · acaba aviat
+            <strong>10 categories</strong>, d&apos;Escoleta a Sènior, els dos dies del torneig
           </span>
-          <a href="/inscripcion" className="urgency-strip-cta">
-            Inscriu l'equip →
+          <a
+            href="https://cbgrupbarna.info/fotos-3x3/"
+            target="_blank"
+            rel="noreferrer noopener"
+            className="urgency-strip-cta"
+          >
+            Veure resultats i fotos →
           </a>
         </div>
 
         <div style={{ textAlign: "center", marginTop: 28 }}>
-          <a href="/inscripcion" className="cta-btn">
-            Inscriu el teu Equip Ara
+          <a
+            href="https://cbgrupbarna.info/fotos-3x3/"
+            target="_blank"
+            rel="noreferrer noopener"
+            className="cta-btn"
+          >
+            📸 Veure com va anar
           </a>
         </div>
 

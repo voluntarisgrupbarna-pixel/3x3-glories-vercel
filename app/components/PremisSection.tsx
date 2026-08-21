@@ -58,20 +58,30 @@ export default function PremisSection() {
           ))}
         </div>
 
-        {/* ── Urgency strip — fil de la xarxa ── */}
+        {/* ── Recap strip — 3a edició ja celebrada ── */}
         <div className="urgency-strip">
-          <span className="urgency-strip-icon" aria-hidden="true">⏱️</span>
+          <span className="urgency-strip-icon" aria-hidden="true">🏆</span>
           <span className="urgency-strip-text">
-            <strong>Places limitades</strong> — els equips s'apunten ràpid cada edició
+            <strong>113 equips</strong> hi van competir pels premis a la 3a edició
           </span>
-          <a href="/inscripcion" className="urgency-strip-cta">
-            Reserva la plaça ara →
+          <a
+            href="https://cbgrupbarna.info/fotos-3x3/"
+            target="_blank"
+            rel="noreferrer noopener"
+            className="urgency-strip-cta"
+          >
+            Veure resultats i fotos →
           </a>
         </div>
 
         <div style={{ textAlign: "center", marginTop: 28 }}>
-          <a href="/inscripcion" className="cta-btn">
-            🏆 Vull competir pels premis
+          <a
+            href="https://cbgrupbarna.info/fotos-3x3/"
+            target="_blank"
+            rel="noreferrer noopener"
+            className="cta-btn"
+          >
+            📸 Veure com va anar
           </a>
         </div>
 

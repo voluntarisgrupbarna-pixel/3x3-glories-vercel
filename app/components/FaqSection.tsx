@@ -23,7 +23,7 @@ export default function FaqSection() {
             Tot el que has de <span className="faq-accent">saber</span>
           </h2>
           <p className="faq-subtitle">
-            Les respostes que la gent pregunta abans d&apos;inscriure&apos;s al 3×3 Westfield Glòries.
+            Com va anar la 3a edició i com t&apos;avisem quan obrim la propera.
           </p>
         </header>
 

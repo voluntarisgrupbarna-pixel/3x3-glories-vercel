@@ -17,7 +17,7 @@ const HIDE_ON = [
 ];
 
 const SHARE_URL  = "https://www.cbgrupbarna-3x3timechamber.com/";
-const SHARE_TEXT = "🏀 3×3 Westfield Glòries 2026 · Torneig FIBA a Barcelona · 6-7 Juny · 2.000€ premi en metàl·lic. Inscriu-te ja!";
+const SHARE_TEXT = "🏀 3×3 Westfield Glòries 2026 · Torneig FIBA a Barcelona · 113 equips rècord · Ja celebrat, ens veiem el 2027!";
 
 export default function StickyCtaBar() {
   const path = usePathname();

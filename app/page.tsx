@@ -1,18 +1,12 @@
-import EarlyBirdBanner from "./components/EarlyBirdBanner";
-import HorarisBanner from "./components/HorarisBanner";
 import HeroFestival from "./components/HeroFestival";
-import RuletaBanner from "./components/RuletaBanner";
+import PostEventRecap from "./components/PostEventRecap";
 import IdentityChipsStrip from "./components/IdentityChipsStrip";
-import SlideDos from "./components/SlideDos";
-import OccupancyGrid from "./components/OccupancyGrid";
-import CategoryBars from "./components/CategoryBars";
 import UbicacionsSection from "./components/UbicacionsSection";
 import PremisSection from "./components/PremisSection";
 import CategoriesSection from "./components/CategoriesSection";
 import ObertATothomSection from "./components/ObertATothomSection";
 import PrideBanner from "./components/PrideBanner";
 import InstagramReels from "./components/InstagramReels";
-import NotifyMeBar from "./components/NotifyMeBar";
 import FaqSection from "./components/FaqSection";
 import SponsorsSection from "./components/SponsorsSection";
 import SiteFooter from "./components/SiteFooter";
@@ -20,27 +14,16 @@ import SiteFooter from "./components/SiteFooter";
 export default function Home() {
   return (
     <>
-      <EarlyBirdBanner />
-      <HorarisBanner />
       <main className="experience-shell">
         {/* === HERO FESTIVAL — primer impacte amb foto + nav + stats + IG === */}
         <HeroFestival />
-
-        {/* === SLIDE DOS — rèplica del disseny original: el torneig === */}
-        <SlideDos />
       </main>
 
-      {/* === BANNER RULETA — promociona el sorteig diari === */}
-      <RuletaBanner />
+      {/* === RECAP — com va anar la 3a edició + galeria + avisa'm pel 2027 === */}
+      <PostEventRecap />
 
       {/* === FRANJA IDENTITAT — 5 valors del torneig === */}
       <IdentityChipsStrip />
-
-      {/* === SLIDE 3 — Graella d'ocupació 100 places (1 quadrat = 1 equip) === */}
-      <OccupancyGrid />
-
-      {/* === SLIDE 4 — Barres per categoria amb % d'ocupació === */}
-      <CategoryBars />
 
       {/* === Ubicacions — 3 seus amb mapa === */}
       <UbicacionsSection />
@@ -56,9 +39,6 @@ export default function Home() {
 
       {/* === Un 3x3 obert a tothom — Màgics + LGTBI+ === */}
       <ObertATothomSection />
-
-      {/* === Telaraña: captura de qui no està llest per inscriure's === */}
-      <NotifyMeBar />
 
       {/* === Galeria — Instagram Reels === */}
       <InstagramReels />

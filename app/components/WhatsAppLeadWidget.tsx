@@ -51,8 +51,8 @@ const interestOptions = [
 ];
 
 const questionOptions = [
-  "Vull inscriure el meu equip",
-  "Tinc dubtes sobre categories o preus",
+  "Vull informació de la propera edició (2027)",
+  "Tinc dubtes sobre l'edició que ja s'ha celebrat",
   "Vull rebre informació del campus",
   "Vull col·laborar o patrocinar",
   "Vull ser voluntari/a",
@@ -64,7 +64,7 @@ const emptyForm: LeadForm = {
   email: "",
   phone: "",
   interest: "3×3 Westfield Glòries",
-  question: "Vull inscriure el meu equip",
+  question: "Vull informació de la propera edició (2027)",
   message: "",
   consent: false,
 };
@@ -206,8 +206,8 @@ export default function WhatsAppLeadWidget({ mode = "floating" }: { mode?: LeadM
           Contactar ara per WhatsApp →
         </a>
 
-        <a className="wa-register-link" href="/inscripcion">
-          Anar al registre directe →
+        <a className="wa-register-link" href="https://cbgrupbarna.info/fotos-3x3/" target="_blank" rel="noreferrer noopener">
+          Veure fotos i resultats →
         </a>
       </div>
     </div>
@@ -349,7 +349,7 @@ export default function WhatsAppLeadWidget({ mode = "floating" }: { mode?: LeadM
         href={WA_REGISTER_URL}
         target="_blank"
         rel="noreferrer noopener"
-        aria-label="Inscriure equip per WhatsApp"
+        aria-label="Contacta amb el club per WhatsApp"
       >
         <span aria-hidden="true" />
         WhatsApp

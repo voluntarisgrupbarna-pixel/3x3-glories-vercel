@@ -127,11 +127,13 @@ export default function UbicacionsSection() {
               />
             </div>
             <a
-              href="/inscripcion"
+              href="https://cbgrupbarna.info/fotos-3x3/"
+              target="_blank"
+              rel="noreferrer noopener"
               className="ubic-inscriu-btn"
               style={{ "--btn-color": v.color } as React.CSSProperties}
             >
-              🏀 Inscriu el teu equip aquí →
+              📸 Veure fotos i resultats →
             </a>
           </div>
         </div>

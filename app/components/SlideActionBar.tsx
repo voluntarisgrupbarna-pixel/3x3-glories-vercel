@@ -10,11 +10,12 @@ type SlideActionBarProps = {
 };
 
 const SITE_URL = "https://www.cbgrupbarna-3x3timechamber.com/";
+const GALLERY_URL = "https://cbgrupbarna.info/fotos-3x3/";
 
 export default function SlideActionBar({
   origin,
   title = "3×3 Westfield Glòries 2026",
-  text = "Torneig 3×3 FIBA a Barcelona · 6-7 juny · inscripcions obertes",
+  text = "Torneig 3×3 FIBA a Barcelona · 3a edició ja celebrada · 113 equips rècord",
 }: SlideActionBarProps) {
   const shareUrl = typeof window !== "undefined" ? window.location.href : SITE_URL;
   const { trigger: openShare, modal: shareModal } = useShareGate({
@@ -25,9 +26,14 @@ export default function SlideActionBar({
   return (
     <div className="slide-action-bar" aria-label="Accions del 3×3">
       {shareModal}
-      <a href="/inscripcion" className="slide-action slide-action--register">
-        <span aria-hidden="true">🏀</span>
-        Inscriu-te
+      <a
+        href={GALLERY_URL}
+        target="_blank"
+        rel="noreferrer noopener"
+        className="slide-action slide-action--register"
+      >
+        <span aria-hidden="true">📸</span>
+        Fotos i resultats
       </a>
       <a
         href={WA_REGISTER_URL}
